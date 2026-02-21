@@ -69,3 +69,6 @@ static/
 - `baglamalar.notlar` formatı: "Referans: REFNO | Sahip: AD"
 - Mevcut veriler normalize edildi (aktif → onaylandi)
 - durum normalize: 526 onaylandi, 293 beklemede, 206 reddedildi
+
+## Yapılacaklar
+- [ ] **Sanal POS entegrasyonu** — Muttaş ödeme yetkilileriyle görüşülecek, ardından faturalar modülüne banka/kart ödeme API'si bağlanacak
