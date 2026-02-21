@@ -3,381 +3,937 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MUTTAŞ — Dashboard</title>
+<title>MUTTAŞ — Liman Paneli</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --bg:        #ffffff;
-  --bg-soft:   #f7f7f5;
-  --border:    #e8e8e5;
+  --sidebar-w:   240px;
+  --bg:          #ffffff;
+  --bg-soft:     #f7f7f5;
+  --border:      #e8e8e5;
   --border-dark: #d5d5d0;
-  --text:      #1a1a18;
-  --text-2:    #5a5a55;
-  --text-3:    #9b9b95;
-  --accent:    #2563eb;
-  --accent-bg: #eff6ff;
-  --danger:    #dc2626;
-  --success:   #16a34a;
-  --radius:    8px;
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-  --shadow:    0 4px 16px rgba(0,0,0,0.08);
+  --text:        #1a1a18;
+  --text-2:      #5a5a55;
+  --text-3:      #9b9b95;
+  --accent:      #2563eb;
+  --accent-bg:   #eff6ff;
+  --accent-hover:#1d4ed8;
+  --danger:      #dc2626;
+  --success:     #16a34a;
+  --warn:        #d97706;
+  --radius:      8px;
+  --shadow-sm:   0 1px 3px rgba(0,0,0,0.07);
+  --shadow:      0 4px 16px rgba(0,0,0,0.08);
 }
 
-body {
+html, body {
+  height: 100%;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background: var(--bg-soft);
   color: var(--text);
-  min-height: 100vh;
+  background: var(--bg-soft);
 }
 
-/* NAV */
-.navbar {
-  background: var(--bg);
-  border-bottom: 1px solid var(--border);
-  padding: 0 24px;
-  height: 56px;
+/* ─── LAYOUT ─────────────────────────────────── */
+.layout {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  height: 100vh;
+  overflow: hidden;
 }
 
-.nav-brand {
+/* ─── SIDEBAR ─────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-width: var(--sidebar-w);
+  height: 100vh;
+  background: var(--bg);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  z-index: 10;
+}
+
+/* Logo */
+.sb-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.nav-logo {
-  width: 32px;
-  height: 32px;
+.sb-logo-mark {
+  width: 34px;
+  height: 34px;
   background: var(--text);
-  border-radius: 8px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
 }
 
-.nav-logo svg {
-  width: 16px; height: 16px;
+.sb-logo-mark svg {
+  width: 17px; height: 17px;
   fill: none; stroke: #fff;
   stroke-width: 1.8;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-.nav-title {
-  font-size: 14px;
+.sb-logo-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sb-logo-text .brand {
+  font-size: 13px;
   font-weight: 700;
   color: var(--text);
+  line-height: 1;
 }
 
-.nav-right {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-badge {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 5px 12px;
-  background: var(--bg-soft);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  font-size: 13px;
-  color: var(--text-2);
-}
-
-.user-badge .role {
-  font-size: 11px;
-  background: var(--accent-bg);
-  color: var(--accent);
-  padding: 1px 7px;
-  border-radius: 10px;
-  font-weight: 600;
-}
-
-.btn-logout {
-  padding: 6px 14px;
-  background: none;
-  border: 1px solid var(--border-dark);
-  border-radius: var(--radius);
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text-2);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-.btn-logout:hover {
-  border-color: var(--danger);
-  color: var(--danger);
-}
-
-/* MAIN */
-.main {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 32px 24px;
-}
-
-.page-header {
-  margin-bottom: 28px;
-}
-
-.page-header h1 {
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.page-header p {
-  font-size: 14px;
+.sb-logo-text .sub {
+  font-size: 10.5px;
   color: var(--text-3);
+  line-height: 1;
+}
+
+/* User info */
+.sb-user {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sb-user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sb-user-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin-top: 4px;
 }
 
-/* STAT CARDS */
-.stats {
+.sb-user-liman {
+  font-size: 11.5px;
+  color: var(--text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.badge-admin  { background: #fef3c7; color: #92400e; }
+.badge-user   { background: var(--accent-bg); color: var(--accent); }
+
+/* Nav */
+.sb-nav {
+  flex: 1;
+  padding: 10px 8px;
+  overflow-y: auto;
+}
+
+.sb-section-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  padding: 10px 8px 4px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  user-select: none;
+  text-decoration: none;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+}
+
+.nav-item:hover {
+  background: var(--bg-soft);
+  color: var(--text);
+}
+
+.nav-item.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-item .icon {
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.nav-sep {
+  height: 1px;
+  background: var(--border);
+  margin: 8px 0;
+}
+
+/* Logout */
+.sb-footer {
+  padding: 12px 8px;
+  border-top: 1px solid var(--border);
+}
+
+.btn-logout {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  background: none;
+  border: none;
+}
+
+.btn-logout:hover {
+  background: #fff0f0;
+  color: var(--danger);
+}
+
+.btn-logout .icon {
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+}
+
+/* ─── MAIN ────────────────────────────────────── */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Topbar */
+.topbar {
+  height: 56px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  flex-shrink: 0;
+}
+
+.topbar-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.topbar-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.topbar-sub {
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Admin liman filtresi */
+.liman-filter {
+  display: none;
+  align-items: center;
+  gap: 6px;
+}
+
+.liman-filter.visible { display: flex; }
+
+.liman-filter label {
+  font-size: 12px;
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.liman-filter select {
+  padding: 5px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12.5px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  cursor: pointer;
+}
+
+.liman-filter select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+/* Bildirim zili */
+.notif-btn {
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.12s;
+  color: var(--text-2);
+  font-size: 16px;
+}
+
+.notif-btn:hover { background: var(--bg-soft); }
+
+.notif-dot {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 7px;
+  height: 7px;
+  background: var(--danger);
+  border-radius: 50%;
+  border: 1.5px solid var(--bg);
+}
+
+/* ─── CONTENT AREA ────────────────────────────── */
+.content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 28px 24px;
+}
+
+/* Page sections (shown/hidden via JS) */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ─── STAT CARDS ──────────────────────────────── */
+.stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 28px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 20px;
+  padding: 18px 20px;
   box-shadow: var(--shadow-sm);
 }
 
 .stat-label {
-  font-size: 12px;
-  font-weight: 600;
+  font-size: 11px;
+  font-weight: 700;
   color: var(--text-3);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
   margin-bottom: 8px;
 }
 
 .stat-value {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   color: var(--text);
+  line-height: 1;
 }
+
+.stat-value.green  { color: var(--success); }
+.stat-value.blue   { color: var(--accent); }
+.stat-value.yellow { color: var(--warn); }
 
 .stat-sub {
-  font-size: 12px;
+  font-size: 11.5px;
   color: var(--text-3);
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
-/* INFO CARD */
-.info-card {
+/* ─── CARD ────────────────────────────────────── */
+.card {
   background: var(--bg);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 24px;
   box-shadow: var(--shadow-sm);
+  margin-bottom: 20px;
 }
 
-.info-card h2 {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 16px;
-  padding-bottom: 12px;
+.card-header {
+  padding: 16px 20px;
   border-bottom: 1px solid var(--border);
-}
-
-.info-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
+}
+
+.card-header h2 {
   font-size: 14px;
-}
-
-.info-row:last-child { border-bottom: none; }
-
-.info-row .key {
-  color: var(--text-3);
-  font-weight: 500;
-}
-
-.info-row .val {
+  font-weight: 600;
   color: var(--text);
-  font-weight: 500;
 }
 
-.badge-admin {
-  background: #fef3c7;
-  color: #92400e;
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
+.card-body {
+  padding: 20px;
 }
 
-.badge-user {
-  background: var(--accent-bg);
-  color: var(--accent);
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  font-weight: 600;
+/* ─── TABLE ───────────────────────────────────── */
+.table-wrap {
+  overflow-x: auto;
 }
 
-.liman-tag {
-  background: var(--bg-soft);
-  border: 1px solid var(--border);
-  padding: 2px 10px;
-  border-radius: 10px;
-  font-size: 12px;
-  color: var(--text-2);
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
 }
 
-/* Token box */
-.token-box {
-  margin-top: 20px;
-  background: var(--bg-soft);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 12px;
-  font-family: monospace;
+th {
+  text-align: left;
+  padding: 9px 12px;
   font-size: 11px;
+  font-weight: 700;
   color: var(--text-3);
-  word-break: break-all;
-  line-height: 1.6;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
 }
 
-.token-label {
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
+td {
+  padding: 11px 12px;
+  border-bottom: 1px solid var(--border);
   color: var(--text-2);
-  margin-bottom: 6px;
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-soft); }
+
+/* ─── EMPTY STATE ─────────────────────────────── */
+.empty {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--text-3);
+}
+
+.empty .empty-icon { font-size: 36px; margin-bottom: 12px; }
+.empty h3 { font-size: 14px; font-weight: 600; color: var(--text-2); margin-bottom: 4px; }
+.empty p  { font-size: 13px; }
+
+/* ─── PLACEHOLDER CONTENT ─────────────────────── */
+.placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  gap: 12px;
+  color: var(--text-3);
+}
+
+.placeholder .p-icon { font-size: 48px; }
+.placeholder h3 { font-size: 16px; font-weight: 600; color: var(--text-2); }
+.placeholder p  { font-size: 13px; text-align: center; max-width: 320px; }
+
+/* ─── BTN ─────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  border: none;
+}
+
+.btn-primary {
+  background: var(--text);
+  color: #fff;
+}
+
+.btn-primary:hover { background: #2a2a28; }
+
+.btn-outline {
+  background: none;
+  border: 1px solid var(--border-dark);
+  color: var(--text-2);
+}
+
+.btn-outline:hover {
+  border-color: var(--text);
+  color: var(--text);
 }
 </style>
 </head>
 <body>
 
-<nav class="navbar">
-  <div class="nav-brand">
-    <div class="nav-logo">
-      <svg viewBox="0 0 24 24">
-        <circle cx="12" cy="5" r="2"/>
-        <line x1="12" y1="7" x2="12" y2="19"/>
-        <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
-        <line x1="5" y1="12" x2="19" y2="12"/>
-      </svg>
-    </div>
-    <span class="nav-title">MUTTAŞ Liman Paneli</span>
-  </div>
-  <div class="nav-right">
-    <div class="user-badge">
-      <span id="nav-user">—</span>
-      <span class="role" id="nav-role">—</span>
-    </div>
-    <button class="btn-logout" onclick="logout()">Çıkış Yap</button>
-  </div>
-</nav>
+<div class="layout">
 
-<div class="main">
+  <!-- ═══ SIDEBAR ═══ -->
+  <aside class="sidebar">
 
-  <div class="page-header">
-    <h1>Hoş geldiniz, <span id="welcome-name">—</span> 👋</h1>
-    <p id="welcome-sub">Liman yönetim paneline başarıyla giriş yaptınız.</p>
-  </div>
-
-  <div class="stats">
-    <div class="stat-card">
-      <div class="stat-label">Oturum Durumu</div>
-      <div class="stat-value" style="color:var(--success);font-size:18px;">✓ Aktif</div>
-      <div class="stat-sub">JWT token geçerli</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Kullanıcı ID</div>
-      <div class="stat-value" id="stat-id">—</div>
-      <div class="stat-sub">Sistem kimliği</div>
-    </div>
-    <div class="stat-card">
-      <div class="stat-label">Seçili Liman</div>
-      <div class="stat-value" style="font-size:18px;" id="stat-liman">—</div>
-      <div class="stat-sub">Aktif liman bağlamı</div>
-    </div>
-  </div>
-
-  <div class="info-card">
-    <h2>Hesap Bilgileri</h2>
-    <div class="info-row">
-      <span class="key">Ad Soyad</span>
-      <span class="val" id="info-ad">—</span>
-    </div>
-    <div class="info-row">
-      <span class="key">E-posta</span>
-      <span class="val" id="info-email">—</span>
-    </div>
-    <div class="info-row">
-      <span class="key">Rol</span>
-      <span class="val" id="info-rol">—</span>
-    </div>
-    <div class="info-row">
-      <span class="key">Liman</span>
-      <span class="val" id="info-liman">—</span>
+    <!-- Logo -->
+    <div class="sb-logo">
+      <div class="sb-logo-mark">
+        <svg viewBox="0 0 24 24">
+          <circle cx="12" cy="5" r="2"/>
+          <line x1="12" y1="7" x2="12" y2="19"/>
+          <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+      </div>
+      <div class="sb-logo-text">
+        <span class="brand">MUTTAŞ</span>
+        <span class="sub">Liman Yönetim Paneli</span>
+      </div>
     </div>
 
-    <div class="token-label" style="margin-top:20px;">JWT Token</div>
-    <div class="token-box" id="info-token">—</div>
-  </div>
+    <!-- Kullanıcı -->
+    <div class="sb-user">
+      <div class="sb-user-name" id="sb-name">—</div>
+      <div class="sb-user-meta">
+        <span class="sb-user-liman" id="sb-liman">—</span>
+        <span class="badge" id="sb-badge">—</span>
+      </div>
+    </div>
 
-</div>
+    <!-- Nav -->
+    <nav class="sb-nav">
+
+      <div class="sb-section-label">Genel</div>
+
+      <button class="nav-item active" onclick="navigate('dashboard', this)">
+        <span class="icon">📊</span> Dashboard
+      </button>
+
+      <button class="nav-item" onclick="navigate('gunluk', this)">
+        <span class="icon">📋</span> Liman Günlüğü
+      </button>
+
+      <button class="nav-item" onclick="navigate('baglama', this)">
+        <span class="icon">⚓</span> Bağlama Başvuruları
+      </button>
+
+      <button class="nav-item" onclick="navigate('tekneler', this)">
+        <span class="icon">🚢</span> Tekneler
+      </button>
+
+      <button class="nav-item" onclick="navigate('faturalar', this)">
+        <span class="icon">🧾</span> Faturalar
+      </button>
+
+      <!-- Sadece admin -->
+      <div id="admin-section" style="display:none">
+        <div class="nav-sep"></div>
+        <div class="sb-section-label">Yönetim</div>
+        <button class="nav-item" onclick="navigate('kullanicilar', this)">
+          <span class="icon">👥</span> Kullanıcılar
+        </button>
+      </div>
+
+    </nav>
+
+    <!-- Çıkış -->
+    <div class="sb-footer">
+      <button class="btn-logout" onclick="logout()">
+        <span class="icon">🚪</span> Çıkış Yap
+      </button>
+    </div>
+
+  </aside>
+
+  <!-- ═══ MAIN ═══ -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="topbar-title" id="topbar-title">Dashboard</div>
+        <div class="topbar-sub" id="topbar-sub">—</div>
+      </div>
+      <div class="topbar-right">
+
+        <!-- Admin: liman filtresi -->
+        <div class="liman-filter" id="liman-filter">
+          <label for="liman-select">Liman:</label>
+          <select id="liman-select" onchange="onLimanFilter()">
+            <option value="">Tümü</option>
+            <option value="Bodrum">Bodrum</option>
+            <option value="Gümbet">Gümbet</option>
+            <option value="Marmaris">Marmaris</option>
+            <option value="İçmeler">İçmeler</option>
+            <option value="Turunç">Turunç</option>
+            <option value="Fethiye">Fethiye</option>
+          </select>
+        </div>
+
+        <!-- Bildirimler -->
+        <button class="notif-btn" title="Bildirimler">
+          🔔
+          <span class="notif-dot"></span>
+        </button>
+
+      </div>
+    </header>
+
+    <!-- Content -->
+    <div class="content">
+
+      <!-- ── Dashboard ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Aktif Bağlamalar</div>
+            <div class="stat-value blue">—</div>
+            <div class="stat-sub">Şu an doluluk</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bekleyen Başvuru</div>
+            <div class="stat-value yellow">—</div>
+            <div class="stat-sub">Onay bekliyor</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Kayıtlı Tekne</div>
+            <div class="stat-value">—</div>
+            <div class="stat-sub">Toplam</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Aylık Tahsilat</div>
+            <div class="stat-value green">—</div>
+            <div class="stat-sub">Bu ay</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h2>Son Hareketler</h2>
+            <button class="btn btn-outline">Tümünü gör</button>
+          </div>
+          <div class="card-body">
+            <div class="placeholder">
+              <div class="p-icon">📊</div>
+              <h3>Veriler yükleniyor...</h3>
+              <p>API entegrasyonu tamamlandığında hareket geçmişi burada görünecek.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Liman Günlüğü ── -->
+      <div class="page" id="page-gunluk">
+        <div class="card">
+          <div class="card-header">
+            <h2>Liman Günlüğü</h2>
+            <button class="btn btn-primary">+ Kayıt Ekle</button>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tarih</th>
+                    <th>Liman</th>
+                    <th>Olay</th>
+                    <th>Tekne</th>
+                    <th>Kaydeden</th>
+                  </tr>
+                </thead>
+                <tbody id="gunluk-body">
+                  <tr>
+                    <td colspan="5">
+                      <div class="empty">
+                        <div class="empty-icon">📋</div>
+                        <h3>Henüz kayıt yok</h3>
+                        <p>Yeni kayıt eklemek için butona tıklayın.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Bağlama Başvuruları ── -->
+      <div class="page" id="page-baglama">
+        <div class="card">
+          <div class="card-header">
+            <h2>Bağlama Başvuruları</h2>
+            <button class="btn btn-primary">+ Başvuru Ekle</button>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Başvuru No</th>
+                    <th>Tekne</th>
+                    <th>Liman</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="baglama-body">
+                  <tr>
+                    <td colspan="6">
+                      <div class="empty">
+                        <div class="empty-icon">⚓</div>
+                        <h3>Başvuru bulunamadı</h3>
+                        <p>Henüz bağlama başvurusu bulunmuyor.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Tekneler ── -->
+      <div class="page" id="page-tekneler">
+        <div class="card">
+          <div class="card-header">
+            <h2>Tekneler</h2>
+            <button class="btn btn-primary">+ Tekne Ekle</button>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Tekne Adı</th>
+                    <th>Tip</th>
+                    <th>Uzunluk</th>
+                    <th>Sahip</th>
+                    <th>Liman</th>
+                    <th>Durum</th>
+                  </tr>
+                </thead>
+                <tbody id="tekneler-body">
+                  <tr>
+                    <td colspan="6">
+                      <div class="empty">
+                        <div class="empty-icon">🚢</div>
+                        <h3>Tekne bulunamadı</h3>
+                        <p>Kayıtlı tekne bulunmuyor.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Faturalar ── -->
+      <div class="page" id="page-faturalar">
+        <div class="card">
+          <div class="card-header">
+            <h2>Faturalar</h2>
+            <button class="btn btn-primary">+ Fatura Oluştur</button>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Fatura No</th>
+                    <th>Tekne</th>
+                    <th>Liman</th>
+                    <th>Tutar</th>
+                    <th>Tarih</th>
+                    <th>Durum</th>
+                  </tr>
+                </thead>
+                <tbody id="faturalar-body">
+                  <tr>
+                    <td colspan="6">
+                      <div class="empty">
+                        <div class="empty-icon">🧾</div>
+                        <h3>Fatura bulunamadı</h3>
+                        <p>Henüz fatura oluşturulmamış.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Kullanıcılar (admin) ── -->
+      <div class="page" id="page-kullanicilar">
+        <div class="card">
+          <div class="card-header">
+            <h2>Kullanıcılar</h2>
+            <button class="btn btn-primary">+ Kullanıcı Ekle</button>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Ad Soyad</th>
+                    <th>E-posta</th>
+                    <th>Rol</th>
+                    <th>Liman</th>
+                    <th>Kayıt Tarihi</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="kullanicilar-body">
+                  <tr>
+                    <td colspan="6">
+                      <div class="empty">
+                        <div class="empty-icon">👥</div>
+                        <h3>Kullanıcı bulunamadı</h3>
+                        <p>Henüz kullanıcı eklenmemiş.</p>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /layout -->
 
 <script>
-(function() {
-  const token = localStorage.getItem('token');
-  const kullanici = JSON.parse(localStorage.getItem('kullanici') || 'null');
-  const liman = localStorage.getItem('liman') || 'Seçilmedi';
+const PAGE_TITLES = {
+  dashboard:    'Dashboard',
+  gunluk:       'Liman Günlüğü',
+  baglama:      'Bağlama Başvuruları',
+  tekneler:     'Tekneler',
+  faturalar:    'Faturalar',
+  kullanicilar: 'Kullanıcılar'
+};
 
-  if (!token || !kullanici) {
+let currentUser = null;
+let currentLiman = null;
+
+(function init() {
+  const token    = localStorage.getItem('token');
+  const userData = localStorage.getItem('kullanici');
+  const liman    = localStorage.getItem('liman');
+
+  if (!token || !userData) {
     window.location.href = 'login.html';
     return;
   }
 
-  document.getElementById('nav-user').textContent = kullanici.ad + ' ' + kullanici.soyad;
-  document.getElementById('nav-role').textContent = kullanici.rol;
-  document.getElementById('welcome-name').textContent = kullanici.ad;
+  currentUser  = JSON.parse(userData);
+  currentLiman = liman || null;
+  const isAdmin = currentUser.rol === 'admin';
 
-  if (liman !== 'Seçilmedi') {
-    document.getElementById('welcome-sub').textContent =
-      'Liman yönetim paneline başarıyla giriş yaptınız. Aktif liman: ' + liman;
+  document.getElementById('sb-name').textContent =
+    currentUser.ad + ' ' + currentUser.soyad;
+
+  document.getElementById('sb-liman').textContent =
+    isAdmin ? 'Tüm Limanlar' : (currentLiman || 'Liman atanmamış');
+
+  const badge = document.getElementById('sb-badge');
+  badge.textContent  = isAdmin ? 'Admin' : 'Görevli';
+  badge.className    = 'badge ' + (isAdmin ? 'badge-admin' : 'badge-user');
+
+  if (isAdmin) {
+    document.getElementById('admin-section').style.display = 'block';
+    document.getElementById('liman-filter').classList.add('visible');
   }
 
-  document.getElementById('stat-id').textContent = '#' + kullanici.id;
-  document.getElementById('stat-liman').textContent = liman;
+  if (currentLiman && !isAdmin) {
+    const sel = document.getElementById('liman-select');
+    sel.value = currentLiman;
+  }
 
-  document.getElementById('info-ad').textContent = kullanici.ad + ' ' + kullanici.soyad;
-  document.getElementById('info-email').textContent = kullanici.email;
-
-  const rolEl = document.getElementById('info-rol');
-  rolEl.innerHTML = kullanici.rol === 'admin'
-    ? '<span class="badge-admin">Admin</span>'
-    : '<span class="badge-user">Kullanıcı</span>';
-
-  const limanEl = document.getElementById('info-liman');
-  limanEl.innerHTML = '<span class="liman-tag">⚓ ' + liman + '</span>';
-
-  document.getElementById('info-token').textContent = token;
+  updateTopbar('dashboard');
 })();
+
+function navigate(page, el) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+
+  updateTopbar(page);
+}
+
+function updateTopbar(page) {
+  document.getElementById('topbar-title').textContent = PAGE_TITLES[page] || page;
+  const isAdmin = currentUser && currentUser.rol === 'admin';
+  const limanLabel = isAdmin
+    ? (document.getElementById('liman-select').value || 'Tüm Limanlar')
+    : (currentLiman || 'Liman atanmamış');
+  document.getElementById('topbar-sub').textContent = limanLabel;
+}
+
+function onLimanFilter() {
+  updateTopbar(
+    document.querySelector('.nav-item.active')
+      ?.textContent.trim().toLowerCase() || 'dashboard'
+  );
+}
 
 function logout() {
   localStorage.removeItem('token');
