@@ -558,4 +558,9 @@ async function handleLogin(e) {
   }
 }
 
-// Enter ile
+// Enter ile formu gönder
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') {
+    handleLogin();
+  }
+});
