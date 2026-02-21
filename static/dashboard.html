@@ -1082,20 +1082,28 @@ tr:hover td { background: var(--bg-soft); }
             <div class="stat-value blue" id="stat-aktif-baglamalar">—</div>
             <div class="stat-sub">Şu an doluluk</div>
           </div>
+          <div class="stat-card" id="card-bekleyenler">
+            <div class="stat-label">Bekleyenler</div>
+            <div class="stat-value yellow" id="stat-bekleyen-basvuru">—</div>
+            <div class="stat-sub" id="sub-bekleyen-basvuru">Onay bekleyen toplam</div>
+          </div>
           <div class="stat-card" id="card-basvuru-bugun">
-            <div class="stat-label">Yeni Başvuru · Bugün</div>
-            <div class="stat-value yellow" id="stat-basvuru-bugun">—</div>
-            <div class="stat-sub" id="sub-basvuru-bugun">Onaylanmamış, bugün gelen</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Yeni Başvuru · Bu Hafta</div>
-            <div class="stat-value yellow" id="stat-basvuru-hafta">—</div>
-            <div class="stat-sub">Onaylanmamış, bu hafta</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Yeni Başvuru · Bu Ay</div>
-            <div class="stat-value yellow" id="stat-basvuru-ay">—</div>
-            <div class="stat-sub" id="sub-basvuru-ay">Onaylanmamış, bu ay</div>
+            <div class="stat-label">Yeni Başvurular</div>
+            <div style="margin-top:10px;display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+                <span style="font-size:12px;color:var(--text-2);font-weight:600">Bugün</span>
+                <span class="stat-value yellow" id="stat-basvuru-bugun" style="font-size:22px;margin:0;line-height:1">—</span>
+              </div>
+              <div style="border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+                <span style="font-size:12px;color:var(--text-2)">Bu Hafta</span>
+                <span class="stat-value yellow" id="stat-basvuru-hafta" style="font-size:18px;margin:0;line-height:1">—</span>
+              </div>
+              <div style="border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;padding:6px 0">
+                <span style="font-size:12px;color:var(--text-2)">Bu Ay</span>
+                <span class="stat-value yellow" id="stat-basvuru-ay" style="font-size:18px;margin:0;line-height:1">—</span>
+              </div>
+            </div>
+            <div class="stat-sub" id="sub-basvuru-bugun" style="margin-top:6px">Onaylanmamış başvurular</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Kayıtlı Tekne</div>
@@ -1754,6 +1762,19 @@ async function loadDashboard() {
     const d = await res.json();
 
     document.getElementById('stat-aktif-baglamalar').textContent = d.aktif_baglamalar ?? '—';
+
+    // Bekleyenler kartı
+    const bekleyen = d.bekleyen_basvuru ?? 0;
+    document.getElementById('stat-bekleyen-basvuru').textContent = bekleyen || '0';
+    const bekCard = document.getElementById('card-bekleyenler');
+    const bekSub  = document.getElementById('sub-bekleyen-basvuru');
+    if (bekleyen > 0) {
+      bekCard.classList.add('stat-card-alert');
+      bekSub.textContent = `${bekleyen} başvuru işlem bekliyor`;
+    } else {
+      bekCard.classList.remove('stat-card-alert');
+      bekSub.textContent = 'Onay bekleyen toplam';
+    }
 
     // Yeni Başvurular — Bugün / Bu Hafta / Bu Ay
     const bugun  = d.basvuru_bugun    ?? 0;
