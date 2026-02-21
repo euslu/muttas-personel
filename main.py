@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from db import get_pool, close_pool
 from auth import router as auth_router
 
@@ -124,7 +126,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 app.include_router(auth_router)
+
+
+@app.get("/")
+def root():
+    return FileResponse("static/index.html")
 
 
 @app.get("/health")
