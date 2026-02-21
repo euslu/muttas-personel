@@ -14,8 +14,9 @@ Marina yönetim sistemi — Python FastAPI + PostgreSQL.
 main.py          - FastAPI app, CORS, CSP middleware, tablo oluşturma
 db.py            - asyncpg connection pool
 auth.py          - /auth/login, /auth/me, kullanıcı yönetimi
-gunluk.py        - /gunluk (liman günlüğü CRUD), /limanlar
+gunluk.py        - /gunluk (liman günlüğü CRUD), /limanlar, /tekneler/ara
 basvurular.py    - /basvurular (bağlama başvuruları CRUD + export)
+dashboard.py     - /dashboard/ozet, /dashboard/gunluk-trafik
 static/
   login.html     - JWT login formu
   dashboard.html - Ana panel (sidebar + tüm sayfalar)
