@@ -11,6 +11,7 @@ from gunluk import router as gunluk_router
 from basvurular import router as basvurular_router
 from dashboard import router as dashboard_router
 from tekneler import router as tekneler_router
+from faturalar import router as faturalar_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -152,6 +153,7 @@ app.include_router(gunluk_router)
 app.include_router(basvurular_router)
 app.include_router(dashboard_router)
 app.include_router(tekneler_router)
+app.include_router(faturalar_router)
 
 
 @app.get("/")

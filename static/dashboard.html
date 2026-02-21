@@ -1449,12 +1449,53 @@ tr:hover td { background: var(--bg-soft); }
 
       <!-- ── Faturalar ── -->
       <div class="page" id="page-faturalar">
-        <div class="card">
-          <div class="card-header">
-            <h2>Faturalar</h2>
-            <button class="btn btn-primary">+ Fatura Oluştur</button>
+
+        <!-- Filtreler -->
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-body" style="padding:12px 16px">
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+              <select class="form-input" id="ft-f-durum" style="width:160px" onchange="loadFaturalar(1)">
+                <option value="">Tüm Durumlar</option>
+                <option value="beklemede">Beklemede</option>
+                <option value="odendi">Ödendi</option>
+                <option value="iptal">İptal</option>
+              </select>
+              <select class="form-input" id="ft-f-liman" style="width:150px" onchange="loadFaturalar(1)">
+                <option value="">Tüm Limanlar</option>
+              </select>
+              <input class="form-input" type="date" id="ft-f-bas" style="width:145px" onchange="loadFaturalar(1)">
+              <span style="color:var(--text-muted);font-size:13px">—</span>
+              <input class="form-input" type="date" id="ft-f-bit" style="width:145px" onchange="loadFaturalar(1)">
+              <input class="form-input" id="ft-search" placeholder="Fatura no veya tekne adı..." style="width:220px" oninput="ftSearchDebounce()">
+              <button class="btn btn-outline" onclick="ftExport()" style="margin-left:auto">⬇ CSV İndir</button>
+              <button class="btn btn-primary" onclick="ftOpenDrawer()">+ Fatura Oluştur</button>
+            </div>
           </div>
-          <div class="card-body">
+        </div>
+
+        <!-- İstatistik Şeridi -->
+        <div class="stats-grid" style="margin-bottom:14px;grid-template-columns:repeat(4,1fr)">
+          <div class="stat-card" style="padding:14px 18px">
+            <div class="stat-label">Toplam Tutar</div>
+            <div class="stat-value" id="ft-stat-toplam" style="font-size:18px">—</div>
+          </div>
+          <div class="stat-card" style="padding:14px 18px">
+            <div class="stat-label">Ödenen</div>
+            <div class="stat-value green" id="ft-stat-odenen" style="font-size:18px">—</div>
+          </div>
+          <div class="stat-card" style="padding:14px 18px">
+            <div class="stat-label">Bekleyen</div>
+            <div class="stat-value yellow" id="ft-stat-bekleyen" style="font-size:18px">—</div>
+          </div>
+          <div class="stat-card" style="padding:14px 18px">
+            <div class="stat-label">İptal</div>
+            <div class="stat-value" id="ft-stat-iptal" style="font-size:18px;color:#94a3b8">—</div>
+          </div>
+        </div>
+
+        <!-- Tablo -->
+        <div class="card">
+          <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table>
                 <thead>
@@ -1462,26 +1503,132 @@ tr:hover td { background: var(--bg-soft); }
                     <th>Fatura No</th>
                     <th>Tekne</th>
                     <th>Liman</th>
-                    <th>Tutar</th>
+                    <th style="text-align:right">Net Tutar</th>
+                    <th style="text-align:right">KDV</th>
+                    <th style="text-align:right">Damga V.</th>
+                    <th style="text-align:right">Genel Top.</th>
+                    <th>Ödeme Türü</th>
                     <th>Tarih</th>
-                    <th>Durum</th>
+                    <th style="text-align:center">Durum</th>
+                    <th style="text-align:center">İşlem</th>
                   </tr>
                 </thead>
                 <tbody id="faturalar-body">
-                  <tr>
-                    <td colspan="6">
-                      <div class="empty">
-                        <div class="empty-icon">🧾</div>
-                        <h3>Fatura bulunamadı</h3>
-                        <p>Henüz fatura oluşturulmamış.</p>
-                      </div>
-                    </td>
-                  </tr>
+                  <tr><td colspan="11" style="text-align:center;padding:32px;color:var(--text-muted)">Yükleniyor...</td></tr>
                 </tbody>
               </table>
             </div>
+            <div id="ft-pagination" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)"></div>
           </div>
         </div>
+
+        <!-- Fatura Drawer -->
+        <div class="drawer-overlay" id="ft-overlay" onclick="ftCloseDrawer()" style="display:none"></div>
+        <div class="drawer" id="ft-drawer" style="display:none;width:480px">
+          <div class="drawer-header">
+            <h3 id="ft-drawer-title">Yeni Fatura</h3>
+            <button class="drawer-close" onclick="ftCloseDrawer()">✕</button>
+          </div>
+          <div class="drawer-body">
+            <input type="hidden" id="ft-edit-id">
+
+            <!-- Bağlama Bilgisi -->
+            <div class="form-group">
+              <label class="form-label">Bağlama No (opsiyonel)</label>
+              <input class="form-input" id="ft-baglama-id" type="number" placeholder="Bağlama ID">
+            </div>
+
+            <!-- Hizmetler -->
+            <div style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:14px">
+              <div style="font-weight:600;font-size:13px;margin-bottom:10px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px">Hizmetler</div>
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Bağlama Ücreti (₺)</label>
+                  <input class="form-input" id="ft-h-baglama" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Atık Su (m³ × ₺)</label>
+                  <input class="form-input" id="ft-h-atik-su" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Sintine (m³ × ₺)</label>
+                  <input class="form-input" id="ft-h-sintine" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Atık Yağ (m³ × ₺)</label>
+                  <input class="form-input" id="ft-h-atik-yag" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Yakıt İkmal (₺)</label>
+                  <input class="form-input" id="ft-h-yakit" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+                <div class="form-group" style="margin:0">
+                  <label class="form-label">Palamar (₺)</label>
+                  <input class="form-input" id="ft-h-palamar" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+                <div class="form-group" style="margin:0;grid-column:1/-1">
+                  <label class="form-label">Diğer (₺)</label>
+                  <input class="form-input" id="ft-h-diger" type="number" step="0.01" value="0" oninput="ftHesapla()">
+                </div>
+              </div>
+            </div>
+
+            <!-- Hesap Özeti -->
+            <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:12px;margin-bottom:14px;font-size:13px">
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Net Tutar</span><span id="ft-calc-net" style="font-weight:600">₺0,00</span></div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+                <span>KDV (<select id="ft-kdv-oran" style="border:none;background:transparent;font-size:13px;cursor:pointer" onchange="ftHesapla()"><option value="20">%20</option><option value="10">%10</option><option value="0">%0</option></select>)</span>
+                <span id="ft-calc-kdv">₺0,00</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>Damga Vergisi (%0,948)</span><span id="ft-calc-damga">₺0,00</span></div>
+              <div style="display:flex;justify-content:space-between;border-top:1px solid #bbf7d0;padding-top:8px;margin-top:4px">
+                <span style="font-weight:700">Genel Toplam</span>
+                <span id="ft-calc-toplam" style="font-weight:700;font-size:15px;color:#16a34a">₺0,00</span>
+              </div>
+            </div>
+
+            <!-- Ödeme Bilgisi -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <div class="form-group">
+                <label class="form-label">Ödeme Türü</label>
+                <select class="form-input" id="ft-odeme-turu">
+                  <option value="">— Seçin —</option>
+                  <option>Sanal POS</option>
+                  <option>Havale-EFT</option>
+                  <option>Nakit</option>
+                  <option>Cari</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Banka</label>
+                <select class="form-input" id="ft-banka">
+                  <option value="">— Seçin —</option>
+                  <option>Ziraat</option>
+                  <option>Vakıf</option>
+                  <option>Halk</option>
+                  <option>Diğer</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tahsil Eden</label>
+              <input class="form-input" id="ft-tahsil-eden" placeholder="Personel adı">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Son Ödeme Tarihi</label>
+              <input class="form-input" type="date" id="ft-son-odeme">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Notlar</label>
+              <textarea class="form-input" id="ft-notlar" rows="2" placeholder="Ek notlar..."></textarea>
+            </div>
+          </div>
+          <div class="drawer-footer">
+            <button class="btn btn-outline" onclick="ftCloseDrawer()">İptal</button>
+            <button class="btn btn-primary" id="ft-save-btn" onclick="ftSave()">Kaydet</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- ── Kullanıcılar (admin) ── -->
@@ -1628,6 +1775,7 @@ function navigate(page, el) {
   if (page === 'gunluk') initGunluk();
   if (page === 'baglama') initBasvurular();
   if (page === 'tekneler') initTekneler();
+  if (page === 'faturalar') initFaturalar();
 }
 
 function updateTopbar(page) {
@@ -2633,6 +2781,257 @@ async function tkDelete(id, ad) {
     if (res.ok) { showToast(data.mesaj, 'success'); loadTekneler(tkPage); }
     else showToast(data.detail || 'Silinemedi.', 'error');
   } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+/* ── Faturalar ── */
+let ftPage = 1;
+let ftSearchTimer = null;
+let ftInitialized = false;
+
+const TL = v => new Intl.NumberFormat('tr-TR', {style:'currency',currency:'TRY',maximumFractionDigits:0}).format(v||0);
+const TL2 = v => new Intl.NumberFormat('tr-TR', {style:'currency',currency:'TRY',minimumFractionDigits:2,maximumFractionDigits:2}).format(v||0);
+
+async function initFaturalar() {
+  if (!ftInitialized) {
+    await ftLoadLimanlar();
+    ftInitialized = true;
+  }
+  loadFaturalar(1);
+}
+
+async function ftLoadLimanlar() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch('/gunluk/limanlar', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    const data = await res.json();
+    const sel = document.getElementById('ft-f-liman');
+    (data.limanlar || data).forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l.id; opt.textContent = l.ad;
+      sel.appendChild(opt);
+    });
+  } catch (e) {}
+}
+
+function ftSearchDebounce() {
+  clearTimeout(ftSearchTimer);
+  ftSearchTimer = setTimeout(() => loadFaturalar(1), 350);
+}
+
+const DURUM_BADGE = {
+  odendi:    '<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">Ödendi</span>',
+  beklemede: '<span style="background:#fef9c3;color:#a16207;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">Beklemede</span>',
+  iptal:     '<span style="background:#f1f5f9;color:#64748b;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600">İptal</span>',
+};
+
+async function loadFaturalar(page) {
+  ftPage = page;
+  const token = getToken();
+  if (!token) return;
+
+  const durum   = document.getElementById('ft-f-durum').value;
+  const limanId = document.getElementById('ft-f-liman').value;
+  const bas     = document.getElementById('ft-f-bas').value;
+  const bit     = document.getElementById('ft-f-bit').value;
+  const q       = document.getElementById('ft-search').value.trim();
+
+  let url = `/faturalar?page=${page}&per_page=25`;
+  if (durum)   url += '&durum='     + encodeURIComponent(durum);
+  if (limanId) url += '&liman_id='  + limanId;
+  if (bas)     url += '&baslangic=' + bas;
+  if (bit)     url += '&bitis='     + bit;
+  if (q)       url += '&q='         + encodeURIComponent(q);
+
+  const tbody = document.getElementById('faturalar-body');
+  tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:24px;color:var(--text-muted)">Yükleniyor...</td></tr>';
+
+  try {
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { showToast('Faturalar yüklenemedi', 'error'); return; }
+    const data = await res.json();
+
+    // Stats
+    document.getElementById('ft-stat-toplam').textContent   = TL(data.stats.toplam);
+    document.getElementById('ft-stat-odenen').textContent   = TL(data.stats.odenen);
+    document.getElementById('ft-stat-bekleyen').textContent = TL(data.stats.bekleyen);
+    document.getElementById('ft-stat-iptal').textContent    = TL(data.stats.iptal);
+
+    if (data.faturalar.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:32px;color:var(--text-muted)">Kayıt bulunamadı.</td></tr>';
+    } else {
+      tbody.innerHTML = data.faturalar.map(f => `
+        <tr>
+          <td style="font-family:monospace;font-size:12px">${f.fatura_no}</td>
+          <td style="font-weight:500">${f.tekne_adi || '—'}</td>
+          <td>${f.liman_adi || '—'}</td>
+          <td style="text-align:right">${TL2(f.tutar)}</td>
+          <td style="text-align:right;color:var(--text-muted)">${TL2(f.kdv_tutari)}</td>
+          <td style="text-align:right;color:var(--text-muted)">${TL2(f.damga_vergisi)}</td>
+          <td style="text-align:right;font-weight:600">${TL2(f.toplam_tutar)}</td>
+          <td>${f.odeme_turu || '—'}</td>
+          <td style="color:var(--text-muted)">${f.olusturuldu || '—'}</td>
+          <td style="text-align:center">${DURUM_BADGE[f.durum] || f.durum}</td>
+          <td style="text-align:center;white-space:nowrap">
+            <button class="btn btn-outline" style="padding:3px 8px;font-size:11px" onclick="ftEdit(${f.id})">Düzenle</button>
+            ${f.durum !== 'odendi' ? `<button class="btn" style="padding:3px 8px;font-size:11px;background:#dcfce7;color:#16a34a;border:none;border-radius:6px;cursor:pointer;margin-left:3px" onclick="ftOdendi(${f.id})">Ödendi</button>` : ''}
+          </td>
+        </tr>`).join('');
+    }
+
+    const pg = document.getElementById('ft-pagination');
+    const start = (page-1)*25+1, end = Math.min(page*25, data.total);
+    pg.innerHTML = `
+      <span>${data.total} kayıttan ${start}–${end} gösteriliyor</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline" style="padding:4px 10px;font-size:12px" ${page<=1?'disabled':''} onclick="loadFaturalar(${page-1})">← Önceki</button>
+        <button class="btn btn-outline" style="padding:4px 10px;font-size:12px" ${page>=data.pages?'disabled':''} onclick="loadFaturalar(${page+1})">Sonraki →</button>
+      </div>`;
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+function ftHesapla() {
+  const vals = ['ft-h-baglama','ft-h-atik-su','ft-h-sintine','ft-h-atik-yag','ft-h-yakit','ft-h-palamar','ft-h-diger'];
+  const net = vals.reduce((s,id) => s + (parseFloat(document.getElementById(id).value)||0), 0);
+  const kdvOran = parseFloat(document.getElementById('ft-kdv-oran').value)||0;
+  const kdv = net * kdvOran / 100;
+  const damga = (net + kdv) * 0.00948;
+  const toplam = net + kdv + damga;
+  document.getElementById('ft-calc-net').textContent    = TL2(net);
+  document.getElementById('ft-calc-kdv').textContent    = TL2(kdv);
+  document.getElementById('ft-calc-damga').textContent  = TL2(damga);
+  document.getElementById('ft-calc-toplam').textContent = TL2(toplam);
+}
+
+function ftOpenDrawer(fatura) {
+  document.getElementById('ft-drawer-title').textContent = 'Yeni Fatura';
+  document.getElementById('ft-edit-id').value = '';
+  document.getElementById('ft-baglama-id').value = '';
+  ['ft-h-baglama','ft-h-atik-su','ft-h-sintine','ft-h-atik-yag','ft-h-yakit','ft-h-palamar','ft-h-diger'].forEach(id => document.getElementById(id).value = '0');
+  document.getElementById('ft-kdv-oran').value = '20';
+  document.getElementById('ft-odeme-turu').value = '';
+  document.getElementById('ft-banka').value = '';
+  document.getElementById('ft-tahsil-eden').value = '';
+  document.getElementById('ft-son-odeme').value = '';
+  document.getElementById('ft-notlar').value = '';
+  ftHesapla();
+  document.getElementById('ft-overlay').style.display = 'block';
+  document.getElementById('ft-drawer').style.display = 'flex';
+}
+
+async function ftEdit(id) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`/faturalar/${id}`, { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { showToast('Yüklenemedi', 'error'); return; }
+    const f = await res.json();
+    document.getElementById('ft-drawer-title').textContent = 'Fatura Düzenle — ' + f.fatura_no;
+    document.getElementById('ft-edit-id').value = f.id;
+    document.getElementById('ft-baglama-id').value = f.baglama_id || '';
+    const h = f.hizmetler || {};
+    document.getElementById('ft-h-baglama').value  = h.baglama     || 0;
+    document.getElementById('ft-h-atik-su').value  = h.atik_su     || 0;
+    document.getElementById('ft-h-sintine').value  = h.sintine      || 0;
+    document.getElementById('ft-h-atik-yag').value = h.atik_yag    || 0;
+    document.getElementById('ft-h-yakit').value     = h.yakit_ikmal || 0;
+    document.getElementById('ft-h-palamar').value  = h.palamar      || 0;
+    document.getElementById('ft-h-diger').value    = h.diger        || 0;
+    // If no hizmetler but has tutar, put in baglama field
+    if (!Object.values(h).some(v=>v>0) && f.tutar > 0) {
+      document.getElementById('ft-h-baglama').value = f.tutar;
+    }
+    document.getElementById('ft-kdv-oran').value      = f.kdv_orani || 20;
+    document.getElementById('ft-odeme-turu').value    = f.odeme_turu || '';
+    document.getElementById('ft-banka').value          = f.banka || '';
+    document.getElementById('ft-tahsil-eden').value   = f.tahsil_eden || '';
+    document.getElementById('ft-son-odeme').value     = f.son_odeme_tarihi || '';
+    document.getElementById('ft-notlar').value         = f.notlar || '';
+    ftHesapla();
+    document.getElementById('ft-overlay').style.display = 'block';
+    document.getElementById('ft-drawer').style.display = 'flex';
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+function ftCloseDrawer() {
+  document.getElementById('ft-overlay').style.display = 'none';
+  document.getElementById('ft-drawer').style.display = 'none';
+}
+
+async function ftSave() {
+  const token = getToken();
+  if (!token) return;
+  const id = document.getElementById('ft-edit-id').value;
+  const hizmetler = {
+    baglama:     parseFloat(document.getElementById('ft-h-baglama').value)||0,
+    atik_su:     parseFloat(document.getElementById('ft-h-atik-su').value)||0,
+    sintine:     parseFloat(document.getElementById('ft-h-sintine').value)||0,
+    atik_yag:    parseFloat(document.getElementById('ft-h-atik-yag').value)||0,
+    yakit_ikmal: parseFloat(document.getElementById('ft-h-yakit').value)||0,
+    palamar:     parseFloat(document.getElementById('ft-h-palamar').value)||0,
+    diger:       parseFloat(document.getElementById('ft-h-diger').value)||0,
+  };
+  const body = {
+    baglama_id:      parseInt(document.getElementById('ft-baglama-id').value)||null,
+    hizmetler,
+    kdv_orani:       parseFloat(document.getElementById('ft-kdv-oran').value)||20,
+    odeme_turu:      document.getElementById('ft-odeme-turu').value || null,
+    banka:           document.getElementById('ft-banka').value || null,
+    tahsil_eden:     document.getElementById('ft-tahsil-eden').value.trim() || null,
+    son_odeme_tarihi:document.getElementById('ft-son-odeme').value || null,
+    notlar:          document.getElementById('ft-notlar').value.trim() || null,
+  };
+  const btn = document.getElementById('ft-save-btn');
+  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+  try {
+    const url = id ? `/faturalar/${id}` : '/faturalar';
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, {
+      method, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast(data.mesaj || 'Kaydedildi.', 'success');
+      ftCloseDrawer();
+      loadFaturalar(ftPage);
+    } else showToast(data.detail || 'Kaydedilemedi.', 'error');
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'Kaydet'; }
+}
+
+async function ftOdendi(id) {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`/faturalar/${id}/durum`, {
+      method: 'PATCH', headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify({ durum: 'odendi' }),
+    });
+    const data = await res.json();
+    if (res.ok) { showToast(data.mesaj, 'success'); loadFaturalar(ftPage); }
+    else showToast(data.detail || 'Güncellenemedi.', 'error');
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+function ftExport() {
+  const token = getToken();
+  if (!token) return;
+  const durum   = document.getElementById('ft-f-durum').value;
+  const limanId = document.getElementById('ft-f-liman').value;
+  const bas     = document.getElementById('ft-f-bas').value;
+  const bit     = document.getElementById('ft-f-bit').value;
+  let url = '/faturalar/export?x=1';
+  if (durum)   url += '&durum='     + encodeURIComponent(durum);
+  if (limanId) url += '&liman_id='  + limanId;
+  if (bas)     url += '&baslangic=' + bas;
+  if (bit)     url += '&bitis='     + bit;
+  // Open in new tab with token — use form POST trick
+  const form = document.createElement('form');
+  form.method = 'GET'; form.action = url; form.target = '_blank';
+  document.body.appendChild(form);
+  form.submit(); form.remove();
 }
 </script>
 
