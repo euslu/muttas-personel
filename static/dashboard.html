@@ -515,6 +515,215 @@ tr:hover td { background: var(--bg-soft); }
   border-color: var(--text);
   color: var(--text);
 }
+
+/* ─── FORM ELEMENTS ──────────────────────────── */
+.form-input {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.form-input::placeholder { color: var(--text-3); }
+
+.form-row-grid {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.form-row-grid.cols-2 { grid-template-columns: 1fr 1fr; }
+.form-row-grid.cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.form-group-inline {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.form-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Toggle: GİRİŞ / ÇIKIŞ */
+.toggle-group {
+  display: flex;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  overflow: hidden;
+  height: 36px;
+}
+
+.toggle-btn {
+  flex: 1;
+  border: none;
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  color: var(--text-3);
+}
+
+.toggle-btn.active-giris {
+  background: var(--success);
+  color: #fff;
+}
+
+.toggle-btn.active-cikis {
+  background: #f97316;
+  color: #fff;
+}
+
+/* Autocomplete */
+.autocomplete-wrap {
+  position: relative;
+}
+
+.autocomplete-list {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 200;
+  max-height: 180px;
+  overflow-y: auto;
+  display: none;
+}
+
+.autocomplete-list.open { display: block; }
+
+.autocomplete-item {
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.autocomplete-item:hover { background: var(--bg-soft); }
+
+/* Badges */
+.badge-giris {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-cikis {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #ffedd5;
+  color: #c2410c;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+}
+
+.pg-btn {
+  padding: 5px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.12s;
+}
+
+.pg-btn:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.pg-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.pg-info {
+  font-size: 12px;
+  color: var(--text-3);
+  padding: 0 6px;
+}
+
+/* Filter bar */
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-soft);
+  flex-wrap: wrap;
+}
+
+.filter-bar label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  white-space: nowrap;
+}
+
+.filter-bar .form-input {
+  width: auto;
+  min-width: 130px;
+}
+
+/* Action row */
+.action-btns {
+  display: flex;
+  gap: 4px;
+}
+
+.btn-icon {
+  padding: 4px 8px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: none;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.12s;
+  color: var(--text-3);
+}
+
+.btn-icon:hover { background: var(--bg-soft); color: var(--text); }
+.btn-icon.del:hover { border-color: var(--danger); color: var(--danger); background: #fff0f0; }
 </style>
 </head>
 <body>
@@ -673,38 +882,135 @@ tr:hover td { background: var(--bg-soft); }
 
       <!-- ── Liman Günlüğü ── -->
       <div class="page" id="page-gunluk">
-        <div class="card">
+
+        <!-- YENİ KAYIT FORMU -->
+        <div class="card" style="margin-bottom:18px">
           <div class="card-header">
-            <h2>Liman Günlüğü</h2>
-            <button class="btn btn-primary">+ Kayıt Ekle</button>
+            <h2>Yeni Kayıt</h2>
+            <button class="btn btn-outline" id="gl-form-toggle" onclick="toggleGlForm()">Formu Gizle</button>
           </div>
-          <div class="card-body">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Tarih</th>
-                    <th>Liman</th>
-                    <th>Olay</th>
-                    <th>Tekne</th>
-                    <th>Kaydeden</th>
-                  </tr>
-                </thead>
-                <tbody id="gunluk-body">
-                  <tr>
-                    <td colspan="5">
-                      <div class="empty">
-                        <div class="empty-icon">📋</div>
-                        <h3>Henüz kayıt yok</h3>
-                        <p>Yeni kayıt eklemek için butona tıklayın.</p>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+          <div id="gl-form-body" class="card-body">
+
+            <!-- Satır 1: Tekne + Hareket -->
+            <div class="form-row-grid cols-2">
+              <div class="form-group-inline">
+                <span class="form-label">Tekne Adı</span>
+                <div class="autocomplete-wrap">
+                  <input class="form-input" id="gl-tekne-adi" placeholder="Tekne ara veya yaz..."
+                         autocomplete="off" oninput="onTekneInput(this.value)">
+                  <div class="autocomplete-list" id="gl-tekne-list"></div>
+                </div>
+                <input type="hidden" id="gl-tekne-id">
+              </div>
+              <div class="form-group-inline">
+                <span class="form-label">Hareket</span>
+                <div class="toggle-group">
+                  <button class="toggle-btn active-giris" id="btn-giris" onclick="setHareket('giris')">⬇ GİRİŞ</button>
+                  <button class="toggle-btn" id="btn-cikis" onclick="setHareket('cikis')">⬆ ÇIKIŞ</button>
+                </div>
+                <input type="hidden" id="gl-hareket" value="giris">
+              </div>
             </div>
+
+            <!-- Satır 2: Bölge + Tarih + Saat -->
+            <div class="form-row-grid cols-3">
+              <div class="form-group-inline">
+                <span class="form-label">Bölge</span>
+                <select class="form-input" id="gl-bolge">
+                  <option value="">— Bölge seçin —</option>
+                  <option>T-İskele</option>
+                  <option>F-İskele</option>
+                  <option>L-İskele</option>
+                  <option>Gümrüklü Alan</option>
+                  <option>Tonoz</option>
+                  <option>Çapa</option>
+                  <option>Kıyı İskele</option>
+                  <option>Rıhtım</option>
+                  <option>Ofis Önü</option>
+                  <option>Kordon ve Saman İskelesi</option>
+                  <option>Dereiçi ve Rıhtım</option>
+                  <option>Kaleiçi</option>
+                </select>
+              </div>
+              <div class="form-group-inline">
+                <span class="form-label">Tarih</span>
+                <input class="form-input" type="date" id="gl-tarih">
+              </div>
+              <div class="form-group-inline">
+                <span class="form-label">Saat</span>
+                <input class="form-input" type="time" id="gl-saat">
+              </div>
+            </div>
+
+            <!-- Satır 3: Yolcu + Not -->
+            <div class="form-row-grid cols-2">
+              <div class="form-group-inline">
+                <span class="form-label">Yolcu Sayısı</span>
+                <input class="form-input" type="number" id="gl-yolcu" min="0" placeholder="0">
+              </div>
+              <div class="form-group-inline">
+                <span class="form-label">Bilgi Notu</span>
+                <input class="form-input" type="text" id="gl-not" placeholder="Opsiyonel not...">
+              </div>
+            </div>
+
+            <!-- Satır 4: Kaydet -->
+            <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:6px">
+              <button class="btn btn-outline" onclick="resetGlForm()">Temizle</button>
+              <button class="btn btn-primary" id="gl-submit-btn" onclick="submitGlForm()">
+                <span id="gl-submit-label">Kaydet</span>
+              </button>
+            </div>
+
+            <div id="gl-form-error" style="display:none;margin-top:10px;padding:8px 12px;background:#fef2f2;border:1px solid #fecaca;border-radius:var(--radius);font-size:12.5px;color:var(--danger)"></div>
+
           </div>
         </div>
+
+        <!-- KAYIT LİSTESİ -->
+        <div class="card">
+          <div class="filter-bar">
+            <label>Tarih:</label>
+            <input class="form-input" type="date" id="gl-filter-tarih" onchange="loadGunluk(1)">
+            <label id="gl-liman-filter-label" style="display:none">Liman:</label>
+            <select class="form-input" id="gl-filter-liman" style="display:none" onchange="loadGunluk(1)">
+              <option value="">Tümü</option>
+            </select>
+            <span id="gl-count" style="margin-left:auto;font-size:12px;color:var(--text-3)"></span>
+          </div>
+
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Tekne Adı</th>
+                  <th>Hareket</th>
+                  <th>Bölge</th>
+                  <th>Tarih</th>
+                  <th>Saat</th>
+                  <th>Yolcu</th>
+                  <th>Not</th>
+                  <th>İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="gunluk-body">
+                <tr><td colspan="8">
+                  <div class="empty">
+                    <div class="empty-icon">📋</div>
+                    <h3>Yükleniyor...</h3>
+                  </div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="gl-pagination" style="display:none">
+            <button class="pg-btn" id="gl-prev" onclick="loadGunluk(glPage-1)">← Önceki</button>
+            <span class="pg-info" id="gl-page-info"></span>
+            <button class="pg-btn" id="gl-next" onclick="loadGunluk(glPage+1)">Sonraki →</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- ── Bağlama Başvuruları ── -->
@@ -940,6 +1246,314 @@ function logout() {
   localStorage.removeItem('kullanici');
   localStorage.removeItem('liman');
   window.location.href = 'login.html';
+}
+
+/* ══════════════════════════════════════════════
+   LİMAN GÜNLÜĞÜ
+══════════════════════════════════════════════ */
+const API = window.location.origin;
+
+function getToken() { return localStorage.getItem('token'); }
+
+function authHeaders() {
+  return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+}
+
+let glPage       = 1;
+let glTotalPages = 1;
+let glEditId     = null;
+
+/* ── Sayfa açıldığında başlat ── */
+document.addEventListener('DOMContentLoaded', () => {
+  const today = new Date().toISOString().slice(0, 10);
+  const now   = new Date().toTimeString().slice(0, 5);
+  document.getElementById('gl-tarih').value        = today;
+  document.getElementById('gl-saat').value         = now;
+  document.getElementById('gl-filter-tarih').value = today;
+});
+
+/* ── Navigate hook: günlük sayfası açıldığında yükle ── */
+const _origNavigate = navigate;
+function navigate(page, el) {
+  _origNavigate(page, el);
+  if (page === 'gunluk') {
+    initGunluk();
+  }
+}
+
+async function initGunluk() {
+  const isAdmin = currentUser && currentUser.rol === 'admin';
+  if (isAdmin) {
+    document.getElementById('gl-liman-filter-label').style.display = 'inline';
+    document.getElementById('gl-filter-liman').style.display = 'inline-block';
+    await loadGlLimanlar();
+  }
+  await loadGunluk(1);
+}
+
+async function loadGlLimanlar() {
+  try {
+    const res = await fetch(API + '/gunluk/limanlar', { headers: authHeaders() });
+    const list = await res.json();
+    const sel  = document.getElementById('gl-filter-liman');
+    sel.innerHTML = '<option value="">Tüm Limanlar</option>';
+    list.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l.id; opt.textContent = l.ad;
+      sel.appendChild(opt);
+    });
+    const adminSel = document.getElementById('liman-select');
+    adminSel.innerHTML = '<option value="">Tüm Limanlar</option>';
+    list.forEach(l => {
+      const opt = document.createElement('option');
+      opt.value = l.id; opt.textContent = l.ad;
+      adminSel.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
+async function loadGunluk(page) {
+  glPage = page;
+  const tarih   = document.getElementById('gl-filter-tarih').value;
+  const limanId = document.getElementById('gl-filter-liman').value;
+
+  let url = API + '/gunluk?page=' + page + '&per_page=20';
+  if (tarih)   url += '&tarih='    + tarih;
+  if (limanId) url += '&liman_id=' + limanId;
+
+  const tbody = document.getElementById('gunluk-body');
+  tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--text-3)">Yükleniyor...</td></tr>';
+
+  try {
+    const res  = await fetch(url, { headers: authHeaders() });
+    const data = await res.json();
+
+    if (!res.ok) { showGlError(data.detail || 'Veri alınamadı.'); return; }
+
+    const kayitlar = data.kayitlar || [];
+    glTotalPages   = Math.ceil((data.toplam || 0) / 20) || 1;
+
+    document.getElementById('gl-count').textContent =
+      'Toplam ' + (data.toplam || 0) + ' kayıt';
+
+    if (kayitlar.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="8">
+        <div class="empty">
+          <div class="empty-icon">📋</div>
+          <h3>Kayıt bulunamadı</h3>
+          <p>Bu tarihe ait günlük kaydı yok.</p>
+        </div></td></tr>`;
+      document.getElementById('gl-pagination').style.display = 'none';
+      return;
+    }
+
+    tbody.innerHTML = kayitlar.map(k => `
+      <tr>
+        <td><strong>${escHtml(k.tekne_adi)}</strong></td>
+        <td><span class="badge-${k.hareket_tipi}">${k.hareket_tipi === 'giris' ? '⬇ Giriş' : '⬆ Çıkış'}</span></td>
+        <td>${escHtml(k.bolge || '—')}</td>
+        <td>${k.tarih}</td>
+        <td>${k.saat}</td>
+        <td>${k.yolcu_sayisi || 0}</td>
+        <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${escHtml(k.bilgi_notu || '—')}</td>
+        <td>
+          <div class="action-btns">
+            <button class="btn-icon" title="Düzenle" onclick='editGlRow(${JSON.stringify(k)})'>✏️</button>
+            <button class="btn-icon del" title="Sil" onclick="deleteGlRow(${k.id})">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+
+    const pag = document.getElementById('gl-pagination');
+    pag.style.display = 'flex';
+    document.getElementById('gl-page-info').textContent = page + ' / ' + glTotalPages;
+    document.getElementById('gl-prev').disabled = page <= 1;
+    document.getElementById('gl-next').disabled = page >= glTotalPages;
+
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:20px;color:var(--danger)">Sunucuya bağlanılamadı.</td></tr>';
+  }
+}
+
+/* ── Form: hareket toggle ── */
+function setHareket(tip) {
+  document.getElementById('gl-hareket').value = tip;
+  document.getElementById('btn-giris').className = 'toggle-btn' + (tip === 'giris' ? ' active-giris' : '');
+  document.getElementById('btn-cikis').className = 'toggle-btn' + (tip === 'cikis' ? ' active-cikis' : '');
+}
+
+/* ── Autocomplete ── */
+let acTimer = null;
+function onTekneInput(val) {
+  document.getElementById('gl-tekne-id').value = '';
+  clearTimeout(acTimer);
+  if (!val) { closeAc(); return; }
+  acTimer = setTimeout(() => fetchAc(val), 250);
+}
+
+async function fetchAc(q) {
+  try {
+    const res  = await fetch(API + '/gunluk/tekneler/ara?q=' + encodeURIComponent(q), { headers: authHeaders() });
+    const list = await res.json();
+    const el   = document.getElementById('gl-tekne-list');
+    if (!list.length) { closeAc(); return; }
+    el.innerHTML = list.map(t =>
+      `<div class="autocomplete-item" onclick="selectTekne(${t.id}, '${escHtml(t.ad)}')">${escHtml(t.ad)}</div>`
+    ).join('');
+    el.classList.add('open');
+  } catch(e) { closeAc(); }
+}
+
+function selectTekne(id, ad) {
+  document.getElementById('gl-tekne-adi').value = ad;
+  document.getElementById('gl-tekne-id').value  = id;
+  closeAc();
+}
+
+function closeAc() {
+  document.getElementById('gl-tekne-list').classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.autocomplete-wrap')) closeAc();
+});
+
+/* ── Formu gizle/göster ── */
+function toggleGlForm() {
+  const body = document.getElementById('gl-form-body');
+  const btn  = document.getElementById('gl-form-toggle');
+  const visible = body.style.display !== 'none';
+  body.style.display = visible ? 'none' : 'block';
+  btn.textContent    = visible ? 'Formu Göster' : 'Formu Gizle';
+}
+
+/* ── Formu sıfırla ── */
+function resetGlForm() {
+  glEditId = null;
+  document.getElementById('gl-tekne-adi').value = '';
+  document.getElementById('gl-tekne-id').value  = '';
+  document.getElementById('gl-bolge').value      = '';
+  document.getElementById('gl-yolcu').value      = '';
+  document.getElementById('gl-not').value        = '';
+  setHareket('giris');
+  const today = new Date().toISOString().slice(0, 10);
+  const now   = new Date().toTimeString().slice(0, 5);
+  document.getElementById('gl-tarih').value = today;
+  document.getElementById('gl-saat').value  = now;
+  document.getElementById('gl-submit-label').textContent = 'Kaydet';
+  document.getElementById('gl-form-error').style.display = 'none';
+}
+
+/* ── Kaydet / Güncelle ── */
+async function submitGlForm() {
+  const tekneAdi = document.getElementById('gl-tekne-adi').value.trim();
+  const tekneId  = document.getElementById('gl-tekne-id').value;
+  const hareket  = document.getElementById('gl-hareket').value;
+  const bolge    = document.getElementById('gl-bolge').value;
+  const tarih    = document.getElementById('gl-tarih').value;
+  const saat     = document.getElementById('gl-saat').value;
+  const yolcu    = parseInt(document.getElementById('gl-yolcu').value) || 0;
+  const not_     = document.getElementById('gl-not').value.trim();
+
+  if (!tekneAdi) { showGlError('Tekne adı gerekli.'); return; }
+  if (!tarih)    { showGlError('Tarih gerekli.'); return; }
+  if (!saat)     { showGlError('Saat gerekli.'); return; }
+
+  const isAdmin = currentUser && currentUser.rol === 'admin';
+  const limanId = isAdmin
+    ? (parseInt(document.getElementById('gl-filter-liman').value) || 1)
+    : (currentLiman ? parseInt(currentLiman) : 1);
+
+  const body = {
+    liman_id:      limanId,
+    tekne_id:      tekneId ? parseInt(tekneId) : null,
+    tekne_adi:     tekneAdi,
+    bolge:         bolge || null,
+    hareket_tipi:  hareket,
+    tarih,
+    saat,
+    yolcu_sayisi:  yolcu,
+    bilgi_notu:    not_ || null,
+  };
+
+  const btn = document.getElementById('gl-submit-btn');
+  btn.disabled = true;
+
+  try {
+    let res;
+    if (glEditId) {
+      res = await fetch(API + '/gunluk/' + glEditId, {
+        method: 'PUT', headers: authHeaders(), body: JSON.stringify(body)
+      });
+    } else {
+      res = await fetch(API + '/gunluk', {
+        method: 'POST', headers: authHeaders(), body: JSON.stringify(body)
+      });
+    }
+
+    const data = await res.json();
+    if (!res.ok) { showGlError(data.detail || 'Kayıt başarısız.'); return; }
+
+    resetGlForm();
+    await loadGunluk(1);
+
+  } catch(e) {
+    showGlError('Sunucuya bağlanılamadı.');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ── Düzenle ── */
+function editGlRow(k) {
+  glEditId = k.id;
+  document.getElementById('gl-tekne-adi').value = k.tekne_adi;
+  document.getElementById('gl-tekne-id').value  = k.tekne_id || '';
+  document.getElementById('gl-bolge').value      = k.bolge || '';
+  document.getElementById('gl-tarih').value      = k.tarih;
+  document.getElementById('gl-saat').value       = k.saat;
+  document.getElementById('gl-yolcu').value      = k.yolcu_sayisi || 0;
+  document.getElementById('gl-not').value        = k.bilgi_notu || '';
+  setHareket(k.hareket_tipi);
+  document.getElementById('gl-submit-label').textContent = 'Güncelle';
+  document.getElementById('gl-form-error').style.display = 'none';
+  document.getElementById('gl-form-body').style.display = 'block';
+  document.getElementById('gl-form-toggle').textContent  = 'Formu Gizle';
+  document.getElementById('gl-form-body').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ── Sil ── */
+async function deleteGlRow(id) {
+  if (!confirm('Bu kaydı silmek istediğinizden emin misiniz?')) return;
+  try {
+    const res = await fetch(API + '/gunluk/' + id, {
+      method: 'DELETE', headers: authHeaders()
+    });
+    if (res.status === 204 || res.ok) {
+      await loadGunluk(glPage);
+    } else {
+      const d = await res.json();
+      alert(d.detail || 'Silme başarısız.');
+    }
+  } catch(e) {
+    alert('Sunucuya bağlanılamadı.');
+  }
+}
+
+function showGlError(msg) {
+  const el = document.getElementById('gl-form-error');
+  el.textContent   = msg;
+  el.style.display = 'block';
+}
+
+function escHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 </script>
 

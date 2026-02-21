@@ -7,6 +7,7 @@ from fastapi.responses import FileResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from db import get_pool, close_pool
 from auth import router as auth_router
+from gunluk import router as gunluk_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -144,6 +145,7 @@ app.add_middleware(
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth_router)
+app.include_router(gunluk_router)
 
 
 @app.get("/")
