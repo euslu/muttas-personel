@@ -52,19 +52,19 @@ async def get_ozet(
         basvuru_bugun = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.olusturuldu::date = CURRENT_DATE
+              AND b.giris_tarihi::date = CURRENT_DATE
         """, *params)
 
         basvuru_bu_hafta = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.olusturuldu >= DATE_TRUNC('week', CURRENT_DATE)
+              AND b.giris_tarihi >= DATE_TRUNC('week', CURRENT_DATE)
         """, *params)
 
         basvuru_bu_ay = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.olusturuldu >= DATE_TRUNC('month', CURRENT_DATE)
+              AND b.giris_tarihi >= DATE_TRUNC('month', CURRENT_DATE)
         """, *params)
 
         bekleyen_basvuru = await conn.fetchval(f"""

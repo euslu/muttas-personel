@@ -1083,17 +1083,17 @@ tr:hover td { background: var(--bg-soft); }
             <div class="stat-sub">Şu an doluluk</div>
           </div>
           <div class="stat-card" id="card-basvuru-bugun">
-            <div class="stat-label">Yeni Başvuru · Bugün</div>
+            <div class="stat-label">Giriş · Bugün</div>
             <div class="stat-value yellow" id="stat-basvuru-bugun">—</div>
-            <div class="stat-sub" id="sub-basvuru-bugun">Bugün gelen</div>
+            <div class="stat-sub" id="sub-basvuru-bugun">Bugün girişli tekne</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Yeni Başvuru · Bu Hafta</div>
+            <div class="stat-label">Giriş · Bu Hafta</div>
             <div class="stat-value yellow" id="stat-basvuru-hafta">—</div>
             <div class="stat-sub">Pazartesiden itibaren</div>
           </div>
           <div class="stat-card">
-            <div class="stat-label">Yeni Başvuru · Bu Ay</div>
+            <div class="stat-label">Giriş · Bu Ay</div>
             <div class="stat-value yellow" id="stat-basvuru-ay">—</div>
             <div class="stat-sub" id="sub-basvuru-ay">Ayın 1'inden itibaren</div>
           </div>
@@ -1768,10 +1768,10 @@ async function loadDashboard() {
     const bugunSub  = document.getElementById('sub-basvuru-bugun');
     if (bugun > 0) {
       bugunCard.classList.add('stat-card-alert');
-      bugunSub.textContent = bugun === 1 ? '1 yeni başvuru geldi' : `${bugun} yeni başvuru geldi`;
+      bugunSub.textContent = bugun === 1 ? '1 tekne bugün girişli' : `${bugun} tekne bugün girişli`;
     } else {
       bugunCard.classList.remove('stat-card-alert');
-      bugunSub.textContent = 'Bugün gelen';
+      bugunSub.textContent = 'Bugün girişli tekne';
     }
 
     // Bu ay alt metin — hangi aydan itibaren
