@@ -2599,6 +2599,19 @@ async function bvOnayla() {
       body: JSON.stringify({ durum: 'baglandi', odeme_durumu: 'odendi' }),
     });
     if (!res.ok) throw new Error();
+
+    // Drawer içindeki selectleri anında güncelle
+    document.getElementById('bv-form-durum').value = 'baglandi';
+    document.getElementById('bv-form-odeme-durum').value = 'odendi';
+
+    // Tablodaki satırın badge'lerini hemen DOM'da güncelle (yenilemeyi beklemeden)
+    const chk = document.querySelector(`input.bv-row-check[data-id="${bvEditId}"]`);
+    if (chk) {
+      const tds = chk.closest('tr').querySelectorAll('td');
+      if (tds[10]) tds[10].innerHTML = durumBadge('baglandi');
+      if (tds[12]) tds[12].innerHTML = odemeBadge('odendi');
+    }
+
     showToast('⚓ Gemi bağlandı olarak işaretlendi', 'success');
     closeBasvuruDrawer();
     loadBasvurular(bvPage || 1);
