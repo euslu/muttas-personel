@@ -18,9 +18,17 @@ args = "Start application"
 name = "Start application"
 author = "agent"
 
+[workflows.workflow.metadata]
+outputType = "console"
+
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "python main.py"
+waitForPort = 8000
 
-[workflows.workflow.metadata]
-outputType = "console"
+[nix]
+channel = "stable-25_05"
+
+[[ports]]
+localPort = 8000
+externalPort = 80
