@@ -1223,6 +1223,8 @@ function navigate(page, el) {
   document.getElementById('page-' + page).classList.add('active');
 
   updateTopbar(page);
+
+  if (page === 'gunluk') initGunluk();
 }
 
 function updateTopbar(page) {
@@ -1271,15 +1273,6 @@ document.addEventListener('DOMContentLoaded', () => {
   document.getElementById('gl-saat').value         = now;
   document.getElementById('gl-filter-tarih').value = today;
 });
-
-/* ── Navigate hook: günlük sayfası açıldığında yükle ── */
-const _origNavigate = navigate;
-function navigate(page, el) {
-  _origNavigate(page, el);
-  if (page === 'gunluk') {
-    initGunluk();
-  }
-}
 
 async function initGunluk() {
   const isAdmin = currentUser && currentUser.rol === 'admin';
