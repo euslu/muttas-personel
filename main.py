@@ -1,10 +1,23 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from starlette.middleware.base import BaseHTTPMiddleware
 from db import get_pool, close_pool
 from auth import router as auth_router
+
+
+class CSPMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Content-Security-Policy"] = (
+            "default-src 'self' 'unsafe-inline' 'unsafe-eval' "
+            "https://fonts.googleapis.com https://fonts.gstatic.com; "
+            "img-src 'self' data:"
+        )
+        return response
 
 
 CREATE_TABLES_SQL = """
@@ -117,6 +130,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="muttas-liman-api", lifespan=lifespan)
+
+app.add_middleware(CSPMiddleware)
 
 app.add_middleware(
     CORSMiddleware,
