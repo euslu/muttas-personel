@@ -358,7 +358,7 @@ html, body {
 /* ─── STAT CARDS ──────────────────────────────── */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
   gap: 14px;
   margin-bottom: 24px;
 }
@@ -1082,10 +1082,20 @@ tr:hover td { background: var(--bg-soft); }
             <div class="stat-value blue" id="stat-aktif-baglamalar">—</div>
             <div class="stat-sub">Şu an doluluk</div>
           </div>
-          <div class="stat-card" id="card-bekleyen-basvuru">
-            <div class="stat-label">Bekleyen Başvuru</div>
-            <div class="stat-value yellow" id="stat-bekleyen-basvuru">—</div>
-            <div class="stat-sub" id="sub-bekleyen-basvuru">Onay bekliyor</div>
+          <div class="stat-card" id="card-basvuru-bugun">
+            <div class="stat-label">Yeni Başvuru · Bugün</div>
+            <div class="stat-value yellow" id="stat-basvuru-bugun">—</div>
+            <div class="stat-sub" id="sub-basvuru-bugun">Bugün gelen</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Yeni Başvuru · Bu Hafta</div>
+            <div class="stat-value yellow" id="stat-basvuru-hafta">—</div>
+            <div class="stat-sub">Pazartesiden itibaren</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Yeni Başvuru · Bu Ay</div>
+            <div class="stat-value yellow" id="stat-basvuru-ay">—</div>
+            <div class="stat-sub" id="sub-basvuru-ay">Ayın 1'inden itibaren</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Kayıtlı Tekne</div>
@@ -1095,7 +1105,7 @@ tr:hover td { background: var(--bg-soft); }
           <div class="stat-card">
             <div class="stat-label">Aylık Tahsilat</div>
             <div class="stat-value green" id="stat-aylik-tahsilat">—</div>
-            <div class="stat-sub">Bu ay</div>
+            <div class="stat-sub">Bu ay ödenen</div>
           </div>
         </div>
 
@@ -1744,17 +1754,31 @@ async function loadDashboard() {
     const d = await res.json();
 
     document.getElementById('stat-aktif-baglamalar').textContent = d.aktif_baglamalar ?? '—';
-    const bekleyenSayi = d.bekleyen_basvuru ?? 0;
-    document.getElementById('stat-bekleyen-basvuru').textContent = bekleyenSayi || '—';
-    const bekCard = document.getElementById('card-bekleyen-basvuru');
-    const bekSub  = document.getElementById('sub-bekleyen-basvuru');
-    if (bekleyenSayi > 0) {
-      bekCard.classList.add('stat-card-alert');
-      bekSub.textContent = `${bekleyenSayi} başvuru işlem bekliyor`;
+
+    // Yeni Başvurular — Bugün / Bu Hafta / Bu Ay
+    const bugun  = d.basvuru_bugun    ?? 0;
+    const hafta  = d.basvuru_bu_hafta ?? 0;
+    const ay     = d.basvuru_bu_ay    ?? 0;
+    document.getElementById('stat-basvuru-bugun').textContent = bugun || '0';
+    document.getElementById('stat-basvuru-hafta').textContent = hafta || '0';
+    document.getElementById('stat-basvuru-ay').textContent    = ay    || '0';
+
+    // Bugün başvuru varsa kart yanıp sönsün
+    const bugunCard = document.getElementById('card-basvuru-bugun');
+    const bugunSub  = document.getElementById('sub-basvuru-bugun');
+    if (bugun > 0) {
+      bugunCard.classList.add('stat-card-alert');
+      bugunSub.textContent = bugun === 1 ? '1 yeni başvuru geldi' : `${bugun} yeni başvuru geldi`;
     } else {
-      bekCard.classList.remove('stat-card-alert');
-      bekSub.textContent = 'Onay bekliyor';
+      bugunCard.classList.remove('stat-card-alert');
+      bugunSub.textContent = 'Bugün gelen';
     }
+
+    // Bu ay alt metin — hangi aydan itibaren
+    const simdi = new Date();
+    const ayAdi = simdi.toLocaleString('tr-TR', { month: 'long' });
+    document.getElementById('sub-basvuru-ay').textContent = `${ayAdi} başından itibaren`;
+
     document.getElementById('stat-kayitli-tekne').textContent = d.kayitli_tekne ?? '—';
     const tahsilat = d.aylik_tahsilat != null
       ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(d.aylik_tahsilat)

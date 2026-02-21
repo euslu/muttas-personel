@@ -49,6 +49,24 @@ async def get_ozet(
               AND (b.cikis_tarihi IS NULL OR b.cikis_tarihi::date >= CURRENT_DATE)
         """, *params)
 
+        basvuru_bugun = await conn.fetchval(f"""
+            SELECT COUNT(*) FROM baglamalar b
+            WHERE {liman_cond}
+              AND b.olusturuldu::date = CURRENT_DATE
+        """, *params)
+
+        basvuru_bu_hafta = await conn.fetchval(f"""
+            SELECT COUNT(*) FROM baglamalar b
+            WHERE {liman_cond}
+              AND b.olusturuldu >= DATE_TRUNC('week', CURRENT_DATE)
+        """, *params)
+
+        basvuru_bu_ay = await conn.fetchval(f"""
+            SELECT COUNT(*) FROM baglamalar b
+            WHERE {liman_cond}
+              AND b.olusturuldu >= DATE_TRUNC('month', CURRENT_DATE)
+        """, *params)
+
         bekleyen_basvuru = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
@@ -112,6 +130,9 @@ async def get_ozet(
     return {
         "aktif_baglamalar":  int(aktif_baglamalar),
         "bekleyen_basvuru":  int(bekleyen_basvuru),
+        "basvuru_bugun":     int(basvuru_bugun),
+        "basvuru_bu_hafta":  int(basvuru_bu_hafta),
+        "basvuru_bu_ay":     int(basvuru_bu_ay),
         "kayitli_tekne":     int(kayitli_tekne),
         "aylik_tahsilat":    float(aylik_tahsilat),
         "son_hareketler":    son_hareketler,
