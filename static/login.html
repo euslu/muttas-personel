@@ -1,0 +1,561 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUTTAŞ — Liman Yönetim Paneli</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #ffffff;
+  --bg-soft:   #f7f7f5;
+  --border:    #e8e8e5;
+  --border-dark: #d5d5d0;
+  --text:      #1a1a18;
+  --text-2:    #5a5a55;
+  --text-3:    #9b9b95;
+  --accent:    #2563eb;
+  --accent-bg: #eff6ff;
+  --accent-hover: #1d4ed8;
+  --danger:    #dc2626;
+  --success:   #16a34a;
+  --radius:    8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow:    0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+/* Subtle grid background like Notion */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 40px 40px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.login-wrap {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 1;
+  animation: fadeUp 0.4s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* LOGO AREA */
+.logo-area {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.logo-mark {
+  width: 48px;
+  height: 48px;
+  background: var(--text);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-sm);
+}
+
+.logo-mark svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.logo-area h1 {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.logo-area p {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 3px;
+}
+
+/* CARD */
+.card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.card-sub {
+  font-size: 13px;
+  color: var(--text-3);
+  margin-bottom: 24px;
+}
+
+/* FORM */
+.form-group {
+  margin-bottom: 14px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+.input-wrap {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 11px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-3);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.input-icon svg {
+  width: 15px;
+  height: 15px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 9px 12px 9px 34px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  color: var(--text);
+  background: var(--bg);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  -webkit-appearance: none;
+}
+
+input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+input::placeholder { color: var(--text-3); }
+
+.toggle-pass {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-3);
+  display: flex;
+  align-items: center;
+  transition: color 0.15s;
+  background: none;
+  border: none;
+  padding: 2px;
+}
+.toggle-pass:hover { color: var(--text-2); }
+.toggle-pass svg {
+  width: 15px; height: 15px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* DIVIDER */
+.form-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  margin-top: 4px;
+}
+
+.remember-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  cursor: pointer;
+  font-size: 13px;
+  color: var(--text-2);
+  user-select: none;
+}
+
+.remember-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border-radius: 4px;
+  cursor: pointer;
+  accent-color: var(--accent);
+}
+
+.forgot-link {
+  font-size: 13px;
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s;
+}
+.forgot-link:hover { color: var(--accent-hover); }
+
+/* BUTTON */
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  background: var(--text);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  letter-spacing: 0.01em;
+}
+
+.btn-primary:hover { background: #2a2a28; }
+.btn-primary:active { transform: scale(0.99); }
+
+.btn-primary.loading {
+  background: var(--text-3);
+  pointer-events: none;
+}
+
+/* Spinner */
+.spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  display: none;
+}
+.btn-primary.loading .spinner { display: block; }
+.btn-primary.loading .btn-text { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ERROR */
+.alert {
+  display: none;
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 16px;
+  align-items: center;
+  gap: 8px;
+}
+.alert.error {
+  display: flex;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: var(--danger);
+}
+.alert svg {
+  width: 15px; height: 15px;
+  stroke: currentColor; fill: none;
+  stroke-width: 2; flex-shrink: 0;
+  stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* DIVIDER */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  color: var(--text-3);
+  font-size: 12px;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* LIMAN SEÇ */
+.liman-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.liman-chip {
+  padding: 8px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.15s;
+  background: var(--bg);
+  user-select: none;
+}
+.liman-chip:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+.liman-chip.selected {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-bg);
+  font-weight: 600;
+}
+
+/* FOOTER */
+.login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.login-footer a {
+  color: var(--text-2);
+  text-decoration: none;
+  font-weight: 500;
+}
+.login-footer a:hover { color: var(--text); }
+
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+
+  <!-- LOGO -->
+  <div class="logo-area">
+    <div class="logo-mark">
+      <!-- Anchor icon -->
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="5" r="2"/>
+        <line x1="12" y1="7" x2="12" y2="19"/>
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </div>
+    <h1>MUTTAŞ Liman Paneli</h1>
+    <p>Muğla Kent Hizmetleri</p>
+  </div>
+
+  <!-- CARD -->
+  <div class="card">
+
+    <div class="card-title">Giriş yapın</div>
+    <div class="card-sub">Devam etmek için hesabınıza giriş yapın.</div>
+
+    <!-- ALERT -->
+    <div class="alert" id="alert-box" style="display:none">
+      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="alert-msg"><!-- --></span>
+    </div>
+
+    <form id="login-form" onsubmit="handleLogin(event)" novalidate>
+
+      <!-- EMAIL -->
+      <div class="form-group">
+        <label for="email">E-posta</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m2 7 10 7 10-7"/></svg>
+          </span>
+          <input type="email" id="email" placeholder="ad@muttas.com.tr" autocomplete="email" required>
+        </div>
+      </div>
+
+      <!-- ŞIFRE -->
+      <div class="form-group">
+        <label for="password">Şifre</label>
+        <div class="input-wrap">
+          <span class="input-icon">
+            <svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          </span>
+          <input type="password" id="password" placeholder="••••••••" autocomplete="current-password" required>
+          <button type="button" class="toggle-pass" onclick="togglePass()" title="Şifreyi göster">
+            <svg id="eye-icon" viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- HATIRLA + UNUTTUM -->
+      <div class="form-row">
+        <label class="remember-label">
+          <input type="checkbox" id="remember"> Beni hatırla
+        </label>
+        <a href="#" class="forgot-link">Şifremi unuttum</a>
+      </div>
+
+      <!-- GİRİŞ BUTONU -->
+      <button type="submit" class="btn-primary" id="login-btn">
+        <div class="spinner"></div>
+        <span class="btn-text">Giriş Yap →</span>
+      </button>
+
+    </form>
+
+    <div class="divider">veya limana göre devam edin</div>
+
+    <!-- LİMAN SEÇ (hızlı giriş için opsiyonel) -->
+    <div class="liman-grid" id="liman-grid">
+      <div class="liman-chip" onclick="selectLiman(this, 'Bodrum')">⚓ Bodrum</div>
+      <div class="liman-chip" onclick="selectLiman(this, 'Gümbet')">⚓ Gümbet</div>
+      <div class="liman-chip" onclick="selectLiman(this, 'Marmaris')">⚓ Marmaris</div>
+      <div class="liman-chip" onclick="selectLiman(this, 'İçmeler')">⚓ İçmeler</div>
+      <div class="liman-chip" onclick="selectLiman(this, 'Turunç')">⚓ Turunç</div>
+      <div class="liman-chip" onclick="selectLiman(this, 'Fethiye')">⚓ Fethiye</div>
+    </div>
+
+  </div><!-- /card -->
+
+  <div class="login-footer">
+    Sorun mu yaşıyorsunuz? <a href="/cdn-cgi/l/email-protection#7e1a1b0d0a1b153e130b0a0a1f0d501d1113500a0c">Destek ekibiyle iletişime geçin</a>
+  </div>
+
+</div>
+
+<script>
+let selectedLiman = null;
+
+function selectLiman(el, liman) {
+  document.querySelectorAll('.liman-chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedLiman = liman;
+  // Odaklan email alanına
+  document.getElementById('email').focus();
+}
+
+function togglePass() {
+  const input = document.getElementById('password');
+  const icon = document.getElementById('eye-icon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/>';
+  } else {
+    input.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>';
+  }
+}
+
+function showError(msg) {
+  const box = document.getElementById('alert-box');
+  document.getElementById('alert-msg').textContent = msg;
+  box.classList.add('error');
+  box.style.display = 'flex';
+}
+
+function hideError() {
+  document.getElementById('alert-box').style.display = 'none';
+}
+
+function setLoading(on) {
+  const btn = document.getElementById('login-btn');
+  if (on) btn.classList.add('loading');
+  else btn.classList.remove('loading');
+}
+
+async function handleLogin(e) {
+  e.preventDefault();
+  hideError();
+
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+
+  if (!email) { showError('E-posta adresi gerekli.'); return; }
+  if (!password) { showError('Şifre gerekli.'); return; }
+
+  setLoading(true);
+
+  try {
+    const API = 'https://c910df98-5864-4353-8965-b1b279e7f868-00-dq1uh4oecp3f.janeway.replit.dev';
+
+    const res = await fetch(`${API}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      showError(data.detail || 'E-posta veya şifre hatalı.');
+      return;
+    }
+
+    // Token ve kullanıcı bilgisini kaydet
+    localStorage.setItem('token', data.token);
+    localStorage.setItem('kullanici', JSON.stringify(data.kullanici));
+    if (selectedLiman) localStorage.setItem('liman', selectedLiman);
+
+    // Dashboard'a yönlendir
+    window.location.href = 'dashboard.html';
+
+  } catch (err) {
+    showError('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.');
+  } finally {
+    setLoading(false);
+  }
+}
+
+// Enter ile
