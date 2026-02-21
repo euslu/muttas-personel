@@ -1370,36 +1370,79 @@ tr:hover td { background: var(--bg-soft); }
       <!-- ── Tekneler ── -->
       <div class="page" id="page-tekneler">
         <div class="card">
-          <div class="card-header">
+          <div class="card-header" style="flex-wrap:wrap;gap:10px">
             <h2>Tekneler</h2>
-            <button class="btn btn-primary">+ Tekne Ekle</button>
+            <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-left:auto">
+              <input class="form-input" id="tk-search" placeholder="Tekne adı veya sicil no..." style="width:240px" oninput="tkSearchDebounce()">
+              <select class="form-input" id="tk-tip-filter" style="width:180px" onchange="loadTekneler(1)">
+                <option value="">Tüm Tipler</option>
+              </select>
+              <button class="btn btn-primary" onclick="tkOpenDrawer()">+ Tekne Ekle</button>
+            </div>
           </div>
-          <div class="card-body">
+          <div class="card-body" style="padding:0">
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
                     <th>Tekne Adı</th>
                     <th>Tip</th>
-                    <th>Uzunluk</th>
-                    <th>Sahip</th>
-                    <th>Liman</th>
-                    <th>Durum</th>
+                    <th>Uzunluk (m)</th>
+                    <th>Genişlik (m)</th>
+                    <th>Sicil No</th>
+                    <th>Bayrak</th>
+                    <th style="text-align:center">İşlem</th>
                   </tr>
                 </thead>
                 <tbody id="tekneler-body">
-                  <tr>
-                    <td colspan="6">
-                      <div class="empty">
-                        <div class="empty-icon">🚢</div>
-                        <h3>Tekne bulunamadı</h3>
-                        <p>Kayıtlı tekne bulunmuyor.</p>
-                      </div>
-                    </td>
-                  </tr>
+                  <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)">Yükleniyor...</td></tr>
                 </tbody>
               </table>
             </div>
+            <div id="tk-pagination" style="display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-top:1px solid var(--border);font-size:13px;color:var(--text-muted)"></div>
+          </div>
+        </div>
+
+        <!-- Tekne Drawer -->
+        <div class="drawer-overlay" id="tk-overlay" onclick="tkCloseDrawer()" style="display:none"></div>
+        <div class="drawer" id="tk-drawer" style="display:none">
+          <div class="drawer-header">
+            <h3 id="tk-drawer-title">Yeni Tekne</h3>
+            <button class="drawer-close" onclick="tkCloseDrawer()">✕</button>
+          </div>
+          <div class="drawer-body">
+            <input type="hidden" id="tk-edit-id">
+            <div class="form-group">
+              <label class="form-label">Tekne Adı *</label>
+              <input class="form-input" id="tk-ad" placeholder="Tekne adı">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Tip</label>
+              <input class="form-input" id="tk-tip" placeholder="Tekne tipi" list="tk-tip-list">
+              <datalist id="tk-tip-list"></datalist>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div class="form-group">
+                <label class="form-label">Uzunluk (m)</label>
+                <input class="form-input" id="tk-uzunluk" type="number" step="0.01" placeholder="0.00">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Genişlik (m)</label>
+                <input class="form-input" id="tk-genislik" type="number" step="0.01" placeholder="0.00">
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Sicil No</label>
+              <input class="form-input" id="tk-sicil" placeholder="Sicil numarası">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bayrak Ülke</label>
+              <input class="form-input" id="tk-bayrak" placeholder="TR" value="TR">
+            </div>
+          </div>
+          <div class="drawer-footer">
+            <button class="btn btn-outline" onclick="tkCloseDrawer()">İptal</button>
+            <button class="btn btn-primary" id="tk-save-btn" onclick="tkSave()">Kaydet</button>
           </div>
         </div>
       </div>
@@ -1584,6 +1627,7 @@ function navigate(page, el) {
   if (page === 'dashboard') loadDashboard();
   if (page === 'gunluk') initGunluk();
   if (page === 'baglama') initBasvurular();
+  if (page === 'tekneler') initTekneler();
 }
 
 function updateTopbar(page) {
@@ -2420,6 +2464,174 @@ async function saveBasvuru() {
       const err = await res.json();
       showToast(err.detail || 'Kaydedilemedi', 'error');
     }
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+/* ── Tekneler ── */
+let tkPage = 1;
+let tkSearchTimer = null;
+let tkInitialized = false;
+
+async function initTekneler() {
+  if (!tkInitialized) {
+    await tkLoadTipler();
+    tkInitialized = true;
+  }
+  loadTekneler(1);
+}
+
+async function tkLoadTipler() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch('/tekneler/tipler', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    const data = await res.json();
+    const sel = document.getElementById('tk-tip-filter');
+    const dl = document.getElementById('tk-tip-list');
+    data.tipler.forEach(t => {
+      const opt = document.createElement('option');
+      opt.value = t; opt.textContent = t;
+      sel.appendChild(opt.cloneNode(true));
+      dl.appendChild(opt);
+    });
+  } catch (e) {}
+}
+
+function tkSearchDebounce() {
+  clearTimeout(tkSearchTimer);
+  tkSearchTimer = setTimeout(() => loadTekneler(1), 350);
+}
+
+async function loadTekneler(page) {
+  tkPage = page;
+  const token = getToken();
+  if (!token) return;
+  const q = document.getElementById('tk-search').value.trim();
+  const tip = document.getElementById('tk-tip-filter').value;
+  let url = `/tekneler?page=${page}&per_page=25`;
+  if (q) url += '&q=' + encodeURIComponent(q);
+  if (tip) url += '&tip=' + encodeURIComponent(tip);
+
+  const tbody = document.getElementById('tekneler-body');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-muted)">Yükleniyor...</td></tr>';
+
+  try {
+    const res = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) { showToast('Tekneler yüklenemedi', 'error'); return; }
+    const data = await res.json();
+
+    if (data.tekneler.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-muted)">Kayıt bulunamadı.</td></tr>';
+    } else {
+      const isAdmin = currentUser && currentUser.rol === 'admin';
+      tbody.innerHTML = data.tekneler.map(t => `
+        <tr>
+          <td style="font-weight:500">${t.ad}</td>
+          <td>${t.tip || '—'}</td>
+          <td>${t.uzunluk_m != null ? t.uzunluk_m.toFixed(2) : '—'}</td>
+          <td>${t.genislik_m != null ? t.genislik_m.toFixed(2) : '—'}</td>
+          <td>${t.sicil_no || '—'}</td>
+          <td>${t.bayrak_ulke || '—'}</td>
+          <td style="text-align:center;white-space:nowrap">
+            <button class="btn btn-outline" style="padding:4px 10px;font-size:12px" onclick="tkEdit(${t.id},'${(t.ad||'').replace(/'/g,"\\'")}','${(t.tip||'').replace(/'/g,"\\'")}',${t.uzunluk_m||'null'},${t.genislik_m||'null'},'${(t.sicil_no||'').replace(/'/g,"\\'")}','${(t.bayrak_ulke||'TR')}')">Düzenle</button>
+            ${isAdmin ? `<button class="btn" style="padding:4px 10px;font-size:12px;background:#fee2e2;color:#dc2626;border:none;border-radius:6px;cursor:pointer;margin-left:4px" onclick="tkDelete(${t.id},'${(t.ad||'').replace(/'/g,"\\'")}')">Pasife Al</button>` : ''}
+          </td>
+        </tr>`).join('');
+    }
+
+    const pg = document.getElementById('tk-pagination');
+    const start = (page - 1) * 25 + 1;
+    const end = Math.min(page * 25, data.total);
+    pg.innerHTML = `
+      <span>${data.total} kayıttan ${start}–${end} gösteriliyor</span>
+      <div style="display:flex;gap:6px">
+        <button class="btn btn-outline" style="padding:4px 10px;font-size:12px" ${page <= 1 ? 'disabled' : ''} onclick="loadTekneler(${page - 1})">← Önceki</button>
+        <button class="btn btn-outline" style="padding:4px 10px;font-size:12px" ${page >= data.pages ? 'disabled' : ''} onclick="loadTekneler(${page + 1})">Sonraki →</button>
+      </div>`;
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+function tkOpenDrawer() {
+  document.getElementById('tk-drawer-title').textContent = 'Yeni Tekne';
+  document.getElementById('tk-edit-id').value = '';
+  document.getElementById('tk-ad').value = '';
+  document.getElementById('tk-tip').value = '';
+  document.getElementById('tk-uzunluk').value = '';
+  document.getElementById('tk-genislik').value = '';
+  document.getElementById('tk-sicil').value = '';
+  document.getElementById('tk-bayrak').value = 'TR';
+  document.getElementById('tk-overlay').style.display = 'block';
+  document.getElementById('tk-drawer').style.display = 'flex';
+}
+
+function tkEdit(id, ad, tip, uzunluk, genislik, sicil, bayrak) {
+  document.getElementById('tk-drawer-title').textContent = 'Tekne Düzenle';
+  document.getElementById('tk-edit-id').value = id;
+  document.getElementById('tk-ad').value = ad;
+  document.getElementById('tk-tip').value = tip;
+  document.getElementById('tk-uzunluk').value = uzunluk !== 'null' ? uzunluk : '';
+  document.getElementById('tk-genislik').value = genislik !== 'null' ? genislik : '';
+  document.getElementById('tk-sicil').value = sicil;
+  document.getElementById('tk-bayrak').value = bayrak;
+  document.getElementById('tk-overlay').style.display = 'block';
+  document.getElementById('tk-drawer').style.display = 'flex';
+}
+
+function tkCloseDrawer() {
+  document.getElementById('tk-overlay').style.display = 'none';
+  document.getElementById('tk-drawer').style.display = 'none';
+}
+
+async function tkSave() {
+  const token = getToken();
+  if (!token) return;
+  const id = document.getElementById('tk-edit-id').value;
+  const ad = document.getElementById('tk-ad').value.trim();
+  if (!ad) { showToast('Tekne adı zorunludur.', 'error'); return; }
+
+  const body = {
+    ad,
+    tip: document.getElementById('tk-tip').value.trim() || null,
+    uzunluk_m: parseFloat(document.getElementById('tk-uzunluk').value) || null,
+    genislik_m: parseFloat(document.getElementById('tk-genislik').value) || null,
+    sicil_no: document.getElementById('tk-sicil').value.trim() || null,
+    bayrak_ulke: document.getElementById('tk-bayrak').value.trim() || 'TR',
+  };
+
+  const btn = document.getElementById('tk-save-btn');
+  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+
+  try {
+    const url = id ? `/tekneler/${id}` : '/tekneler';
+    const method = id ? 'PUT' : 'POST';
+    const res = await fetch(url, {
+      method, headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify(body),
+    });
+    const data = await res.json();
+    if (res.ok) {
+      showToast(data.mesaj || 'Kaydedildi.', 'success');
+      tkCloseDrawer();
+      loadTekneler(tkPage);
+    } else {
+      showToast(data.detail || 'Kaydedilemedi.', 'error');
+    }
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+  finally { btn.disabled = false; btn.textContent = 'Kaydet'; }
+}
+
+async function tkDelete(id, ad) {
+  if (!confirm(`"${ad}" teknesini pasife almak istediğinize emin misiniz?`)) return;
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch(`/tekneler/${id}`, {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + token },
+    });
+    const data = await res.json();
+    if (res.ok) { showToast(data.mesaj, 'success'); loadTekneler(tkPage); }
+    else showToast(data.detail || 'Silinemedi.', 'error');
   } catch (e) { showToast('Bağlantı hatası', 'error'); }
 }
 </script>
