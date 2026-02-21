@@ -52,7 +52,7 @@ async def get_ozet(
         bekleyen_basvuru = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.durum = 'islem_bekliyor'
+              AND b.durum IN ('beklemede','islem_bekliyor','odeme_islemde','manuel_odeme','dosya_yuklenenler')
         """, *params)
 
         kayitli_tekne = await conn.fetchval(

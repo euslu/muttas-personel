@@ -369,6 +369,17 @@ html, body {
   border-radius: 10px;
   padding: 18px 20px;
   box-shadow: var(--shadow-sm);
+  transition: background 0.3s, border-color 0.3s;
+}
+.stat-card-alert {
+  background: #fffbeb;
+  border-color: #f59e0b;
+  animation: pulse-card 2s ease-in-out infinite;
+}
+@keyframes pulse-card {
+  0%   { background: #fffbeb; box-shadow: 0 0 0 0 rgba(245,158,11,.25); }
+  50%  { background: #fef3c7; box-shadow: 0 0 0 6px rgba(245,158,11,0); }
+  100% { background: #fffbeb; box-shadow: 0 0 0 0 rgba(245,158,11,.25); }
 }
 
 .stat-label {
@@ -1071,10 +1082,10 @@ tr:hover td { background: var(--bg-soft); }
             <div class="stat-value blue" id="stat-aktif-baglamalar">—</div>
             <div class="stat-sub">Şu an doluluk</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card" id="card-bekleyen-basvuru">
             <div class="stat-label">Bekleyen Başvuru</div>
             <div class="stat-value yellow" id="stat-bekleyen-basvuru">—</div>
-            <div class="stat-sub">Onay bekliyor</div>
+            <div class="stat-sub" id="sub-bekleyen-basvuru">Onay bekliyor</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Kayıtlı Tekne</div>
@@ -1733,7 +1744,17 @@ async function loadDashboard() {
     const d = await res.json();
 
     document.getElementById('stat-aktif-baglamalar').textContent = d.aktif_baglamalar ?? '—';
-    document.getElementById('stat-bekleyen-basvuru').textContent = d.bekleyen_basvuru ?? '—';
+    const bekleyenSayi = d.bekleyen_basvuru ?? 0;
+    document.getElementById('stat-bekleyen-basvuru').textContent = bekleyenSayi || '—';
+    const bekCard = document.getElementById('card-bekleyen-basvuru');
+    const bekSub  = document.getElementById('sub-bekleyen-basvuru');
+    if (bekleyenSayi > 0) {
+      bekCard.classList.add('stat-card-alert');
+      bekSub.textContent = `${bekleyenSayi} başvuru işlem bekliyor`;
+    } else {
+      bekCard.classList.remove('stat-card-alert');
+      bekSub.textContent = 'Onay bekliyor';
+    }
     document.getElementById('stat-kayitli-tekne').textContent = d.kayitli_tekne ?? '—';
     const tahsilat = d.aylik_tahsilat != null
       ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(d.aylik_tahsilat)
