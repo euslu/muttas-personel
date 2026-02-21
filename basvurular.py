@@ -382,8 +382,8 @@ async def update_basvuru(basvuru_id: int, body: BasvuruUpdate, token: dict = Dep
             giris, cikis, body.durum, body.sigorta_bitis, body.notlar, basvuru_id
         )
 
+        fatura = await conn.fetchrow("SELECT id FROM faturalar WHERE baglama_id=$1 ORDER BY id DESC LIMIT 1", basvuru_id)
         if body.tutar is not None:
-            fatura = await conn.fetchrow("SELECT id FROM faturalar WHERE baglama_id=$1 ORDER BY id DESC LIMIT 1", basvuru_id)
             kdv    = 20.0
             toplam = round(body.tutar * 1.20, 2)
             if fatura:
@@ -401,6 +401,11 @@ async def update_basvuru(basvuru_id: int, body: BasvuruUpdate, token: dict = Dep
                     """,
                     basvuru_id, fatura_no, body.tutar, kdv, toplam, body.odeme_durumu or "beklemede"
                 )
+        elif body.odeme_durumu and fatura:
+            await conn.execute(
+                "UPDATE faturalar SET durum=$1 WHERE id=$2",
+                body.odeme_durumu, fatura["id"]
+            )
 
         result = await conn.fetchrow(LIST_SQL + " WHERE b.id = $1", basvuru_id)
     return row_to_dict(result)
