@@ -1,4 +1,4 @@
-modules = ["python-3.11"]
+modules = ["python-3.11", "postgresql-16"]
 [agent]
 expertMode = true
 
@@ -28,7 +28,17 @@ waitForPort = 8000
 
 [nix]
 channel = "stable-25_05"
+packages = ["postgresql"]
 
 [[ports]]
 localPort = 8000
 externalPort = 80
+
+[userenv]
+
+[userenv.shared]
+DB_HOST = "helium"
+DB_PORT = "5432"
+DB_NAME = "heliumdb"
+DB_USER = "postgres"
+DB_PASSWORD = "password"
