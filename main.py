@@ -119,7 +119,7 @@ async def health():
     return {"status": "ok"}
 
 
-@app.post("/setup-db")
+@app.api_route("/setup-db", methods=["GET", "POST"])
 async def setup_db():
     try:
         pool = await get_pool()
