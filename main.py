@@ -12,6 +12,7 @@ from basvurular import router as basvurular_router
 from dashboard import router as dashboard_router
 from tekneler import router as tekneler_router
 from faturalar import router as faturalar_router
+from self_servis import router as self_servis_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -124,12 +125,30 @@ CREATE TABLE IF NOT EXISTS faturalar (
     notlar          TEXT,
     olusturuldu     TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS belgeler (
+    id          SERIAL PRIMARY KEY,
+    basvuru_id  INT REFERENCES baglamalar(id) ON DELETE CASCADE NOT NULL,
+    dosya_tipi  VARCHAR(50) NOT NULL,
+    dosya_adi   VARCHAR(255),
+    dosya_yolu  TEXT,
+    yuklendi_at TIMESTAMPTZ DEFAULT NOW()
+);
+"""
+
+MIGRATE_SQL = """
+ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS basvuru_token VARCHAR(36) UNIQUE;
+ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS eposta        VARCHAR(255);
+ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS tc_kimlik     VARCHAR(20);
 """
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    await get_pool()
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute(CREATE_TABLES_SQL)
+        await conn.execute(MIGRATE_SQL)
     yield
     await close_pool()
 
@@ -154,11 +173,22 @@ app.include_router(basvurular_router)
 app.include_router(dashboard_router)
 app.include_router(tekneler_router)
 app.include_router(faturalar_router)
+app.include_router(self_servis_router)
 
 
 @app.get("/")
 def root():
     return FileResponse("static/index.html")
+
+
+@app.get("/basvuru")
+def basvuru_sayfasi():
+    return FileResponse("static/basvuru.html")
+
+
+@app.get("/basvuru/{token}")
+def basvuru_takip(token: str):
+    return FileResponse("static/basvuru.html")
 
 
 @app.get("/health")

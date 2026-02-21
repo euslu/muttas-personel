@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bağlama Başvurusu — Muttaş Liman</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Inter',sans-serif;background:#f0f4f8;color:#1e293b;min-height:100vh}
+.header{background:linear-gradient(135deg,#0f4c75,#1b6ca8);color:#fff;padding:20px 24px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 10px rgba(0,0,0,.2)}
+.header-icon{font-size:32px}
+.header h1{font-size:20px;font-weight:700;letter-spacing:-.3px}
+.header p{font-size:13px;opacity:.8;margin-top:2px}
+.container{max-width:740px;margin:32px auto;padding:0 16px 60px}
+.card{background:#fff;border-radius:16px;box-shadow:0 2px 16px rgba(0,0,0,.07);overflow:hidden}
+.card-header{padding:20px 24px 16px;border-bottom:1px solid #e2e8f0}
+.card-header h2{font-size:17px;font-weight:600;color:#0f4c75}
+.card-header p{font-size:13px;color:#64748b;margin-top:4px}
+.card-body{padding:24px}
+.section-title{font-size:13px;font-weight:600;color:#0f4c75;text-transform:uppercase;letter-spacing:.6px;margin:24px 0 14px;display:flex;align-items:center;gap:8px}
+.section-title:first-child{margin-top:0}
+.section-title::after{content:'';flex:1;height:1px;background:#e2e8f0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-3{grid-template-columns:1fr 1fr 1fr}
+.full{grid-column:1/-1}
+.field{display:flex;flex-direction:column;gap:5px}
+label{font-size:12.5px;font-weight:500;color:#475569}
+label span.req{color:#ef4444}
+input,select,textarea{border:1.5px solid #e2e8f0;border-radius:8px;padding:9px 12px;font-size:14px;font-family:inherit;color:#1e293b;transition:border-color .15s,box-shadow .15s;background:#fff}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#1b6ca8;box-shadow:0 0 0 3px rgba(27,108,168,.12)}
+textarea{resize:vertical;min-height:72px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 24px;border-radius:9px;border:none;font-size:14px;font-weight:600;cursor:pointer;transition:all .15s}
+.btn-primary{background:#1b6ca8;color:#fff}
+.btn-primary:hover{background:#0f4c75}
+.btn-primary:disabled{background:#94a3b8;cursor:not-allowed}
+.btn-outline{background:#fff;color:#1b6ca8;border:1.5px solid #1b6ca8}
+.btn-outline:hover{background:#f0f6ff}
+.btn-success{background:#059669;color:#fff}
+.btn-success:hover{background:#047857}
+.actions{margin-top:24px;display:flex;gap:12px;justify-content:flex-end}
+.alert{border-radius:10px;padding:14px 18px;font-size:14px;margin-bottom:16px}
+.alert-success{background:#ecfdf5;border:1.5px solid #6ee7b7;color:#065f46}
+.alert-error{background:#fef2f2;border:1.5px solid #fca5a5;color:#991b1b}
+.alert-info{background:#eff6ff;border:1.5px solid #93c5fd;color:#1e40af}
+.status-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;font-size:12.5px;font-weight:600}
+.status-beklemede{background:#fef3c7;color:#92400e}
+.status-dosya_yuklenenler{background:#dbeafe;color:#1e40af}
+.status-islem_bekliyor{background:#e0e7ff;color:#4338ca}
+.status-onaylandi{background:#d1fae5;color:#065f46}
+.status-reddedildi{background:#fee2e2;color:#991b1b}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.info-item{background:#f8fafc;border-radius:8px;padding:12px}
+.info-label{font-size:11.5px;color:#64748b;font-weight:500;margin-bottom:3px}
+.info-value{font-size:14px;font-weight:600;color:#1e293b}
+.belgeler-list{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.belge-item{display:flex;align-items:center;justify-content:space-between;background:#f8fafc;border:1.5px solid #e2e8f0;border-radius:9px;padding:12px 14px}
+.belge-item.yuklu{border-color:#86efac;background:#f0fdf4}
+.belge-icon{font-size:22px;margin-right:10px}
+.belge-bilgi{flex:1}
+.belge-tip{font-size:13px;font-weight:600;color:#1e293b}
+.belge-adi{font-size:12px;color:#64748b;margin-top:2px}
+.belge-yukle{display:flex;align-items:center;gap:8px}
+.upload-btn{padding:6px 14px;font-size:12.5px;border-radius:7px;border:1.5px solid #1b6ca8;background:#fff;color:#1b6ca8;cursor:pointer;font-weight:600;transition:all .15s}
+.upload-btn:hover{background:#eff6ff}
+.yuklu-tag{font-size:11.5px;background:#dcfce7;color:#166534;padding:3px 10px;border-radius:12px;font-weight:600}
+.hidden{display:none}
+.ref-box{background:linear-gradient(135deg,#0f4c75,#1b6ca8);color:#fff;border-radius:12px;padding:22px;text-align:center;margin-bottom:24px}
+.ref-box .ref-no{font-size:28px;font-weight:700;letter-spacing:2px;margin:8px 0}
+.ref-box p{font-size:13px;opacity:.85}
+.link-box{background:#f8fafc;border:1.5px dashed #cbd5e1;border-radius:10px;padding:14px;display:flex;gap:10px;align-items:center;margin-top:10px}
+.link-box input{flex:1;border:none;background:transparent;font-size:13px;color:#1e293b;font-family:monospace}
+.copy-btn{padding:7px 14px;font-size:12.5px;border-radius:7px;border:1.5px solid #64748b;background:#fff;cursor:pointer;font-weight:600;white-space:nowrap}
+.copy-btn:hover{background:#f1f5f9}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:580px){.grid{grid-template-columns:1fr}.grid-3{grid-template-columns:1fr}.info-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-icon">⚓</div>
+  <div>
+    <h1>Muttaş Liman Yönetimi</h1>
+    <p>Çevrimiçi Bağlama Başvuru Sistemi</p>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- YENİ BAŞVURU FORMU -->
+  <div id="formView" class="hidden">
+    <div id="formAlert"></div>
+    <div class="card">
+      <div class="card-header">
+        <h2>⛵ Bağlama Başvurusu</h2>
+        <p>Lütfen tekne ve iletişim bilgilerinizi eksiksiz doldurunuz. Belgelerinizi sonraki adımda yükleyebilirsiniz.</p>
+      </div>
+      <div class="card-body">
+        <form id="basvuruForm">
+
+          <div class="section-title">🚢 Tekne Bilgileri</div>
+          <div class="grid">
+            <div class="field full">
+              <label>Tekne Adı <span class="req">*</span></label>
+              <input type="text" name="tekne_adi" required placeholder="Örn: BLUE STAR">
+            </div>
+            <div class="field">
+              <label>Tekne Tipi</label>
+              <select name="tekne_tipi">
+                <option value="">Seçiniz</option>
+                <option value="Yelkenli">Yelkenli</option>
+                <option value="Motorlu">Motorlu</option>
+                <option value="Katamaran">Katamaran</option>
+                <option value="RIB">RIB / Şişme Bot</option>
+                <option value="Gulet">Gulet</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Sicil / Ruhsat No</label>
+              <input type="text" name="sicil_no" placeholder="Örn: TR-BOD-2024-001">
+            </div>
+            <div class="field">
+              <label>Boy (metre)</label>
+              <input type="number" name="uzunluk_m" step="0.1" min="1" max="200" placeholder="Örn: 12.5">
+            </div>
+            <div class="field">
+              <label>En (metre)</label>
+              <input type="number" name="genislik_m" step="0.1" min="1" max="50" placeholder="Örn: 4.2">
+            </div>
+            <div class="field">
+              <label>Bayrak Ülkesi</label>
+              <select name="bayrak_ulke">
+                <option value="TR">🇹🇷 Türkiye</option>
+                <option value="GB">🇬🇧 İngiltere</option>
+                <option value="DE">🇩🇪 Almanya</option>
+                <option value="NL">🇳🇱 Hollanda</option>
+                <option value="FR">🇫🇷 Fransa</option>
+                <option value="IT">🇮🇹 İtalya</option>
+                <option value="GR">🇬🇷 Yunanistan</option>
+                <option value="US">🇺🇸 ABD</option>
+                <option value="RU">🇷🇺 Rusya</option>
+                <option value="UA">🇺🇦 Ukrayna</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="section-title">👤 Sahip / Başvuru Sahibi</div>
+          <div class="grid">
+            <div class="field full">
+              <label>Ad Soyad <span class="req">*</span></label>
+              <input type="text" name="basvuru_sahibi" required placeholder="Örn: Ahmet Yılmaz">
+            </div>
+            <div class="field">
+              <label>TC Kimlik No</label>
+              <input type="text" name="tc_kimlik" maxlength="11" pattern="\d{11}" placeholder="11 haneli TC No">
+            </div>
+            <div class="field">
+              <label>Telefon <span class="req">*</span></label>
+              <input type="tel" name="telefon" required placeholder="Örn: 0532 123 45 67">
+            </div>
+            <div class="field full">
+              <label>E-posta</label>
+              <input type="email" name="eposta" placeholder="ornek@email.com">
+            </div>
+          </div>
+
+          <div class="section-title">📍 Bağlama Bilgileri</div>
+          <div class="grid">
+            <div class="field">
+              <label>Liman <span class="req">*</span></label>
+              <select name="liman_id" required id="limanSelect">
+                <option value="">Yükleniyor...</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Sigorta Bitiş Tarihi</label>
+              <input type="date" name="sigorta_bitis">
+            </div>
+            <div class="field">
+              <label>Tahmini Geliş Tarihi <span class="req">*</span></label>
+              <input type="date" name="giris_tarihi" required>
+            </div>
+            <div class="field">
+              <label>Tahmini Ayrılış Tarihi</label>
+              <input type="date" name="cikis_tarihi">
+            </div>
+            <div class="field full">
+              <label>Notlar / Özel Talepler</label>
+              <textarea name="notlar" placeholder="Ekstra bilgi veya özel talepleriniz..."></textarea>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              Başvuruyu Gönder →
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAŞVURU TAMAM / BELGE YÜKLEME -->
+  <div id="successView" class="hidden">
+    <div class="ref-box">
+      <p>Başvurunuz alındı! Referans numaranız:</p>
+      <div class="ref-no" id="refNo">---</div>
+      <p>Bu sayfayı kapatmayın — belgelerinizi aşağıdan yükleyin.</p>
+    </div>
+    <div id="uploadAlert"></div>
+    <div class="card">
+      <div class="card-header">
+        <h2>📎 Belgelerinizi Yükleyin</h2>
+        <p>Tekne ruhsatı ve sigorta belgesi zorunludur. PDF, JPG veya PNG formatında, en fazla 10 MB.</p>
+      </div>
+      <div class="card-body">
+        <div class="belgeler-list" id="belgeList">
+          <div class="belge-item" data-tip="ruhsat">
+            <div style="display:flex;align-items:center">
+              <div class="belge-icon">📋</div>
+              <div class="belge-bilgi">
+                <div class="belge-tip">Tekne Ruhsatı <span style="color:#ef4444;font-size:11px">Zorunlu</span></div>
+                <div class="belge-adi" id="adi-ruhsat">Henüz yüklenmedi</div>
+              </div>
+            </div>
+            <div class="belge-yukle">
+              <span class="yuklu-tag hidden" id="tag-ruhsat">✓ Yüklendi</span>
+              <label class="upload-btn" for="file-ruhsat">Seç & Yükle</label>
+              <input type="file" id="file-ruhsat" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="yukle(this,'ruhsat')">
+            </div>
+          </div>
+          <div class="belge-item" data-tip="sigorta">
+            <div style="display:flex;align-items:center">
+              <div class="belge-icon">🛡️</div>
+              <div class="belge-bilgi">
+                <div class="belge-tip">Sigorta Belgesi <span style="color:#ef4444;font-size:11px">Zorunlu</span></div>
+                <div class="belge-adi" id="adi-sigorta">Henüz yüklenmedi</div>
+              </div>
+            </div>
+            <div class="belge-yukle">
+              <span class="yuklu-tag hidden" id="tag-sigorta">✓ Yüklendi</span>
+              <label class="upload-btn" for="file-sigorta">Seç & Yükle</label>
+              <input type="file" id="file-sigorta" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="yukle(this,'sigorta')">
+            </div>
+          </div>
+          <div class="belge-item" data-tip="kimlik">
+            <div style="display:flex;align-items:center">
+              <div class="belge-icon">🪪</div>
+              <div class="belge-bilgi">
+                <div class="belge-tip">TC Kimlik / Pasaport</div>
+                <div class="belge-adi" id="adi-kimlik">Henüz yüklenmedi</div>
+              </div>
+            </div>
+            <div class="belge-yukle">
+              <span class="yuklu-tag hidden" id="tag-kimlik">✓ Yüklendi</span>
+              <label class="upload-btn" for="file-kimlik">Seç & Yükle</label>
+              <input type="file" id="file-kimlik" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="yukle(this,'kimlik')">
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <p style="font-size:13px;color:#64748b;margin-bottom:12px">Bu sayfaya tekrar dönmek için bağlantınızı saklayın:</p>
+          <div class="link-box">
+            <input type="text" id="takipLinki" readonly>
+            <button class="copy-btn" onclick="kopyala()">📋 Kopyala</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BAŞVURU TAKIP (token ile açıldı) -->
+  <div id="trackView" class="hidden">
+    <div id="trackAlert"></div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-body">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px">
+          <div>
+            <div style="font-size:13px;color:#64748b">Başvuru Referansı</div>
+            <div style="font-size:22px;font-weight:700;color:#0f4c75;letter-spacing:1px" id="trackRefNo">---</div>
+          </div>
+          <div id="trackDurum"></div>
+        </div>
+        <div class="info-grid" id="trackBilgi"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <h2>📎 Belgeler</h2>
+        <p>Eksik belgelerinizi aşağıdan yükleyebilirsiniz.</p>
+      </div>
+      <div class="card-body">
+        <div class="belgeler-list" id="trackBelgeList">
+          <div class="belge-item" data-tip="ruhsat">
+            <div style="display:flex;align-items:center">
+              <div class="belge-icon">📋</div>
+              <div class="belge-bilgi">
+                <div class="belge-tip">Tekne Ruhsatı <span style="color:#ef4444;font-size:11px">Zorunlu</span></div>
+                <div class="belge-adi" id="track-adi-ruhsat">Henüz yüklenmedi</div>
+              </div>
+            </div>
+            <div class="belge-yukle">
+              <span class="yuklu-tag hidden" id="track-tag-ruhsat">✓ Yüklendi</span>
+              <label class="upload-btn" for="track-file-ruhsat">Seç & Yükle</label>
+              <input type="file" id="track-file-ruhsat" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="trackYukle(this,'ruhsat')">
+            </div>
+          </div>
+          <div class="belge-item" data-tip="sigorta">
+            <div style="display:flex;align-items:center">
+              <div class="belge-icon">🛡️</div>
+              <div class="belge-bilgi">
+                <div class="belge-tip">Sigorta Belgesi <span style="color:#ef4444;font-size:11px">Zorunlu</span></div>
+                <div class="belge-adi" id="track-adi-sigorta">Henüz yüklenmedi</div>
+              </div>
+            </div>
+            <div class="belge-yukle">
+              <span class="yuklu-tag hidden" id="track-tag-sigorta">✓ Yüklendi</span>
+              <label class="upload-btn" for="track-file-sigorta">Seç & Yükle</label>
+              <input type="file" id="track-file-sigorta" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="trackYukle(this,'sigorta')">
+            </div>
+          </div>
+          <div class="belge-item" data-tip="kimlik">
+            <div style="display:flex;align-items:center">
+              <div class="belge-icon">🪪</div>
+              <div class="belge-bilgi">
+                <div class="belge-tip">TC Kimlik / Pasaport</div>
+                <div class="belge-adi" id="track-adi-kimlik">Henüz yüklenmedi</div>
+              </div>
+            </div>
+            <div class="belge-yukle">
+              <span class="yuklu-tag hidden" id="track-tag-kimlik">✓ Yüklendi</span>
+              <label class="upload-btn" for="track-file-kimlik">Seç & Yükle</label>
+              <input type="file" id="track-file-kimlik" accept=".pdf,.jpg,.jpeg,.png,.webp" class="hidden" onchange="trackYukle(this,'kimlik')">
+            </div>
+          </div>
+        </div>
+        <div style="margin-top:20px">
+          <p style="font-size:13px;color:#64748b;margin-bottom:12px">Bu sayfanın bağlantısı:</p>
+          <div class="link-box">
+            <input type="text" id="trackPageLinki" readonly>
+            <button class="copy-btn" onclick="kopyalaTrack()">📋 Kopyala</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const API = '';
+let currentToken = null;
+
+const DURUM_LABELS = {
+  beklemede: 'Beklemede',
+  dosya_yuklenenler: 'Belgeler Bekleniyor',
+  islem_bekliyor: 'İşlem Bekliyor',
+  odeme_islemde: 'Ödeme İşlemde',
+  manuel_odeme: 'Manuel Ödeme',
+  onaylandi: 'Onaylandı',
+  reddedildi: 'Reddedildi',
+};
+
+function durum_badge(d) {
+  const label = DURUM_LABELS[d] || d;
+  return `<span class="status-badge status-${d}">${label}</span>`;
+}
+
+function alert_html(type, msg) {
+  return `<div class="alert alert-${type}">${msg}</div>`;
+}
+
+// ── Başlangıç ──────────────────────────────────────────────────────────────
+async function init() {
+  const path = window.location.pathname;
+  const parts = path.split('/').filter(Boolean);
+  const token = parts.length >= 2 ? parts[1] : null;
+
+  if (token) {
+    currentToken = token;
+    await loadTrackView(token);
+  } else {
+    await loadLimanlar();
+    document.getElementById('formView').classList.remove('hidden');
+    // Bugünün tarihi varsayılan
+    const today = new Date().toISOString().split('T')[0];
+    document.querySelector('[name="giris_tarihi"]').value = today;
+  }
+}
+
+// ── Limanları yükle ────────────────────────────────────────────────────────
+async function loadLimanlar() {
+  try {
+    const r = await fetch(`${API}/public/limanlar`);
+    const data = await r.json();
+    const sel = document.getElementById('limanSelect');
+    sel.innerHTML = '<option value="">Liman seçiniz</option>' +
+      data.map(l => `<option value="${l.id}">${l.ad}${l.sehir ? ' — ' + l.sehir : ''}</option>`).join('');
+  } catch (e) {
+    document.getElementById('limanSelect').innerHTML = '<option value="">Yüklenemedi</option>';
+  }
+}
+
+// ── Form gönder ────────────────────────────────────────────────────────────
+document.getElementById('basvuruForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Gönderiliyor...';
+  document.getElementById('formAlert').innerHTML = '';
+
+  const fd = new FormData(this);
+  const body = {};
+  fd.forEach((v, k) => { if (v !== '') body[k] = v; });
+
+  // tip dönüşümleri
+  body.liman_id = parseInt(body.liman_id);
+  if (body.uzunluk_m) body.uzunluk_m = parseFloat(body.uzunluk_m);
+  if (body.genislik_m) body.genislik_m = parseFloat(body.genislik_m);
+
+  try {
+    const r = await fetch(`${API}/public/basvuru`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(body),
+    });
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || 'Hata oluştu.');
+
+    currentToken = data.token;
+    document.getElementById('refNo').textContent = data.ref_no;
+    const link = `${window.location.origin}/basvuru/${data.token}`;
+    document.getElementById('takipLinki').value = link;
+    document.getElementById('formView').classList.add('hidden');
+    document.getElementById('successView').classList.remove('hidden');
+    window.history.replaceState({}, '', `/basvuru/${data.token}`);
+  } catch (err) {
+    document.getElementById('formAlert').innerHTML = alert_html('error', '❌ ' + err.message);
+    btn.disabled = false;
+    btn.innerHTML = 'Başvuruyu Gönder →';
+  }
+});
+
+// ── Belge yükle (yeni başvuru sonrası) ────────────────────────────────────
+async function yukle(input, tip) {
+  if (!input.files.length) return;
+  const dosya = input.files[0];
+  const alertEl = document.getElementById('uploadAlert');
+  alertEl.innerHTML = alert_html('info', `⏳ ${dosya.name} yükleniyor...`);
+
+  const fd = new FormData();
+  fd.append('dosya_tipi', tip);
+  fd.append('dosya', dosya);
+
+  try {
+    const r = await fetch(`${API}/public/basvuru/${currentToken}/belge`, {method:'POST', body:fd});
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || 'Hata oluştu.');
+
+    document.getElementById(`adi-${tip}`).textContent = dosya.name;
+    document.getElementById(`tag-${tip}`).classList.remove('hidden');
+    const item = document.querySelector(`#belgeList [data-tip="${tip}"]`);
+    if (item) item.classList.add('yuklu');
+    alertEl.innerHTML = alert_html('success', `✅ ${dosya.name} başarıyla yüklendi.`);
+  } catch (err) {
+    alertEl.innerHTML = alert_html('error', '❌ ' + err.message);
+  }
+}
+
+// ── Track view yükle ───────────────────────────────────────────────────────
+async function loadTrackView(token) {
+  try {
+    const r = await fetch(`${API}/public/basvuru/${token}`);
+    if (!r.ok) {
+      document.getElementById('trackView').classList.remove('hidden');
+      document.getElementById('trackAlert').innerHTML = alert_html('error', '❌ Başvuru bulunamadı veya bu bağlantı geçersiz.');
+      return;
+    }
+    const d = await r.json();
+
+    document.getElementById('trackRefNo').textContent = d.ref_no || '—';
+    document.getElementById('trackDurum').innerHTML = durum_badge(d.durum);
+
+    const bilgi = document.getElementById('trackBilgi');
+    bilgi.innerHTML = `
+      <div class="info-item"><div class="info-label">Tekne</div><div class="info-value">${d.tekne_adi || '—'}</div></div>
+      <div class="info-item"><div class="info-label">Sahip</div><div class="info-value">${d.basvuru_sahibi || '—'}</div></div>
+      <div class="info-item"><div class="info-label">Liman</div><div class="info-value">${d.liman_adi || '—'}</div></div>
+      <div class="info-item"><div class="info-label">Geliş Tarihi</div><div class="info-value">${d.giris_tarihi || '—'}</div></div>
+      <div class="info-item"><div class="info-label">Telefon</div><div class="info-value">${d.telefon || '—'}</div></div>
+      <div class="info-item"><div class="info-label">Boy / En</div><div class="info-value">${d.uzunluk_m ? d.uzunluk_m + ' m / ' + (d.genislik_m || '?') + ' m' : '—'}</div></div>
+    `;
+
+    // Yüklenmiş belgeler
+    (d.belgeler || []).forEach(b => {
+      const tip = b.dosya_tipi;
+      const adiEl = document.getElementById(`track-adi-${tip}`);
+      const tagEl = document.getElementById(`track-tag-${tip}`);
+      if (adiEl) adiEl.textContent = b.dosya_adi || 'Yüklendi';
+      if (tagEl) tagEl.classList.remove('hidden');
+      const item = document.querySelector(`#trackBelgeList [data-tip="${tip}"]`);
+      if (item) item.classList.add('yuklu');
+    });
+
+    const link = window.location.href;
+    document.getElementById('trackPageLinki').value = link;
+    document.getElementById('trackView').classList.remove('hidden');
+  } catch (e) {
+    document.getElementById('trackView').classList.remove('hidden');
+    document.getElementById('trackAlert').innerHTML = alert_html('error', '❌ Bağlantı hatası. Lütfen tekrar deneyin.');
+  }
+}
+
+// ── Belge yükle (takip sayfası) ────────────────────────────────────────────
+async function trackYukle(input, tip) {
+  if (!input.files.length) return;
+  const dosya = input.files[0];
+  const alertEl = document.getElementById('trackAlert');
+  alertEl.innerHTML = alert_html('info', `⏳ ${dosya.name} yükleniyor...`);
+
+  const fd = new FormData();
+  fd.append('dosya_tipi', tip);
+  fd.append('dosya', dosya);
+
+  try {
+    const r = await fetch(`${API}/public/basvuru/${currentToken}/belge`, {method:'POST', body:fd});
+    const data = await r.json();
+    if (!r.ok) throw new Error(data.detail || 'Hata oluştu.');
+
+    document.getElementById(`track-adi-${tip}`).textContent = dosya.name;
+    document.getElementById(`track-tag-${tip}`).classList.remove('hidden');
+    const item = document.querySelector(`#trackBelgeList [data-tip="${tip}"]`);
+    if (item) item.classList.add('yuklu');
+    alertEl.innerHTML = alert_html('success', `✅ ${dosya.name} başarıyla yüklendi.`);
+  } catch (err) {
+    alertEl.innerHTML = alert_html('error', '❌ ' + err.message);
+  }
+}
+
+// ── Kopyala ────────────────────────────────────────────────────────────────
+function kopyala() {
+  const el = document.getElementById('takipLinki');
+  el.select();
+  navigator.clipboard.writeText(el.value).then(() => alert('Bağlantı kopyalandı!'));
+}
+function kopyalaTrack() {
+  const el = document.getElementById('trackPageLinki');
+  el.select();
+  navigator.clipboard.writeText(el.value).then(() => alert('Bağlantı kopyalandı!'));
+}
+
+init();
+</script>
+</body>
+</html>

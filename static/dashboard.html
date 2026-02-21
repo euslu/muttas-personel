@@ -2498,6 +2498,18 @@ async function openBasvuruDrawer(id, durumOnly) {
   const title = document.getElementById('bv-drawer-title');
   title.textContent = id ? 'Başvuru Düzenle' : 'Yeni Başvuru';
 
+  // Belge linki butonu ve belgeler bölümü: sadece düzenleme modunda göster
+  const linkBtn      = document.getElementById('bv-link-btn');
+  const belgeSection = document.getElementById('bv-belgeler-section');
+  if (id) {
+    linkBtn.style.display = '';
+    belgeSection.style.display = '';
+    bvBelgeleriYukle(id);
+  } else {
+    linkBtn.style.display = 'none';
+    belgeSection.style.display = 'none';
+  }
+
   bvClearForm();
 
   if (id) {
@@ -2520,6 +2532,87 @@ function closeBasvuruDrawer() {
   document.getElementById('bv-drawer-overlay').classList.remove('open');
   document.getElementById('bv-drawer').classList.remove('open');
   bvEditId = null;
+}
+
+async function bvBelgeleriYukle(id) {
+  const listEl = document.getElementById('bv-belgeler-list');
+  listEl.innerHTML = '<div style="font-size:13px;color:var(--text-3);padding:4px 0">Yükleniyor...</div>';
+  try {
+    const res = await fetch(`/baglamalar/${id}/belgeler`, {
+      headers: { Authorization: 'Bearer ' + getToken() }
+    });
+    if (!res.ok) throw new Error();
+    const belgeler = await res.json();
+    const ikonlar = { ruhsat: '📋', sigorta: '🛡️', kimlik: '🪪', diger: '📄' };
+    const etiketler = { ruhsat: 'Ruhsat', sigorta: 'Sigorta', kimlik: 'Kimlik', diger: 'Diğer' };
+    if (!belgeler.length) {
+      listEl.innerHTML = '<div style="font-size:13px;color:var(--text-3);padding:4px 0">Henüz belge yüklenmemiş.</div>';
+      return;
+    }
+    listEl.innerHTML = belgeler.map(b => `
+      <div style="display:flex;align-items:center;justify-content:space-between;background:var(--bg-soft);border-radius:8px;padding:9px 12px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <span style="font-size:18px">${ikonlar[b.dosya_tipi] || '📄'}</span>
+          <div>
+            <div style="font-size:13px;font-weight:600">${etiketler[b.dosya_tipi] || b.dosya_tipi}</div>
+            <div style="font-size:11.5px;color:var(--text-3)">${b.dosya_adi || '—'} &nbsp;·&nbsp; ${b.yuklendi_at || ''}</div>
+          </div>
+        </div>
+        <button onclick="bvBelgeIndir(${b.id},'${(b.dosya_adi||'belge').replace(/'/g,"")}')"
+           style="font-size:12px;padding:5px 12px;border-radius:6px;border:1.5px solid var(--border);background:#fff;color:var(--text);cursor:pointer;font-weight:600">
+          ⬇ İndir
+        </button>
+      </div>`).join('');
+  } catch {
+    listEl.innerHTML = '<div style="font-size:13px;color:var(--text-3);padding:4px 0">Belgeler yüklenemedi.</div>';
+  }
+}
+
+async function bvLinkOlustur() {
+  if (!bvEditId) return;
+  const btn = document.getElementById('bv-link-btn');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const res = await fetch(`/baglamalar/${bvEditId}/link-olustur`, {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + getToken() }
+    });
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    const link = `${window.location.origin}/basvuru/${data.token}`;
+    document.getElementById('bv-link-input').value = link;
+    showToast('Belge linki oluşturuldu', 'success');
+  } catch {
+    showToast('Link oluşturulamadı', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '🔗 Belge Linki';
+  }
+}
+
+function bvKopyalaLink() {
+  const el = document.getElementById('bv-link-input');
+  if (!el.value) return showToast('Önce "Belge Linki" butonuna basın', 'info');
+  navigator.clipboard.writeText(el.value).then(() => showToast('Link kopyalandı!', 'success'));
+}
+
+async function bvBelgeIndir(belgeId, dosyaAdi) {
+  try {
+    const res = await fetch(`/belgeler/${belgeId}/indir`, {
+      headers: { Authorization: 'Bearer ' + getToken() }
+    });
+    if (!res.ok) throw new Error();
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href     = url;
+    a.download = dosyaAdi || 'belge';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch {
+    showToast('Dosya indirilemedi', 'error');
+  }
 }
 
 function bvClearForm() {
@@ -3159,10 +3252,26 @@ function ftExport() {
       <textarea id="bv-form-notlar" placeholder="İlave bilgiler..."></textarea>
     </div>
 
+    <div id="bv-belgeler-section" style="display:none">
+      <div class="drawer-section">Yüklenen Belgeler</div>
+      <div id="bv-belgeler-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:4px">
+        <div style="font-size:13px;color:var(--text-3);padding:4px 0">Yükleniyor...</div>
+      </div>
+      <div style="margin-top:10px">
+        <div style="font-size:12px;color:var(--text-3);margin-bottom:6px">Başvuru sahibine belge yükleme linki gönderin:</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input type="text" id="bv-link-input" readonly
+                 style="flex:1;font-size:12px;font-family:monospace;padding:7px 10px;border:1.5px solid var(--border);border-radius:7px;background:#f8fafc;color:var(--text)">
+          <button class="btn btn-outline" style="font-size:12px;padding:7px 14px;white-space:nowrap" onclick="bvKopyalaLink()">📋 Kopyala</button>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="drawer-footer">
     <button class="btn btn-outline" onclick="closeBasvuruDrawer()">İptal</button>
+    <button class="btn btn-primary" id="bv-link-btn" style="display:none" onclick="bvLinkOlustur()">🔗 Belge Linki</button>
     <button class="btn btn-primary" onclick="saveBasvuru()">💾 Kaydet</button>
   </div>
 </div>

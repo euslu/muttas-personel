@@ -70,5 +70,14 @@ static/
 - Mevcut veriler normalize edildi (aktif → onaylandi)
 - durum normalize: 526 onaylandi, 293 beklemede, 206 reddedildi
 
+### Self-Servis Belge Yükleme (/basvuru)
+- Herkese açık başvuru sayfası: `/basvuru`
+- Tekne ruhsatı, sigorta belgesi, kimlik yüklenebilir (PDF/JPG/PNG, max 10 MB)
+- Token tabanlı takip: `/basvuru/{uuid-token}`
+- Görevli: dashboard'da "Belge Linki" butonu → link oluştur → kopyala → gönder
+- Yüklenen belgeler drawer'da listelenir, indirilebilir
+- Yeni tablolar: `belgeler`, `baglamalar.basvuru_token`, `baglamalar.eposta`, `baglamalar.tc_kimlik`
+- Dosyalar `uploads/` klasöründe saklanır
+
 ## Yapılacaklar
 - [ ] **Sanal POS entegrasyonu** — Muttaş ödeme yetkilileriyle görüşülecek, ardından faturalar modülüne banka/kart ödeme API'si bağlanacak
