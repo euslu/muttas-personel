@@ -1,6 +1,7 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from db import get_pool, close_pool
+from auth import router as auth_router
 
 
 CREATE_TABLES_SQL = """
@@ -18,9 +19,10 @@ CREATE TABLE IF NOT EXISTS kullanicilar (
     id          SERIAL PRIMARY KEY,
     ad          VARCHAR(100) NOT NULL,
     soyad       VARCHAR(100) NOT NULL,
-    email       VARCHAR(255) UNIQUE NOT NULL,
-    telefon     VARCHAR(30),
-    rol         VARCHAR(50) DEFAULT 'kullanici',
+    email         VARCHAR(255) UNIQUE NOT NULL,
+    password_hash VARCHAR(255),
+    telefon       VARCHAR(30),
+    rol           VARCHAR(50) DEFAULT 'kullanici',
     aktif       BOOLEAN DEFAULT TRUE,
     olusturuldu TIMESTAMPTZ DEFAULT NOW()
 );
@@ -112,6 +114,8 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(title="muttas-liman-api", lifespan=lifespan)
+
+app.include_router(auth_router)
 
 
 @app.get("/health")
