@@ -528,9 +528,7 @@ async function handleLogin(e) {
   setLoading(true);
 
   try {
-    const API = 'https://c910df98-5864-4353-8965-b1b279e7f868-00-dq1uh4oecp3f.janeway.replit.dev';
-
-    const res = await fetch(`${API}/auth/login`, {
+    const res = await fetch('/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })
