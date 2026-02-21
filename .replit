@@ -47,3 +47,7 @@ DB_NAME = "heliumdb"
 DB_USER = "postgres"
 DB_PASSWORD = "password"
 JWT_SECRET = "muttas-liman-super-secret-key-change-in-prod"
+
+[deployment]
+deploymentTarget = "autoscale"
+run = ["gunicorn", "--bind=0.0.0.0:8000", "--reuse-port", "--workers=4", "-k", "uvicorn.workers.UvicornWorker", "main:app"]
