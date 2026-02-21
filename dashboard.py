@@ -49,22 +49,32 @@ async def get_ozet(
               AND (b.cikis_tarihi IS NULL OR b.cikis_tarihi::date >= CURRENT_DATE)
         """, *params)
 
+        # Import günü (2026-02-21) hariç, sadece onaylanmamış başvurular
+        BEKLEYEN = "('beklemede','islem_bekliyor','odeme_islemde','manuel_odeme','dosya_yuklenenler')"
+        IMPORT_CUTOFF = "'2026-02-21'"
+
         basvuru_bugun = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.giris_tarihi::date = CURRENT_DATE
+              AND b.olusturuldu::date = CURRENT_DATE
+              AND b.olusturuldu::date > {IMPORT_CUTOFF}
+              AND b.durum IN {BEKLEYEN}
         """, *params)
 
         basvuru_bu_hafta = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.giris_tarihi >= DATE_TRUNC('week', CURRENT_DATE)
+              AND b.olusturuldu >= DATE_TRUNC('week', CURRENT_DATE)
+              AND b.olusturuldu::date > {IMPORT_CUTOFF}
+              AND b.durum IN {BEKLEYEN}
         """, *params)
 
         basvuru_bu_ay = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b
             WHERE {liman_cond}
-              AND b.giris_tarihi >= DATE_TRUNC('month', CURRENT_DATE)
+              AND b.olusturuldu >= DATE_TRUNC('month', CURRENT_DATE)
+              AND b.olusturuldu::date > {IMPORT_CUTOFF}
+              AND b.durum IN {BEKLEYEN}
         """, *params)
 
         bekleyen_basvuru = await conn.fetchval(f"""
