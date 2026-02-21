@@ -18,7 +18,8 @@ security      = HTTPBearer()
 
 VALID_DURUMS = {
     "beklemede", "islem_bekliyor", "odeme_islemde",
-    "manuel_odeme", "onaylandi", "reddedildi", "dosya_yuklenenler"
+    "manuel_odeme", "onaylandi", "reddedildi", "dosya_yuklenenler",
+    "baglandi"
 }
 
 

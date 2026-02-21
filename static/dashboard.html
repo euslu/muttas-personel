@@ -784,6 +784,7 @@ tr:hover td { background: var(--bg-soft); }
 .d-onaylandi        { background: #dcfce7; color: #15803d; }
 .d-reddedildi       { background: #fee2e2; color: #dc2626; }
 .d-dosya_yuklenenler{ background: #ccfbf1; color: #0f766e; }
+.d-baglandi         { background: #0c4a6e; color: #fff; }
 .d-odendi           { background: #dcfce7; color: #15803d; }
 .d-iptal            { background: #fee2e2; color: #dc2626; }
 
@@ -2118,6 +2119,7 @@ const DURUM_LABEL = {
   onaylandi:        'Onaylandı',
   reddedildi:       'Reddedildi',
   dosya_yuklenenler:'Dosya Yüklenenler',
+  baglandi:         '⚓ Bağlandı',
 };
 
 const ODEME_LABEL = {
@@ -2498,15 +2500,18 @@ async function openBasvuruDrawer(id, durumOnly) {
   const title = document.getElementById('bv-drawer-title');
   title.textContent = id ? 'Başvuru Düzenle' : 'Yeni Başvuru';
 
-  // Belge linki butonu ve belgeler bölümü: sadece düzenleme modunda göster
+  // Belge linki, Onayla & Bağla butonu ve belgeler bölümü: sadece düzenleme modunda göster
   const linkBtn      = document.getElementById('bv-link-btn');
+  const baglaBtn     = document.getElementById('bv-bagla-btn');
   const belgeSection = document.getElementById('bv-belgeler-section');
   if (id) {
-    linkBtn.style.display = '';
+    linkBtn.style.display  = '';
+    baglaBtn.style.display = '';
     belgeSection.style.display = '';
     bvBelgeleriYukle(id);
   } else {
-    linkBtn.style.display = 'none';
+    linkBtn.style.display  = 'none';
+    baglaBtn.style.display = 'none';
     belgeSection.style.display = 'none';
   }
 
@@ -2532,6 +2537,32 @@ function closeBasvuruDrawer() {
   document.getElementById('bv-drawer-overlay').classList.remove('open');
   document.getElementById('bv-drawer').classList.remove('open');
   bvEditId = null;
+}
+
+async function bvOnayla() {
+  if (!bvEditId) return;
+  const btn = document.getElementById('bv-bagla-btn');
+  btn.disabled = true;
+  btn.textContent = '...';
+  try {
+    const res = await fetch(`/basvurular/${bvEditId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + getToken(),
+      },
+      body: JSON.stringify({ durum: 'baglandi', odeme_durumu: 'odendi' }),
+    });
+    if (!res.ok) throw new Error();
+    showToast('⚓ Gemi bağlandı olarak işaretlendi', 'success');
+    closeBasvuruDrawer();
+    loadBasvurular(bvPage || 1);
+  } catch {
+    showToast('İşlem başarısız', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⚓ Onayla & Bağla';
+  }
 }
 
 async function bvBelgeleriYukle(id) {
@@ -3223,6 +3254,7 @@ function ftExport() {
           <option value="onaylandi">Onaylandı</option>
           <option value="reddedildi">Reddedildi</option>
           <option value="dosya_yuklenenler">Dosya Yüklenenler</option>
+          <option value="baglandi">⚓ Bağlandı</option>
         </select>
       </div>
       <div class="form-field">
@@ -3269,9 +3301,10 @@ function ftExport() {
 
   </div>
 
-  <div class="drawer-footer">
+  <div class="drawer-footer" style="flex-wrap:wrap;gap:8px">
     <button class="btn btn-outline" onclick="closeBasvuruDrawer()">İptal</button>
     <button class="btn btn-primary" id="bv-link-btn" style="display:none" onclick="bvLinkOlustur()">🔗 Belge Linki</button>
+    <button class="btn btn-primary" id="bv-bagla-btn" style="display:none;background:#0c4a6e" onclick="bvOnayla()">⚓ Onayla & Bağla</button>
     <button class="btn btn-primary" onclick="saveBasvuru()">💾 Kaydet</button>
   </div>
 </div>
