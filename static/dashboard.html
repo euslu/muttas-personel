@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUTTAŞ — Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg:        #ffffff;
+  --bg-soft:   #f7f7f5;
+  --border:    #e8e8e5;
+  --border-dark: #d5d5d0;
+  --text:      #1a1a18;
+  --text-2:    #5a5a55;
+  --text-3:    #9b9b95;
+  --accent:    #2563eb;
+  --accent-bg: #eff6ff;
+  --danger:    #dc2626;
+  --success:   #16a34a;
+  --radius:    8px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+  --shadow:    0 4px 16px rgba(0,0,0,0.08);
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: var(--bg-soft);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* NAV */
+.navbar {
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-logo {
+  width: 32px;
+  height: 32px;
+  background: var(--text);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-logo svg {
+  width: 16px; height: 16px;
+  fill: none; stroke: #fff;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nav-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.user-badge .role {
+  font-size: 11px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  padding: 1px 7px;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.btn-logout {
+  padding: 6px 14px;
+  background: none;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-logout:hover {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+/* MAIN */
+.main {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.page-header {
+  margin-bottom: 28px;
+}
+
+.page-header h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.page-header p {
+  font-size: 14px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+/* STAT CARDS */
+.stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.stat-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+}
+
+.stat-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.stat-sub {
+  font-size: 12px;
+  color: var(--text-3);
+  margin-top: 4px;
+}
+
+/* INFO CARD */
+.info-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.info-card h2 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+.info-row:last-child { border-bottom: none; }
+
+.info-row .key {
+  color: var(--text-3);
+  font-weight: 500;
+}
+
+.info-row .val {
+  color: var(--text);
+  font-weight: 500;
+}
+
+.badge-admin {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge-user {
+  background: var(--accent-bg);
+  color: var(--accent);
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.liman-tag {
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  padding: 2px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+/* Token box */
+.token-box {
+  margin-top: 20px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: monospace;
+  font-size: 11px;
+  color: var(--text-3);
+  word-break: break-all;
+  line-height: 1.6;
+}
+
+.token-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="nav-brand">
+    <div class="nav-logo">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="5" r="2"/>
+        <line x1="12" y1="7" x2="12" y2="19"/>
+        <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
+        <line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+    </div>
+    <span class="nav-title">MUTTAŞ Liman Paneli</span>
+  </div>
+  <div class="nav-right">
+    <div class="user-badge">
+      <span id="nav-user">—</span>
+      <span class="role" id="nav-role">—</span>
+    </div>
+    <button class="btn-logout" onclick="logout()">Çıkış Yap</button>
+  </div>
+</nav>
+
+<div class="main">
+
+  <div class="page-header">
+    <h1>Hoş geldiniz, <span id="welcome-name">—</span> 👋</h1>
+    <p id="welcome-sub">Liman yönetim paneline başarıyla giriş yaptınız.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card">
+      <div class="stat-label">Oturum Durumu</div>
+      <div class="stat-value" style="color:var(--success);font-size:18px;">✓ Aktif</div>
+      <div class="stat-sub">JWT token geçerli</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Kullanıcı ID</div>
+      <div class="stat-value" id="stat-id">—</div>
+      <div class="stat-sub">Sistem kimliği</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Seçili Liman</div>
+      <div class="stat-value" style="font-size:18px;" id="stat-liman">—</div>
+      <div class="stat-sub">Aktif liman bağlamı</div>
+    </div>
+  </div>
+
+  <div class="info-card">
+    <h2>Hesap Bilgileri</h2>
+    <div class="info-row">
+      <span class="key">Ad Soyad</span>
+      <span class="val" id="info-ad">—</span>
+    </div>
+    <div class="info-row">
+      <span class="key">E-posta</span>
+      <span class="val" id="info-email">—</span>
+    </div>
+    <div class="info-row">
+      <span class="key">Rol</span>
+      <span class="val" id="info-rol">—</span>
+    </div>
+    <div class="info-row">
+      <span class="key">Liman</span>
+      <span class="val" id="info-liman">—</span>
+    </div>
+
+    <div class="token-label" style="margin-top:20px;">JWT Token</div>
+    <div class="token-box" id="info-token">—</div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const token = localStorage.getItem('token');
+  const kullanici = JSON.parse(localStorage.getItem('kullanici') || 'null');
+  const liman = localStorage.getItem('liman') || 'Seçilmedi';
+
+  if (!token || !kullanici) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  document.getElementById('nav-user').textContent = kullanici.ad + ' ' + kullanici.soyad;
+  document.getElementById('nav-role').textContent = kullanici.rol;
+  document.getElementById('welcome-name').textContent = kullanici.ad;
+
+  if (liman !== 'Seçilmedi') {
+    document.getElementById('welcome-sub').textContent =
+      'Liman yönetim paneline başarıyla giriş yaptınız. Aktif liman: ' + liman;
+  }
+
+  document.getElementById('stat-id').textContent = '#' + kullanici.id;
+  document.getElementById('stat-liman').textContent = liman;
+
+  document.getElementById('info-ad').textContent = kullanici.ad + ' ' + kullanici.soyad;
+  document.getElementById('info-email').textContent = kullanici.email;
+
+  const rolEl = document.getElementById('info-rol');
+  rolEl.innerHTML = kullanici.rol === 'admin'
+    ? '<span class="badge-admin">Admin</span>'
+    : '<span class="badge-user">Kullanıcı</span>';
+
+  const limanEl = document.getElementById('info-liman');
+  limanEl.innerHTML = '<span class="liman-tag">⚓ ' + liman + '</span>';
+
+  document.getElementById('info-token').textContent = token;
+})();
+
+function logout() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('kullanici');
+  localStorage.removeItem('liman');
+  window.location.href = 'login.html';
+}
+</script>
+
+</body>
+</html>
