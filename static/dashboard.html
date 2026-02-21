@@ -1953,7 +1953,7 @@ async function bvLoadLimanlar() {
   const token = getToken();
   if (!token) return;
   try {
-    const res = await fetch('/limanlar', { headers: { Authorization: 'Bearer ' + token } });
+    const res = await fetch('/gunluk/limanlar', { headers: { Authorization: 'Bearer ' + token } });
     if (!res.ok) return;
     const data = await res.json();
     const limanlar = data.limanlar || data;
