@@ -2198,6 +2198,53 @@ function openDurumModal(id, currentDurum) {
   }
 }
 
+/* ── Tekne Autocomplete (drawer) ── */
+let bvAcTimer  = null;
+let bvAcItems  = [];
+
+async function bvTekneInput(val) {
+  clearTimeout(bvAcTimer);
+  document.getElementById('bv-form-tekne-id').value = '';
+  const list = document.getElementById('bv-tekne-list');
+  if (!val || val.length < 2) { list.classList.remove('open'); list.innerHTML = ''; return; }
+
+  bvAcTimer = setTimeout(async () => {
+    const token = getToken();
+    if (!token) return;
+    try {
+      const res = await fetch('/gunluk/tekneler/ara?q=' + encodeURIComponent(val), {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (!res.ok) return;
+      bvAcItems = await res.json();
+      if (!bvAcItems.length) { list.classList.remove('open'); return; }
+      list.innerHTML = bvAcItems.map((t, i) => {
+        const meta = [t.tip, t.uzunluk_m ? t.uzunluk_m + ' m' : null].filter(Boolean).join(', ');
+        return `<div class="autocomplete-item" onmousedown="bvSelectTekne(${i})">
+          <strong>${escHtml(t.ad)}</strong>${meta ? ' <small style="color:var(--text-3)">— ' + escHtml(meta) + '</small>' : ''}
+        </div>`;
+      }).join('');
+      list.classList.add('open');
+    } catch (e) { /* ignore */ }
+  }, 250);
+}
+
+function bvSelectTekne(idx) {
+  const t = bvAcItems[idx];
+  if (!t) return;
+  document.getElementById('bv-form-tekne').value    = t.ad;
+  document.getElementById('bv-form-tekne-id').value = t.id;
+  if (t.uzunluk_m)  document.getElementById('bv-form-uzunluk').value  = t.uzunluk_m;
+  if (t.genislik_m) document.getElementById('bv-form-genislik').value = t.genislik_m;
+  if (t.tip)        document.getElementById('bv-form-tip').value       = t.tip;
+  bvCloseAc();
+}
+
+function bvCloseAc() {
+  const list = document.getElementById('bv-tekne-list');
+  if (list) { list.classList.remove('open'); list.innerHTML = ''; }
+}
+
 /* ── Drawer ── */
 async function openBasvuruDrawer(id, durumOnly) {
   bvEditId = id;
@@ -2234,7 +2281,7 @@ function closeBasvuruDrawer() {
 }
 
 function bvClearForm() {
-  ['bv-form-tekne','bv-form-sahip','bv-form-tel','bv-form-liman','bv-form-yer',
+  ['bv-form-tekne','bv-form-tekne-id','bv-form-sahip','bv-form-tel','bv-form-liman','bv-form-yer',
    'bv-form-giris','bv-form-cikis','bv-form-sigorta','bv-form-uzunluk',
    'bv-form-genislik','bv-form-tip','bv-form-tutar','bv-form-notlar'].forEach(id => {
     const el = document.getElementById(id);
@@ -2250,6 +2297,7 @@ function bvClearForm() {
 function bvFillForm(d) {
   const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
   set('bv-form-tekne',      d.tekne_adi);
+  set('bv-form-tekne-id',   d.tekne_id || '');
   set('bv-form-sahip',      d.basvuru_sahibi);
   set('bv-form-tel',        d.telefon);
   set('bv-form-yer',        d.iskele_no);
@@ -2284,7 +2332,10 @@ async function saveBasvuru() {
   const giris = document.getElementById('bv-form-giris')?.value;
   if (!giris) { showToast('Giriş tarihi zorunludur', 'error'); return; }
 
+  const tekneId = parseInt(document.getElementById('bv-form-tekne-id')?.value || 0) || null;
+
   const body = {
+    tekne_id:       tekneId,
     tekne_adi:      tekneAdi,
     liman_id:       limanId,
     iskele_no:      document.getElementById('bv-form-yer')?.value?.trim()     || null,
@@ -2343,7 +2394,12 @@ async function saveBasvuru() {
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field" style="grid-column:1/-1">
         <label>Tekne Adı *</label>
-        <input type="text" id="bv-form-tekne" placeholder="Tekne adı giriniz">
+        <div class="autocomplete-wrap">
+          <input type="text" id="bv-form-tekne" placeholder="Tekne adı yazın..."
+                 autocomplete="off" oninput="bvTekneInput(this.value)" onblur="setTimeout(bvCloseAc,200)">
+          <div class="autocomplete-list" id="bv-tekne-list"></div>
+        </div>
+        <input type="hidden" id="bv-form-tekne-id">
       </div>
       <div class="form-field">
         <label>Boy (m)</label>

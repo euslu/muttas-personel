@@ -100,10 +100,10 @@ async def ara_tekneler(
     pool = await get_pool()
     async with pool.acquire() as conn:
         rows = await conn.fetch(
-            "SELECT id, ad FROM tekneler WHERE LOWER(ad) LIKE LOWER($1) AND aktif = TRUE ORDER BY ad LIMIT 20",
+            "SELECT id, ad, uzunluk_m, genislik_m, tip FROM tekneler WHERE LOWER(ad) LIKE LOWER($1) AND aktif = TRUE ORDER BY ad LIMIT 20",
             f"%{q}%"
         )
-    return [{"id": r["id"], "ad": r["ad"]} for r in rows]
+    return [{"id": r["id"], "ad": r["ad"], "uzunluk_m": r["uzunluk_m"], "genislik_m": r["genislik_m"], "tip": r["tip"]} for r in rows]
 
 
 @router.get("/limanlar")
