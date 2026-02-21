@@ -1067,22 +1067,22 @@ tr:hover td { background: var(--bg-soft); }
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-label">Aktif Bağlamalar</div>
-            <div class="stat-value blue">—</div>
+            <div class="stat-value blue" id="stat-aktif-baglamalar">—</div>
             <div class="stat-sub">Şu an doluluk</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Bekleyen Başvuru</div>
-            <div class="stat-value yellow">—</div>
+            <div class="stat-value yellow" id="stat-bekleyen-basvuru">—</div>
             <div class="stat-sub">Onay bekliyor</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Kayıtlı Tekne</div>
-            <div class="stat-value">—</div>
+            <div class="stat-value" id="stat-kayitli-tekne">—</div>
             <div class="stat-sub">Toplam</div>
           </div>
           <div class="stat-card">
             <div class="stat-label">Aylık Tahsilat</div>
-            <div class="stat-value green">—</div>
+            <div class="stat-value green" id="stat-aylik-tahsilat">—</div>
             <div class="stat-sub">Bu ay</div>
           </div>
         </div>
@@ -1093,11 +1093,20 @@ tr:hover td { background: var(--bg-soft); }
             <button class="btn btn-outline">Tümünü gör</button>
           </div>
           <div class="card-body">
-            <div class="placeholder">
-              <div class="p-icon">📊</div>
-              <h3>Veriler yükleniyor...</h3>
-              <p>API entegrasyonu tamamlandığında hareket geçmişi burada görünecek.</p>
-            </div>
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="border-bottom:1px solid var(--border);color:var(--text-muted);text-align:left">
+                  <th style="padding:8px 10px;font-weight:600">Tekne</th>
+                  <th style="padding:8px 10px;font-weight:600">Hareket</th>
+                  <th style="padding:8px 10px;font-weight:600">Bölge</th>
+                  <th style="padding:8px 10px;font-weight:600">Tarih</th>
+                  <th style="padding:8px 10px;font-weight:600">Saat</th>
+                </tr>
+              </thead>
+              <tbody id="son-hareketler-body">
+                <tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted)">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1521,7 +1530,47 @@ let currentLiman = null;
   }
 
   updateTopbar('dashboard');
+  loadDashboard();
 })();
+
+async function loadDashboard() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch('/dashboard/ozet', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    const d = await res.json();
+
+    document.getElementById('stat-aktif-baglamalar').textContent = d.aktif_baglamalar ?? '—';
+    document.getElementById('stat-bekleyen-basvuru').textContent = d.bekleyen_basvuru ?? '—';
+    document.getElementById('stat-kayitli-tekne').textContent = d.kayitli_tekne ?? '—';
+    const tahsilat = d.aylik_tahsilat != null
+      ? new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY', maximumFractionDigits: 0 }).format(d.aylik_tahsilat)
+      : '—';
+    document.getElementById('stat-aylik-tahsilat').textContent = tahsilat;
+
+    const tbody = document.getElementById('son-hareketler-body');
+    const hareketler = d.son_hareketler || [];
+    if (hareketler.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="padding:24px;text-align:center;color:var(--text-muted)">Kayıt bulunamadı.</td></tr>';
+    } else {
+      tbody.innerHTML = hareketler.map(h => {
+        const tip = h.hareket_tipi === 'giris'
+          ? '<span style="color:#22c55e;font-weight:600">⬇ Giriş</span>'
+          : '<span style="color:#ef4444;font-weight:600">⬆ Çıkış</span>';
+        return `<tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:8px 10px">${h.tekne_adi || '—'}</td>
+          <td style="padding:8px 10px">${tip}</td>
+          <td style="padding:8px 10px">${h.bolge || '—'}</td>
+          <td style="padding:8px 10px">${h.tarih || '—'}</td>
+          <td style="padding:8px 10px">${h.saat ? h.saat.substring(0,5) : '—'}</td>
+        </tr>`;
+      }).join('');
+    }
+  } catch (e) {
+    console.error('Dashboard yüklenemedi:', e);
+  }
+}
 
 function navigate(page, el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
@@ -1532,6 +1581,7 @@ function navigate(page, el) {
 
   updateTopbar(page);
 
+  if (page === 'dashboard') loadDashboard();
   if (page === 'gunluk') initGunluk();
   if (page === 'baglama') initBasvurular();
 }
