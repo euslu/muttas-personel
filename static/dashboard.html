@@ -724,6 +724,214 @@ tr:hover td { background: var(--bg-soft); }
 
 .btn-icon:hover { background: var(--bg-soft); color: var(--text); }
 .btn-icon.del:hover { border-color: var(--danger); color: var(--danger); background: #fff0f0; }
+
+/* ─── SUB-MENU ───────────────────────────────── */
+.nav-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 10px;
+  border-radius: var(--radius);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+.nav-group-toggle:hover { background: var(--bg-soft); color: var(--text); }
+.nav-group-toggle .icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
+.nav-group-toggle .nav-arrow { margin-left: auto; font-size: 10px; transition: transform 0.2s; }
+.nav-group-toggle.open .nav-arrow { transform: rotate(90deg); }
+.nav-group-toggle.active { background: var(--accent-bg); color: var(--accent); font-weight: 600; }
+
+.nav-sub { display: none; padding-left: 29px; }
+.nav-sub.open { display: block; }
+
+.nav-sub-item {
+  display: block;
+  width: 100%;
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--text-3);
+  cursor: pointer;
+  text-align: left;
+  background: none;
+  border: none;
+  transition: background 0.1s, color 0.1s;
+}
+.nav-sub-item:hover { background: var(--bg-soft); color: var(--text-2); }
+.nav-sub-item.active { color: var(--accent); font-weight: 600; }
+
+/* ─── DURUM BADGES ───────────────────────────── */
+.d-badge {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.d-beklemede        { background: #f3f4f6; color: #6b7280; }
+.d-islem_bekliyor   { background: #dbeafe; color: #1d4ed8; }
+.d-odeme_islemde    { background: #ede9fe; color: #7c3aed; }
+.d-manuel_odeme     { background: #ffedd5; color: #c2410c; }
+.d-onaylandi        { background: #dcfce7; color: #15803d; }
+.d-reddedildi       { background: #fee2e2; color: #dc2626; }
+.d-dosya_yuklenenler{ background: #ccfbf1; color: #0f766e; }
+.d-odendi           { background: #dcfce7; color: #15803d; }
+.d-iptal            { background: #fee2e2; color: #dc2626; }
+
+/* ─── COLUMN PICKER ──────────────────────────── */
+.col-picker-wrap { position: relative; }
+.col-picker-btn {
+  padding: 6px 12px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  background: var(--bg);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px;
+  color: var(--text-2);
+  cursor: pointer;
+}
+.col-picker-dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: var(--bg);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 200;
+  padding: 8px;
+  min-width: 200px;
+}
+.col-picker-dropdown.open { display: block; }
+.col-picker-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 6px;
+  border-radius: 5px;
+  font-size: 12.5px;
+  cursor: pointer;
+  color: var(--text-2);
+}
+.col-picker-row:hover { background: var(--bg-soft); }
+.col-picker-row input { accent-color: var(--accent); cursor: pointer; }
+
+/* ─── DRAWER MODAL ───────────────────────────── */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  z-index: 500;
+}
+.drawer-overlay.open { display: block; }
+
+.drawer {
+  position: fixed;
+  top: 0; right: 0;
+  width: 520px;
+  max-width: 95vw;
+  height: 100vh;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.1);
+  z-index: 501;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.25s ease;
+}
+.drawer.open { transform: translateX(0); }
+
+.drawer-header {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.drawer-header h3 { font-size: 15px; font-weight: 700; }
+.drawer-close {
+  width: 28px; height: 28px;
+  border: none; background: none;
+  cursor: pointer; font-size: 18px;
+  color: var(--text-3); border-radius: 6px;
+  display: flex; align-items: center; justify-content: center;
+}
+.drawer-close:hover { background: var(--bg-soft); color: var(--text); }
+
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.drawer-footer {
+  padding: 14px 20px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.drawer-section {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 18px 0 8px;
+}
+.drawer-section:first-child { margin-top: 0; }
+
+.form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.form-field { display: flex; flex-direction: column; gap: 4px; }
+.form-field label { font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.05em; }
+.form-field input, .form-field select, .form-field textarea {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+.form-field textarea { resize: vertical; min-height: 64px; }
+.ref-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-family: monospace;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 0.1em;
+}
+.radio-group { display: flex; gap: 16px; align-items: center; padding: 8px 0; }
+.radio-group label { display: flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 500; color: var(--text-2); cursor: pointer; text-transform: none; letter-spacing: 0; }
+.radio-group input[type=radio] { accent-color: var(--accent); width: 15px; height: 15px; }
 </style>
 </head>
 <body>
@@ -771,9 +979,23 @@ tr:hover td { background: var(--bg-soft); }
         <span class="icon">📋</span> Liman Günlüğü
       </button>
 
-      <button class="nav-item" onclick="navigate('baglama', this)">
+      <!-- Bağlama Başvuruları (collapsible) -->
+      <button class="nav-group-toggle" id="baglama-toggle" onclick="toggleBaglamaMenu(this)">
         <span class="icon">⚓</span> Bağlama Başvuruları
+        <span class="nav-arrow">▸</span>
       </button>
+      <div class="nav-sub" id="baglama-sub">
+        <button class="nav-sub-item active" onclick="navBasvuru('', this)">Tüm Başvurular</button>
+        <button class="nav-sub-item" onclick="navBasvuru('beklemede', this)">Yeni Başvurular</button>
+        <button class="nav-sub-item" onclick="navBasvuru('islem_bekliyor', this)">Link Gönderilenler</button>
+        <button class="nav-sub-item" onclick="navBasvuru('sigorta', this)">Sigorta Yaklaşanlar</button>
+        <button class="nav-sub-item" onclick="navBasvuru('odeme_islemde', this)">Ödeme Beklenenler</button>
+        <button class="nav-sub-item" onclick="navBasvuru('manuel_odeme', this)">Manuel Ödemeler</button>
+        <button class="nav-sub-item" onclick="navBasvuru('odendi', this)">Ödeme Alınanlar</button>
+        <button class="nav-sub-item" onclick="navBasvuru('onaylandi', this)">Onaylananlar</button>
+        <button class="nav-sub-item" onclick="navBasvuru('reddedildi', this)">Reddedilenler</button>
+        <button class="nav-sub-item" onclick="navBasvuru('dosya_yuklenenler', this)">Dosya Yüklenenler</button>
+      </div>
 
       <button class="nav-item" onclick="navigate('tekneler', this)">
         <span class="icon">🚢</span> Tekneler
@@ -1015,39 +1237,125 @@ tr:hover td { background: var(--bg-soft); }
 
       <!-- ── Bağlama Başvuruları ── -->
       <div class="page" id="page-baglama">
-        <div class="card">
-          <div class="card-header">
-            <h2>Bağlama Başvuruları</h2>
-            <button class="btn btn-primary">+ Başvuru Ekle</button>
-          </div>
-          <div class="card-body">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Başvuru No</th>
-                    <th>Tekne</th>
-                    <th>Liman</th>
-                    <th>Tarih</th>
-                    <th>Durum</th>
-                    <th>İşlem</th>
-                  </tr>
-                </thead>
-                <tbody id="baglama-body">
-                  <tr>
-                    <td colspan="6">
-                      <div class="empty">
-                        <div class="empty-icon">⚓</div>
-                        <h3>Başvuru bulunamadı</h3>
-                        <p>Henüz bağlama başvurusu bulunmuyor.</p>
-                      </div>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+
+        <!-- Filtre Çubuğu -->
+        <div class="card" style="margin-bottom:14px">
+          <div style="padding:14px 16px;display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end">
+
+            <div class="form-group-inline" style="min-width:150px">
+              <span class="form-label">Başvuru Durumu</span>
+              <select class="form-input" id="bv-f-durum" onchange="loadBasvurular(1)">
+                <option value="">Tümü</option>
+                <option value="beklemede">Beklemede</option>
+                <option value="islem_bekliyor">İşlem Bekliyor</option>
+                <option value="odeme_islemde">Ödeme İşlemde</option>
+                <option value="manuel_odeme">Manuel Ödeme</option>
+                <option value="onaylandi">Onaylandı</option>
+                <option value="reddedildi">Reddedildi</option>
+                <option value="dosya_yuklenenler">Dosya Yüklenenler</option>
+              </select>
+            </div>
+
+            <div class="form-group-inline" style="min-width:140px">
+              <span class="form-label">Ödeme Durumu</span>
+              <select class="form-input" id="bv-f-odeme" onchange="loadBasvurular(1)">
+                <option value="">Tümü</option>
+                <option value="beklemede">Beklemede</option>
+                <option value="odendi">Ödendi</option>
+                <option value="iptal">İptal</option>
+              </select>
+            </div>
+
+            <div class="form-group-inline">
+              <span class="form-label">Bağlama Başlangıç</span>
+              <input class="form-input" type="date" id="bv-f-bas">
+            </div>
+
+            <div class="form-group-inline">
+              <span class="form-label">Bağlama Bitiş</span>
+              <input class="form-input" type="date" id="bv-f-bit">
+            </div>
+
+            <div class="form-group-inline" style="min-width:120px">
+              <span class="form-label">Liman</span>
+              <select class="form-input" id="bv-f-liman" onchange="loadBasvurular(1)">
+                <option value="">Tüm Limanlar</option>
+              </select>
+            </div>
+
+            <button class="btn btn-outline" onclick="loadBasvurular(1)" style="align-self:flex-end">Getir</button>
+
+            <div style="margin-left:auto;display:flex;gap:6px;align-items:flex-end">
+              <button class="btn btn-outline" onclick="exportBasvurular('muhasebe')" title="Muhasebe için Dışa Aktar">📊 Muhasebe</button>
+              <button class="btn btn-outline" onclick="exportBasvurular('kayitlar')" title="Kayıtları Dışa Aktar">📋 Kayıtlar</button>
+
+              <!-- Kolon Seçici -->
+              <div class="col-picker-wrap">
+                <button class="col-picker-btn" onclick="toggleColPicker()">⚙ Sütunlar</button>
+                <div class="col-picker-dropdown" id="col-picker">
+                  <div class="col-picker-row"><input type="checkbox" id="col-ref" checked onchange="applyColVis()"><label for="col-ref">Ref. No</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-liman" checked onchange="applyColVis()"><label for="col-liman">Liman</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-yer" checked onchange="applyColVis()"><label for="col-yer">Bağlama Yeri</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-sahip" checked onchange="applyColVis()"><label for="col-sahip">Başvuru Sahibi</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-tel" checked onchange="applyColVis()"><label for="col-tel">Telefon</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-bitis" checked onchange="applyColVis()"><label for="col-bitis">Bitiş Tarihi</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-tutar" checked onchange="applyColVis()"><label for="col-tutar">Tutar</label></div>
+                  <div class="col-picker-row"><input type="checkbox" id="col-odeme" checked onchange="applyColVis()"><label for="col-odeme">Ödeme Dur.</label></div>
+                </div>
+              </div>
+
+              <button class="btn btn-primary" onclick="openBasvuruDrawer(null)">+ Yeni Başvuru</button>
             </div>
           </div>
         </div>
+
+        <!-- Tablo -->
+        <div class="card">
+          <div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)">
+            <input class="form-input" id="bv-search" placeholder="Tekne adı, ref no, başvuru sahibi..." style="max-width:280px" oninput="bvSearchDebounce()">
+            <span id="bv-count" style="font-size:12px;color:var(--text-3);margin-left:auto"></span>
+            <select class="form-input" id="bv-per-page" style="width:auto" onchange="loadBasvurular(1)">
+              <option value="10">10 / sayfa</option>
+              <option value="25" selected>25 / sayfa</option>
+              <option value="50">50 / sayfa</option>
+            </select>
+          </div>
+
+          <div class="table-wrap">
+            <table id="bv-table">
+              <thead>
+                <tr>
+                  <th style="width:36px"><input type="checkbox" id="bv-check-all" onchange="toggleAllCheck(this)"></th>
+                  <th>No</th>
+                  <th class="col-ref">Ref. No</th>
+                  <th>Tekne Adı</th>
+                  <th class="col-liman">Liman</th>
+                  <th class="col-yer">Bağlama Yeri</th>
+                  <th class="col-sahip">Başvuru Sahibi</th>
+                  <th class="col-tel">Telefon</th>
+                  <th>Giriş Tarihi</th>
+                  <th class="col-bitis">Bitiş Tarihi</th>
+                  <th>Durum</th>
+                  <th class="col-tutar">Tutar</th>
+                  <th class="col-odeme">Ödeme Dur.</th>
+                  <th>İşlemler</th>
+                </tr>
+              </thead>
+              <tbody id="bv-body">
+                <tr><td colspan="14">
+                  <div class="empty"><div class="empty-icon">⚓</div><h3>Yükleniyor...</h3></div>
+                </td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="pagination" id="bv-pagination" style="display:none">
+            <button class="pg-btn" id="bv-prev" onclick="loadBasvurular(bvPage-1)">← Önceki</button>
+            <span class="pg-info" id="bv-page-info"></span>
+            <button class="pg-btn" id="bv-next" onclick="loadBasvurular(bvPage+1)">Sonraki →</button>
+          </div>
+        </div>
+
       </div>
 
       <!-- ── Tekneler ── -->
@@ -1225,6 +1533,7 @@ function navigate(page, el) {
   updateTopbar(page);
 
   if (page === 'gunluk') initGunluk();
+  if (page === 'baglama') initBasvurular();
 }
 
 function updateTopbar(page) {
@@ -1548,7 +1857,598 @@ function escHtml(str) {
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;');
 }
+
+/* ══════════════════════════════════════════════
+   BAĞLAMA BAŞVURULARI MODULE
+══════════════════════════════════════════════ */
+
+let bvPage        = 1;
+let bvTotal       = 0;
+let bvInitDone    = false;
+let bvSearchTimer = null;
+let bvEditId      = null;
+
+const DURUM_LABEL = {
+  beklemede:        'Beklemede',
+  islem_bekliyor:   'İşlem Bekliyor',
+  odeme_islemde:    'Ödeme İşlemde',
+  manuel_odeme:     'Manuel Ödeme',
+  onaylandi:        'Onaylandı',
+  reddedildi:       'Reddedildi',
+  dosya_yuklenenler:'Dosya Yüklenenler',
+};
+
+const ODEME_LABEL = {
+  beklemede: 'Beklemede',
+  odendi:    'Ödendi',
+  iptal:     'İptal',
+};
+
+function durumBadge(d) {
+  const cls = 'd-badge d-' + (d || 'beklemede');
+  return `<span class="${cls}">${escHtml(DURUM_LABEL[d] || d || '—')}</span>`;
+}
+
+function odemeBadge(d) {
+  if (!d) return '<span style="color:var(--text-3)">—</span>';
+  const cls = 'd-badge d-' + d;
+  return `<span class="${cls}">${escHtml(ODEME_LABEL[d] || d)}</span>`;
+}
+
+/* ── Sub-menu toggle ── */
+function toggleBaglamaMenu(el) {
+  const sub = document.getElementById('baglama-sub');
+  const isOpen = sub.classList.toggle('open');
+  el.classList.toggle('open', isOpen);
+  el.classList.toggle('active', isOpen);
+  if (isOpen) {
+    document.querySelectorAll('.nav-item.active').forEach(b => b.classList.remove('active'));
+    showPage('baglama');
+    initBasvurular();
+  }
+}
+
+function navBasvuru(preset, el) {
+  document.querySelectorAll('.nav-sub-item').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+
+  document.querySelector('#baglama-toggle').classList.add('active');
+
+  const durum = document.getElementById('bv-f-durum');
+  const odeme = document.getElementById('bv-f-odeme');
+
+  durum.value = '';
+  odeme.value = '';
+
+  if (preset === 'sigorta') {
+    loadSigortaUyarilari();
+    return;
+  }
+  if (preset === 'odendi') {
+    odeme.value = 'odendi';
+  } else if (preset) {
+    durum.value = preset;
+  }
+
+  showPage('baglama');
+  initBasvurular();
+  loadBasvurular(1);
+}
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  updateTopbar(page);
+}
+
+/* ── Init ── */
+async function initBasvurular() {
+  if (bvInitDone) { loadBasvurular(1); return; }
+  bvInitDone = true;
+  await bvLoadLimanlar();
+  loadBasvurular(1);
+}
+
+async function bvLoadLimanlar() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch('/limanlar', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    const data = await res.json();
+    const limanlar = data.limanlar || data;
+
+    const selFilter = document.getElementById('bv-f-liman');
+    const selForm   = document.getElementById('bv-form-liman');
+
+    [selFilter, selForm].forEach((sel, i) => {
+      if (!sel) return;
+      const all = document.createElement('option');
+      all.value = ''; all.textContent = i === 0 ? 'Tüm Limanlar' : 'Liman Seçiniz';
+      sel.innerHTML = '';
+      sel.appendChild(all);
+      limanlar.forEach(l => {
+        const o = document.createElement('option');
+        o.value = l.id; o.textContent = l.ad;
+        sel.appendChild(o);
+      });
+    });
+
+    if (currentUser && currentUser.liman_id) {
+      selFilter.value = currentUser.liman_id;
+    }
+  } catch (e) { /* ignore */ }
+}
+
+/* ── Load list ── */
+async function loadBasvurular(page) {
+  bvPage = page || 1;
+  const token = getToken();
+  if (!token) return;
+
+  const durum   = document.getElementById('bv-f-durum')?.value  || '';
+  const odeme   = document.getElementById('bv-f-odeme')?.value  || '';
+  const bas     = document.getElementById('bv-f-bas')?.value    || '';
+  const bit     = document.getElementById('bv-f-bit')?.value    || '';
+  const limanId = document.getElementById('bv-f-liman')?.value  || '';
+  const search  = document.getElementById('bv-search')?.value   || '';
+  const perPage = document.getElementById('bv-per-page')?.value || '25';
+
+  const params = new URLSearchParams({ page: bvPage, per_page: perPage });
+  if (durum)   params.set('durum',           durum);
+  if (odeme)   params.set('odeme_durumu',    odeme);
+  if (bas)     params.set('tarih_baslangic', bas);
+  if (bit)     params.set('tarih_bitis',     bit);
+  if (limanId) params.set('liman_id',        limanId);
+  if (search)  params.set('search',          search);
+
+  const tbody = document.getElementById('bv-body');
+  tbody.innerHTML = '<tr><td colspan="14"><div class="loading-spinner">Yükleniyor...</div></td></tr>';
+
+  try {
+    const res = await fetch('/basvurular?' + params.toString(), {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (!res.ok) { showToast('Başvurular yüklenemedi', 'error'); return; }
+    const data = await res.json();
+    bvTotal = data.toplam;
+    renderBasvurular(data.kayitlar);
+    renderBvPagination(bvPage, data.toplam, parseInt(perPage));
+    document.getElementById('bv-count').textContent = `${data.toplam} kayıt bulundu`;
+  } catch (e) {
+    tbody.innerHTML = '<tr><td colspan="14"><div class="empty"><div class="empty-icon">⚠️</div><h3>Yüklenemedi</h3></div></td></tr>';
+  }
+}
+
+async function loadSigortaUyarilari() {
+  const token = getToken();
+  if (!token) return;
+  showPage('baglama');
+  const tbody = document.getElementById('bv-body');
+  tbody.innerHTML = '<tr><td colspan="14"><div class="loading-spinner">Yükleniyor...</div></td></tr>';
+  try {
+    const res = await fetch('/basvurular/sigorta-uyarilari', {
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    const data = await res.json();
+    renderBasvurular(data);
+    document.getElementById('bv-count').textContent = `${data.length} kayıt (sigorta yaklaşanlar)`;
+    document.getElementById('bv-pagination').style.display = 'none';
+  } catch (e) { /* ignore */ }
+}
+
+/* ── Render rows ── */
+function renderBasvurular(rows) {
+  const tbody = document.getElementById('bv-body');
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="14"><div class="empty"><div class="empty-icon">⚓</div><h3>Başvuru bulunamadı</h3><p>Kriterlere uyan başvuru yok.</p></div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map((r, idx) => {
+    const refNo     = escHtml(r.ref_no || '—');
+    const tekne     = escHtml(r.tekne_adi || '—');
+    const liman     = escHtml(r.liman_adi || '—');
+    const yer       = escHtml(r.iskele_no || '—');
+    const sahip     = escHtml(r.basvuru_sahibi || '—');
+    const tel       = r.telefon ? `<a href="tel:${escHtml(r.telefon)}" style="color:var(--accent)">${escHtml(r.telefon)}</a>` : '—';
+    const giris     = r.giris_tarihi ? r.giris_tarihi.slice(0,10) : '—';
+    const cikis     = r.cikis_tarihi ? r.cikis_tarihi.slice(0,10) : '—';
+    const tutar     = r.tutar ? r.tutar.toLocaleString('tr-TR', {minimumFractionDigits:2}) + ' ₺' : '—';
+    const sigColor  = bvSigortaColor(r.sigorta_bitis);
+
+    return `<tr>
+      <td><input type="checkbox" class="bv-row-check" data-id="${r.id}"></td>
+      <td style="color:var(--text-3);font-size:11px">${(bvPage-1)*parseInt(document.getElementById('bv-per-page').value||25) + idx + 1}</td>
+      <td class="col-ref"><code style="font-size:11px;color:var(--accent)">${refNo}</code></td>
+      <td><strong>${tekne}</strong></td>
+      <td class="col-liman">${liman}</td>
+      <td class="col-yer">${yer}</td>
+      <td class="col-sahip">${sahip}</td>
+      <td class="col-tel">${tel}</td>
+      <td>${giris}</td>
+      <td class="col-bitis" style="color:${sigColor}">${cikis}</td>
+      <td>${durumBadge(r.durum)}</td>
+      <td class="col-tutar" style="font-variant-numeric:tabular-nums;text-align:right">${tutar}</td>
+      <td class="col-odeme">${odemeBadge(r.odeme_durumu)}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn-icon" title="Düzenle" onclick="openBasvuruDrawer(${r.id})">✏️</button>
+          <button class="btn-icon" title="Durum Güncelle" onclick="openDurumModal(${r.id}, '${r.durum}')">🔄</button>
+          <button class="btn-icon del" title="Sil" onclick="silBasvuru(${r.id})">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  applyColVis();
+}
+
+function bvSigortaColor(sig) {
+  if (!sig) return 'var(--text-2)';
+  const days = (new Date(sig) - new Date()) / 86400000;
+  if (days < 0)  return '#dc2626';
+  if (days < 14) return '#f59e0b';
+  if (days < 30) return '#3b82f6';
+  return 'var(--text-2)';
+}
+
+/* ── Pagination ── */
+function renderBvPagination(page, total, perPage) {
+  const totalPages = Math.ceil(total / perPage) || 1;
+  const pg = document.getElementById('bv-pagination');
+  pg.style.display = totalPages > 1 ? 'flex' : 'none';
+  document.getElementById('bv-page-info').textContent = `Sayfa ${page} / ${totalPages}`;
+  document.getElementById('bv-prev').disabled = page <= 1;
+  document.getElementById('bv-next').disabled = page >= totalPages;
+}
+
+/* ── Search debounce ── */
+function bvSearchDebounce() {
+  clearTimeout(bvSearchTimer);
+  bvSearchTimer = setTimeout(() => loadBasvurular(1), 400);
+}
+
+/* ── Column visibility ── */
+function toggleColPicker() {
+  document.getElementById('col-picker').classList.toggle('open');
+}
+
+function applyColVis() {
+  const map = {
+    'col-ref':   '.col-ref',
+    'col-liman': '.col-liman',
+    'col-yer':   '.col-yer',
+    'col-sahip': '.col-sahip',
+    'col-tel':   '.col-tel',
+    'col-bitis': '.col-bitis',
+    'col-tutar': '.col-tutar',
+    'col-odeme': '.col-odeme',
+  };
+  Object.entries(map).forEach(([cbId, sel]) => {
+    const checked = document.getElementById(cbId)?.checked !== false;
+    document.querySelectorAll(sel).forEach(el => {
+      el.style.display = checked ? '' : 'none';
+    });
+  });
+}
+
+document.addEventListener('click', e => {
+  const picker = document.getElementById('col-picker');
+  if (picker && !picker.closest('.col-picker-wrap')?.contains(e.target)) {
+    picker.classList.remove('open');
+  }
+});
+
+/* ── Check all ── */
+function toggleAllCheck(el) {
+  document.querySelectorAll('.bv-row-check').forEach(cb => cb.checked = el.checked);
+}
+
+/* ── Export ── */
+async function exportBasvurular(tip) {
+  const token = getToken();
+  if (!token) return;
+  const durum   = document.getElementById('bv-f-durum')?.value  || '';
+  const odeme   = document.getElementById('bv-f-odeme')?.value  || '';
+  const bas     = document.getElementById('bv-f-bas')?.value    || '';
+  const bit     = document.getElementById('bv-f-bit')?.value    || '';
+  const limanId = document.getElementById('bv-f-liman')?.value  || '';
+  const params  = new URLSearchParams();
+  if (durum)   params.set('durum', durum);
+  if (odeme)   params.set('odeme_durumu', odeme);
+  if (bas)     params.set('tarih_baslangic', bas);
+  if (bit)     params.set('tarih_bitis', bit);
+  if (limanId) params.set('liman_id', limanId);
+
+  const url  = `/basvurular/export/${tip}?` + params.toString();
+  const res  = await fetch(url, { headers: { Authorization: 'Bearer ' + token } });
+  const blob = await res.blob();
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = tip === 'muhasebe' ? 'muhasebe.csv' : 'kayitlar.csv';
+  a.click();
+}
+
+/* ── Delete ── */
+async function silBasvuru(id) {
+  if (!confirm('Bu başvuruyu silmek istediğinizden emin misiniz?')) return;
+  const token = getToken();
+  try {
+    const res = await fetch(`/basvurular/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (res.ok || res.status === 204) {
+      showToast('Başvuru silindi', 'success');
+      loadBasvurular(bvPage);
+    } else {
+      showToast('Silinemedi', 'error');
+    }
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+/* ── Durum Modal ── */
+function openDurumModal(id, currentDurum) {
+  const drawerTitle = document.getElementById('bv-drawer-title');
+  if (drawerTitle) {
+    bvEditId = id;
+    document.getElementById('bv-form-durum').value = currentDurum || 'beklemede';
+    openBasvuruDrawer(id, true);
+  }
+}
+
+/* ── Drawer ── */
+async function openBasvuruDrawer(id, durumOnly) {
+  bvEditId = id;
+  const overlay = document.getElementById('bv-drawer-overlay');
+  const drawer  = document.getElementById('bv-drawer');
+  overlay.classList.add('open');
+  drawer.classList.add('open');
+
+  const title = document.getElementById('bv-drawer-title');
+  title.textContent = id ? 'Başvuru Düzenle' : 'Yeni Başvuru';
+
+  bvClearForm();
+
+  if (id) {
+    const token = getToken();
+    try {
+      const res = await fetch(`/basvurular/${id}`, {
+        headers: { Authorization: 'Bearer ' + token }
+      });
+      if (res.ok) {
+        const d = await res.json();
+        bvFillForm(d);
+      }
+    } catch (e) { /* ignore */ }
+  } else {
+    document.getElementById('bv-ref-display').textContent = 'Otomatik oluşturulacak';
+  }
+}
+
+function closeBasvuruDrawer() {
+  document.getElementById('bv-drawer-overlay').classList.remove('open');
+  document.getElementById('bv-drawer').classList.remove('open');
+  bvEditId = null;
+}
+
+function bvClearForm() {
+  ['bv-form-tekne','bv-form-sahip','bv-form-tel','bv-form-liman','bv-form-yer',
+   'bv-form-giris','bv-form-cikis','bv-form-sigorta','bv-form-uzunluk',
+   'bv-form-genislik','bv-form-tip','bv-form-tutar','bv-form-notlar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  const durum = document.getElementById('bv-form-durum');
+  if (durum) durum.value = 'beklemede';
+  const odeme = document.getElementById('bv-form-odeme-durum');
+  if (odeme) odeme.value = 'beklemede';
+  document.getElementById('bv-ref-display').textContent = 'Otomatik';
+}
+
+function bvFillForm(d) {
+  const set = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+  set('bv-form-tekne',      d.tekne_adi);
+  set('bv-form-sahip',      d.basvuru_sahibi);
+  set('bv-form-tel',        d.telefon);
+  set('bv-form-yer',        d.iskele_no);
+  set('bv-form-giris',      d.giris_tarihi ? d.giris_tarihi.slice(0,10) : '');
+  set('bv-form-cikis',      d.cikis_tarihi ? d.cikis_tarihi.slice(0,10) : '');
+  set('bv-form-sigorta',    d.sigorta_bitis ? d.sigorta_bitis.slice(0,10) : '');
+  set('bv-form-uzunluk',    d.uzunluk_m);
+  set('bv-form-genislik',   d.genislik_m);
+  set('bv-form-tip',        d.tekne_tipi);
+  set('bv-form-tutar',      d.tutar);
+  set('bv-form-notlar',     d.notlar);
+  set('bv-form-durum',      d.durum || 'beklemede');
+  set('bv-form-odeme-durum',d.odeme_durumu || 'beklemede');
+
+  const limanSel = document.getElementById('bv-form-liman');
+  if (limanSel && d.liman_id) limanSel.value = d.liman_id;
+
+  document.getElementById('bv-ref-display').textContent = d.ref_no || '—';
+}
+
+async function saveBasvuru() {
+  const token = getToken();
+  if (!token) return;
+
+  const limanSel = document.getElementById('bv-form-liman');
+  const limanId  = parseInt(limanSel?.value || 0);
+  if (!limanId) { showToast('Liman seçiniz', 'error'); return; }
+
+  const tekneAdi = document.getElementById('bv-form-tekne')?.value?.trim();
+  if (!tekneAdi) { showToast('Tekne adı zorunludur', 'error'); return; }
+
+  const giris = document.getElementById('bv-form-giris')?.value;
+  if (!giris) { showToast('Giriş tarihi zorunludur', 'error'); return; }
+
+  const body = {
+    tekne_adi:      tekneAdi,
+    liman_id:       limanId,
+    iskele_no:      document.getElementById('bv-form-yer')?.value?.trim()     || null,
+    basvuru_sahibi: document.getElementById('bv-form-sahip')?.value?.trim()   || null,
+    telefon:        document.getElementById('bv-form-tel')?.value?.trim()     || null,
+    giris_tarihi:   giris,
+    cikis_tarihi:   document.getElementById('bv-form-cikis')?.value || null,
+    sigorta_bitis:  document.getElementById('bv-form-sigorta')?.value || null,
+    uzunluk_m:      parseFloat(document.getElementById('bv-form-uzunluk')?.value) || null,
+    genislik_m:     parseFloat(document.getElementById('bv-form-genislik')?.value) || null,
+    tip:            document.getElementById('bv-form-tip')?.value?.trim() || null,
+    tutar:          parseFloat(document.getElementById('bv-form-tutar')?.value) || null,
+    durum:          document.getElementById('bv-form-durum')?.value || 'beklemede',
+    odeme_durumu:   document.getElementById('bv-form-odeme-durum')?.value || null,
+    notlar:         document.getElementById('bv-form-notlar')?.value?.trim() || null,
+  };
+
+  const url    = bvEditId ? `/basvurular/${bvEditId}` : '/basvurular';
+  const method = bvEditId ? 'PUT' : 'POST';
+
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      showToast(bvEditId ? 'Başvuru güncellendi' : 'Başvuru oluşturuldu', 'success');
+      closeBasvuruDrawer();
+      loadBasvurular(bvPage);
+    } else {
+      const err = await res.json();
+      showToast(err.detail || 'Kaydedilemedi', 'error');
+    }
+  } catch (e) { showToast('Bağlantı hatası', 'error'); }
+}
 </script>
+
+<!-- ── Başvuru Drawer ─────────────────────────── -->
+<div class="drawer-overlay" id="bv-drawer-overlay" onclick="closeBasvuruDrawer()"></div>
+
+<div class="drawer" id="bv-drawer">
+  <div class="drawer-header">
+    <h3 id="bv-drawer-title">Yeni Başvuru</h3>
+    <button class="drawer-close" onclick="closeBasvuruDrawer()">✕</button>
+  </div>
+
+  <div class="drawer-body">
+
+    <div class="drawer-section">Referans Numarası</div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <span class="ref-badge" id="bv-ref-display">Otomatik</span>
+    </div>
+
+    <div class="drawer-section">Tekne Bilgileri</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field" style="grid-column:1/-1">
+        <label>Tekne Adı *</label>
+        <input type="text" id="bv-form-tekne" placeholder="Tekne adı giriniz">
+      </div>
+      <div class="form-field">
+        <label>Boy (m)</label>
+        <input type="number" id="bv-form-uzunluk" step="0.1" placeholder="örn. 12.5">
+      </div>
+      <div class="form-field">
+        <label>En (m)</label>
+        <input type="number" id="bv-form-genislik" step="0.1" placeholder="örn. 4.2">
+      </div>
+      <div class="form-field" style="grid-column:1/-1">
+        <label>Tekne Tipi</label>
+        <select id="bv-form-tip">
+          <option value="">Belirtilmemiş</option>
+          <option value="yelkenli">Yelkenli</option>
+          <option value="motor">Motor Yat</option>
+          <option value="gulet">Gulet</option>
+          <option value="ribs">RIB / Sürat</option>
+          <option value="katamaran">Katamaran</option>
+          <option value="diger">Diğer</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="drawer-section">Başvuru Bilgileri</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field">
+        <label>Başvuru Sahibi</label>
+        <input type="text" id="bv-form-sahip" placeholder="Ad Soyad">
+      </div>
+      <div class="form-field">
+        <label>Telefon</label>
+        <input type="tel" id="bv-form-tel" placeholder="+90 5xx xxx xx xx">
+      </div>
+      <div class="form-field">
+        <label>Liman *</label>
+        <select id="bv-form-liman">
+          <option value="">Liman Seçiniz</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Bağlama Yeri / İskele No</label>
+        <input type="text" id="bv-form-yer" placeholder="örn. A-12">
+      </div>
+      <div class="form-field">
+        <label>Giriş Tarihi *</label>
+        <input type="date" id="bv-form-giris">
+      </div>
+      <div class="form-field">
+        <label>Çıkış / Bitiş Tarihi</label>
+        <input type="date" id="bv-form-cikis">
+      </div>
+      <div class="form-field">
+        <label>Sigorta Bitiş Tarihi</label>
+        <input type="date" id="bv-form-sigorta">
+      </div>
+    </div>
+
+    <div class="drawer-section">Başvuru Durumu</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field">
+        <label>Başvuru Durumu</label>
+        <select id="bv-form-durum">
+          <option value="beklemede">Beklemede</option>
+          <option value="islem_bekliyor">İşlem Bekliyor</option>
+          <option value="odeme_islemde">Ödeme İşlemde</option>
+          <option value="manuel_odeme">Manuel Ödeme</option>
+          <option value="onaylandi">Onaylandı</option>
+          <option value="reddedildi">Reddedildi</option>
+          <option value="dosya_yuklenenler">Dosya Yüklenenler</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Ödeme Durumu</label>
+        <select id="bv-form-odeme-durum">
+          <option value="beklemede">Beklemede</option>
+          <option value="odendi">Ödendi</option>
+          <option value="iptal">İptal</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="drawer-section">Fatura</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field">
+        <label>Tutar (₺, KDV Hariç)</label>
+        <input type="number" id="bv-form-tutar" step="0.01" placeholder="0.00">
+      </div>
+      <div class="form-field" style="justify-content:flex-end;padding-bottom:2px">
+        <label style="visibility:hidden">KDV</label>
+        <span style="font-size:12px;color:var(--text-3);padding:8px 0">KDV (%20) otomatik hesaplanır</span>
+      </div>
+    </div>
+
+    <div class="drawer-section">Notlar</div>
+    <div class="form-field">
+      <textarea id="bv-form-notlar" placeholder="İlave bilgiler..."></textarea>
+    </div>
+
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn btn-outline" onclick="closeBasvuruDrawer()">İptal</button>
+    <button class="btn btn-primary" onclick="saveBasvuru()">💾 Kaydet</button>
+  </div>
+</div>
 
 </body>
 </html>

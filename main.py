@@ -8,6 +8,7 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from db import get_pool, close_pool
 from auth import router as auth_router
 from gunluk import router as gunluk_router
+from basvurular import router as basvurular_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -146,6 +147,7 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(auth_router)
 app.include_router(gunluk_router)
+app.include_router(basvurular_router)
 
 
 @app.get("/")
