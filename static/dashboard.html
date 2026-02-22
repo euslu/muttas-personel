@@ -4199,6 +4199,13 @@ function openPersonelDrawer(id) {
   }
 
   switchPrsTab('bilgiler');
+  const evrakTab = document.getElementById('prs-tab-evraklar');
+  if (evrakTab) {
+    evrakTab.disabled = !id;
+    evrakTab.title    = id ? '' : 'Önce personeli kaydedin';
+    evrakTab.style.opacity = id ? '' : '0.4';
+    evrakTab.style.cursor  = id ? '' : 'not-allowed';
+  }
   overlay.classList.add('open');
   drawer.classList.add('open');
 }
@@ -4210,6 +4217,7 @@ function closePersonelDrawer() {
 }
 
 function switchPrsTab(tab) {
+  if (tab === 'evraklar' && !prsEditId) return;
   ['bilgiler','evraklar'].forEach(t => {
     document.getElementById('prs-panel-' + t).style.display = t === tab ? '' : 'none';
     document.getElementById('prs-tab-'   + t).classList.toggle('active', t === tab);
@@ -4261,20 +4269,33 @@ async function evrakYukle() {
   if (!ad)   { showToast('Evrak adı zorunludur', 'error'); return; }
   if (!file) { showToast('Dosya seçin', 'error'); return; }
 
-  const fd = new FormData();
-  fd.append('evrak_adi', ad);
-  fd.append('dosya', file);
+  const btn = document.querySelector('#prs-panel-evraklar .btn-primary');
+  if (btn) { btn.disabled = true; btn.textContent = 'Yükleniyor...'; }
 
-  const res = await fetch('/personel/' + prsEditId + '/evraklar', {
-    method: 'POST',
-    headers: { Authorization: 'Bearer ' + getToken() },
-    body: fd,
-  });
-  if (!res.ok) { showToast('Yükleme başarısız', 'error'); return; }
-  showToast('Evrak yüklendi', 'success');
-  document.getElementById('ev-form-ad').value = '';
-  document.getElementById('ev-form-dosya').value = '';
-  loadEvraklar(prsEditId);
+  try {
+    const fd = new FormData();
+    fd.append('evrak_adi', ad);
+    fd.append('dosya', file);
+
+    const res = await fetch('/personel/' + prsEditId + '/evraklar', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + getToken() },
+      body: fd,
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      showToast('Yükleme başarısız: ' + (err.detail || res.status), 'error');
+      return;
+    }
+    showToast('Evrak yüklendi', 'success');
+    document.getElementById('ev-form-ad').value = '';
+    document.getElementById('ev-form-dosya').value = '';
+    loadEvraklar(prsEditId);
+  } catch(e) {
+    showToast('Bağlantı hatası: ' + e.message, 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = '⬆ Yükle'; }
+  }
 }
 
 async function evrakSil(eid) {
