@@ -109,9 +109,12 @@ CREATE TABLE IF NOT EXISTS personel_evraklari (
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    pool = await get_pool()
-    async with pool.acquire() as conn:
-        await conn.execute(CREATE_TABLES_SQL)
+    try:
+        pool = await get_pool()
+        async with pool.acquire() as conn:
+            await conn.execute(CREATE_TABLES_SQL)
+    except Exception as e:
+        print(f"[WARN] Startup DB init skipped: {e}")
     yield
     await close_pool()
 
