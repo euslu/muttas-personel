@@ -746,15 +746,6 @@ tr:hover td { background: var(--bg-soft); }
 .th-sort::after { content: ' ⇅'; opacity: 0.35; font-size: 11px; }
 .th-sort.asc::after  { content: ' ↑'; opacity: 1; }
 .th-sort.desc::after { content: ' ↓'; opacity: 1; }
-.cell-link {
-  color: var(--accent);
-  cursor: pointer;
-  font-size: 12px;
-  border-radius: 4px;
-  padding: 1px 4px;
-  transition: background 0.1s;
-}
-.cell-link:hover { background: var(--bg-soft); text-decoration: underline; }
 
 /* ─── CUSTOM COMBOBOX ────────────────────────── */
 .combo-wrap { position: relative; display: flex; }
@@ -3980,19 +3971,6 @@ function prsSortBy(col) {
   loadPersonel(1);
 }
 
-function prsFilterByCell(field, value) {
-  if (field === 'bolum') {
-    const sel = document.getElementById('prs-bolum');
-    if (sel) sel.value = value;
-  } else if (field === 'unvan') {
-    const sel = document.getElementById('prs-unvan');
-    if (sel) sel.value = value;
-  } else if (field === 'ilce') {
-    const sel = document.getElementById('prs-ilce');
-    if (sel) sel.value = value;
-  }
-  loadPersonel(1);
-}
 
 const IZIN_TUR_LABEL = {
   yillik:   'Yıllık İzin',
@@ -4069,23 +4047,12 @@ async function loadPersonel(page) {
       ? '<span class="d-badge" style="background:#dcfce7;color:#16a34a;font-size:10px">Aktif</span>'
       : '<span class="d-badge" style="background:#fee2e2;color:#dc2626;font-size:10px">Pasif</span>';
 
-    const bolumCell = p.bolum
-      ? `<span class="cell-link" title="Bölüme göre filtrele" onclick="prsFilterByCell('bolum','${p.bolum.replace(/'/g,"\\'")}')">${p.bolum}</span>`
-      : '—';
-    const unvanCell = p.unvan
-      ? `<span class="cell-link" title="Ünvana göre filtrele" onclick="prsFilterByCell('unvan','${p.unvan.replace(/'/g,"\\'")}')">${p.unvan}</span>`
-      : '—';
-    const ilceCell  = p.ilce
-      ? `<span class="cell-link" title="İlçeye göre filtrele" onclick="prsFilterByCell('ilce','${p.ilce.replace(/'/g,"\\'")}')">${p.ilce}</span>`
-      : '';
-    const hizmetTxt = [ilceCell, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—';
-
     return `<tr>
       <td style="color:var(--text-3);font-size:11px">${(prsPage-1)*parseInt(perPage)+idx+1}</td>
       <td><strong>${p.ad_soyad}</strong></td>
-      <td>${bolumCell}</td>
-      <td>${unvanCell}</td>
-      <td style="font-size:12px">${hizmetTxt}</td>
+      <td style="font-size:12px">${p.bolum || '—'}</td>
+      <td style="font-size:12px">${p.unvan || '—'}</td>
+      <td style="font-size:12px">${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
       <td style="font-size:12px">${fmt(p.ise_giris)}</td>
       <td style="font-size:12px;color:${guvColor}">${fmt(p.guvenlik_belge_tarih)}</td>
       <td style="font-size:12px">${p.telefon || '—'}</td>
