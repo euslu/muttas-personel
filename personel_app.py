@@ -1,5 +1,8 @@
+import csv
+import io
+import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
@@ -149,6 +152,67 @@ app.include_router(auth_router)
 app.include_router(personel_router)
 app.include_router(izinler_router)
 app.include_router(self_servis_router)
+
+
+@app.post("/admin/seed-personel")
+async def seed_personel(anahtar: str = ""):
+    if anahtar != os.environ.get("JWT_SECRET", ""):
+        raise HTTPException(status_code=403, detail="Yetkisiz.")
+
+    csv_path = "personel_export.csv"
+    if not os.path.exists(csv_path):
+        raise HTTPException(status_code=404, detail="personel_export.csv bulunamadı.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        mevcut = await conn.fetchval("SELECT COUNT(*) FROM personel")
+        if mevcut > 0:
+            return {"mesaj": f"Personel tablosu zaten dolu ({mevcut} kayıt). İşlem yapılmadı."}
+
+        with open(csv_path, newline="", encoding="utf-8") as f:
+            reader = csv.DictReader(f)
+            rows = list(reader)
+
+        def _v(row, key):
+            val = row.get(key, "")
+            return val if val not in ("", "None", "\\N") else None
+
+        kayit = 0
+        for row in rows:
+            await conn.execute("""
+                INSERT INTO personel
+                    (id, tc_kimlik, sgk_sicil, maliyet_merkezi, ilce, hizmet_noktasi,
+                     ad_soyad, cinsiyet, bolum, unvan, ise_giris, isten_cikis,
+                     cikis_kodu, guvenlik_belge_tarih, sigortalilik_baslama, hizmet_gun,
+                     ogrenim, mezun_bolum, brut_ucret, dogum_yeri, dogum_tarihi,
+                     sendika_uyesi, kan_grubu, medeni_hal, cocuk_sayisi, engelli,
+                     adres, telefon, meslek_kodu, meslek_adi, notlar, aktif)
+                VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,
+                        $17,$18,$19,$20,$21,$22,$23,$24,$25,$26,$27,$28,$29,$30,$31,$32)
+                ON CONFLICT (id) DO NOTHING
+            """,
+                int(row["id"]),
+                _v(row,"tc_kimlik"), _v(row,"sgk_sicil"), _v(row,"maliyet_merkezi"),
+                _v(row,"ilce"), _v(row,"hizmet_noktasi"), row["ad_soyad"],
+                _v(row,"cinsiyet"), _v(row,"bolum"), _v(row,"unvan"),
+                _v(row,"ise_giris"), _v(row,"isten_cikis"), _v(row,"cikis_kodu"),
+                _v(row,"guvenlik_belge_tarih"), _v(row,"sigortalilik_baslama"),
+                int(row["hizmet_gun"]) if _v(row,"hizmet_gun") else None,
+                _v(row,"ogrenim"), _v(row,"mezun_bolum"),
+                float(row["brut_ucret"]) if _v(row,"brut_ucret") else None,
+                _v(row,"dogum_yeri"), _v(row,"dogum_tarihi"),
+                _v(row,"sendika_uyesi"), _v(row,"kan_grubu"), _v(row,"medeni_hal"),
+                int(row["cocuk_sayisi"]) if _v(row,"cocuk_sayisi") else 0,
+                row["engelli"].lower() == "t",
+                _v(row,"adres"), _v(row,"telefon"),
+                _v(row,"meslek_kodu"), _v(row,"meslek_adi"), _v(row,"notlar"),
+                row["aktif"].lower() == "t",
+            )
+            kayit += 1
+
+        await conn.execute("SELECT setval('personel_id_seq', (SELECT MAX(id) FROM personel))")
+
+    return {"mesaj": f"{kayit} personel kaydı başarıyla aktarıldı."}
 
 
 @app.get("/")
