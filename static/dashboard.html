@@ -736,6 +736,45 @@ tr:hover td { background: var(--bg-soft); }
 .btn-icon:hover { background: var(--bg-soft); color: var(--text); }
 .btn-icon.del:hover { border-color: var(--danger); color: var(--danger); background: #fff0f0; }
 
+/* ─── CUSTOM COMBOBOX ────────────────────────── */
+.combo-wrap { position: relative; display: flex; }
+.combo-wrap input { flex: 1; border-radius: var(--radius) 0 0 var(--radius) !important; }
+.combo-btn {
+  padding: 0 10px;
+  background: var(--bg-soft);
+  border: 1px solid var(--border-dark);
+  border-left: none;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  cursor: pointer;
+  color: var(--text-2);
+  font-size: 12px;
+  line-height: 1;
+  transition: background 0.12s;
+}
+.combo-btn:hover { background: var(--bg-2); color: var(--text); }
+.combo-drop {
+  display: none;
+  position: absolute;
+  top: calc(100% + 3px);
+  left: 0; right: 0;
+  background: var(--bg);
+  border: 1px solid var(--border-dark);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  z-index: 400;
+  max-height: 220px;
+  overflow-y: auto;
+}
+.combo-drop.open { display: block; }
+.combo-drop-item {
+  padding: 7px 12px;
+  font-size: 13px;
+  cursor: pointer;
+  color: var(--text);
+}
+.combo-drop-item:hover { background: var(--bg-soft); }
+.combo-drop-empty { padding: 10px 12px; font-size: 12px; color: var(--text-3); }
+
 /* ─── SUB-MENU ───────────────────────────────── */
 .nav-group-toggle {
   display: flex;
@@ -3659,7 +3698,17 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Kan Grubu</label>
-        <input type="text" id="prs-form-kan" placeholder="A RH+">
+        <select id="prs-form-kan">
+          <option value="">Seçiniz</option>
+          <option>A Rh+</option>
+          <option>A Rh-</option>
+          <option>B Rh+</option>
+          <option>B Rh-</option>
+          <option>AB Rh+</option>
+          <option>AB Rh-</option>
+          <option>0 Rh+</option>
+          <option>0 Rh-</option>
+        </select>
       </div>
       <div class="form-field">
         <label>Çocuk Sayısı</label>
@@ -3671,77 +3720,19 @@ function ftExport() {
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field">
         <label>Bölüm</label>
-        <input type="text" id="prs-form-bolum" placeholder="Bölüm seçin veya yazın" list="bolum-datalist" autocomplete="off">
-        <datalist id="bolum-datalist">
-          <option>TOPLU TAŞIMA</option>
-          <option>DENİZ KIYI</option>
-          <option>GÜVENLİK</option>
-          <option>MERKEZ BÜRO</option>
-          <option>PARKOMAT</option>
-          <option>MENTEŞE OTOPARK</option>
-          <option>OTOPARK</option>
-          <option>B.OTOPARK</option>
-          <option>BAKIM ONARIM</option>
-          <option>FETHİYE WC</option>
-          <option>BODRUM WC</option>
-          <option>GÖCEK OTOPARKI</option>
-          <option>BODRUM</option>
-          <option>FETHİYE BÜRO</option>
-          <option>MERKEZ BÜRO (A.)</option>
-        </datalist>
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-bolum" placeholder="Bölüm seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-bolum')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-bolum')">▾</button>
+          <div class="combo-drop" id="prs-form-bolum-drop"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>Ünvan</label>
-        <input type="text" id="prs-form-unvan" placeholder="Ünvan seçin veya yazın" list="unvan-datalist" autocomplete="off">
-        <datalist id="unvan-datalist">
-          <option>ŞOFÖR</option>
-          <option>GÜVENLİK GÖREVLİSİ</option>
-          <option>BÜRO MEMURU</option>
-          <option>OTOPARK GÖREVLİSİ</option>
-          <option>TEMİZLİK GÖREVLİSİ</option>
-          <option>PARKOMAT GÖREVLİSİ</option>
-          <option>BEDEN İŞÇİSİ (TEMİZLİK)</option>
-          <option>PALAMARCI</option>
-          <option>LOJİSTİK OPERASYON ELEMANI</option>
-          <option>MİSAFİR İLİŞKİLERİ GÖREVLİSİ</option>
-          <option>BİLET SATIŞ ELEMANI</option>
-          <option>BİLET SATIŞ SORUMLUSU</option>
-          <option>MEKANİK BAKIM ONARIMCISI</option>
-          <option>BAKIM ONARIM SORUMLUSU</option>
-          <option>TAMİR BAKIM ONARIMCISI</option>
-          <option>ELEKTRİK TEKNİSYENİ</option>
-          <option>ELEKTRİK TEKNİKERİ</option>
-          <option>ELEKTRİKÇİ</option>
-          <option>ELEKTRİKÇİ (GENEL)</option>
-          <option>OTOMOTİV ELEKTRİKÇİSİ</option>
-          <option>OTOMOTİV MEKANİKERİ</option>
-          <option>OTOMOTİV MEKANİKÇİSİ</option>
-          <option>OTOMOTİV KAPORTA USTASI</option>
-          <option>OTO KAPORTA VE BOYA USTASI</option>
-          <option>DİZEL OTOMOTİV MEKANİKERİ</option>
-          <option>KIZAKÇI (GEMİ)</option>
-          <option>DALGIÇ (BALIK ADAM)</option>
-          <option>KAYNAKÇI</option>
-          <option>SIHHİ TESİSATÇI</option>
-          <option>FORMEN</option>
-          <option>KOORDİNASYON SORUMLUSU</option>
-          <option>İLÇE ULAŞIM KOORDİNATÖRÜ</option>
-          <option>İLÇE KOORDİNATÖRÜ</option>
-          <option>LİMAN ŞEFİ</option>
-          <option>ÇEKEK YERİ SORUMLUSU</option>
-          <option>OTOPARK SAHA SORUMLUSU</option>
-          <option>TEKNİK İŞLER PERSONELİ</option>
-          <option>TEKNİK İŞLER SORUMLUSU</option>
-          <option>MUHASEBE MESLEK ELEMANI</option>
-          <option>FİNANS HİZMETLERİ ELEMANI</option>
-          <option>FİNANS SORUMLUSU</option>
-          <option>SATIN ALMA SORUMLUSU</option>
-          <option>MALİ MÜŞAVİR</option>
-          <option>KİMYAGER</option>
-          <option>İK/İDARİ İŞLER PERSONELİ</option>
-          <option>İK/İDARİ İŞLER SORUMLUSU</option>
-          <option>GENEL MÜDÜR</option>
-        </datalist>
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-unvan" placeholder="Ünvan seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-unvan')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-unvan')">▾</button>
+          <div class="combo-drop" id="prs-form-unvan-drop"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>Maliyet Merkezi</label>
@@ -4489,6 +4480,83 @@ async function izinSil(id) {
     sel.appendChild(o);
   }
 })();
+
+// ══════════════════════════════════════════════
+//  CUSTOM COMBOBOX
+// ══════════════════════════════════════════════
+const COMBO_OPTIONS = {
+  'prs-form-bolum': [
+    'TOPLU TAŞIMA','DENİZ KIYI','GÜVENLİK','MERKEZ BÜRO','PARKOMAT',
+    'MENTEŞE OTOPARK','OTOPARK','B.OTOPARK','BAKIM ONARIM','FETHİYE WC',
+    'BODRUM WC','GÖCEK OTOPARKI','BODRUM','FETHİYE BÜRO','MERKEZ BÜRO (A.)',
+  ],
+  'prs-form-unvan': [
+    'ŞOFÖR','GÜVENLİK GÖREVLİSİ','BÜRO MEMURU','OTOPARK GÖREVLİSİ',
+    'TEMİZLİK GÖREVLİSİ','PARKOMAT GÖREVLİSİ','BEDEN İŞÇİSİ (TEMİZLİK)',
+    'PALAMARCI','LOJİSTİK OPERASYON ELEMANI','MİSAFİR İLİŞKİLERİ GÖREVLİSİ',
+    'BİLET SATIŞ ELEMANI','BİLET SATIŞ SORUMLUSU','MEKANİK BAKIM ONARIMCISI',
+    'BAKIM ONARIM SORUMLUSU','TAMİR BAKIM ONARIMCISI','ELEKTRİK TEKNİSYENİ',
+    'ELEKTRİK TEKNİKERİ','ELEKTRİKÇİ','ELEKTRİKÇİ (GENEL)','OTOMOTİV ELEKTRİKÇİSİ',
+    'OTOMOTİV MEKANİKERİ','OTOMOTİV MEKANİKÇİSİ','OTOMOTİV KAPORTA USTASI',
+    'OTO KAPORTA VE BOYA USTASI','DİZEL OTOMOTİV MEKANİKERİ','KIZAKÇI (GEMİ)',
+    'DALGIÇ (BALIK ADAM)','KAYNAKÇI','SIHHİ TESİSATÇI','FORMEN',
+    'KOORDİNASYON SORUMLUSU','İLÇE ULAŞIM KOORDİNATÖRÜ','İLÇE KOORDİNATÖRÜ',
+    'LİMAN ŞEFİ','ÇEKEK YERİ SORUMLUSU','OTOPARK SAHA SORUMLUSU',
+    'TEKNİK İŞLER PERSONELİ','TEKNİK İŞLER SORUMLUSU','MUHASEBE MESLEK ELEMANI',
+    'FİNANS HİZMETLERİ ELEMANI','FİNANS SORUMLUSU','SATIN ALMA SORUMLUSU',
+    'MALİ MÜŞAVİR','KİMYAGER','İK/İDARİ İŞLER PERSONELİ',
+    'İK/İDARİ İŞLER SORUMLUSU','GENEL MÜDÜR',
+  ],
+};
+
+function comboRender(id, q) {
+  const drop = document.getElementById(id + '-drop');
+  if (!drop) return;
+  const opts = COMBO_OPTIONS[id] || [];
+  const qLow = (q || '').toLowerCase();
+  const filtered = qLow ? opts.filter(o => o.toLowerCase().includes(qLow)) : opts;
+  if (!filtered.length) {
+    drop.innerHTML = `<div class="combo-drop-empty">Sonuç bulunamadı — yeni değer olarak kaydedilecek</div>`;
+  } else {
+    drop.innerHTML = filtered.map(o =>
+      `<div class="combo-drop-item" onmousedown="comboSelect('${id}','${o.replace(/'/g,"\\'")}')">${o}</div>`
+    ).join('');
+  }
+}
+
+function comboToggle(id) {
+  const drop = document.getElementById(id + '-drop');
+  if (!drop) return;
+  const isOpen = drop.classList.contains('open');
+  document.querySelectorAll('.combo-drop.open').forEach(d => d.classList.remove('open'));
+  if (!isOpen) {
+    comboRender(id, '');
+    drop.classList.add('open');
+  }
+}
+
+function comboFilter(id) {
+  const input = document.getElementById(id);
+  const drop  = document.getElementById(id + '-drop');
+  if (!drop) return;
+  comboRender(id, input?.value || '');
+  drop.classList.add('open');
+}
+
+function comboSelect(id, value) {
+  const input = document.getElementById(id);
+  if (input) input.value = value;
+  const drop = document.getElementById(id + '-drop');
+  if (drop) drop.classList.remove('open');
+}
+
+document.addEventListener('click', e => {
+  document.querySelectorAll('.combo-drop.open').forEach(drop => {
+    if (!drop.closest('.combo-wrap')?.contains(e.target)) {
+      drop.classList.remove('open');
+    }
+  });
+});
 </script>
 
 </body>
