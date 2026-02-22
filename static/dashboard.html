@@ -1720,6 +1720,19 @@ tr:hover td { background: var(--bg-soft); }
             </select>
             <select class="form-input" id="prs-ilce" style="width:130px" onchange="loadPersonel(1)">
               <option value="">Tüm İlçeler</option>
+              <option>Bodrum</option>
+              <option>Dalaman</option>
+              <option>Datça</option>
+              <option>Fethiye</option>
+              <option>Kavaklıdere</option>
+              <option>Köyceğiz</option>
+              <option>Marmaris</option>
+              <option>Menteşe</option>
+              <option>Milas</option>
+              <option>Ortaca</option>
+              <option>Seydikemer</option>
+              <option>Ula</option>
+              <option>Yatağan</option>
             </select>
             <select class="form-input" id="prs-aktif" style="width:120px" onchange="loadPersonel(1)">
               <option value="true">Aktif</option>
@@ -3600,7 +3613,56 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Ünvan</label>
-        <input type="text" id="prs-form-unvan" placeholder="Ünvan">
+        <input type="text" id="prs-form-unvan" placeholder="Ünvan seçin veya yazın" list="unvan-datalist" autocomplete="off">
+        <datalist id="unvan-datalist">
+          <option>ŞOFÖR</option>
+          <option>GÜVENLİK GÖREVLİSİ</option>
+          <option>BÜRO MEMURU</option>
+          <option>OTOPARK GÖREVLİSİ</option>
+          <option>TEMİZLİK GÖREVLİSİ</option>
+          <option>PARKOMAT GÖREVLİSİ</option>
+          <option>BEDEN İŞÇİSİ (TEMİZLİK)</option>
+          <option>PALAMARCI</option>
+          <option>LOJİSTİK OPERASYON ELEMANI</option>
+          <option>MİSAFİR İLİŞKİLERİ GÖREVLİSİ</option>
+          <option>BİLET SATIŞ ELEMANI</option>
+          <option>BİLET SATIŞ SORUMLUSU</option>
+          <option>MEKANİK BAKIM ONARIMCISI</option>
+          <option>BAKIM ONARIM SORUMLUSU</option>
+          <option>TAMİR BAKIM ONARIMCISI</option>
+          <option>ELEKTRİK TEKNİSYENİ</option>
+          <option>ELEKTRİK TEKNİKERİ</option>
+          <option>ELEKTRİKÇİ</option>
+          <option>ELEKTRİKÇİ (GENEL)</option>
+          <option>OTOMOTİV ELEKTRİKÇİSİ</option>
+          <option>OTOMOTİV MEKANİKERİ</option>
+          <option>OTOMOTİV MEKANİKÇİSİ</option>
+          <option>OTOMOTİV KAPORTA USTASI</option>
+          <option>OTO KAPORTA VE BOYA USTASI</option>
+          <option>DİZEL OTOMOTİV MEKANİKERİ</option>
+          <option>KIZAKÇI (GEMİ)</option>
+          <option>DALGIÇ (BALIK ADAM)</option>
+          <option>KAYNAKÇI</option>
+          <option>SIHHİ TESİSATÇI</option>
+          <option>FORMEN</option>
+          <option>KOORDİNASYON SORUMLUSU</option>
+          <option>İLÇE ULAŞIM KOORDİNATÖRÜ</option>
+          <option>İLÇE KOORDİNATÖRÜ</option>
+          <option>LİMAN ŞEFİ</option>
+          <option>ÇEKEK YERİ SORUMLUSU</option>
+          <option>OTOPARK SAHA SORUMLUSU</option>
+          <option>TEKNİK İŞLER PERSONELİ</option>
+          <option>TEKNİK İŞLER SORUMLUSU</option>
+          <option>MUHASEBE MESLEK ELEMANI</option>
+          <option>FİNANS HİZMETLERİ ELEMANI</option>
+          <option>FİNANS SORUMLUSU</option>
+          <option>SATIN ALMA SORUMLUSU</option>
+          <option>MALİ MÜŞAVİR</option>
+          <option>KİMYAGER</option>
+          <option>İK/İDARİ İŞLER PERSONELİ</option>
+          <option>İK/İDARİ İŞLER SORUMLUSU</option>
+          <option>GENEL MÜDÜR</option>
+        </datalist>
       </div>
       <div class="form-field">
         <label>Maliyet Merkezi</label>
@@ -3608,7 +3670,22 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Çalıştığı İlçe</label>
-        <input type="text" id="prs-form-ilce" placeholder="İlçe">
+        <select id="prs-form-ilce">
+          <option value="">Seçiniz</option>
+          <option>Bodrum</option>
+          <option>Dalaman</option>
+          <option>Datça</option>
+          <option>Fethiye</option>
+          <option>Kavaklıdere</option>
+          <option>Köyceğiz</option>
+          <option>Marmaris</option>
+          <option>Menteşe</option>
+          <option>Milas</option>
+          <option>Ortaca</option>
+          <option>Seydikemer</option>
+          <option>Ula</option>
+          <option>Yatağan</option>
+        </select>
       </div>
       <div class="form-field" style="grid-column:span 2">
         <label>Hizmet Noktası</label>
@@ -3836,11 +3913,9 @@ async function loadPersonelMeta() {
 
   const bolumSel = document.getElementById('prs-bolum');
   const unvanSel = document.getElementById('prs-unvan');
-  const ilceSel  = document.getElementById('prs-ilce');
 
   d.bolumler.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bolumSel.appendChild(o); });
   d.unvanlar.forEach(u => { const o = document.createElement('option'); o.value = u; o.textContent = u; unvanSel.appendChild(o); });
-  d.ilceler.forEach(i  => { const o = document.createElement('option'); o.value = i; o.textContent = i; ilceSel.appendChild(o); });
   _prsMetaLoaded = true;
 }
 
