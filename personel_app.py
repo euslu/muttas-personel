@@ -5,6 +5,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 
+import bcrypt
+
 from db import get_pool, close_pool
 from auth import router as auth_router
 from personel import router as personel_router
@@ -113,6 +115,16 @@ async def lifespan(app: FastAPI):
         pool = await get_pool()
         async with pool.acquire() as conn:
             await conn.execute(CREATE_TABLES_SQL)
+            exists = await conn.fetchval("SELECT id FROM kullanicilar LIMIT 1")
+            if not exists:
+                pw_hash = bcrypt.hashpw(b"admin123", bcrypt.gensalt()).decode()
+                await conn.execute(
+                    """INSERT INTO kullanicilar (ad, soyad, email, password_hash, rol)
+                       VALUES ('Admin', 'Kullanıcı', 'admin@liman.com', $1, 'admin')
+                       ON CONFLICT (email) DO NOTHING""",
+                    pw_hash,
+                )
+                print("[INFO] Varsayılan admin kullanıcısı oluşturuldu.")
     except Exception as e:
         print(f"[WARN] Startup DB init skipped: {e}")
     yield
