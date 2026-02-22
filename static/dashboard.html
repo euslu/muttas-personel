@@ -3897,8 +3897,20 @@ function ftExport() {
         <div class="drawer-section" style="margin-bottom:12px">Evrak Yükle</div>
         <div class="form-grid-2" style="margin-bottom:8px">
           <div class="form-field" style="grid-column:span 2">
-            <label>Evrak Adı / Açıklama *</label>
-            <input type="text" id="ev-form-ad" placeholder="Örn: Nüfus Cüzdanı, SGK İşe Giriş Bildirimi">
+            <label>Evrak Türü *</label>
+            <select id="ev-form-tur" onchange="evrakTurDegisti()">
+              <option value="">Seçiniz</option>
+              <option value="Kimlik Kartı">Kimlik Kartı</option>
+              <option value="Ehliyet">Ehliyet</option>
+              <option value="Adli Sicil Kaydı">Adli Sicil Kaydı</option>
+              <option value="Sürücü Belgesi">Sürücü Belgesi</option>
+              <option value="Sağlık Raporu">Sağlık Raporu</option>
+              <option value="Diğer">Diğer</option>
+            </select>
+          </div>
+          <div class="form-field" id="ev-form-ad-wrap" style="grid-column:span 2;display:none">
+            <label>Evrak Adı *</label>
+            <input type="text" id="ev-form-ad" placeholder="Evrak adını yazın">
           </div>
           <div class="form-field" style="grid-column:span 2">
             <label>Dosya *</label>
@@ -4262,11 +4274,22 @@ async function loadEvraklar(pid) {
   `).join('');
 }
 
+function evrakTurDegisti() {
+  const tur  = document.getElementById('ev-form-tur').value;
+  const wrap = document.getElementById('ev-form-ad-wrap');
+  wrap.style.display = tur === 'Diğer' ? '' : 'none';
+  if (tur !== 'Diğer') document.getElementById('ev-form-ad').value = '';
+}
+
 async function evrakYukle() {
   if (!prsEditId) { showToast('Önce personeli kaydedin', 'error'); return; }
-  const ad    = document.getElementById('ev-form-ad').value.trim();
+  const tur  = document.getElementById('ev-form-tur').value;
+  if (!tur) { showToast('Evrak türü seçin', 'error'); return; }
+  const ad   = tur === 'Diğer'
+    ? document.getElementById('ev-form-ad').value.trim()
+    : tur;
   const file  = document.getElementById('ev-form-dosya').files[0];
-  if (!ad)   { showToast('Evrak adı zorunludur', 'error'); return; }
+  if (tur === 'Diğer' && !ad) { showToast('Evrak adı zorunludur', 'error'); return; }
   if (!file) { showToast('Dosya seçin', 'error'); return; }
 
   const btn = document.querySelector('#prs-panel-evraklar .btn-primary');
@@ -4288,8 +4311,10 @@ async function evrakYukle() {
       return;
     }
     showToast('Evrak yüklendi', 'success');
-    document.getElementById('ev-form-ad').value = '';
+    document.getElementById('ev-form-tur').value = '';
+    document.getElementById('ev-form-ad').value  = '';
     document.getElementById('ev-form-dosya').value = '';
+    document.getElementById('ev-form-ad-wrap').style.display = 'none';
     loadEvraklar(prsEditId);
   } catch(e) {
     showToast('Bağlantı hatası: ' + e.message, 'error');
