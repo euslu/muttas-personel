@@ -37,6 +37,7 @@ class IzinCreate(BaseModel):
     vekil_ad_soyad:   Optional[str] = None
     izin_adresi:      Optional[str] = None
     notlar:           Optional[str] = None
+    imza:             Optional[str] = None
 
 
 class IzinOnay(BaseModel):
@@ -179,13 +180,13 @@ async def create_izin(body: IzinCreate, token: dict = Depends(decode_token)):
         row = await conn.fetchrow("""
             INSERT INTO izinler (
                 personel_id, talep_tarihi, izin_turu, baslangic, bitis,
-                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, notlar
-            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, notlar, imza
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
             RETURNING id
         """,
             body.personel_id, talep, body.izin_turu, body.baslangic, body.bitis,
             body.gun_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad,
-            body.izin_adresi, body.notlar,
+            body.izin_adresi, body.notlar, body.imza,
         )
         return {"id": row["id"]}
 
@@ -204,12 +205,12 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(decode_t
             UPDATE izinler SET
                 izin_turu = $2, baslangic = $3, bitis = $4, gun_sayisi = $5,
                 kullanilabilir_gun = $6, vekil_ad_soyad = $7, izin_adresi = $8,
-                notlar = $9, talep_tarihi = $10
+                notlar = $9, talep_tarihi = $10, imza = COALESCE($11, imza)
             WHERE id = $1
         """,
             iid, body.izin_turu, body.baslangic, body.bitis, body.gun_sayisi,
             body.kullanilabilir_gun, body.vekil_ad_soyad, body.izin_adresi,
-            body.notlar, body.talep_tarihi or date.today(),
+            body.notlar, body.talep_tarihi or date.today(), body.imza,
         )
         return {"ok": True}
 

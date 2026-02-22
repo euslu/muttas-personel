@@ -736,6 +736,40 @@ tr:hover td { background: var(--bg-soft); }
 .btn-icon:hover { background: var(--bg-soft); color: var(--text); }
 .btn-icon.del:hover { border-color: var(--danger); color: var(--danger); background: #fff0f0; }
 
+/* ─── SIGNATURE PAD ─────────────────────────── */
+.sig-wrap {
+  border: 2px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  position: relative;
+  overflow: hidden;
+  cursor: crosshair;
+}
+.sig-wrap canvas { display: block; width: 100%; height: 160px; touch-action: none; }
+.sig-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  color: #ccc;
+  font-size: 13px;
+  gap: 6px;
+}
+.sig-placeholder.hidden { display: none; }
+.sig-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.sig-status { display: flex; align-items: center; gap: 5px; }
+.sig-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+.sig-dot.signed { background: #16a34a; }
+
 /* ─── DRAWER TABS ───────────────────────────── */
 .drawer-tabs {
   display: flex;
@@ -4024,8 +4058,25 @@ function ftExport() {
     </div>
 
     <div class="drawer-section">Notlar</div>
-    <div class="form-field">
+    <div class="form-field" style="margin-bottom:16px">
       <textarea id="iz-form-notlar" rows="2" placeholder="Ek bilgiler..."></textarea>
+    </div>
+
+    <div class="drawer-section">Personel İmzası <span style="color:var(--danger);font-size:11px">* Zorunlu</span></div>
+    <div style="margin-bottom:4px">
+      <div class="sig-wrap" id="iz-sig-wrap">
+        <canvas id="iz-sig-canvas"></canvas>
+        <div class="sig-placeholder" id="iz-sig-placeholder">
+          ✍ Lütfen yukarıdaki alana imzanızı atın
+        </div>
+      </div>
+      <div class="sig-toolbar">
+        <div class="sig-status">
+          <div class="sig-dot" id="iz-sig-dot"></div>
+          <span id="iz-sig-label">İmza bekleniyor</span>
+        </div>
+        <button type="button" class="btn btn-outline" style="font-size:11px;padding:4px 12px" onclick="izImzaTemizle()">🗑 Temizle</button>
+      </div>
     </div>
   </div>
   <div class="drawer-footer" style="gap:8px">
@@ -4509,6 +4560,7 @@ async function openIzinDrawer(id) {
   ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-notlar','iz-form-onaylayan'].forEach(fid => {
     const el = document.getElementById(fid); if (el) el.value = '';
   });
+  izImzaTemizle();
   document.getElementById('iz-form-personel-id').value = '';
   document.getElementById('iz-form-tur').value = 'yillik';
   document.getElementById('iz-form-talep').value = new Date().toISOString().split('T')[0];
@@ -4533,6 +4585,7 @@ async function openIzinDrawer(id) {
     document.getElementById('iz-form-vekil').value           = iz.vekil_ad_soyad || '';
     document.getElementById('iz-form-adres').value           = iz.izin_adresi || '';
     document.getElementById('iz-form-notlar').value          = iz.notlar || '';
+    if (iz.imza) izImzaYukle(iz.imza);
 
     const bilgi = document.getElementById('iz-personel-bilgi');
     bilgi.style.display = 'block';
@@ -4549,6 +4602,7 @@ async function openIzinDrawer(id) {
     }
   }
 
+  izImzaInit();
   overlay.classList.add('open');
   drawer.classList.add('open');
 }
@@ -4584,6 +4638,97 @@ function closeIzinDrawer() {
   document.getElementById('iz-drawer-overlay').classList.remove('open');
   document.getElementById('iz-drawer').classList.remove('open');
   izEditId = null;
+}
+
+// ── İMZA PAD ────────────────────────────────────
+let izSigDrawing = false;
+let izSigSigned  = false;
+let izSigCtx     = null;
+let izSigCanvas  = null;
+let izSigInited  = false;
+
+function izImzaInit() {
+  if (izSigInited) { izImzaTemizle(); return; }
+  izSigCanvas = document.getElementById('iz-sig-canvas');
+  if (!izSigCanvas) return;
+  const wrap = izSigCanvas.parentElement;
+  const dpr  = window.devicePixelRatio || 1;
+  const w    = wrap.clientWidth  || 460;
+  const h    = 160;
+  izSigCanvas.width  = w * dpr;
+  izSigCanvas.height = h * dpr;
+  izSigCtx = izSigCanvas.getContext('2d');
+  izSigCtx.scale(dpr, dpr);
+  izSigCtx.strokeStyle = '#1e293b';
+  izSigCtx.lineWidth   = 2;
+  izSigCtx.lineCap     = 'round';
+  izSigCtx.lineJoin    = 'round';
+
+  const pos = (e) => {
+    const r = izSigCanvas.getBoundingClientRect();
+    const src = e.touches ? e.touches[0] : e;
+    return { x: src.clientX - r.left, y: src.clientY - r.top };
+  };
+
+  const start = (e) => {
+    e.preventDefault();
+    izSigDrawing = true;
+    const p = pos(e);
+    izSigCtx.beginPath();
+    izSigCtx.moveTo(p.x, p.y);
+  };
+  const move = (e) => {
+    e.preventDefault();
+    if (!izSigDrawing) return;
+    const p = pos(e);
+    izSigCtx.lineTo(p.x, p.y);
+    izSigCtx.stroke();
+    if (!izSigSigned) {
+      izSigSigned = true;
+      document.getElementById('iz-sig-placeholder').classList.add('hidden');
+      document.getElementById('iz-sig-dot').classList.add('signed');
+      document.getElementById('iz-sig-label').textContent = 'İmza alındı';
+    }
+  };
+  const stop  = () => { izSigDrawing = false; };
+
+  izSigCanvas.addEventListener('mousedown',  start);
+  izSigCanvas.addEventListener('mousemove',  move);
+  izSigCanvas.addEventListener('mouseup',    stop);
+  izSigCanvas.addEventListener('mouseleave', stop);
+  izSigCanvas.addEventListener('touchstart', start, { passive: false });
+  izSigCanvas.addEventListener('touchmove',  move,  { passive: false });
+  izSigCanvas.addEventListener('touchend',   stop);
+  izSigInited = true;
+}
+
+function izImzaTemizle() {
+  if (!izSigCtx || !izSigCanvas) return;
+  izSigCtx.clearRect(0, 0, izSigCanvas.width, izSigCanvas.height);
+  izSigSigned = false;
+  document.getElementById('iz-sig-placeholder').classList.remove('hidden');
+  document.getElementById('iz-sig-dot').classList.remove('signed');
+  document.getElementById('iz-sig-label').textContent = 'İmza bekleniyor';
+}
+
+function izImzaYukle(base64) {
+  if (!izSigCtx || !izSigCanvas || !base64) return;
+  const img = new Image();
+  img.onload = () => {
+    const dpr = window.devicePixelRatio || 1;
+    izSigCtx.clearRect(0, 0, izSigCanvas.width, izSigCanvas.height);
+    izSigCtx.drawImage(img, 0, 0, izSigCanvas.width / dpr, 160);
+    izSigSigned = true;
+    document.getElementById('iz-sig-placeholder').classList.add('hidden');
+    document.getElementById('iz-sig-dot').classList.add('signed');
+    document.getElementById('iz-sig-label').textContent = 'Kayıtlı imza yüklendi';
+  };
+  img.src = base64;
+}
+
+function izImzaAl() {
+  if (!izSigCanvas || !izSigSigned) return null;
+  return izSigCanvas.toDataURL('image/png');
 }
 
 function izGunHesapla() {
@@ -4634,6 +4779,14 @@ async function saveIzin() {
   const bit = document.getElementById('iz-form-bit').value;
   if (!bas || !bit) { showToast('Başlangıç ve bitiş tarihi zorunludur', 'error'); return; }
 
+  const imza = izImzaAl();
+  if (!imza) {
+    showToast('Personel imzası zorunludur', 'error');
+    document.getElementById('iz-sig-wrap').style.border = '2px solid var(--danger)';
+    setTimeout(() => { document.getElementById('iz-sig-wrap').style.border = ''; }, 2500);
+    return;
+  }
+
   const body = {
     personel_id:        personelId,
     izin_turu:          document.getElementById('iz-form-tur').value,
@@ -4645,6 +4798,7 @@ async function saveIzin() {
     vekil_ad_soyad:     document.getElementById('iz-form-vekil').value || null,
     izin_adresi:        document.getElementById('iz-form-adres').value || null,
     notlar:             document.getElementById('iz-form-notlar').value || null,
+    imza,
   };
 
   const url    = izEditId ? '/izinler/' + izEditId : '/izinler';
