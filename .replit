@@ -50,4 +50,4 @@ JWT_SECRET = "muttas-liman-super-secret-key-change-in-prod"
 
 [deployment]
 deploymentTarget = "autoscale"
-run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "-k", "uvicorn.workers.UvicornWorker", "-w", "2", "main:app"]
+run = ["gunicorn", "--bind=0.0.0.0:5000", "--reuse-port", "-k", "uvicorn.workers.UvicornWorker", "-w", "2", "personel_app:app"]
