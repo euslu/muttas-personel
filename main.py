@@ -199,6 +199,17 @@ MIGRATE_SQL = """
 ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS basvuru_token VARCHAR(36) UNIQUE;
 ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS eposta        VARCHAR(255);
 ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS tc_kimlik     VARCHAR(20);
+
+CREATE TABLE IF NOT EXISTS personel_evraklari (
+    id           SERIAL PRIMARY KEY,
+    personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL,
+    evrak_adi    VARCHAR(255) NOT NULL,
+    dosya_adi    VARCHAR(255) NOT NULL,
+    dosya_yolu   TEXT NOT NULL,
+    dosya_boyut  BIGINT,
+    mime_type    VARCHAR(100),
+    yuklendi_at  TIMESTAMPTZ DEFAULT NOW()
+);
 """
 
 

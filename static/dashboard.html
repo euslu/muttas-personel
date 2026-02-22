@@ -736,6 +736,45 @@ tr:hover td { background: var(--bg-soft); }
 .btn-icon:hover { background: var(--bg-soft); color: var(--text); }
 .btn-icon.del:hover { border-color: var(--danger); color: var(--danger); background: #fff0f0; }
 
+/* ─── DRAWER TABS ───────────────────────────── */
+.drawer-tabs {
+  display: flex;
+  border-bottom: 2px solid var(--border);
+  background: var(--bg-soft);
+  padding: 0 16px;
+}
+.drawer-tab {
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  padding: 12px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+  cursor: pointer;
+  transition: color 0.15s, border-color 0.15s;
+}
+.drawer-tab:hover { color: var(--text); }
+.drawer-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+/* ─── EVRAK LIST ─────────────────────────────── */
+.evrak-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 8px;
+  background: var(--bg);
+}
+.evrak-icon { font-size: 22px; flex-shrink: 0; }
+.evrak-info { flex: 1; min-width: 0; }
+.evrak-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.evrak-meta { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.evrak-actions { display: flex; gap: 4px; flex-shrink: 0; }
+
 /* ─── SORTABLE TH ───────────────────────────── */
 .th-sort {
   cursor: pointer;
@@ -3668,7 +3707,13 @@ function ftExport() {
     <h3 id="prs-drawer-title">Personel Ekle</h3>
     <button class="drawer-close" onclick="closePersonelDrawer()">✕</button>
   </div>
-  <div class="drawer-body">
+  <div class="drawer-body" style="padding:0">
+    <div class="drawer-tabs">
+      <button class="drawer-tab active" id="prs-tab-bilgiler" onclick="switchPrsTab('bilgiler')">Bilgiler</button>
+      <button class="drawer-tab" id="prs-tab-evraklar" onclick="switchPrsTab('evraklar')">Evraklar</button>
+    </div>
+
+    <div id="prs-panel-bilgiler" style="padding:20px">
     <div class="drawer-section">Temel Bilgiler</div>
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field" style="grid-column:span 2">
@@ -3845,8 +3890,35 @@ function ftExport() {
     <div class="form-field">
       <textarea id="prs-form-notlar" rows="2" placeholder="Ek bilgiler..."></textarea>
     </div>
+    </div><!-- /prs-panel-bilgiler -->
+
+    <div id="prs-panel-evraklar" style="display:none;padding:20px">
+      <div style="margin-bottom:16px">
+        <div class="drawer-section" style="margin-bottom:12px">Evrak Yükle</div>
+        <div class="form-grid-2" style="margin-bottom:8px">
+          <div class="form-field" style="grid-column:span 2">
+            <label>Evrak Adı / Açıklama *</label>
+            <input type="text" id="ev-form-ad" placeholder="Örn: Nüfus Cüzdanı, SGK İşe Giriş Bildirimi">
+          </div>
+          <div class="form-field" style="grid-column:span 2">
+            <label>Dosya *</label>
+            <input type="file" id="ev-form-dosya" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+          </div>
+        </div>
+        <button class="btn btn-primary" style="width:100%" onclick="evrakYukle()">⬆ Yükle</button>
+      </div>
+
+      <div class="drawer-section" style="margin-bottom:12px">Yüklü Evraklar</div>
+      <div id="ev-list">
+        <div class="empty" style="padding:24px 0">
+          <div class="empty-icon">📄</div>
+          <h3>Henüz evrak yok</h3>
+        </div>
+      </div>
+    </div><!-- /prs-panel-evraklar -->
+
   </div>
-  <div class="drawer-footer" style="gap:8px">
+  <div class="drawer-footer" style="gap:8px" id="prs-drawer-footer">
     <button class="btn btn-outline" onclick="closePersonelDrawer()">İptal</button>
     <button class="btn btn-primary" onclick="savePersonel()">💾 Kaydet</button>
   </div>
@@ -4126,6 +4198,7 @@ function openPersonelDrawer(id) {
       });
   }
 
+  switchPrsTab('bilgiler');
   overlay.classList.add('open');
   drawer.classList.add('open');
 }
@@ -4134,6 +4207,85 @@ function closePersonelDrawer() {
   document.getElementById('prs-drawer-overlay').classList.remove('open');
   document.getElementById('prs-drawer').classList.remove('open');
   prsEditId = null;
+}
+
+function switchPrsTab(tab) {
+  ['bilgiler','evraklar'].forEach(t => {
+    document.getElementById('prs-panel-' + t).style.display = t === tab ? '' : 'none';
+    document.getElementById('prs-tab-'   + t).classList.toggle('active', t === tab);
+  });
+  const footer = document.getElementById('prs-drawer-footer');
+  if (footer) footer.style.display = tab === 'bilgiler' ? '' : 'none';
+  if (tab === 'evraklar' && prsEditId) loadEvraklar(prsEditId);
+}
+
+async function loadEvraklar(pid) {
+  const list = document.getElementById('ev-list');
+  list.innerHTML = '<div style="color:var(--text-3);font-size:13px;padding:8px 0">Yükleniyor...</div>';
+  const res  = await fetch('/personel/' + pid + '/evraklar', { headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) { list.innerHTML = '<div style="color:var(--danger)">Hata oluştu.</div>'; return; }
+  const rows = await res.json();
+  if (!rows.length) {
+    list.innerHTML = '<div class="empty" style="padding:24px 0"><div class="empty-icon">📄</div><h3>Henüz evrak yok</h3></div>';
+    return;
+  }
+  const fmtBoyut = b => b ? (b > 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB') : '';
+  const fmtTar   = s => s ? s.split('T')[0].split('-').reverse().join('.') : '';
+  const icon = mime => {
+    if (!mime) return '📄';
+    if (mime.includes('pdf'))   return '📕';
+    if (mime.includes('image')) return '🖼';
+    if (mime.includes('word') || mime.includes('document')) return '📝';
+    if (mime.includes('sheet') || mime.includes('excel'))   return '📊';
+    return '📄';
+  };
+  list.innerHTML = rows.map(r => `
+    <div class="evrak-item">
+      <div class="evrak-icon">${icon(r.mime_type)}</div>
+      <div class="evrak-info">
+        <div class="evrak-name" title="${r.evrak_adi}">${r.evrak_adi}</div>
+        <div class="evrak-meta">${r.dosya_adi} &nbsp;·&nbsp; ${fmtBoyut(r.dosya_boyut)} &nbsp;·&nbsp; ${fmtTar(r.yuklendi_at)}</div>
+      </div>
+      <div class="evrak-actions">
+        <a class="btn-icon" title="İndir" href="/personel/evrak/${r.id}/indir?token=${getToken()}" download>⬇</a>
+        <button class="btn-icon del" title="Sil" onclick="evrakSil(${r.id})">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function evrakYukle() {
+  if (!prsEditId) { showToast('Önce personeli kaydedin', 'error'); return; }
+  const ad    = document.getElementById('ev-form-ad').value.trim();
+  const file  = document.getElementById('ev-form-dosya').files[0];
+  if (!ad)   { showToast('Evrak adı zorunludur', 'error'); return; }
+  if (!file) { showToast('Dosya seçin', 'error'); return; }
+
+  const fd = new FormData();
+  fd.append('evrak_adi', ad);
+  fd.append('dosya', file);
+
+  const res = await fetch('/personel/' + prsEditId + '/evraklar', {
+    method: 'POST',
+    headers: { Authorization: 'Bearer ' + getToken() },
+    body: fd,
+  });
+  if (!res.ok) { showToast('Yükleme başarısız', 'error'); return; }
+  showToast('Evrak yüklendi', 'success');
+  document.getElementById('ev-form-ad').value = '';
+  document.getElementById('ev-form-dosya').value = '';
+  loadEvraklar(prsEditId);
+}
+
+async function evrakSil(eid) {
+  if (!confirm('Bu evrak silinecek. Onaylıyor musunuz?')) return;
+  const res = await fetch('/personel/evrak/' + eid, {
+    method: 'DELETE',
+    headers: { Authorization: 'Bearer ' + getToken() },
+  });
+  if (!res.ok) { showToast('Silme başarısız', 'error'); return; }
+  showToast('Evrak silindi', 'success');
+  loadEvraklar(prsEditId);
 }
 
 async function savePersonel() {

@@ -1,13 +1,20 @@
 import os
+import shutil
+import uuid
+from pathlib import Path
 from typing import Optional
 from datetime import date
 
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File, Form
+from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import jwt, JWTError
 from pydantic import BaseModel
 
 from db import get_pool
+
+UPLOAD_DIR = Path("uploads/personel")
+UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 router = APIRouter(prefix="/personel", tags=["personel"])
 
@@ -249,3 +256,104 @@ async def delete_personel(pid: int, token: dict = Depends(decode_token)):
     async with pool.acquire() as conn:
         await conn.execute("UPDATE personel SET aktif = FALSE WHERE id = $1", pid)
         return {"ok": True}
+
+
+# ── EVRAK ENDPOINTS ──────────────────────────────────────────
+
+@router.get("/{pid}/evraklar")
+async def list_evraklar(pid: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT id, evrak_adi, dosya_adi, dosya_boyut, mime_type, yuklendi_at "
+            "FROM personel_evraklari WHERE personel_id = $1 ORDER BY yuklendi_at DESC",
+            pid
+        )
+        return [
+            {
+                "id":          r["id"],
+                "evrak_adi":   r["evrak_adi"],
+                "dosya_adi":   r["dosya_adi"],
+                "dosya_boyut": r["dosya_boyut"],
+                "mime_type":   r["mime_type"],
+                "yuklendi_at": r["yuklendi_at"].isoformat() if r["yuklendi_at"] else None,
+            }
+            for r in rows
+        ]
+
+
+@router.post("/{pid}/evraklar", status_code=201)
+async def upload_evrak(
+    pid:       int,
+    evrak_adi: str = Form(...),
+    dosya:     UploadFile = File(...),
+    token:     dict = Depends(decode_token),
+):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM personel WHERE id = $1", pid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+
+    dest_dir = UPLOAD_DIR / str(pid)
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    ext      = Path(dosya.filename).suffix
+    unique   = f"{uuid.uuid4().hex}{ext}"
+    dest     = dest_dir / unique
+
+    with dest.open("wb") as f:
+        shutil.copyfileobj(dosya.file, f)
+
+    boyut = dest.stat().st_size
+
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            """INSERT INTO personel_evraklari
+               (personel_id, evrak_adi, dosya_adi, dosya_yolu, dosya_boyut, mime_type)
+               VALUES ($1, $2, $3, $4, $5, $6) RETURNING id""",
+            pid, evrak_adi, dosya.filename, str(dest), boyut, dosya.content_type,
+        )
+    return {"id": row["id"]}
+
+
+@router.get("/evrak/{eid}/indir")
+async def indir_evrak(eid: int, token: Optional[str] = Query(None),
+                      credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))):
+    t = token or (credentials.credentials if credentials else None)
+    if not t:
+        raise HTTPException(status_code=401, detail="Token gerekli.")
+    try:
+        jwt.decode(t, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Geçersiz token.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT dosya_yolu, dosya_adi, mime_type FROM personel_evraklari WHERE id = $1", eid
+        )
+    if not row:
+        raise HTTPException(status_code=404, detail="Evrak bulunamadı.")
+    path = Path(row["dosya_yolu"])
+    if not path.exists():
+        raise HTTPException(status_code=404, detail="Dosya bulunamadı.")
+    return FileResponse(path, media_type=row["mime_type"] or "application/octet-stream",
+                        filename=row["dosya_adi"])
+
+
+@router.delete("/evrak/{eid}")
+async def delete_evrak(eid: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT dosya_yolu FROM personel_evraklari WHERE id = $1", eid
+        )
+        if not row:
+            raise HTTPException(status_code=404, detail="Evrak bulunamadı.")
+        await conn.execute("DELETE FROM personel_evraklari WHERE id = $1", eid)
+
+    path = Path(row["dosya_yolu"])
+    if path.exists():
+        path.unlink()
+    return {"ok": True}
