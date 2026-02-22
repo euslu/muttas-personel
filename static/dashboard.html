@@ -1714,9 +1714,71 @@ tr:hover td { background: var(--bg-soft); }
             <input class="form-input" type="text" id="prs-q" placeholder="Ad, TC veya telefon..." style="width:200px" oninput="loadPersonel(1)">
             <select class="form-input" id="prs-bolum" style="width:160px" onchange="loadPersonel(1)">
               <option value="">Tüm Bölümler</option>
+              <option>TOPLU TAŞIMA</option>
+              <option>DENİZ KIYI</option>
+              <option>GÜVENLİK</option>
+              <option>MERKEZ BÜRO</option>
+              <option>PARKOMAT</option>
+              <option>MENTEŞE OTOPARK</option>
+              <option>OTOPARK</option>
+              <option>B.OTOPARK</option>
+              <option>BAKIM ONARIM</option>
+              <option>FETHİYE WC</option>
+              <option>BODRUM WC</option>
+              <option>GÖCEK OTOPARKI</option>
+              <option>BODRUM</option>
+              <option>FETHİYE BÜRO</option>
+              <option>MERKEZ BÜRO (A.)</option>
             </select>
             <select class="form-input" id="prs-unvan" style="width:160px" onchange="loadPersonel(1)">
               <option value="">Tüm Ünvanlar</option>
+              <option>ŞOFÖR</option>
+              <option>GÜVENLİK GÖREVLİSİ</option>
+              <option>BÜRO MEMURU</option>
+              <option>OTOPARK GÖREVLİSİ</option>
+              <option>TEMİZLİK GÖREVLİSİ</option>
+              <option>PARKOMAT GÖREVLİSİ</option>
+              <option>BEDEN İŞÇİSİ (TEMİZLİK)</option>
+              <option>PALAMARCI</option>
+              <option>LOJİSTİK OPERASYON ELEMANI</option>
+              <option>MİSAFİR İLİŞKİLERİ GÖREVLİSİ</option>
+              <option>BİLET SATIŞ ELEMANI</option>
+              <option>BİLET SATIŞ SORUMLUSU</option>
+              <option>MEKANİK BAKIM ONARIMCISI</option>
+              <option>BAKIM ONARIM SORUMLUSU</option>
+              <option>TAMİR BAKIM ONARIMCISI</option>
+              <option>ELEKTRİK TEKNİSYENİ</option>
+              <option>ELEKTRİK TEKNİKERİ</option>
+              <option>ELEKTRİKÇİ</option>
+              <option>ELEKTRİKÇİ (GENEL)</option>
+              <option>OTOMOTİV ELEKTRİKÇİSİ</option>
+              <option>OTOMOTİV MEKANİKERİ</option>
+              <option>OTOMOTİV MEKANİKÇİSİ</option>
+              <option>OTOMOTİV KAPORTA USTASI</option>
+              <option>OTO KAPORTA VE BOYA USTASI</option>
+              <option>DİZEL OTOMOTİV MEKANİKERİ</option>
+              <option>KIZAKÇI (GEMİ)</option>
+              <option>DALGIÇ (BALIK ADAM)</option>
+              <option>KAYNAKÇI</option>
+              <option>SIHHİ TESİSATÇI</option>
+              <option>FORMEN</option>
+              <option>KOORDİNASYON SORUMLUSU</option>
+              <option>İLÇE ULAŞIM KOORDİNATÖRÜ</option>
+              <option>İLÇE KOORDİNATÖRÜ</option>
+              <option>LİMAN ŞEFİ</option>
+              <option>ÇEKEK YERİ SORUMLUSU</option>
+              <option>OTOPARK SAHA SORUMLUSU</option>
+              <option>TEKNİK İŞLER PERSONELİ</option>
+              <option>TEKNİK İŞLER SORUMLUSU</option>
+              <option>MUHASEBE MESLEK ELEMANI</option>
+              <option>FİNANS HİZMETLERİ ELEMANI</option>
+              <option>FİNANS SORUMLUSU</option>
+              <option>SATIN ALMA SORUMLUSU</option>
+              <option>MALİ MÜŞAVİR</option>
+              <option>KİMYAGER</option>
+              <option>İK/İDARİ İŞLER PERSONELİ</option>
+              <option>İK/İDARİ İŞLER SORUMLUSU</option>
+              <option>GENEL MÜDÜR</option>
             </select>
             <select class="form-input" id="prs-ilce" style="width:130px" onchange="loadPersonel(1)">
               <option value="">Tüm İlçeler</option>
@@ -3609,7 +3671,24 @@ function ftExport() {
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field">
         <label>Bölüm</label>
-        <input type="text" id="prs-form-bolum" placeholder="Bölüm adı">
+        <input type="text" id="prs-form-bolum" placeholder="Bölüm seçin veya yazın" list="bolum-datalist" autocomplete="off">
+        <datalist id="bolum-datalist">
+          <option>TOPLU TAŞIMA</option>
+          <option>DENİZ KIYI</option>
+          <option>GÜVENLİK</option>
+          <option>MERKEZ BÜRO</option>
+          <option>PARKOMAT</option>
+          <option>MENTEŞE OTOPARK</option>
+          <option>OTOPARK</option>
+          <option>B.OTOPARK</option>
+          <option>BAKIM ONARIM</option>
+          <option>FETHİYE WC</option>
+          <option>BODRUM WC</option>
+          <option>GÖCEK OTOPARKI</option>
+          <option>BODRUM</option>
+          <option>FETHİYE BÜRO</option>
+          <option>MERKEZ BÜRO (A.)</option>
+        </datalist>
       </div>
       <div class="form-field">
         <label>Ünvan</label>
@@ -3904,20 +3983,7 @@ const IZIN_DURUM_COLOR = {
   tamamlandi:    '#64748b',
 };
 
-let _prsMetaLoaded = false;
-async function loadPersonelMeta() {
-  if (_prsMetaLoaded) return;
-  const res = await fetch('/personel/meta', { headers: { Authorization: 'Bearer ' + getToken() } });
-  if (!res.ok) return;
-  const d = await res.json();
-
-  const bolumSel = document.getElementById('prs-bolum');
-  const unvanSel = document.getElementById('prs-unvan');
-
-  d.bolumler.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bolumSel.appendChild(o); });
-  d.unvanlar.forEach(u => { const o = document.createElement('option'); o.value = u; o.textContent = u; unvanSel.appendChild(o); });
-  _prsMetaLoaded = true;
-}
+function loadPersonelMeta() { /* bölüm / ünvan / ilçe artık hardcoded */ }
 
 async function loadPersonel(page) {
   prsPage = page || 1;
