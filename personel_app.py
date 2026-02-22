@@ -152,10 +152,12 @@ app.include_router(self_servis_router)
 
 
 @app.get("/")
+@app.get("/login.html")
 def root():
     return FileResponse("static/login.html")
 
 @app.get("/dashboard")
+@app.get("/dashboard.html")
 def dashboard():
     return FileResponse("static/dashboard.html")
 
