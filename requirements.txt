@@ -1,0 +1,9 @@
+fastapi==0.129.0
+uvicorn==0.41.0
+gunicorn==25.1.0
+asyncpg==0.31.0
+passlib==1.7.4
+pydantic==2.12.5
+python-jose==3.5.0
+python-multipart==0.0.22
+starlette==0.52.1

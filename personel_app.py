@@ -155,4 +155,4 @@ def health():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("personel_app:app", host="0.0.0.0", port=5000, reload=True)
+    uvicorn.run("personel_app:app", host="0.0.0.0", port=8000, reload=True)
