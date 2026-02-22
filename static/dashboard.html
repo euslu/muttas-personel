@@ -1017,6 +1017,15 @@ tr:hover td { background: var(--bg-soft); }
         <span class="icon">🧾</span> Faturalar
       </button>
 
+      <div class="nav-sep"></div>
+      <div class="sb-section-label">İnsan Kaynakları</div>
+      <button class="nav-item" onclick="navigate('personel', this)">
+        <span class="icon">👤</span> Personel Listesi
+      </button>
+      <button class="nav-item" onclick="navigate('izinler', this)">
+        <span class="icon">📅</span> İzin Yönetimi
+      </button>
+
       <!-- Sadece admin -->
       <div id="admin-section" style="display:none">
         <div class="nav-sep"></div>
@@ -1698,6 +1707,146 @@ tr:hover td { background: var(--bg-soft); }
         </div>
       </div>
 
+      <!-- ── Personel ── -->
+      <div class="page" id="page-personel">
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-body" style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <input class="form-input" type="text" id="prs-q" placeholder="Ad, TC veya telefon..." style="width:200px" oninput="loadPersonel(1)">
+            <select class="form-input" id="prs-bolum" style="width:160px" onchange="loadPersonel(1)">
+              <option value="">Tüm Bölümler</option>
+            </select>
+            <select class="form-input" id="prs-unvan" style="width:160px" onchange="loadPersonel(1)">
+              <option value="">Tüm Ünvanlar</option>
+            </select>
+            <select class="form-input" id="prs-ilce" style="width:130px" onchange="loadPersonel(1)">
+              <option value="">Tüm İlçeler</option>
+            </select>
+            <select class="form-input" id="prs-aktif" style="width:120px" onchange="loadPersonel(1)">
+              <option value="true">Aktif</option>
+              <option value="false">Pasif</option>
+              <option value="">Tümü</option>
+            </select>
+            <button class="btn btn-primary" style="margin-left:auto" onclick="openPersonelDrawer(null)">+ Personel Ekle</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Ad Soyad</th>
+                    <th>Bölüm</th>
+                    <th>Ünvan</th>
+                    <th>İlçe / Hizmet Noktası</th>
+                    <th>İşe Giriş</th>
+                    <th>Güv. Belgesi</th>
+                    <th>Telefon</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="personel-tbody">
+                  <tr><td colspan="10"><div class="empty"><div class="empty-icon">👤</div><h3>Yükleniyor...</h3></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border)">
+            <button class="pg-btn" id="prs-prev" onclick="loadPersonel(prsPage-1)">← Önceki</button>
+            <span id="prs-page-info" style="font-size:13px;color:var(--text-2)">—</span>
+            <button class="pg-btn" id="prs-next" onclick="loadPersonel(prsPage+1)">Sonraki →</button>
+            <select class="form-input" id="prs-per-page" style="width:80px;margin-left:auto" onchange="loadPersonel(1)">
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+        </div>
+      </div><!-- /page-personel -->
+
+      <!-- ── İzin Yönetimi ── -->
+      <div class="page" id="page-izinler">
+        <div class="stats-grid" style="margin-bottom:14px">
+          <div class="stat-card" id="iz-card-bekleyen">
+            <div class="stat-label">Bekleyen İzinler</div>
+            <div class="stat-value yellow" id="iz-stat-bekleyen">—</div>
+            <div class="stat-sub">Onay bekliyor</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bu Yıl Onaylanan</div>
+            <div class="stat-value green" id="iz-stat-onaylanan">—</div>
+            <div class="stat-sub">Onaylananlar</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Bu Yıl Toplam Gün</div>
+            <div class="stat-value blue" id="iz-stat-gun">—</div>
+            <div class="stat-sub">Kullanılan izin günü</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:14px">
+          <div class="card-body" style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <input class="form-input" type="text" id="iz-q" placeholder="Personel adı..." style="width:200px" oninput="loadIzinler(1)">
+            <select class="form-input" id="iz-tur" style="width:150px" onchange="loadIzinler(1)">
+              <option value="">Tüm Türler</option>
+              <option value="yillik">Yıllık İzin</option>
+              <option value="ucretsiz">Ücretsiz İzin</option>
+              <option value="mazeret">Mazeret İzni</option>
+              <option value="hastalik">Hastalık İzni</option>
+              <option value="dogum">Doğum İzni</option>
+              <option value="olum">Ölüm İzni</option>
+              <option value="diger">Diğer</option>
+            </select>
+            <select class="form-input" id="iz-durum" style="width:160px" onchange="loadIzinler(1)">
+              <option value="">Tüm Durumlar</option>
+              <option value="beklemede">Beklemede</option>
+              <option value="ik_onayladi">İK Onayladı</option>
+              <option value="mudur_onayladi">Müdür Onayladı</option>
+              <option value="onaylandi">YK Onaylandı</option>
+              <option value="reddedildi">Reddedildi</option>
+              <option value="tamamlandi">Tamamlandı</option>
+            </select>
+            <select class="form-input" id="iz-yil" style="width:100px" onchange="loadIzinler(1)">
+            </select>
+            <button class="btn btn-primary" style="margin-left:auto" onclick="openIzinDrawer(null)">+ İzin Talebi Ekle</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding:0">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Personel</th>
+                    <th>Bölüm / Ünvan</th>
+                    <th>İzin Türü</th>
+                    <th>Başlangıç</th>
+                    <th>Bitiş</th>
+                    <th>Gün</th>
+                    <th>Talep Tarihi</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="izinler-tbody">
+                  <tr><td colspan="10"><div class="empty"><div class="empty-icon">📅</div><h3>Yükleniyor...</h3></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border)">
+            <button class="pg-btn" id="iz-prev" onclick="loadIzinler(izPage-1)">← Önceki</button>
+            <span id="iz-page-info" style="font-size:13px;color:var(--text-2)">—</span>
+            <button class="pg-btn" id="iz-next" onclick="loadIzinler(izPage+1)">Sonraki →</button>
+          </div>
+        </div>
+      </div><!-- /page-izinler -->
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
@@ -1709,7 +1858,9 @@ const PAGE_TITLES = {
   baglama:      'Bağlama Başvuruları',
   tekneler:     'Tekneler',
   faturalar:    'Faturalar',
-  kullanicilar: 'Kullanıcılar'
+  kullanicilar: 'Kullanıcılar',
+  personel:     'Personel Listesi',
+  izinler:      'İzin Yönetimi',
 };
 
 let currentUser = null;
@@ -1838,6 +1989,8 @@ function navigate(page, el) {
   if (page === 'baglama') initBasvurular();
   if (page === 'tekneler') initTekneler();
   if (page === 'faturalar') initFaturalar();
+  if (page === 'personel') { loadPersonelMeta(); loadPersonel(1); }
+  if (page === 'izinler')  loadIzinler(1);
 }
 
 function updateTopbar(page) {
@@ -3382,6 +3535,820 @@ function ftExport() {
     <button class="btn btn-primary" onclick="saveBasvuru()">💾 Kaydet</button>
   </div>
 </div>
+
+<!-- ══ PERSONEL DRAWER ══ -->
+<div class="drawer-overlay" id="prs-drawer-overlay" onclick="closePersonelDrawer()"></div>
+<div class="drawer" id="prs-drawer">
+  <div class="drawer-header">
+    <h3 id="prs-drawer-title">Personel Ekle</h3>
+    <button class="drawer-close" onclick="closePersonelDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Temel Bilgiler</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field" style="grid-column:span 2">
+        <label>Ad Soyad *</label>
+        <input type="text" id="prs-form-ad-soyad" placeholder="Ad Soyad">
+      </div>
+      <div class="form-field">
+        <label>TC Kimlik No</label>
+        <input type="text" id="prs-form-tc" placeholder="11 haneli" maxlength="11">
+      </div>
+      <div class="form-field">
+        <label>SGK Sicil</label>
+        <input type="text" id="prs-form-sgk" placeholder="SGK Sicil No">
+      </div>
+      <div class="form-field">
+        <label>Cinsiyet</label>
+        <select id="prs-form-cinsiyet">
+          <option value="">Seçiniz</option>
+          <option value="ERKEK">Erkek</option>
+          <option value="KADIN">Kadın</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Medeni Hal</label>
+        <select id="prs-form-medeni">
+          <option value="">Seçiniz</option>
+          <option value="EVLİ">Evli</option>
+          <option value="BEKAR">Bekar</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Doğum Tarihi</label>
+        <input type="date" id="prs-form-dogum-tarihi">
+      </div>
+      <div class="form-field">
+        <label>Doğum Yeri</label>
+        <input type="text" id="prs-form-dogum-yeri" placeholder="İl/İlçe">
+      </div>
+      <div class="form-field">
+        <label>Kan Grubu</label>
+        <input type="text" id="prs-form-kan" placeholder="A RH+">
+      </div>
+      <div class="form-field">
+        <label>Çocuk Sayısı</label>
+        <input type="number" id="prs-form-cocuk" min="0" value="0">
+      </div>
+    </div>
+
+    <div class="drawer-section">Görev Bilgileri</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field">
+        <label>Bölüm</label>
+        <input type="text" id="prs-form-bolum" placeholder="Bölüm adı">
+      </div>
+      <div class="form-field">
+        <label>Ünvan</label>
+        <input type="text" id="prs-form-unvan" placeholder="Ünvan">
+      </div>
+      <div class="form-field">
+        <label>Maliyet Merkezi</label>
+        <input type="text" id="prs-form-maliyet" placeholder="Maliyet Merkezi">
+      </div>
+      <div class="form-field">
+        <label>Çalıştığı İlçe</label>
+        <input type="text" id="prs-form-ilce" placeholder="İlçe">
+      </div>
+      <div class="form-field" style="grid-column:span 2">
+        <label>Hizmet Noktası</label>
+        <input type="text" id="prs-form-hizmet" placeholder="Hizmet Noktası">
+      </div>
+      <div class="form-field">
+        <label>İşe Giriş Tarihi</label>
+        <input type="date" id="prs-form-ise-giris">
+      </div>
+      <div class="form-field">
+        <label>İşten Çıkış Tarihi</label>
+        <input type="date" id="prs-form-isten-cikis">
+      </div>
+      <div class="form-field" style="grid-column:span 2">
+        <label>Çıkış Kodu / Nedeni</label>
+        <input type="text" id="prs-form-cikis-kodu" placeholder="SGK çıkış kodu ve nedeni">
+      </div>
+      <div class="form-field">
+        <label>Meslek Kodu</label>
+        <input type="text" id="prs-form-meslek-kodu" placeholder="Kod">
+      </div>
+      <div class="form-field">
+        <label>Meslek Adı</label>
+        <input type="text" id="prs-form-meslek-adi" placeholder="Meslek adı">
+      </div>
+      <div class="form-field">
+        <label>Güvenlik Belgesi Geç. Tar.</label>
+        <input type="date" id="prs-form-guvenlik">
+      </div>
+      <div class="form-field">
+        <label>Sigortacılık Başlama</label>
+        <input type="date" id="prs-form-sigorta-bas">
+      </div>
+      <div class="form-field">
+        <label>Brüt Ücret (₺)</label>
+        <input type="number" id="prs-form-ucret" step="0.01" placeholder="0.00">
+      </div>
+      <div class="form-field">
+        <label>Öğrenim Durumu</label>
+        <select id="prs-form-ogrenim">
+          <option value="">Seçiniz</option>
+          <option value="İLKOKUL">İlkokul</option>
+          <option value="ORTAOKUL">Ortaokul</option>
+          <option value="LİSE">Lise</option>
+          <option value="ÖN LİSANS">Ön Lisans</option>
+          <option value="LİSANS">Lisans</option>
+          <option value="YÜKSEK LİSANS">Yüksek Lisans</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Sendika Üyeliği</label>
+        <input type="text" id="prs-form-sendika" placeholder="Üye / Yok / Kurum adı">
+      </div>
+      <div class="form-field">
+        <label>Engelli</label>
+        <select id="prs-form-engelli">
+          <option value="false">Hayır</option>
+          <option value="true">Evet</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="drawer-section">İletişim</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field">
+        <label>Telefon</label>
+        <input type="tel" id="prs-form-telefon" placeholder="5xx xxx xx xx">
+      </div>
+      <div class="form-field" style="grid-column:span 2">
+        <label>Adres</label>
+        <textarea id="prs-form-adres" rows="2" placeholder="Tam adres"></textarea>
+      </div>
+    </div>
+
+    <div class="drawer-section">Notlar</div>
+    <div class="form-field">
+      <textarea id="prs-form-notlar" rows="2" placeholder="Ek bilgiler..."></textarea>
+    </div>
+  </div>
+  <div class="drawer-footer" style="gap:8px">
+    <button class="btn btn-outline" onclick="closePersonelDrawer()">İptal</button>
+    <button class="btn btn-primary" onclick="savePersonel()">💾 Kaydet</button>
+  </div>
+</div>
+
+<!-- ══ İZİN DRAWER ══ -->
+<div class="drawer-overlay" id="iz-drawer-overlay" onclick="closeIzinDrawer()"></div>
+<div class="drawer" id="iz-drawer">
+  <div class="drawer-header">
+    <h3 id="iz-drawer-title">İzin Talebi</h3>
+    <button class="drawer-close" onclick="closeIzinDrawer()">✕</button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">Personel</div>
+    <div class="form-field" style="margin-bottom:12px;position:relative">
+      <label>Personel Adı *</label>
+      <input type="text" id="iz-form-personel-q" placeholder="Ad ile arayın..." autocomplete="off" oninput="izPersonelAra(this.value)">
+      <div id="iz-personel-list" class="autocomplete-list"></div>
+      <input type="hidden" id="iz-form-personel-id">
+    </div>
+    <div id="iz-personel-bilgi" style="display:none;background:var(--bg-2);border-radius:8px;padding:10px 14px;font-size:13px;margin-bottom:12px;color:var(--text-2)"></div>
+
+    <div class="drawer-section">İzin Bilgileri</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field">
+        <label>İzin Türü *</label>
+        <select id="iz-form-tur">
+          <option value="yillik">Yıllık İzin</option>
+          <option value="ucretsiz">Ücretsiz İzin</option>
+          <option value="mazeret">Mazeret İzni</option>
+          <option value="hastalik">Hastalık İzni</option>
+          <option value="dogum">Doğum İzni</option>
+          <option value="olum">Ölüm İzni</option>
+          <option value="diger">Diğer</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>Talep Tarihi</label>
+        <input type="date" id="iz-form-talep">
+      </div>
+      <div class="form-field">
+        <label>Başlangıç Tarihi *</label>
+        <input type="date" id="iz-form-bas" onchange="izGunHesapla()">
+      </div>
+      <div class="form-field">
+        <label>Bitiş Tarihi *</label>
+        <input type="date" id="iz-form-bit" onchange="izGunHesapla()">
+      </div>
+      <div class="form-field">
+        <label>Gün Sayısı</label>
+        <input type="number" id="iz-form-gun" min="1" placeholder="Otomatik hesaplanır">
+      </div>
+      <div class="form-field">
+        <label>Kullanılabilir Gün</label>
+        <input type="number" id="iz-form-kullanilabilir" min="0" placeholder="Hak edilen gün">
+      </div>
+    </div>
+
+    <div class="drawer-section">Vekalet & Adres</div>
+    <div class="form-grid-2" style="margin-bottom:12px">
+      <div class="form-field" style="grid-column:span 2">
+        <label>Vekalet Edecek Personel</label>
+        <input type="text" id="iz-form-vekil" placeholder="Ad Soyad">
+      </div>
+      <div class="form-field" style="grid-column:span 2">
+        <label>İzinde Bulunulacak Adres / Telefon</label>
+        <textarea id="iz-form-adres" rows="2" placeholder="Adres ve iletişim bilgisi"></textarea>
+      </div>
+    </div>
+
+    <div id="iz-onay-section" style="display:none">
+      <div class="drawer-section">Onay Durumu</div>
+      <div id="iz-onay-timeline" style="margin-bottom:12px"></div>
+      <div class="form-grid-2">
+        <div class="form-field">
+          <label>Onay Adımı</label>
+          <select id="iz-form-durum-onay">
+            <option value="ik_onayladi">İK Onayladı</option>
+            <option value="mudur_onayladi">Müdür Onayladı</option>
+            <option value="onaylandi">YK Onayladı (UYGUNDUR)</option>
+            <option value="tamamlandi">Tamamlandı (Göreve Başladı)</option>
+            <option value="reddedildi">Reddedildi</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label>Onaylayan Adı</label>
+          <input type="text" id="iz-form-onaylayan" placeholder="Onaylayan kişi">
+        </div>
+      </div>
+      <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="izOnayKaydet()">✅ Onayı Kaydet</button>
+    </div>
+
+    <div class="drawer-section">Notlar</div>
+    <div class="form-field">
+      <textarea id="iz-form-notlar" rows="2" placeholder="Ek bilgiler..."></textarea>
+    </div>
+  </div>
+  <div class="drawer-footer" style="gap:8px">
+    <button class="btn btn-outline" onclick="closeIzinDrawer()">İptal</button>
+    <button class="btn btn-primary" id="iz-save-btn" onclick="saveIzin()">💾 Kaydet</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  PERSONEL MODÜLü
+// ══════════════════════════════════════════════
+let prsPage   = 1;
+let prsEditId = null;
+
+const IZIN_TUR_LABEL = {
+  yillik:   'Yıllık İzin',
+  ucretsiz: 'Ücretsiz İzin',
+  mazeret:  'Mazeret İzni',
+  hastalik: 'Hastalık İzni',
+  dogum:    'Doğum İzni',
+  olum:     'Ölüm İzni',
+  diger:    'Diğer',
+};
+
+const IZIN_DURUM_LABEL = {
+  beklemede:     '⏳ Beklemede',
+  ik_onayladi:   '✅ İK Onayladı',
+  mudur_onayladi:'✅ Müdür Onayladı',
+  onaylandi:     '✅ YK Onayladı',
+  reddedildi:    '❌ Reddedildi',
+  tamamlandi:    '🏁 Tamamlandı',
+};
+
+const IZIN_DURUM_COLOR = {
+  beklemede:     '#d97706',
+  ik_onayladi:   '#2563eb',
+  mudur_onayladi:'#7c3aed',
+  onaylandi:     '#16a34a',
+  reddedildi:    '#dc2626',
+  tamamlandi:    '#64748b',
+};
+
+let _prsMetaLoaded = false;
+async function loadPersonelMeta() {
+  if (_prsMetaLoaded) return;
+  const res = await fetch('/personel/meta', { headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) return;
+  const d = await res.json();
+
+  const bolumSel = document.getElementById('prs-bolum');
+  const unvanSel = document.getElementById('prs-unvan');
+  const ilceSel  = document.getElementById('prs-ilce');
+
+  d.bolumler.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; bolumSel.appendChild(o); });
+  d.unvanlar.forEach(u => { const o = document.createElement('option'); o.value = u; o.textContent = u; unvanSel.appendChild(o); });
+  d.ilceler.forEach(i  => { const o = document.createElement('option'); o.value = i; o.textContent = i; ilceSel.appendChild(o); });
+  _prsMetaLoaded = true;
+}
+
+async function loadPersonel(page) {
+  prsPage = page || 1;
+  const q      = document.getElementById('prs-q')?.value       || '';
+  const bolum  = document.getElementById('prs-bolum')?.value   || '';
+  const unvan  = document.getElementById('prs-unvan')?.value   || '';
+  const ilce   = document.getElementById('prs-ilce')?.value    || '';
+  const aktif  = document.getElementById('prs-aktif')?.value   || 'true';
+  const perPage= document.getElementById('prs-per-page')?.value|| 25;
+
+  const params = new URLSearchParams({ page: prsPage, per_page: perPage });
+  if (q)     params.set('q', q);
+  if (bolum) params.set('bolum', bolum);
+  if (unvan) params.set('unvan', unvan);
+  if (ilce)  params.set('ilce', ilce);
+  if (aktif) params.set('aktif', aktif);
+
+  const tbody = document.getElementById('personel-tbody');
+  tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">⏳</div><h3>Yükleniyor...</h3></div></td></tr>';
+
+  const res = await fetch('/personel?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) return;
+  const data = await res.json();
+
+  if (!data.veri.length) {
+    tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">👤</div><h3>Personel bulunamadı</h3></div></td></tr>';
+    document.getElementById('prs-page-info').textContent = '0 kayıt';
+    document.getElementById('prs-prev').disabled = true;
+    document.getElementById('prs-next').disabled = true;
+    return;
+  }
+
+  const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
+  const now  = new Date();
+
+  tbody.innerHTML = data.veri.map((p, idx) => {
+    const guvTar = p.guvenlik_belge_tarih ? new Date(p.guvenlik_belge_tarih) : null;
+    const guvColor = guvTar && guvTar < now ? '#dc2626' : guvTar && (guvTar - now) < 90*86400000 ? '#d97706' : '';
+    const aktifBadge = p.aktif
+      ? '<span class="d-badge" style="background:#dcfce7;color:#16a34a;font-size:10px">Aktif</span>'
+      : '<span class="d-badge" style="background:#fee2e2;color:#dc2626;font-size:10px">Pasif</span>';
+
+    return `<tr>
+      <td style="color:var(--text-3);font-size:11px">${(prsPage-1)*parseInt(perPage)+idx+1}</td>
+      <td><strong>${p.ad_soyad}</strong></td>
+      <td style="font-size:12px">${p.bolum || '—'}</td>
+      <td style="font-size:12px">${p.unvan || '—'}</td>
+      <td style="font-size:12px">${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
+      <td style="font-size:12px">${fmt(p.ise_giris)}</td>
+      <td style="font-size:12px;color:${guvColor}">${fmt(p.guvenlik_belge_tarih)}</td>
+      <td style="font-size:12px">${p.telefon || '—'}</td>
+      <td>${aktifBadge}</td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn-icon" title="Düzenle" onclick="openPersonelDrawer(${p.id})">✏️</button>
+          <button class="btn-icon" title="İzinleri" onclick="izinleriGor(${p.id},'${p.ad_soyad}')">📅</button>
+          <button class="btn-icon del" title="Pasif Yap" onclick="personelPasif(${p.id})">🚫</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalPages = Math.ceil(data.toplam / parseInt(perPage));
+  document.getElementById('prs-page-info').textContent = `Sayfa ${prsPage} / ${totalPages} (${data.toplam} kişi)`;
+  document.getElementById('prs-prev').disabled = prsPage <= 1;
+  document.getElementById('prs-next').disabled = prsPage >= totalPages;
+}
+
+function openPersonelDrawer(id) {
+  prsEditId = id;
+  const overlay = document.getElementById('prs-drawer-overlay');
+  const drawer  = document.getElementById('prs-drawer');
+  document.getElementById('prs-drawer-title').textContent = id ? 'Personel Düzenle' : 'Personel Ekle';
+
+  const fields = ['ad-soyad','tc','sgk','cinsiyet','medeni','dogum-tarihi','dogum-yeri','kan',
+                  'cocuk','bolum','unvan','maliyet','ilce','hizmet','ise-giris','isten-cikis',
+                  'cikis-kodu','meslek-kodu','meslek-adi','guvenlik','sigorta-bas','ucret',
+                  'ogrenim','sendika','engelli','telefon','adres','notlar'];
+  fields.forEach(f => {
+    const el = document.getElementById('prs-form-' + f);
+    if (el) el.value = '';
+  });
+  document.getElementById('prs-form-cocuk').value = '0';
+  document.getElementById('prs-form-engelli').value = 'false';
+
+  if (id) {
+    fetch('/personel/' + id, { headers: { Authorization: 'Bearer ' + getToken() } })
+      .then(r => r.json())
+      .then(p => {
+        const set = (fid, val) => { const el = document.getElementById('prs-form-' + fid); if (el && val != null) el.value = val; };
+        set('ad-soyad', p.ad_soyad);
+        set('tc',       p.tc_kimlik);
+        set('sgk',      p.sgk_sicil);
+        set('cinsiyet', p.cinsiyet);
+        set('medeni',   p.medeni_hal);
+        set('dogum-tarihi', p.dogum_tarihi ? p.dogum_tarihi.split('T')[0] : '');
+        set('dogum-yeri', p.dogum_yeri);
+        set('kan',      p.kan_grubu);
+        set('cocuk',    p.cocuk_sayisi ?? 0);
+        set('bolum',    p.bolum);
+        set('unvan',    p.unvan);
+        set('maliyet',  p.maliyet_merkezi);
+        set('ilce',     p.ilce);
+        set('hizmet',   p.hizmet_noktasi);
+        set('ise-giris', p.ise_giris ? p.ise_giris.split('T')[0] : '');
+        set('isten-cikis', p.isten_cikis ? p.isten_cikis.split('T')[0] : '');
+        set('cikis-kodu', p.cikis_kodu);
+        set('meslek-kodu', p.meslek_kodu);
+        set('meslek-adi',  p.meslek_adi);
+        set('guvenlik', p.guvenlik_belge_tarih ? p.guvenlik_belge_tarih.split('T')[0] : '');
+        set('sigorta-bas', p.sigortalilik_baslama ? p.sigortalilik_baslama.split('T')[0] : '');
+        set('ucret',    p.brut_ucret);
+        set('ogrenim',  p.ogrenim);
+        set('sendika',  p.sendika_uyesi);
+        set('engelli',  p.engelli ? 'true' : 'false');
+        set('telefon',  p.telefon);
+        set('adres',    p.adres);
+        set('notlar',   p.notlar);
+      });
+  }
+
+  overlay.classList.add('open');
+  drawer.classList.add('open');
+}
+
+function closePersonelDrawer() {
+  document.getElementById('prs-drawer-overlay').classList.remove('open');
+  document.getElementById('prs-drawer').classList.remove('open');
+  prsEditId = null;
+}
+
+async function savePersonel() {
+  const v = id => document.getElementById('prs-form-' + id)?.value || null;
+  const body = {
+    ad_soyad:             document.getElementById('prs-form-ad-soyad').value.trim(),
+    tc_kimlik:            v('tc'),
+    sgk_sicil:            v('sgk'),
+    cinsiyet:             v('cinsiyet'),
+    medeni_hal:           v('medeni'),
+    dogum_tarihi:         v('dogum-tarihi') || null,
+    dogum_yeri:           v('dogum-yeri'),
+    kan_grubu:            v('kan'),
+    cocuk_sayisi:         parseInt(document.getElementById('prs-form-cocuk').value) || 0,
+    bolum:                v('bolum'),
+    unvan:                v('unvan'),
+    maliyet_merkezi:      v('maliyet'),
+    ilce:                 v('ilce'),
+    hizmet_noktasi:       v('hizmet'),
+    ise_giris:            v('ise-giris') || null,
+    isten_cikis:          v('isten-cikis') || null,
+    cikis_kodu:           v('cikis-kodu'),
+    meslek_kodu:          v('meslek-kodu'),
+    meslek_adi:           v('meslek-adi'),
+    guvenlik_belge_tarih: v('guvenlik') || null,
+    sigortalilik_baslama: v('sigorta-bas') || null,
+    brut_ucret:           parseFloat(document.getElementById('prs-form-ucret').value) || null,
+    ogrenim:              v('ogrenim'),
+    sendika_uyesi:        v('sendika'),
+    engelli:              document.getElementById('prs-form-engelli').value === 'true',
+    telefon:              v('telefon'),
+    adres:                document.getElementById('prs-form-adres')?.value || null,
+    notlar:               document.getElementById('prs-form-notlar')?.value || null,
+  };
+
+  if (!body.ad_soyad) { showToast('Ad Soyad zorunludur', 'error'); return; }
+
+  const url    = prsEditId ? '/personel/' + prsEditId : '/personel';
+  const method = prsEditId ? 'PUT' : 'POST';
+
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: JSON.stringify(body),
+  });
+
+  if (res.ok) {
+    showToast(prsEditId ? 'Personel güncellendi' : 'Personel eklendi', 'success');
+    closePersonelDrawer();
+    loadPersonel(prsPage);
+  } else {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'Kayıt başarısız', 'error');
+  }
+}
+
+async function personelPasif(id) {
+  if (!confirm('Bu personeli pasif olarak işaretlemek istiyor musunuz?')) return;
+  const res = await fetch('/personel/' + id, {
+    method: 'DELETE',
+    headers: { Authorization: 'Bearer ' + getToken() },
+  });
+  if (res.ok) { showToast('Personel pasif yapıldı', 'success'); loadPersonel(prsPage); }
+  else showToast('İşlem başarısız', 'error');
+}
+
+function izinleriGor(personelId, adSoyad) {
+  navigate('izinler', null);
+  setTimeout(() => {
+    document.getElementById('iz-q').value = adSoyad;
+    loadIzinler(1);
+  }, 200);
+}
+
+// ══════════════════════════════════════════════
+//  İZİN MODÜLü
+// ══════════════════════════════════════════════
+let izPage   = 1;
+let izEditId = null;
+
+async function loadIzinSummary() {
+  const yil = document.getElementById('iz-yil')?.value || new Date().getFullYear();
+  const res = await fetch('/izinler/ozet?yil=' + yil, { headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) return;
+  const d = await res.json();
+
+  document.getElementById('iz-stat-bekleyen').textContent = d.bekleyen;
+  const izCard = document.getElementById('iz-card-bekleyen');
+  if (d.bekleyen > 0) izCard.classList.add('stat-card-alert');
+  else izCard.classList.remove('stat-card-alert');
+
+  let onaylanan = 0, toplamGun = 0;
+  d.turlere_gore.forEach(r => {
+    if (r.durum === 'onaylandi' || r.durum === 'tamamlandi') {
+      onaylanan += parseInt(r.adet);
+      toplamGun += parseInt(r.toplam_gun || 0);
+    }
+  });
+  document.getElementById('iz-stat-onaylanan').textContent = onaylanan;
+  document.getElementById('iz-stat-gun').textContent = toplamGun;
+}
+
+async function loadIzinler(page) {
+  izPage = page || 1;
+  const q     = document.getElementById('iz-q')?.value     || '';
+  const tur   = document.getElementById('iz-tur')?.value   || '';
+  const durum = document.getElementById('iz-durum')?.value || '';
+  const yil   = document.getElementById('iz-yil')?.value   || '';
+
+  const params = new URLSearchParams({ page: izPage, per_page: 25 });
+  if (q)     params.set('q', q);
+  if (tur)   params.set('izin_turu', tur);
+  if (durum) params.set('durum', durum);
+  if (yil)   params.set('yil', yil);
+
+  const tbody = document.getElementById('izinler-tbody');
+  tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">⏳</div><h3>Yükleniyor...</h3></div></td></tr>';
+
+  const res = await fetch('/izinler?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) return;
+  const data = await res.json();
+
+  loadIzinSummary();
+
+  if (!data.veri.length) {
+    tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">📅</div><h3>İzin kaydı bulunamadı</h3></div></td></tr>';
+    document.getElementById('iz-page-info').textContent = '0 kayıt';
+    document.getElementById('iz-prev').disabled = true;
+    document.getElementById('iz-next').disabled = true;
+    return;
+  }
+
+  const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
+
+  tbody.innerHTML = data.veri.map((iz, idx) => {
+    const turLabel   = IZIN_TUR_LABEL[iz.izin_turu]    || iz.izin_turu;
+    const durumLabel = IZIN_DURUM_LABEL[iz.durum]      || iz.durum;
+    const durumColor = IZIN_DURUM_COLOR[iz.durum]      || '#64748b';
+
+    return `<tr>
+      <td style="color:var(--text-3);font-size:11px">${(izPage-1)*25+idx+1}</td>
+      <td><strong>${iz.ad_soyad || '—'}</strong></td>
+      <td style="font-size:11px;color:var(--text-2)">${[iz.bolum, iz.unvan].filter(Boolean).join(' / ') || '—'}</td>
+      <td><span class="d-badge" style="font-size:11px">${turLabel}</span></td>
+      <td style="font-size:12px">${fmt(iz.baslangic)}</td>
+      <td style="font-size:12px">${fmt(iz.bitis)}</td>
+      <td style="font-weight:600;text-align:center">${iz.gun_sayisi}</td>
+      <td style="font-size:12px">${fmt(iz.talep_tarihi)}</td>
+      <td><span style="font-size:11px;font-weight:600;color:${durumColor}">${durumLabel}</span></td>
+      <td>
+        <div style="display:flex;gap:4px">
+          <button class="btn-icon" title="Düzenle / Onayla" onclick="openIzinDrawer(${iz.id})">✏️</button>
+          ${iz.durum === 'beklemede' ? `<button class="btn-icon del" title="Sil" onclick="izinSil(${iz.id})">🗑</button>` : ''}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  const totalPages = Math.ceil(data.toplam / 25);
+  document.getElementById('iz-page-info').textContent = `Sayfa ${izPage} / ${totalPages} (${data.toplam} kayıt)`;
+  document.getElementById('iz-prev').disabled = izPage <= 1;
+  document.getElementById('iz-next').disabled = izPage >= totalPages;
+}
+
+async function openIzinDrawer(id) {
+  izEditId = id;
+  const overlay = document.getElementById('iz-drawer-overlay');
+  const drawer  = document.getElementById('iz-drawer');
+  document.getElementById('iz-drawer-title').textContent = id ? 'İzin Kaydı' : 'İzin Talebi Ekle';
+  document.getElementById('iz-save-btn').style.display = '';
+  document.getElementById('iz-onay-section').style.display = 'none';
+  document.getElementById('iz-personel-bilgi').style.display = 'none';
+
+  // Reset form
+  ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-notlar','iz-form-onaylayan'].forEach(fid => {
+    const el = document.getElementById(fid); if (el) el.value = '';
+  });
+  document.getElementById('iz-form-personel-id').value = '';
+  document.getElementById('iz-form-tur').value = 'yillik';
+  document.getElementById('iz-form-talep').value = new Date().toISOString().split('T')[0];
+  document.getElementById('iz-form-bas').value = '';
+  document.getElementById('iz-form-bit').value = '';
+  document.getElementById('iz-form-gun').value = '';
+  document.getElementById('iz-form-kullanilabilir').value = '';
+
+  if (id) {
+    const res = await fetch('/izinler/' + id, { headers: { Authorization: 'Bearer ' + getToken() } });
+    if (!res.ok) return;
+    const iz = await res.json();
+
+    document.getElementById('iz-form-personel-q').value      = iz.ad_soyad || '';
+    document.getElementById('iz-form-personel-id').value     = iz.personel_id;
+    document.getElementById('iz-form-tur').value             = iz.izin_turu;
+    document.getElementById('iz-form-talep').value           = iz.talep_tarihi ? iz.talep_tarihi.split('T')[0] : '';
+    document.getElementById('iz-form-bas').value             = iz.baslangic ? iz.baslangic.split('T')[0] : '';
+    document.getElementById('iz-form-bit').value             = iz.bitis ? iz.bitis.split('T')[0] : '';
+    document.getElementById('iz-form-gun').value             = iz.gun_sayisi || '';
+    document.getElementById('iz-form-kullanilabilir').value  = iz.kullanilabilir_gun || '';
+    document.getElementById('iz-form-vekil').value           = iz.vekil_ad_soyad || '';
+    document.getElementById('iz-form-adres').value           = iz.izin_adresi || '';
+    document.getElementById('iz-form-notlar').value          = iz.notlar || '';
+
+    const bilgi = document.getElementById('iz-personel-bilgi');
+    bilgi.style.display = 'block';
+    bilgi.textContent   = `${iz.ad_soyad} — ${[iz.bolum, iz.unvan].filter(Boolean).join(' / ')}`;
+
+    // Onay section
+    if (iz.durum !== 'tamamlandi') {
+      document.getElementById('iz-onay-section').style.display = 'block';
+      renderIzinTimeline(iz);
+    }
+
+    if (iz.durum !== 'beklemede') {
+      document.getElementById('iz-save-btn').style.display = 'none';
+    }
+  }
+
+  overlay.classList.add('open');
+  drawer.classList.add('open');
+}
+
+function renderIzinTimeline(iz) {
+  const steps = [
+    { key: 'ik_onayladi',    label: 'İK Onayı',     tarih: iz.ik_onay_tarihi,    kisi: iz.ik_onaylayan },
+    { key: 'mudur_onayladi', label: 'Müdür Onayı',  tarih: iz.mudur_onay_tarihi },
+    { key: 'onaylandi',      label: 'YK Onayı',      tarih: iz.yk_onay_tarihi },
+    { key: 'tamamlandi',     label: 'Göreve Başlama',tarih: iz.gorev_baslama },
+  ];
+  const ORDER = ['beklemede','ik_onayladi','mudur_onayladi','onaylandi','tamamlandi'];
+  const idx   = ORDER.indexOf(iz.durum);
+  const fmt   = d => d ? d.split('T')[0].split('-').reverse().join('.') : '';
+
+  const html = steps.map((s, i) => {
+    const done  = i < idx || iz.durum === s.key;
+    const color = done ? '#16a34a' : '#cbd5e1';
+    return `<div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:8px">
+      <div style="width:18px;height:18px;border-radius:50%;background:${color};flex-shrink:0;margin-top:2px;display:flex;align-items:center;justify-content:center">
+        <span style="color:#fff;font-size:10px">${done ? '✓' : (i+1)}</span>
+      </div>
+      <div>
+        <div style="font-size:12px;font-weight:600;color:var(--text)">${s.label}</div>
+        ${fmt(s.tarih) ? `<div style="font-size:11px;color:var(--text-3)">${fmt(s.tarih)}${s.kisi ? ' — ' + s.kisi : ''}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('iz-onay-timeline').innerHTML = html;
+}
+
+function closeIzinDrawer() {
+  document.getElementById('iz-drawer-overlay').classList.remove('open');
+  document.getElementById('iz-drawer').classList.remove('open');
+  izEditId = null;
+}
+
+function izGunHesapla() {
+  const bas = document.getElementById('iz-form-bas').value;
+  const bit = document.getElementById('iz-form-bit').value;
+  if (bas && bit) {
+    const d1 = new Date(bas), d2 = new Date(bit);
+    const gun = Math.round((d2 - d1) / 86400000) + 1;
+    if (gun > 0) document.getElementById('iz-form-gun').value = gun;
+  }
+}
+
+async function izPersonelAra(q) {
+  const list = document.getElementById('iz-personel-list');
+  if (!q || q.length < 2) { list.style.display = 'none'; return; }
+
+  const res = await fetch('/personel?q=' + encodeURIComponent(q) + '&per_page=8&aktif=true', {
+    headers: { Authorization: 'Bearer ' + getToken() }
+  });
+  if (!res.ok) return;
+  const data = await res.json();
+
+  if (!data.veri.length) { list.style.display = 'none'; return; }
+
+  list.innerHTML = data.veri.map(p =>
+    `<div class="autocomplete-item" onclick="izPersonelSec(${p.id},'${p.ad_soyad.replace(/'/g,"\\'")}','${(p.bolum||'').replace(/'/g,"\\'")}','${(p.unvan||'').replace(/'/g,"\\'")}')">
+      <strong>${p.ad_soyad}</strong>
+      <span style="font-size:11px;color:var(--text-3);margin-left:8px">${[p.bolum,p.unvan].filter(Boolean).join(' / ')}</span>
+    </div>`
+  ).join('');
+  list.style.display = 'block';
+}
+
+function izPersonelSec(id, adSoyad, bolum, unvan) {
+  document.getElementById('iz-form-personel-id').value = id;
+  document.getElementById('iz-form-personel-q').value  = adSoyad;
+  document.getElementById('iz-personel-list').style.display = 'none';
+  const bilgi = document.getElementById('iz-personel-bilgi');
+  bilgi.style.display = 'block';
+  bilgi.textContent   = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}`;
+}
+
+async function saveIzin() {
+  const personelId = parseInt(document.getElementById('iz-form-personel-id').value);
+  if (!personelId) { showToast('Personel seçiniz', 'error'); return; }
+
+  const bas = document.getElementById('iz-form-bas').value;
+  const bit = document.getElementById('iz-form-bit').value;
+  if (!bas || !bit) { showToast('Başlangıç ve bitiş tarihi zorunludur', 'error'); return; }
+
+  const body = {
+    personel_id:        personelId,
+    izin_turu:          document.getElementById('iz-form-tur').value,
+    talep_tarihi:       document.getElementById('iz-form-talep').value || null,
+    baslangic:          bas,
+    bitis:              bit,
+    gun_sayisi:         parseInt(document.getElementById('iz-form-gun').value) || 1,
+    kullanilabilir_gun: parseInt(document.getElementById('iz-form-kullanilabilir').value) || null,
+    vekil_ad_soyad:     document.getElementById('iz-form-vekil').value || null,
+    izin_adresi:        document.getElementById('iz-form-adres').value || null,
+    notlar:             document.getElementById('iz-form-notlar').value || null,
+  };
+
+  const url    = izEditId ? '/izinler/' + izEditId : '/izinler';
+  const method = izEditId ? 'PUT' : 'POST';
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: JSON.stringify(body),
+  });
+
+  if (res.ok) {
+    showToast(izEditId ? 'İzin güncellendi' : 'İzin talebi oluşturuldu', 'success');
+    closeIzinDrawer();
+    loadIzinler(izPage);
+  } else {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'Kayıt başarısız', 'error');
+  }
+}
+
+async function izOnayKaydet() {
+  if (!izEditId) return;
+  const durum    = document.getElementById('iz-form-durum-onay').value;
+  const onaylayan= document.getElementById('iz-form-onaylayan').value || null;
+
+  const res = await fetch('/izinler/' + izEditId + '/onay', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: JSON.stringify({ durum, onaylayan }),
+  });
+
+  if (res.ok) {
+    showToast('Onay kaydedildi', 'success');
+    closeIzinDrawer();
+    loadIzinler(izPage);
+  } else {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'İşlem başarısız', 'error');
+  }
+}
+
+async function izinSil(id) {
+  if (!confirm('Bu izin talebini silmek istediğinizden emin misiniz?')) return;
+  const res = await fetch('/izinler/' + id, {
+    method: 'DELETE',
+    headers: { Authorization: 'Bearer ' + getToken() },
+  });
+  if (res.ok) { showToast('İzin silindi', 'success'); loadIzinler(izPage); }
+  else showToast('İşlem başarısız', 'error');
+}
+
+// ── Yıl dropdown doldur ──
+(function initIzinYil() {
+  const sel = document.getElementById('iz-yil');
+  if (!sel) return;
+  const yil = new Date().getFullYear();
+  for (let y = yil + 1; y >= yil - 3; y--) {
+    const o = document.createElement('option');
+    o.value = y; o.textContent = y;
+    if (y === yil) o.selected = true;
+    sel.appendChild(o);
+  }
+})();
+</script>
 
 </body>
 </html>
