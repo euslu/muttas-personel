@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>İzin Başvurusu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --accent:  #2563eb;
+      --accent2: #1d4ed8;
+      --success: #16a34a;
+      --danger:  #dc2626;
+      --warn:    #d97706;
+      --bg:      #f8fafc;
+      --card:    #ffffff;
+      --border:  #e2e8f0;
+      --text:    #0f172a;
+      --text-2:  #475569;
+      --text-3:  #94a3b8;
+      --radius:  10px;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 60px;
+    }
+
+    /* ── HEADER ── */
+    .page-header {
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .logo-icon {
+      width: 42px; height: 42px;
+      background: var(--accent);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+    }
+    .logo-name { font-size: 18px; font-weight: 700; color: var(--text); }
+    .page-subtitle { font-size: 13px; color: var(--text-3); }
+
+    /* ── STEPPER ── */
+    .stepper {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      max-width: 560px;
+      margin-bottom: 24px;
+      gap: 0;
+    }
+    .step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .step-circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background: var(--border);
+      color: var(--text-3);
+      font-size: 13px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s, color 0.2s;
+      z-index: 1;
+    }
+    .step.active .step-circle  { background: var(--accent); color: #fff; }
+    .step.done   .step-circle  { background: var(--success); color: #fff; }
+    .step-label {
+      font-size: 10px;
+      color: var(--text-3);
+      margin-top: 4px;
+      text-align: center;
+      white-space: nowrap;
+    }
+    .step.active .step-label, .step.done .step-label { color: var(--text-2); }
+    .step-line {
+      flex: 1;
+      height: 2px;
+      background: var(--border);
+      margin-bottom: 16px;
+      transition: background 0.2s;
+    }
+    .step-line.done { background: var(--success); }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 28px 24px;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 1px 8px rgba(0,0,0,.05);
+    }
+
+    .card-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .card-subtitle {
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 20px;
+      line-height: 1.5;
+    }
+
+    /* ── FORM ── */
+    .form-field { margin-bottom: 14px; }
+    .form-field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-2);
+      margin-bottom: 5px;
+    }
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus { border-color: var(--accent); }
+    .form-field input.error,
+    .form-field select.error { border-color: var(--danger); }
+    .form-field textarea { resize: vertical; min-height: 80px; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 420px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── PERSONEL CARD ── */
+    .personel-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #f0f9ff;
+      border: 1.5px solid #bae6fd;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 20px;
+    }
+    .personel-avatar {
+      width: 44px; height: 44px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .personel-name { font-size: 15px; font-weight: 700; }
+    .personel-meta { font-size: 12px; color: var(--text-2); margin-top: 2px; }
+
+    /* ── GÜN BADGE ── */
+    .gun-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 13px;
+      color: var(--accent);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    /* ── SIGNATURE PAD ── */
+    .sig-wrap {
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      background: #fff;
+      position: relative;
+      overflow: hidden;
+      cursor: crosshair;
+    }
+    .sig-wrap.error { border-color: var(--danger); }
+    .sig-wrap canvas {
+      display: block;
+      width: 100%;
+      height: 180px;
+      touch-action: none;
+    }
+    .sig-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+      color: var(--text-3);
+      font-size: 13px;
+      gap: 6px;
+    }
+    .sig-placeholder span { font-size: 28px; }
+    .sig-placeholder.hidden { display: none; }
+    .sig-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      font-size: 12px;
+      color: var(--text-3);
+    }
+    .sig-status { display: flex; align-items: center; gap: 6px; font-weight: 500; }
+    .sig-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+    .sig-dot.signed { background: var(--success); }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 11px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: opacity 0.15s, background 0.15s;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary  { background: var(--accent); color: #fff; }
+    .btn-primary:hover:not(:disabled)  { background: var(--accent2); }
+    .btn-outline  {
+      background: transparent;
+      color: var(--text-2);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover:not(:disabled) { background: var(--bg); }
+    .btn-danger   { background: #fee2e2; color: var(--danger); border: 1.5px solid #fca5a5; }
+    .btn-full     { width: 100%; }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* ── ALERTS ── */
+    .alert {
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 13px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .alert-error   { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .alert-success { background: #dcfce7; color: #14532d; border: 1px solid #86efac; }
+    .alert-info    { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* ── SUCCESS SCREEN ── */
+    .success-screen { text-align: center; padding: 10px 0; }
+    .success-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: #dcfce7;
+      border: 3px solid #86efac;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px;
+      margin: 0 auto 20px;
+    }
+    .success-title { font-size: 20px; font-weight: 700; margin-bottom: 8px; }
+    .success-sub   { font-size: 14px; color: var(--text-2); margin-bottom: 20px; line-height: 1.6; }
+    .ref-box {
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text-2);
+      margin-bottom: 20px;
+    }
+    .ref-box strong { color: var(--text); font-size: 15px; }
+
+    /* ── SECTION TITLE ── */
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text-3);
+      margin: 18px 0 10px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+    .section-title:first-of-type { margin-top: 0; }
+
+    /* Hide steps */
+    .step-panel { display: none; }
+    .step-panel.active { display: block; }
+
+    /* ── TC INPUT with search button ── */
+    .tc-row { display: flex; gap: 8px; }
+    .tc-row input { flex: 1; }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <div class="logo-row">
+    <div class="logo-icon">🏖</div>
+    <div class="logo-name">Müttaş Liman</div>
+  </div>
+  <div class="page-subtitle">Personel İzin Başvuru Sistemi</div>
+</div>
+
+<!-- STEPPER -->
+<div class="stepper" id="stepper">
+  <div class="step active" id="step-ind-1">
+    <div class="step-circle">1</div>
+    <div class="step-label">Kimlik</div>
+  </div>
+  <div class="step-line" id="line-1"></div>
+  <div class="step active" id="step-ind-2">
+    <div class="step-circle">2</div>
+    <div class="step-label">İzin Formu</div>
+  </div>
+  <div class="step-line" id="line-2"></div>
+  <div class="step" id="step-ind-3">
+    <div class="step-circle">3</div>
+    <div class="step-label">İmza</div>
+  </div>
+  <div class="step-line" id="line-3"></div>
+  <div class="step" id="step-ind-4">
+    <div class="step-circle">4</div>
+    <div class="step-label">Onay</div>
+  </div>
+</div>
+
+<!-- CARD -->
+<div class="card">
+
+  <!-- ── ADIM 1: KİMLİK DOĞRULAMA ── -->
+  <div class="step-panel active" id="panel-1">
+    <div class="card-title">🪪 Kimlik Doğrulama</div>
+    <div class="card-subtitle">İzin başvurusu yapabilmek için TC kimlik numaranızı girin.</div>
+
+    <div id="kimlik-error" class="alert alert-error" style="display:none"></div>
+
+    <div class="form-field">
+      <label>TC Kimlik Numarası *</label>
+      <div class="tc-row">
+        <input type="text" id="f-tc" placeholder="12345678901" maxlength="11"
+               inputmode="numeric" pattern="[0-9]*"
+               oninput="this.value=this.value.replace(/\D/g,'')"
+               onkeydown="if(event.key==='Enter') kimlikDogrula()">
+        <button class="btn btn-primary" onclick="kimlikDogrula()" id="btn-kimlik">Devam</button>
+      </div>
+    </div>
+
+    <div class="alert alert-info" style="margin-top:8px">
+      ℹ️ TC kimlik numaranız sistemde kayıtlı olmalıdır. Sorun yaşarsanız İnsan Kaynakları birimiyle iletişime geçin.
+    </div>
+  </div>
+
+  <!-- ── ADIM 2: İZİN FORMU ── -->
+  <div class="step-panel" id="panel-2">
+    <div class="card-title">📋 İzin Formu</div>
+    <div class="card-subtitle">İzin bilgilerinizi doldurun.</div>
+
+    <div id="personel-card" class="personel-card">
+      <div class="personel-avatar" id="prs-avatar">?</div>
+      <div>
+        <div class="personel-name" id="prs-name">—</div>
+        <div class="personel-meta" id="prs-meta">—</div>
+      </div>
+    </div>
+
+    <div id="form-error" class="alert alert-error" style="display:none"></div>
+
+    <div class="section-title">İzin Bilgileri</div>
+    <div class="form-field">
+      <label>İzin Türü *</label>
+      <select id="f-izin-tur">
+        <option value="yillik">Yıllık İzin</option>
+        <option value="ucretsiz">Ücretsiz İzin</option>
+        <option value="mazeret">Mazeret İzni</option>
+        <option value="hastalik">Hastalık İzni</option>
+        <option value="dogum">Doğum İzni</option>
+        <option value="olum">Ölüm İzni</option>
+        <option value="diger">Diğer</option>
+      </select>
+    </div>
+
+    <div class="grid-2">
+      <div class="form-field">
+        <label>Başlangıç Tarihi *</label>
+        <input type="date" id="f-bas" onchange="gunHesapla()">
+      </div>
+      <div class="form-field">
+        <label>Bitiş Tarihi *</label>
+        <input type="date" id="f-bit" onchange="gunHesapla()">
+      </div>
+    </div>
+
+    <div id="gun-badge-wrap" style="margin-bottom:14px;display:none">
+      <div class="gun-badge">📅 <span id="gun-badge-text">0 iş günü</span></div>
+    </div>
+
+    <div class="form-field">
+      <label>Kullanılabilir İzin Günü</label>
+      <input type="number" id="f-kullanilabilir" min="0" placeholder="Bilmiyorsanız boş bırakın">
+    </div>
+
+    <div class="section-title">Vekalet & İletişim</div>
+    <div class="form-field">
+      <label>Vekalet Edecek Personel</label>
+      <input type="text" id="f-vekil" placeholder="Ad Soyad">
+    </div>
+    <div class="form-field">
+      <label>İzinde Bulunulacak Adres / Telefon</label>
+      <textarea id="f-adres" placeholder="Adres ve iletişim bilgisi"></textarea>
+    </div>
+    <div class="form-field">
+      <label>Notlar / Açıklama</label>
+      <textarea id="f-notlar" placeholder="Varsa ek açıklamalarınız..."></textarea>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="geriGit(1)">← Geri</button>
+      <button class="btn btn-primary" style="flex:1" onclick="formGecis()">İmza Adımı →</button>
+    </div>
+  </div>
+
+  <!-- ── ADIM 3: İMZA ── -->
+  <div class="step-panel" id="panel-3">
+    <div class="card-title">✍ Personel İmzası</div>
+    <div class="card-subtitle">
+      Başvuruyu onaylamak için aşağıdaki alana imzanızı atın.<br>
+      Fare veya parmağınızla imzalayabilirsiniz.
+    </div>
+
+    <div id="imza-error" class="alert alert-error" style="display:none"></div>
+
+    <div class="sig-wrap" id="sig-wrap">
+      <canvas id="sig-canvas"></canvas>
+      <div class="sig-placeholder" id="sig-placeholder">
+        <span>✍</span>
+        İmzanızı buraya atın
+      </div>
+    </div>
+    <div class="sig-toolbar">
+      <div class="sig-status">
+        <div class="sig-dot" id="sig-dot"></div>
+        <span id="sig-label">İmza bekleniyor</span>
+      </div>
+      <button type="button" class="btn btn-danger" style="font-size:12px;padding:5px 12px" onclick="sigTemizle()">🗑 Temizle</button>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-outline" onclick="geriGit(2)">← Geri</button>
+      <button class="btn btn-primary" style="flex:1" id="btn-gonder" onclick="basvuruGonder()">📨 Başvuruyu Gönder</button>
+    </div>
+  </div>
+
+  <!-- ── ADIM 4: BAŞARI ── -->
+  <div class="step-panel" id="panel-4">
+    <div class="success-screen">
+      <div class="success-icon">✅</div>
+      <div class="success-title">Başvurunuz Alındı!</div>
+      <div class="success-sub">
+        İzin talebiniz İnsan Kaynakları birimine iletildi.<br>
+        Onay süreci tamamlandığında bilgilendirileceksiniz.
+      </div>
+      <div class="ref-box">
+        Başvuru No: <strong id="basvuru-ref">—</strong><br>
+        <span style="font-size:12px;color:var(--text-3)">Bu numarayı saklayınız.</span>
+      </div>
+      <button class="btn btn-primary btn-full" onclick="yeniBasvuru()">+ Yeni Başvuru</button>
+    </div>
+  </div>
+
+</div><!-- /card -->
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let currentStep = 1;
+let personelId  = null;
+let personelTc  = '';
+let sigDrawing  = false;
+let sigSigned   = false;
+let sigCtx      = null;
+let sigCanvas   = null;
+
+// ── STEP NAVIGATION ───────────────────────────────────────────
+function setStep(n) {
+  [1,2,3,4].forEach(i => {
+    document.getElementById('panel-' + i).classList.toggle('active', i === n);
+    const ind = document.getElementById('step-ind-' + i);
+    if (i < n)  { ind.className = 'step done'; ind.querySelector('.step-circle').textContent = '✓'; }
+    if (i === n){ ind.className = 'step active'; ind.querySelector('.step-circle').textContent = i; }
+    if (i > n)  { ind.className = 'step';       ind.querySelector('.step-circle').textContent = i; }
+  });
+  [1,2,3].forEach(i => {
+    document.getElementById('line-' + i).className = 'step-line' + (i < n ? ' done' : '');
+  });
+  currentStep = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function geriGit(step) { setStep(step); }
+
+// ── ADIM 1: KİMLİK DOĞRULAMA ──────────────────────────────────
+async function kimlikDogrula() {
+  const tc = document.getElementById('f-tc').value.trim();
+  const errEl = document.getElementById('kimlik-error');
+  errEl.style.display = 'none';
+
+  if (tc.length !== 11) {
+    errEl.textContent = 'TC kimlik numarası 11 haneli olmalıdır.';
+    errEl.style.display = 'flex';
+    return;
+  }
+
+  const btn = document.getElementById('btn-kimlik');
+  btn.disabled = true;
+  btn.textContent = 'Aranıyor...';
+
+  try {
+    const res = await fetch('/public/personel/ara?tc=' + encodeURIComponent(tc));
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      errEl.textContent = e.detail || 'Personel bulunamadı. TC kimlik numaranızı kontrol edin.';
+      errEl.style.display = 'flex';
+      return;
+    }
+    const prs = await res.json();
+    personelId = prs.id;
+    personelTc = tc;
+
+    const initials = prs.ad_soyad.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('prs-avatar').textContent = initials;
+    document.getElementById('prs-name').textContent   = prs.ad_soyad;
+    document.getElementById('prs-meta').textContent   = [prs.bolum, prs.unvan, prs.ilce].filter(Boolean).join(' · ');
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('f-bas').value = '';
+    document.getElementById('f-bit').value = '';
+    document.getElementById('f-bas').min   = today;
+    document.getElementById('f-bit').min   = today;
+    document.getElementById('gun-badge-wrap').style.display = 'none';
+
+    setStep(2);
+  } catch(e) {
+    errEl.textContent = 'Bağlantı hatası. Lütfen tekrar deneyin.';
+    errEl.style.display = 'flex';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Devam';
+  }
+}
+
+// ── ADIM 2: FORM HESAPLAMA ─────────────────────────────────────
+function gunHesapla() {
+  const bas = document.getElementById('f-bas').value;
+  const bit = document.getElementById('f-bit').value;
+  const wrap = document.getElementById('gun-badge-wrap');
+  if (!bas || !bit || bit < bas) { wrap.style.display = 'none'; return; }
+  const d1 = new Date(bas), d2 = new Date(bit);
+  let gun = 0;
+  for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+    const g = d.getDay();
+    if (g !== 0 && g !== 6) gun++;
+  }
+  document.getElementById('gun-badge-text').textContent = gun + ' iş günü';
+  wrap.style.display = 'block';
+}
+
+function formGecis() {
+  const errEl = document.getElementById('form-error');
+  errEl.style.display = 'none';
+  const bas = document.getElementById('f-bas').value;
+  const bit = document.getElementById('f-bit').value;
+  if (!bas || !bit) {
+    errEl.textContent = 'Başlangıç ve bitiş tarihi zorunludur.';
+    errEl.style.display = 'flex';
+    return;
+  }
+  if (bit < bas) {
+    errEl.textContent = 'Bitiş tarihi başlangıçtan önce olamaz.';
+    errEl.style.display = 'flex';
+    return;
+  }
+  setStep(3);
+  sigInit();
+}
+
+// ── ADIM 3: İMZA PAD ──────────────────────────────────────────
+let sigInited = false;
+
+function sigInit() {
+  if (sigInited) { sigTemizle(); return; }
+  sigCanvas = document.getElementById('sig-canvas');
+  if (!sigCanvas) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w   = sigCanvas.parentElement.clientWidth || 500;
+  sigCanvas.width  = w * dpr;
+  sigCanvas.height = 180 * dpr;
+  sigCtx = sigCanvas.getContext('2d');
+  sigCtx.scale(dpr, dpr);
+  sigCtx.strokeStyle = '#1e293b';
+  sigCtx.lineWidth   = 2.5;
+  sigCtx.lineCap     = 'round';
+  sigCtx.lineJoin    = 'round';
+
+  const pos = (e) => {
+    const r = sigCanvas.getBoundingClientRect();
+    const s = e.touches ? e.touches[0] : e;
+    return { x: (s.clientX - r.left) * (sigCanvas.width / r.width / (window.devicePixelRatio||1)),
+             y: (s.clientY - r.top)  * (sigCanvas.height / r.height / (window.devicePixelRatio||1)) };
+  };
+  const start = (e) => {
+    e.preventDefault();
+    sigDrawing = true;
+    const p = pos(e);
+    sigCtx.beginPath();
+    sigCtx.moveTo(p.x, p.y);
+  };
+  const move = (e) => {
+    e.preventDefault();
+    if (!sigDrawing) return;
+    const p = pos(e);
+    sigCtx.lineTo(p.x, p.y);
+    sigCtx.stroke();
+    if (!sigSigned) {
+      sigSigned = true;
+      document.getElementById('sig-placeholder').classList.add('hidden');
+      document.getElementById('sig-dot').classList.add('signed');
+      document.getElementById('sig-label').textContent = 'İmza alındı ✓';
+      document.getElementById('sig-wrap').classList.remove('error');
+    }
+  };
+  const stop = () => { sigDrawing = false; };
+
+  sigCanvas.addEventListener('mousedown',  start);
+  sigCanvas.addEventListener('mousemove',  move);
+  sigCanvas.addEventListener('mouseup',    stop);
+  sigCanvas.addEventListener('mouseleave', stop);
+  sigCanvas.addEventListener('touchstart', start, { passive: false });
+  sigCanvas.addEventListener('touchmove',  move,  { passive: false });
+  sigCanvas.addEventListener('touchend',   stop);
+  sigInited = true;
+}
+
+function sigTemizle() {
+  if (!sigCtx || !sigCanvas) return;
+  sigCtx.clearRect(0, 0, sigCanvas.width, sigCanvas.height);
+  sigSigned = false;
+  document.getElementById('sig-placeholder').classList.remove('hidden');
+  document.getElementById('sig-dot').classList.remove('signed');
+  document.getElementById('sig-label').textContent = 'İmza bekleniyor';
+}
+
+// ── ADIM 4: GÖNDER ────────────────────────────────────────────
+async function basvuruGonder() {
+  const errEl = document.getElementById('imza-error');
+  errEl.style.display = 'none';
+
+  if (!sigSigned) {
+    document.getElementById('sig-wrap').classList.add('error');
+    errEl.textContent = 'Lütfen başvuruyu imzalayın.';
+    errEl.style.display = 'flex';
+    return;
+  }
+
+  const imza = sigCanvas.toDataURL('image/png');
+  const bas  = document.getElementById('f-bas').value;
+  const bit  = document.getElementById('f-bit').value;
+
+  const d1 = new Date(bas), d2 = new Date(bit);
+  let gun = 0;
+  for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+    const g = d.getDay(); if (g !== 0 && g !== 6) gun++;
+  }
+
+  const btn = document.getElementById('btn-gonder');
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor...';
+
+  try {
+    const body = {
+      personel_id:        personelId,
+      tc_kimlik:          personelTc,
+      izin_turu:          document.getElementById('f-izin-tur').value,
+      baslangic:          bas,
+      bitis:              bit,
+      gun_sayisi:         Math.max(gun, 1),
+      kullanilabilir_gun: parseInt(document.getElementById('f-kullanilabilir').value) || null,
+      vekil_ad_soyad:     document.getElementById('f-vekil').value.trim() || null,
+      izin_adresi:        document.getElementById('f-adres').value.trim() || null,
+      notlar:             document.getElementById('f-notlar').value.trim() || null,
+      imza,
+    };
+
+    const res = await fetch('/public/izin', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body:    JSON.stringify(body),
+    });
+
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      errEl.textContent = e.detail || 'Başvuru gönderilemedi. Lütfen tekrar deneyin.';
+      errEl.style.display = 'flex';
+      return;
+    }
+
+    const data = await res.json();
+    document.getElementById('basvuru-ref').textContent = '#' + data.id;
+    setStep(4);
+  } catch(e) {
+    errEl.textContent = 'Bağlantı hatası: ' + e.message;
+    errEl.style.display = 'flex';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '📨 Başvuruyu Gönder';
+  }
+}
+
+// ── YENİ BAŞVURU ──────────────────────────────────────────────
+function yeniBasvuru() {
+  personelId = null;
+  personelTc = '';
+  sigSigned  = false;
+  sigInited  = false;
+  document.getElementById('f-tc').value = '';
+  document.getElementById('kimlik-error').style.display = 'none';
+  setStep(1);
+}
+
+// ── INIT ──────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  setStep(1);
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('f-bas').min = today;
+  document.getElementById('f-bit').min = today;
+});
+</script>
+</body>
+</html>

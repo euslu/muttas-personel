@@ -254,6 +254,80 @@ async def public_belge_yukle(
         return {"mesaj": "Belge yüklendi.", "belge_id": belge["id"]}
 
 
+# ── Public İzin Başvuru Endpoint'leri ────────────────────────────────────────
+
+@router.get("/public/personel/ara")
+async def public_personel_ara(tc: Optional[str] = None, q: Optional[str] = None):
+    if not tc and not q:
+        raise HTTPException(status_code=400, detail="TC kimlik veya isim giriniz.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        if tc:
+            row = await conn.fetchrow(
+                "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
+                tc.strip()
+            )
+        else:
+            row = await conn.fetchrow(
+                "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE ad_soyad ILIKE $1 AND aktif=TRUE ORDER BY ad_soyad LIMIT 1",
+                f"%{q.strip()}%"
+            )
+        if not row:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+        return {
+            "id":       row["id"],
+            "ad_soyad": row["ad_soyad"],
+            "bolum":    row["bolum"],
+            "unvan":    row["unvan"],
+            "ilce":     row["ilce"],
+        }
+
+
+class PublicIzinCreate(BaseModel):
+    personel_id:        int
+    tc_kimlik:          str
+    izin_turu:          str
+    baslangic:          date
+    bitis:              date
+    gun_sayisi:         int
+    kullanilabilir_gun: Optional[int] = None
+    vekil_ad_soyad:     Optional[str] = None
+    izin_adresi:        Optional[str] = None
+    notlar:             Optional[str] = None
+    imza:               Optional[str] = None
+
+
+IZIN_TURLERI_PUBLIC = {"yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "diger"}
+
+
+@router.post("/public/izin", status_code=201)
+async def public_izin_olustur(data: PublicIzinCreate):
+    if data.izin_turu not in IZIN_TURLERI_PUBLIC:
+        raise HTTPException(status_code=400, detail="Geçersiz izin türü.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        prs = await conn.fetchrow(
+            "SELECT id FROM personel WHERE id=$1 AND tc_kimlik=$2 AND aktif=TRUE",
+            data.personel_id, data.tc_kimlik
+        )
+        if not prs:
+            raise HTTPException(status_code=403, detail="TC kimlik doğrulaması başarısız.")
+
+        row = await conn.fetchrow("""
+            INSERT INTO izinler
+                (personel_id, talep_tarihi, izin_turu, baslangic, bitis,
+                 gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, notlar, imza)
+            VALUES ($1, CURRENT_DATE, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            RETURNING id
+        """,
+            data.personel_id, data.izin_turu, data.baslangic, data.bitis,
+            data.gun_sayisi, data.kullanilabilir_gun, data.vekil_ad_soyad,
+            data.izin_adresi, data.notlar, data.imza,
+        )
+        return {"id": row["id"], "mesaj": "İzin başvurunuz alındı."}
+
+
 # ── Personel Endpoint'leri (JWT Gerekli) ──────────────────────────────────────
 
 @router.post("/baglamalar/{basvuru_id}/link-olustur")

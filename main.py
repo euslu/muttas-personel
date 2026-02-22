@@ -260,6 +260,11 @@ def basvuru_sayfasi():
     return FileResponse("static/basvuru.html")
 
 
+@app.get("/izin-basvuru")
+def izin_basvuru_sayfasi():
+    return FileResponse("static/izin-basvuru.html")
+
+
 @app.get("/basvuru/{token}")
 def basvuru_takip(token: str):
     return FileResponse("static/basvuru.html")
@@ -296,4 +301,4 @@ async def setup_db():
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
