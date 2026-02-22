@@ -61,6 +61,16 @@ class PersonelUpdate(PersonelCreate):
     aktif:    Optional[bool] = None
 
 
+SORT_COLS = {
+    "ad_soyad":             "p.ad_soyad",
+    "bolum":                "p.bolum",
+    "unvan":                "p.unvan",
+    "ilce":                 "p.ilce",
+    "ise_giris":            "p.ise_giris",
+    "guvenlik_belge_tarih": "p.guvenlik_belge_tarih",
+    "telefon":              "p.telefon",
+}
+
 @router.get("")
 async def list_personel(
     q:        Optional[str] = Query(None),
@@ -68,6 +78,8 @@ async def list_personel(
     unvan:    Optional[str] = Query(None),
     ilce:     Optional[str] = Query(None),
     aktif:    Optional[bool] = Query(None),
+    sort_by:  Optional[str] = Query("ad_soyad"),
+    sort_dir: Optional[str] = Query("asc"),
     page:     int = Query(1, ge=1),
     per_page: int = Query(25, ge=1, le=100),
     token:    dict = Depends(decode_token),
@@ -103,6 +115,10 @@ async def list_personel(
 
         toplam = await conn.fetchval(f"SELECT COUNT(*) FROM personel p {where_sql}", *params)
 
+        order_col = SORT_COLS.get(sort_by or "ad_soyad", "p.ad_soyad")
+        order_dir = "DESC" if (sort_dir or "asc").upper() == "DESC" else "ASC"
+        order_sql = f"ORDER BY {order_col} {order_dir} NULLS LAST"
+
         offset = (page - 1) * per_page
         params_page = params + [per_page, offset]
         rows = await conn.fetch(f"""
@@ -113,7 +129,7 @@ async def list_personel(
                    p.sendika_uyesi, p.maliyet_merkezi, p.olusturuldu
             FROM personel p
             {where_sql}
-            ORDER BY p.ad_soyad
+            {order_sql}
             LIMIT ${len(params_page)-1} OFFSET ${len(params_page)}
         """, *params_page)
 
