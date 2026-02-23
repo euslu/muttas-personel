@@ -3860,13 +3860,14 @@ function ftExport() {
           <div class="combo-drop" id="prs-form-cikis-kodu-drop"></div>
         </div>
       </div>
-      <div class="form-field">
-        <label>Meslek Kodu</label>
-        <input type="text" id="prs-form-meslek-kodu" placeholder="Kod">
-      </div>
-      <div class="form-field">
-        <label>Meslek Adı</label>
-        <input type="text" id="prs-form-meslek-adi" placeholder="Meslek adı">
+      <div class="form-field" style="grid-column:span 2">
+        <label>Meslek (Kod - Ad)</label>
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-meslek-adi" placeholder="Meslek adı veya kodu yazın..." autocomplete="off" oninput="comboFilter('prs-form-meslek-adi')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-meslek-adi')">▾</button>
+          <div class="combo-drop" id="prs-form-meslek-adi-drop"></div>
+        </div>
+        <input type="hidden" id="prs-form-meslek-kodu">
       </div>
       <div class="form-field">
         <label>Güvenlik Belgesi Geç. Tar.</label>
@@ -4881,6 +4882,60 @@ const COMBO_OPTIONS = {
     'Bodrum','Dalaman','Datça','Fethiye','Kavaklıdere','Köyceğiz',
     'Marmaris','Menteşe','Milas','Ortaca','Seydikemer','Ula','Yatağan',
   ],
+  'prs-form-meslek-adi': [
+    '1120 - Genel Müdür / Üst Düzey Yönetici',
+    '1211 - Finans Müdürü',
+    '1212 - İnsan Kaynakları Müdürü',
+    '1219 - Diğer Departman Müdürleri',
+    '1221 - Şube ve Birim Müdürü',
+    '1321 - İmalat Müdürü',
+    '2141 - Endüstri ve Üretim Mühendisi',
+    '2142 - İnşaat Mühendisi',
+    '2143 - Çevre Mühendisi',
+    '2144 - Makine Mühendisi',
+    '2145 - Kimya Mühendisi',
+    '2151 - Elektrik Mühendisi',
+    '2152 - Elektronik Mühendisi',
+    '2166 - Grafik ve Multimedya Tasarımcısı',
+    '2411 - Muhasebe Uzmanı / Mali Müşavir',
+    '2412 - Mali Danışman',
+    '2421 - Yönetim Danışmanı',
+    '3111 - Kimya ve Fizik Teknisyeni',
+    '3112 - İnşaat Teknisyeni',
+    '3113 - Elektrik Teknisyeni',
+    '3114 - Elektronik Teknisyeni',
+    '3115 - Makine Teknisyeni',
+    '3116 - Kimya Prosesi Teknisyeni',
+    '3123 - İmalat Ustabaşı',
+    '3313 - Muhasebe Meslek Elemanı',
+    '3323 - Satın Alma Sorumlusu',
+    '4110 - Genel Büro Görevlisi',
+    '4120 - Sekreter',
+    '4190 - Büro Memuru / İdari Personel',
+    '4211 - Banka Veznedarı',
+    '4221 - Seyahat Danışmanı',
+    '4311 - Muhasebe Katibi',
+    '5414 - Güvenlik Görevlisi',
+    '5419 - Koruma ve Güvenlik Personeli',
+    '6111 - Tarım İşçisi',
+    '7111 - Madenci',
+    '7231 - Motorlu Araç Motoru Tamircisi',
+    '7233 - Tarım Makinesi Tamircisi',
+    '7411 - Elektrik Tesisatçısı',
+    '7521 - Ağaç İşleri Makinesi Operatörü',
+    '8322 - Otomobil ve Hafif Ticari Araç Sürücüsü',
+    '8331 - Otobüs Sürücüsü',
+    '8332 - Ağır Kamyon Sürücüsü',
+    '8333 - Forklift Operatörü',
+    '9111 - Ev İçi Temizlik Görevlisi',
+    '9112 - Kapıcı / Bina Görevlisi',
+    '9121 - Çamaşırcı ve Ütücü',
+    '9141 - Apartman ve Otopark Görevlisi',
+    '9331 - El Aracı Operatörü',
+    '9412 - Mutfak Yardımcısı',
+    '9611 - Çöp Toplayıcısı / Temizlik İşçisi',
+    '9613 - Yol ve Cadde Temizlik Görevlisi',
+  ],
   'prs-form-cikis-kodu': [
     'Kod 1 - Deneme süreli sözleşmenin işçi tarafından feshi',
     'Kod 2 - Deneme süreli sözleşmenin işveren tarafından feshi',
@@ -4985,6 +5040,14 @@ function comboSelect(id, value) {
   if (input) input.value = value;
   const drop = document.getElementById(id + '-drop');
   if (drop) drop.classList.remove('open');
+  if (id === 'prs-form-meslek-adi') {
+    const parts = value.split(' - ');
+    const kod = parts[0]?.trim() || '';
+    const adi = parts.slice(1).join(' - ').trim() || value;
+    const kodEl = document.getElementById('prs-form-meslek-kodu');
+    if (kodEl) kodEl.value = kod;
+    if (input) input.value = adi;
+  }
 }
 
 document.addEventListener('click', e => {
