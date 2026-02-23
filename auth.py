@@ -1,18 +1,22 @@
 import os
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, Depends
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 import bcrypt
 from jose import jwt
 
 from db import get_pool
+from permissions import decode_token
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 60 * 24
+
+IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer"}
 
 
 def hash_password(password: str) -> str:
@@ -28,12 +32,16 @@ class RegisterRequest(BaseModel):
     soyad: str
     email: EmailStr
     password: str
-    rol: str = "admin"
+    rol: str = "liman_viewer"
 
 
 class LoginRequest(BaseModel):
     email: EmailStr
     password: str
+
+
+class RolGuncelle(BaseModel):
+    rol: str
 
 
 def create_token(user_id: int, email: str, rol: str) -> str:
@@ -47,8 +55,20 @@ def create_token(user_id: int, email: str, rol: str) -> str:
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
 
+def require_admin(token: dict = Depends(decode_token)) -> dict:
+    if token.get("rol") != "admin":
+        raise HTTPException(status_code=403, detail="Bu işlem için admin yetkisi gereklidir.")
+    return token
+
+
 @router.post("/register", status_code=status.HTTP_201_CREATED)
-async def register(body: RegisterRequest):
+async def register(body: RegisterRequest, token: dict = Depends(require_admin)):
+    if body.rol not in IZIN_VERILEN_ROLLER:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Geçersiz rol. İzin verilen roller: {sorted(IZIN_VERILEN_ROLLER)}",
+        )
+
     pool = await get_pool()
     async with pool.acquire() as conn:
         existing = await conn.fetchrow(
@@ -74,9 +94,7 @@ async def register(body: RegisterRequest):
             body.rol,
         )
 
-    token = create_token(row["id"], row["email"], row["rol"])
     return {
-        "token": token,
         "kullanici": {
             "id": row["id"],
             "ad": row["ad"],
@@ -85,6 +103,45 @@ async def register(body: RegisterRequest):
             "rol": row["rol"],
         },
     }
+
+
+@router.get("/kullanicilar")
+async def list_kullanicilar(token: dict = Depends(require_admin)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT id, ad, soyad, email, rol, aktif, created_at FROM kullanicilar ORDER BY created_at DESC"
+        )
+    return [dict(r) for r in rows]
+
+
+@router.put("/kullanicilar/{uid}/rol")
+async def update_rol(uid: int, body: RolGuncelle, token: dict = Depends(require_admin)):
+    if body.rol not in IZIN_VERILEN_ROLLER:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Geçersiz rol. İzin verilen roller: {sorted(IZIN_VERILEN_ROLLER)}",
+        )
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM kullanicilar WHERE id = $1", uid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
+        await conn.execute("UPDATE kullanicilar SET rol = $2 WHERE id = $1", uid, body.rol)
+    return {"ok": True}
+
+
+@router.delete("/kullanicilar/{uid}")
+async def deactivate_kullanici(uid: int, token: dict = Depends(require_admin)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM kullanicilar WHERE id = $1", uid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
+        if str(uid) == token.get("sub"):
+            raise HTTPException(status_code=400, detail="Kendi hesabınızı silemezsiniz.")
+        await conn.execute("UPDATE kullanicilar SET aktif = FALSE WHERE id = $1", uid)
+    return {"ok": True}
 
 
 @router.post("/login")

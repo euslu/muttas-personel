@@ -1,29 +1,16 @@
-import os
 from typing import Optional
 from datetime import date
 
 from fastapi import APIRouter, HTTPException, Query, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
 from pydantic import BaseModel
 
 from db import get_pool
+from permissions import decode_token, require_ik_editor
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
 
-JWT_SECRET    = os.environ["JWT_SECRET"]
-JWT_ALGORITHM = "HS256"
-security      = HTTPBearer()
-
 IZIN_TURLERI = ["yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "diger"]
 DURUMLAR     = ["beklemede", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
-
-
-def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
-    try:
-        return jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Geçersiz token.")
 
 
 class IzinCreate(BaseModel):
@@ -166,7 +153,7 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
 
 
 @router.post("", status_code=201)
-async def create_izin(body: IzinCreate, token: dict = Depends(decode_token)):
+async def create_izin(body: IzinCreate, token: dict = Depends(require_ik_editor)):
     if body.izin_turu not in IZIN_TURLERI:
         raise HTTPException(status_code=400, detail=f"Geçersiz izin türü. Kabul edilenler: {IZIN_TURLERI}")
 
@@ -192,7 +179,7 @@ async def create_izin(body: IzinCreate, token: dict = Depends(decode_token)):
 
 
 @router.put("/{iid}")
-async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(decode_token)):
+async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval(
@@ -216,7 +203,7 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(decode_t
 
 
 @router.put("/{iid}/onay")
-async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token)):
+async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(require_ik_editor)):
     if body.durum not in DURUMLAR:
         raise HTTPException(status_code=400, detail=f"Geçersiz durum. Kabul edilenler: {DURUMLAR}")
 
@@ -252,7 +239,7 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
 
 
 @router.delete("/{iid}")
-async def delete_izin(iid: int, token: dict = Depends(decode_token)):
+async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval(

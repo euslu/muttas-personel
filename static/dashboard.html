@@ -1798,7 +1798,7 @@ tr:hover td { background: var(--bg-soft); }
         <div class="card">
           <div class="card-header">
             <h2>Kullanıcılar</h2>
-            <button class="btn btn-primary">+ Kullanıcı Ekle</button>
+            <button class="btn btn-primary" onclick="openKullaniciDrawer()">+ Kullanıcı Ekle</button>
           </div>
           <div class="card-body">
             <div class="table-wrap">
@@ -1808,25 +1808,60 @@ tr:hover td { background: var(--bg-soft); }
                     <th>Ad Soyad</th>
                     <th>E-posta</th>
                     <th>Rol</th>
-                    <th>Liman</th>
-                    <th>Kayıt Tarihi</th>
+                    <th>Durum</th>
                     <th>İşlem</th>
                   </tr>
                 </thead>
                 <tbody id="kullanicilar-body">
-                  <tr>
-                    <td colspan="6">
-                      <div class="empty">
-                        <div class="empty-icon">👥</div>
-                        <h3>Kullanıcı bulunamadı</h3>
-                        <p>Henüz kullanıcı eklenmemiş.</p>
-                      </div>
-                    </td>
-                  </tr>
+                  <tr><td colspan="5" style="text-align:center;color:var(--text-3)">Yükleniyor…</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- Kullanıcı Drawer -->
+      <div class="drawer-overlay" id="ku-drawer-overlay" onclick="closeKullaniciDrawer()"></div>
+      <div class="drawer" id="ku-drawer">
+        <div class="drawer-header">
+          <h3>Yeni Kullanıcı Ekle</h3>
+          <button class="drawer-close" onclick="closeKullaniciDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Ad <span style="color:var(--danger)">*</span></label>
+              <input class="form-input" id="ku-ad" placeholder="Ad">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Soyad <span style="color:var(--danger)">*</span></label>
+              <input class="form-input" id="ku-soyad" placeholder="Soyad">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">E-posta <span style="color:var(--danger)">*</span></label>
+            <input class="form-input" id="ku-email" type="email" placeholder="ornek@muttas.com">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Şifre <span style="color:var(--danger)">*</span></label>
+            <input class="form-input" id="ku-sifre" type="password" placeholder="En az 6 karakter">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rol <span style="color:var(--danger)">*</span></label>
+            <select class="form-input" id="ku-rol">
+              <option value="liman_viewer">Liman — Görüntüleyici</option>
+              <option value="liman_admin">Liman — Yönetici</option>
+              <option value="ik_viewer">İK — Görüntüleyici</option>
+              <option value="ik_admin">İK — Yönetici</option>
+              <option value="admin">Admin (Tam Yetki)</option>
+            </select>
+          </div>
+          <div id="ku-error" style="color:var(--danger);font-size:13px;margin-top:8px;display:none"></div>
+        </div>
+        <div class="drawer-footer">
+          <button class="btn btn-secondary" onclick="closeKullaniciDrawer()">İptal</button>
+          <button class="btn btn-primary" onclick="saveKullanici()">💾 Kaydet</button>
         </div>
       </div>
 
@@ -1924,7 +1959,7 @@ tr:hover td { background: var(--bg-soft); }
               <option value="false">Pasif</option>
               <option value="">Tümü</option>
             </select>
-            <button class="btn btn-primary" style="margin-left:auto" onclick="openPersonelDrawer(null)">+ Personel Ekle</button>
+            <button id="btn-personel-ekle" class="btn btn-primary" style="margin-left:auto" onclick="openPersonelDrawer(null)">+ Personel Ekle</button>
           </div>
         </div>
 
@@ -2009,7 +2044,7 @@ tr:hover td { background: var(--bg-soft); }
             </select>
             <select class="form-input" id="iz-yil" style="width:100px" onchange="loadIzinler(1)">
             </select>
-            <button class="btn btn-primary" style="margin-left:auto" onclick="openIzinDrawer(null)">+ İzin Talebi Ekle</button>
+            <button id="btn-izin-ekle" class="btn btn-primary" style="margin-left:auto" onclick="openIzinDrawer(null)">+ İzin Talebi Ekle</button>
           </div>
         </div>
 
@@ -2061,13 +2096,18 @@ const PAGE_TITLES = {
   izinler:      'İzin Yönetimi',
 };
 
-let currentUser = null;
+let currentUser  = null;
 let currentLiman = null;
+let canEditIK    = false;
+let canEditLiman = false;
 
 function applyRoleUI(rol) {
   const isAdmin = rol === 'admin';
-  const isIK    = rol === 'ik_admin' || rol === 'ik';
+  const isIK    = rol === 'ik_admin' || rol === 'ik_viewer';
   const isLiman = isAdmin || (!isIK);
+
+  canEditIK    = isAdmin || rol === 'ik_admin';
+  canEditLiman = isAdmin || rol === 'liman_admin';
 
   document.querySelectorAll('.nav-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
@@ -2091,6 +2131,12 @@ function applyRoleUI(rol) {
     if (subtitle) subtitle.textContent = 'Liman Yönetim Paneli';
     document.title = 'Muttaş Liman Paneli';
   }
+
+  const btnPersonelEkle = document.getElementById('btn-personel-ekle');
+  if (btnPersonelEkle) btnPersonelEkle.style.display = canEditIK ? '' : 'none';
+
+  const btnIzinEkle = document.getElementById('btn-izin-ekle');
+  if (btnIzinEkle) btnIzinEkle.style.display = canEditIK ? '' : 'none';
 }
 
 (function init() {
@@ -2222,8 +2268,9 @@ function navigate(page, el) {
   if (page === 'baglama') initBasvurular();
   if (page === 'tekneler') initTekneler();
   if (page === 'faturalar') initFaturalar();
-  if (page === 'personel') { loadPersonelMeta(); loadPersonel(1); }
-  if (page === 'izinler')  loadIzinler(1);
+  if (page === 'personel')     { loadPersonelMeta(); loadPersonel(1); }
+  if (page === 'izinler')      loadIzinler(1);
+  if (page === 'kullanicilar') loadKullanicilar();
 }
 
 function updateTopbar(page) {
@@ -4223,9 +4270,9 @@ async function loadPersonel(page) {
       <td>${aktifBadge}</td>
       <td>
         <div style="display:flex;gap:4px">
-          <button class="btn-icon" title="Düzenle" onclick="openPersonelDrawer(${p.id})">✏️</button>
+          ${canEditIK ? `<button class="btn-icon" title="Düzenle" onclick="openPersonelDrawer(${p.id})">✏️</button>` : ''}
           <button class="btn-icon" title="İzinleri" onclick="izinleriGor(${p.id},'${p.ad_soyad}')">📅</button>
-          <button class="btn-icon del" title="Pasif Yap" onclick="personelPasif(${p.id})">🚫</button>
+          ${canEditIK ? `<button class="btn-icon del" title="Pasif Yap" onclick="personelPasif(${p.id})">🚫</button>` : ''}
         </div>
       </td>
     </tr>`;
@@ -4568,8 +4615,10 @@ async function loadIzinler(page) {
       <td><span style="font-size:11px;font-weight:600;color:${durumColor}">${durumLabel}</span></td>
       <td>
         <div style="display:flex;gap:4px">
-          <button class="btn-icon" title="Düzenle / Onayla" onclick="openIzinDrawer(${iz.id})">✏️</button>
-          ${iz.durum === 'beklemede' ? `<button class="btn-icon del" title="Sil" onclick="izinSil(${iz.id})">🗑</button>` : ''}
+          <button class="btn-icon" title="${canEditIK ? 'Düzenle / Onayla' : 'Görüntüle'}" onclick="openIzinDrawer(${iz.id})">
+            ${canEditIK ? '✏️' : '👁️'}
+          </button>
+          ${canEditIK && iz.durum === 'beklemede' ? `<button class="btn-icon del" title="Sil" onclick="izinSil(${iz.id})">🗑</button>` : ''}
         </div>
       </td>
     </tr>`;
@@ -4585,8 +4634,10 @@ async function openIzinDrawer(id) {
   izEditId = id;
   const overlay = document.getElementById('iz-drawer-overlay');
   const drawer  = document.getElementById('iz-drawer');
-  document.getElementById('iz-drawer-title').textContent = id ? 'İzin Kaydı' : 'İzin Talebi Ekle';
-  document.getElementById('iz-save-btn').style.display = '';
+  document.getElementById('iz-drawer-title').textContent = id
+    ? (canEditIK ? 'İzin Kaydı' : 'İzin Görüntüle')
+    : 'İzin Talebi Ekle';
+  document.getElementById('iz-save-btn').style.display = canEditIK ? '' : 'none';
   document.getElementById('iz-onay-section').style.display = 'none';
   document.getElementById('iz-personel-bilgi').style.display = 'none';
 
@@ -5104,6 +5155,121 @@ document.addEventListener('click', e => {
     }
   });
 });
+
+const ROL_ETIKETI = {
+  admin:        'Admin',
+  ik_admin:     'İK Yöneticisi',
+  ik_viewer:    'İK Görüntüleyici',
+  liman_admin:  'Liman Yöneticisi',
+  liman_viewer: 'Liman Görüntüleyici',
+};
+
+async function loadKullanicilar() {
+  const res = await fetch('/auth/kullanicilar', { headers: authHeaders() });
+  if (!res.ok) return;
+  const rows = await res.json();
+  const tbody = document.getElementById('kullanicilar-body');
+  if (!rows.length) {
+    tbody.innerHTML = `<tr><td colspan="5"><div class="empty"><div class="empty-icon">👥</div><h3>Henüz kullanıcı yok</h3></div></td></tr>`;
+    return;
+  }
+  tbody.innerHTML = rows.map(u => {
+    const rolOpts = Object.entries(ROL_ETIKETI).map(([v,l]) =>
+      `<option value="${v}" ${u.rol === v ? 'selected' : ''}>${l}</option>`
+    ).join('');
+    return `<tr>
+      <td><strong>${u.ad} ${u.soyad}</strong></td>
+      <td style="font-size:12px;color:var(--text-2)">${u.email}</td>
+      <td>
+        <select class="form-input" style="font-size:12px;padding:4px 8px;height:32px"
+          onchange="rolGuncelle(${u.id}, this.value)">
+          ${rolOpts}
+        </select>
+      </td>
+      <td>
+        <span class="badge ${u.aktif ? 'badge-admin' : 'badge-user'}" style="font-size:11px">
+          ${u.aktif ? 'Aktif' : 'Pasif'}
+        </span>
+      </td>
+      <td>
+        ${u.aktif ? `<button class="btn-icon del" title="Devre Dışı Bırak" onclick="kullaniciSil(${u.id})">🚫</button>` : ''}
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+async function rolGuncelle(uid, rol) {
+  const res = await fetch(`/auth/kullanicilar/${uid}/rol`, {
+    method: 'PUT',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ rol }),
+  });
+  if (!res.ok) {
+    const e = await res.json().catch(() => ({}));
+    alert(e.detail || 'Rol güncellenemedi.');
+    loadKullanicilar();
+  }
+}
+
+async function kullaniciSil(uid) {
+  if (!confirm('Bu kullanıcıyı devre dışı bırakmak istediğinize emin misiniz?')) return;
+  const res = await fetch(`/auth/kullanicilar/${uid}`, {
+    method: 'DELETE', headers: authHeaders(),
+  });
+  if (res.ok) { loadKullanicilar(); }
+  else { const e = await res.json().catch(() => ({})); alert(e.detail || 'İşlem başarısız.'); }
+}
+
+function openKullaniciDrawer() {
+  ['ku-ad','ku-soyad','ku-email','ku-sifre'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('ku-rol').value = 'liman_viewer';
+  document.getElementById('ku-error').style.display = 'none';
+  document.getElementById('ku-drawer-overlay').classList.add('open');
+  document.getElementById('ku-drawer').classList.add('open');
+}
+
+function closeKullaniciDrawer() {
+  document.getElementById('ku-drawer-overlay').classList.remove('open');
+  document.getElementById('ku-drawer').classList.remove('open');
+}
+
+async function saveKullanici() {
+  const ad    = document.getElementById('ku-ad').value.trim();
+  const soyad = document.getElementById('ku-soyad').value.trim();
+  const email = document.getElementById('ku-email').value.trim();
+  const sifre = document.getElementById('ku-sifre').value;
+  const rol   = document.getElementById('ku-rol').value;
+  const errEl = document.getElementById('ku-error');
+
+  if (!ad || !soyad || !email || !sifre) {
+    errEl.textContent = 'Tüm zorunlu alanları doldurun.';
+    errEl.style.display = '';
+    return;
+  }
+  if (sifre.length < 6) {
+    errEl.textContent = 'Şifre en az 6 karakter olmalıdır.';
+    errEl.style.display = '';
+    return;
+  }
+  errEl.style.display = 'none';
+
+  const res = await fetch('/auth/register', {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ ad, soyad, email, password: sifre, rol }),
+  });
+
+  if (res.ok) {
+    closeKullaniciDrawer();
+    loadKullanicilar();
+  } else {
+    const e = await res.json().catch(() => ({}));
+    errEl.textContent = e.detail || 'Kullanıcı eklenemedi.';
+    errEl.style.display = '';
+  }
+}
 </script>
 
 </body>

@@ -8,26 +8,15 @@ from datetime import date
 from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File, Form
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
 from pydantic import BaseModel
 
 from db import get_pool
+from permissions import decode_token, require_ik_editor
 
 UPLOAD_DIR = Path("uploads/personel")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 router = APIRouter(prefix="/personel", tags=["personel"])
-
-JWT_SECRET    = os.environ["JWT_SECRET"]
-JWT_ALGORITHM = "HS256"
-security      = HTTPBearer()
-
-
-def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
-    try:
-        return jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Geçersiz token.")
 
 
 class PersonelCreate(BaseModel):
@@ -202,7 +191,7 @@ async def get_personel(pid: int, token: dict = Depends(decode_token)):
 
 
 @router.post("", status_code=201)
-async def create_personel(body: PersonelCreate, token: dict = Depends(decode_token)):
+async def create_personel(body: PersonelCreate, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow("""
@@ -233,7 +222,7 @@ async def create_personel(body: PersonelCreate, token: dict = Depends(decode_tok
 
 
 @router.put("/{pid}")
-async def update_personel(pid: int, body: PersonelUpdate, token: dict = Depends(decode_token)):
+async def update_personel(pid: int, body: PersonelUpdate, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT id FROM personel WHERE id = $1", pid)
@@ -251,7 +240,7 @@ async def update_personel(pid: int, body: PersonelUpdate, token: dict = Depends(
 
 
 @router.delete("/{pid}")
-async def delete_personel(pid: int, token: dict = Depends(decode_token)):
+async def delete_personel(pid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         await conn.execute("UPDATE personel SET aktif = FALSE WHERE id = $1", pid)
@@ -287,7 +276,7 @@ async def upload_evrak(
     pid:       int,
     evrak_adi: str = Form(...),
     dosya:     UploadFile = File(...),
-    token:     dict = Depends(decode_token),
+    token:     dict = Depends(require_ik_editor),
 ):
     pool = await get_pool()
     async with pool.acquire() as conn:
@@ -343,7 +332,7 @@ async def indir_evrak(eid: int, token: Optional[str] = Query(None),
 
 
 @router.delete("/evrak/{eid}")
-async def delete_evrak(eid: int, token: dict = Depends(decode_token)):
+async def delete_evrak(eid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
