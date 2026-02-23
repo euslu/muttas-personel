@@ -3854,7 +3854,11 @@ function ftExport() {
       </div>
       <div class="form-field" style="grid-column:span 2">
         <label>Çıkış Kodu / Nedeni</label>
-        <input type="text" id="prs-form-cikis-kodu" placeholder="SGK çıkış kodu ve nedeni">
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-cikis-kodu" placeholder="Kod seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-cikis-kodu')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-cikis-kodu')">▾</button>
+          <div class="combo-drop" id="prs-form-cikis-kodu-drop"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>Meslek Kodu</label>
@@ -4876,6 +4880,47 @@ const COMBO_OPTIONS = {
   'prs-form-ilce': [
     'Bodrum','Dalaman','Datça','Fethiye','Kavaklıdere','Köyceğiz',
     'Marmaris','Menteşe','Milas','Ortaca','Seydikemer','Ula','Yatağan',
+  ],
+  'prs-form-cikis-kodu': [
+    'Kod 1 - Deneme süreli sözleşmenin işçi tarafından feshi',
+    'Kod 2 - Deneme süreli sözleşmenin işveren tarafından feshi',
+    'Kod 3 - Belirsiz süreli sözleşmenin işçi tarafından feshi (istifa)',
+    'Kod 4 - Belirsiz süreli sözleşmenin işveren tarafından haklı sebepsiz feshi',
+    'Kod 5 - Belirli süreli sözleşmenin sona ermesi',
+    'Kod 8 - Emeklilik (yaşlılık) veya toptan ödeme',
+    'Kod 9 - Malullük aylığı bağlanması',
+    'Kod 10 - Ölüm',
+    'Kod 11 - İş kazası sonucu ölüm',
+    'Kod 12 - Askerlik',
+    'Kod 13 - Kadın işçinin evlenmesi',
+    'Kod 14 - Emeklilik için yaş dışı şartların tamamlanması',
+    'Kod 15 - Toplu işçi çıkarma',
+    'Kod 17 - İşçinin kendi isteği ve kusuru dışında fesih',
+    'Kod 18 - İşyerinin kapanması',
+    'Kod 19 - Mevsim bitimi',
+    'Kod 20 - Kampanya bitimi',
+    'Kod 22 - Diğer nedenler',
+    'Kod 23 - İşçi tarafından zorunlu nedenle fesih',
+    'Kod 24 - Aynı işverene ait diğer işyerine nakil',
+    'Kod 25 - İşçi tarafından işverenin ahlak ve iyi niyet kurallarına aykırı davranışı nedeniyle fesih',
+    'Kod 27 - İşveren tarafından zorunlu nedenlerle ve tutukluluk nedeniyle fesih',
+    'Kod 28 - İşveren tarafından sağlık nedeniyle fesih',
+    'Kod 31 - Borçlar/Sendikalar/Grev Kanunu kapsamında kendi istek ve kusuru dışında fesih',
+    'Kod 32 - Özelleştirme nedeniyle fesih',
+    'Kod 34 - Doğum nedeniyle işten ayrılma',
+    'Kod 35 - FETÖ/PYD nedeniyle kamu görevinden çıkarma',
+    'Kod 36 - 696 KHK ile kamu işçiliğine geçiş',
+    'Kod 38 - 696 KHK ile kamu işçiliğine geçilememesi sebebiyle çıkış',
+    'Kod 39 - Resen işten ayrılış bildirgesi (SGK tarafından)',
+    'Kod 42 - İşçinin işverene zarar vermesi',
+    'Kod 43 - İşverene hakaret',
+    'Kod 44 - Cinsel taciz',
+    'Kod 45 - Sır ifşası',
+    'Kod 46 - Hırsızlık',
+    'Kod 47 - Güveni kötüye kullanma',
+    'Kod 48 - Devamsızlık',
+    'Kod 49 - Sataşma/kavga',
+    'Kod 50 - Sabotaj',
   ],
   'prs-form-bolum': [
     'TOPLU TAŞIMA','DENİZ KIYI','GÜVENLİK','MERKEZ BÜRO','PARKOMAT',
