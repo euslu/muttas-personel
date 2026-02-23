@@ -3755,7 +3755,7 @@ function ftExport() {
         <input type="text" id="prs-form-ad-soyad" placeholder="Ad Soyad">
       </div>
       <div class="form-field">
-        <label>TC Kimlik No</label>
+        <label>TC Kimlik No *</label>
         <input type="text" id="prs-form-tc" placeholder="11 haneli" maxlength="11">
       </div>
       <div class="form-field">
@@ -3763,7 +3763,7 @@ function ftExport() {
         <input type="text" id="prs-form-sgk" placeholder="SGK Sicil No">
       </div>
       <div class="form-field">
-        <label>Cinsiyet</label>
+        <label>Cinsiyet *</label>
         <select id="prs-form-cinsiyet">
           <option value="">Seçiniz</option>
           <option value="ERKEK">Erkek</option>
@@ -3779,7 +3779,7 @@ function ftExport() {
         </select>
       </div>
       <div class="form-field">
-        <label>Doğum Tarihi</label>
+        <label>Doğum Tarihi *</label>
         <input type="date" id="prs-form-dogum-tarihi">
       </div>
       <div class="form-field">
@@ -3809,7 +3809,7 @@ function ftExport() {
     <div class="drawer-section">Görev Bilgileri</div>
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field">
-        <label>Bölüm</label>
+        <label>Bölüm *</label>
         <div class="combo-wrap">
           <input type="text" id="prs-form-bolum" placeholder="Bölüm seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-bolum')">
           <button type="button" class="combo-btn" onclick="comboToggle('prs-form-bolum')">▾</button>
@@ -3817,7 +3817,7 @@ function ftExport() {
         </div>
       </div>
       <div class="form-field">
-        <label>Ünvan</label>
+        <label>Ünvan *</label>
         <div class="combo-wrap">
           <input type="text" id="prs-form-unvan" placeholder="Ünvan seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-unvan')">
           <button type="button" class="combo-btn" onclick="comboToggle('prs-form-unvan')">▾</button>
@@ -3852,7 +3852,7 @@ function ftExport() {
         <input type="text" id="prs-form-hizmet" placeholder="Hizmet Noktası">
       </div>
       <div class="form-field">
-        <label>İşe Giriş Tarihi</label>
+        <label>İşe Giriş Tarihi *</label>
         <input type="date" id="prs-form-ise-giris">
       </div>
       <div class="form-field">
@@ -3911,7 +3911,7 @@ function ftExport() {
     <div class="drawer-section">İletişim</div>
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field">
-        <label>Telefon</label>
+        <label>Telefon *</label>
         <input type="tel" id="prs-form-telefon" placeholder="5xx xxx xx xx">
       </div>
       <div class="form-field" style="grid-column:span 2">
@@ -4418,7 +4418,14 @@ async function savePersonel() {
     notlar:               document.getElementById('prs-form-notlar')?.value || null,
   };
 
-  if (!body.ad_soyad) { showToast('Ad Soyad zorunludur', 'error'); return; }
+  if (!body.ad_soyad)    { showToast('Ad Soyad zorunludur', 'error'); return; }
+  if (!body.tc_kimlik)   { showToast('TC Kimlik No zorunludur', 'error'); return; }
+  if (!body.cinsiyet)    { showToast('Cinsiyet zorunludur', 'error'); return; }
+  if (!body.dogum_tarihi){ showToast('Doğum Tarihi zorunludur', 'error'); return; }
+  if (!body.bolum)       { showToast('Bölüm zorunludur', 'error'); return; }
+  if (!body.unvan)       { showToast('Ünvan zorunludur', 'error'); return; }
+  if (!body.ise_giris)   { showToast('İşe Giriş Tarihi zorunludur', 'error'); return; }
+  if (!body.telefon)     { showToast('Telefon zorunludur', 'error'); return; }
 
   const url    = prsEditId ? '/personel/' + prsEditId : '/personel';
   const method = prsEditId ? 'PUT' : 'POST';
