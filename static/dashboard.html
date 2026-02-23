@@ -1110,16 +1110,16 @@ tr:hover td { background: var(--bg-soft); }
         <span class="icon">📊</span> Dashboard
       </button>
 
-      <button class="nav-item" onclick="navigate('gunluk', this)">
+      <button class="nav-item" onclick="navigate('gunluk', this)" style="display:none">
         <span class="icon">📋</span> Liman Günlüğü
       </button>
 
       <!-- Bağlama Başvuruları (collapsible) -->
-      <button class="nav-group-toggle" id="baglama-toggle" onclick="toggleBaglamaMenu(this)">
+      <button class="nav-group-toggle" id="baglama-toggle" onclick="toggleBaglamaMenu(this)" style="display:none">
         <span class="icon">⚓</span> Bağlama Başvuruları
         <span class="nav-arrow">▸</span>
       </button>
-      <div class="nav-sub" id="baglama-sub">
+      <div class="nav-sub" id="baglama-sub" style="display:none">
         <button class="nav-sub-item active" onclick="navBasvuru('', this)">Tüm Başvurular</button>
         <button class="nav-sub-item" onclick="navBasvuru('beklemede', this)">Yeni Başvurular</button>
         <button class="nav-sub-item" onclick="navBasvuru('islem_bekliyor', this)">Link Gönderilenler</button>
@@ -1132,11 +1132,11 @@ tr:hover td { background: var(--bg-soft); }
         <button class="nav-sub-item" onclick="navBasvuru('dosya_yuklenenler', this)">Dosya Yüklenenler</button>
       </div>
 
-      <button class="nav-item" onclick="navigate('tekneler', this)">
+      <button class="nav-item" onclick="navigate('tekneler', this)" style="display:none">
         <span class="icon">🚢</span> Tekneler
       </button>
 
-      <button class="nav-item" onclick="navigate('faturalar', this)">
+      <button class="nav-item" onclick="navigate('faturalar', this)" style="display:none">
         <span class="icon">🧾</span> Faturalar
       </button>
 
