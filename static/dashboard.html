@@ -1087,8 +1087,8 @@ tr:hover td { background: var(--bg-soft); }
         </svg>
       </div>
       <div class="sb-logo-text">
-        <span class="brand">MUTTAŞ</span>
-        <span class="sub">Liman Yönetim Paneli</span>
+        <span class="brand" id="sb-brand">MUTTAŞ</span>
+        <span class="sub" id="sb-subtitle">Yönetim Paneli</span>
       </div>
     </div>
 
@@ -1110,16 +1110,16 @@ tr:hover td { background: var(--bg-soft); }
         <span class="icon">📊</span> Dashboard
       </button>
 
-      <button class="nav-item" onclick="navigate('gunluk', this)" style="display:none">
+      <button class="nav-item nav-liman" onclick="navigate('gunluk', this)">
         <span class="icon">📋</span> Liman Günlüğü
       </button>
 
       <!-- Bağlama Başvuruları (collapsible) -->
-      <button class="nav-group-toggle" id="baglama-toggle" onclick="toggleBaglamaMenu(this)" style="display:none">
+      <button class="nav-group-toggle nav-liman" id="baglama-toggle" onclick="toggleBaglamaMenu(this)">
         <span class="icon">⚓</span> Bağlama Başvuruları
         <span class="nav-arrow">▸</span>
       </button>
-      <div class="nav-sub" id="baglama-sub" style="display:none">
+      <div class="nav-sub nav-liman" id="baglama-sub">
         <button class="nav-sub-item active" onclick="navBasvuru('', this)">Tüm Başvurular</button>
         <button class="nav-sub-item" onclick="navBasvuru('beklemede', this)">Yeni Başvurular</button>
         <button class="nav-sub-item" onclick="navBasvuru('islem_bekliyor', this)">Link Gönderilenler</button>
@@ -1132,20 +1132,20 @@ tr:hover td { background: var(--bg-soft); }
         <button class="nav-sub-item" onclick="navBasvuru('dosya_yuklenenler', this)">Dosya Yüklenenler</button>
       </div>
 
-      <button class="nav-item" onclick="navigate('tekneler', this)" style="display:none">
+      <button class="nav-item nav-liman" onclick="navigate('tekneler', this)">
         <span class="icon">🚢</span> Tekneler
       </button>
 
-      <button class="nav-item" onclick="navigate('faturalar', this)" style="display:none">
+      <button class="nav-item nav-liman" onclick="navigate('faturalar', this)">
         <span class="icon">🧾</span> Faturalar
       </button>
 
-      <div class="nav-sep"></div>
-      <div class="sb-section-label">İnsan Kaynakları</div>
-      <button class="nav-item" onclick="navigate('personel', this)">
+      <div class="nav-sep nav-ik"></div>
+      <div class="sb-section-label nav-ik">İnsan Kaynakları</div>
+      <button class="nav-item nav-ik" onclick="navigate('personel', this)">
         <span class="icon">👤</span> Personel Listesi
       </button>
-      <button class="nav-item" onclick="navigate('izinler', this)">
+      <button class="nav-item nav-ik" onclick="navigate('izinler', this)">
         <span class="icon">📅</span> İzin Yönetimi
       </button>
 
@@ -2064,6 +2064,35 @@ const PAGE_TITLES = {
 let currentUser = null;
 let currentLiman = null;
 
+function applyRoleUI(rol) {
+  const isAdmin = rol === 'admin';
+  const isIK    = rol === 'ik_admin' || rol === 'ik';
+  const isLiman = isAdmin || (!isIK);
+
+  document.querySelectorAll('.nav-liman').forEach(el => {
+    el.style.display = isLiman ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-ik').forEach(el => {
+    el.style.display = isIK || isAdmin ? '' : 'none';
+  });
+
+  const subtitle = document.getElementById('sb-subtitle');
+  const brand    = document.getElementById('sb-brand');
+  if (isIK) {
+    if (brand)    brand.textContent    = 'MUTTAŞ İK';
+    if (subtitle) subtitle.textContent = 'İnsan Kaynakları Paneli';
+    document.title = 'Muttaş İK Paneli';
+  } else if (isAdmin) {
+    if (brand)    brand.textContent    = 'MUTTAŞ';
+    if (subtitle) subtitle.textContent = 'Yönetim Paneli';
+    document.title = 'Muttaş Yönetim Paneli';
+  } else {
+    if (brand)    brand.textContent    = 'MUTTAŞ';
+    if (subtitle) subtitle.textContent = 'Liman Yönetim Paneli';
+    document.title = 'Muttaş Liman Paneli';
+  }
+}
+
 (function init() {
   const token    = localStorage.getItem('token');
   const userData = localStorage.getItem('kullanici');
@@ -2076,16 +2105,22 @@ let currentLiman = null;
 
   currentUser  = JSON.parse(userData);
   currentLiman = liman || null;
-  const isAdmin = currentUser.rol === 'admin';
+  const rol     = currentUser.rol || 'kullanici';
+  const isAdmin = rol === 'admin';
+  const isIK    = rol === 'ik_admin' || rol === 'ik';
+  const isLiman = !isIK;
+
+  applyRoleUI(rol);
 
   document.getElementById('sb-name').textContent =
     currentUser.ad + ' ' + currentUser.soyad;
 
   document.getElementById('sb-liman').textContent =
-    isAdmin ? 'Tüm Limanlar' : (currentLiman || 'Liman atanmamış');
+    isAdmin ? 'Tüm Modüller' : isIK ? 'İnsan Kaynakları' : (currentLiman || 'Liman atanmamış');
 
   const badge = document.getElementById('sb-badge');
-  badge.textContent  = isAdmin ? 'Admin' : 'Görevli';
+  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', kullanici: 'Görevli' };
+  badge.textContent  = badgeLabels[rol] || 'Görevli';
   badge.className    = 'badge ' + (isAdmin ? 'badge-admin' : 'badge-user');
 
   if (isAdmin) {
