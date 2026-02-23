@@ -3880,10 +3880,6 @@ function ftExport() {
         <input type="date" id="prs-form-sigorta-bas">
       </div>
       <div class="form-field">
-        <label>Brüt Ücret (₺)</label>
-        <input type="number" id="prs-form-ucret" step="0.01" placeholder="0.00">
-      </div>
-      <div class="form-field">
         <label>Öğrenim Durumu</label>
         <select id="prs-form-ogrenim">
           <option value="">Seçiniz</option>
@@ -4409,7 +4405,6 @@ async function savePersonel() {
     meslek_adi:           v('meslek-adi'),
     guvenlik_belge_tarih: v('guvenlik') || null,
     sigortalilik_baslama: v('sigorta-bas') || null,
-    brut_ucret:           parseFloat(document.getElementById('prs-form-ucret').value) || null,
     ogrenim:              v('ogrenim'),
     sendika_uyesi:        v('sendika'),
     engelli:              document.getElementById('prs-form-engelli').value === 'true',
