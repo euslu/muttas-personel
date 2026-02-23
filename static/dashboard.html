@@ -3784,7 +3784,11 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Doğum Yeri</label>
-        <input type="text" id="prs-form-dogum-yeri" placeholder="İl/İlçe">
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-dogum-yeri" placeholder="İl seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-dogum-yeri')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-dogum-yeri')">▾</button>
+          <div class="combo-drop" id="prs-form-dogum-yeri-drop"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>Kan Grubu</label>
@@ -3830,22 +3834,11 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Çalıştığı İlçe</label>
-        <select id="prs-form-ilce">
-          <option value="">Seçiniz</option>
-          <option>Bodrum</option>
-          <option>Dalaman</option>
-          <option>Datça</option>
-          <option>Fethiye</option>
-          <option>Kavaklıdere</option>
-          <option>Köyceğiz</option>
-          <option>Marmaris</option>
-          <option>Menteşe</option>
-          <option>Milas</option>
-          <option>Ortaca</option>
-          <option>Seydikemer</option>
-          <option>Ula</option>
-          <option>Yatağan</option>
-        </select>
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-ilce" placeholder="İlçe seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-ilce')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-ilce')">▾</button>
+          <div class="combo-drop" id="prs-form-ilce-drop"></div>
+        </div>
       </div>
       <div class="form-field" style="grid-column:span 2">
         <label>Hizmet Noktası</label>
@@ -4212,7 +4205,7 @@ function openPersonelDrawer(id) {
 
   const fields = ['ad-soyad','tc','sgk','cinsiyet','medeni','dogum-tarihi','dogum-yeri','kan',
                   'cocuk','bolum','unvan','maliyet','ilce','hizmet','ise-giris','isten-cikis',
-                  'cikis-kodu','meslek-kodu','meslek-adi','guvenlik','sigorta-bas','ucret',
+                  'cikis-kodu','meslek-kodu','meslek-adi','guvenlik','sigorta-bas',
                   'ogrenim','sendika','engelli','telefon','adres','notlar'];
   fields.forEach(f => {
     const el = document.getElementById('prs-form-' + f);
@@ -4247,7 +4240,6 @@ function openPersonelDrawer(id) {
         set('meslek-adi',  p.meslek_adi);
         set('guvenlik', p.guvenlik_belge_tarih ? p.guvenlik_belge_tarih.split('T')[0] : '');
         set('sigorta-bas', p.sigortalilik_baslama ? p.sigortalilik_baslama.split('T')[0] : '');
-        set('ucret',    p.brut_ucret);
         set('ogrenim',  p.ogrenim);
         set('sendika',  p.sendika_uyesi);
         set('engelli',  p.engelli ? 'true' : 'false');
@@ -4869,6 +4861,22 @@ async function izinSil(id) {
 //  CUSTOM COMBOBOX
 // ══════════════════════════════════════════════
 const COMBO_OPTIONS = {
+  'prs-form-dogum-yeri': [
+    'ADANA','ADIYAMAN','AFYONKARAHİSAR','AĞRI','AMASYA','ANKARA','ANTALYA','ARTVİN',
+    'AYDIN','BALIKESİR','BİLECİK','BİNGÖL','BİTLİS','BOLU','BURDUR','BURSA','ÇANAKKALE',
+    'ÇANKIRI','ÇORUM','DENİZLİ','DİYARBAKIR','EDİRNE','ELAZIĞ','ERZİNCAN','ERZURUM',
+    'ESKİŞEHİR','GAZİANTEP','GİRESUN','GÜMÜŞHANE','HAKKARİ','HATAY','ISPARTA','MERSİN',
+    'İSTANBUL','İZMİR','KARS','KASTAMONU','KAYSERİ','KIRKLARELİ','KIRŞEHİR','KOCAELİ',
+    'KONYA','KÜTAHYA','MALATYA','MANİSA','KAHRAMANMARAŞ','MARDİN','MUĞLA','MUŞ',
+    'NEVŞEHİR','NİĞDE','ORDU','RİZE','SAKARYA','SAMSUN','SİİRT','SİNOP','SİVAS',
+    'TEKİRDAĞ','TOKAT','TRABZON','TUNCELİ','ŞANLIURFA','UŞAK','VAN','YOZGAT',
+    'ZONGULDAK','AKSARAY','BAYBURT','KARAMAN','KIRIKKALE','BATMAN','ŞIRNAK','BARTIN',
+    'ARDAHAN','IĞDIR','YALOVA','KARABÜK','KİLİS','OSMANİYE','DÜZCE',
+  ],
+  'prs-form-ilce': [
+    'Bodrum','Dalaman','Datça','Fethiye','Kavaklıdere','Köyceğiz',
+    'Marmaris','Menteşe','Milas','Ortaca','Seydikemer','Ula','Yatağan',
+  ],
   'prs-form-bolum': [
     'TOPLU TAŞIMA','DENİZ KIYI','GÜVENLİK','MERKEZ BÜRO','PARKOMAT',
     'MENTEŞE OTOPARK','OTOPARK','B.OTOPARK','BAKIM ONARIM','FETHİYE WC',
