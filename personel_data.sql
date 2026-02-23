@@ -1,0 +1,1007 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 16.10
+-- Dumped by pg_dump version 17.5
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET transaction_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Data for Name: personel; Type: TABLE DATA; Schema: public; Owner: -
+--
+
+COPY public.personel (id, tc_kimlik, sgk_sicil, maliyet_merkezi, ilce, hizmet_noktasi, ad_soyad, cinsiyet, bolum, unvan, ise_giris, isten_cikis, cikis_kodu, guvenlik_belge_tarih, sigortalilik_baslama, hizmet_gun, ogrenim, mezun_bolum, brut_ucret, dogum_yeri, dogum_tarihi, sendika_uyesi, kan_grubu, medeni_hal, cocuk_sayisi, engelli, adres, telefon, meslek_kodu, meslek_adi, notlar, aktif, olusturuldu) FROM stdin;
+4	\N	\N	\N	\N	\N	GÜLAY DEMİR	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.877169+00
+5	\N	\N	\N	\N	\N	ALİ ÇAMOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.880057+00
+6	\N	\N	\N	\N	\N	OSMAN DOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.882386+00
+7	\N	\N	\N	\N	\N	SONER ÖZCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.88533+00
+8	\N	\N	\N	\N	\N	YUNUS AKYOL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.88761+00
+9	\N	\N	\N	\N	\N	MURAT DURSUN	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.890523+00
+10	\N	\N	\N	\N	\N	ORHAN UÇAR	\N	TOPLU TAŞIMA	BİLET SATIŞ SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.893365+00
+11	\N	\N	\N	\N	\N	KENAN AVCAR	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.895462+00
+12	\N	\N	\N	\N	\N	ERCAN KIRTAŞ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.89791+00
+13	\N	\N	\N	\N	\N	DENİZ YILMAZ	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.900345+00
+14	\N	\N	\N	\N	\N	ÖMÜR KAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.903165+00
+15	\N	\N	\N	\N	\N	UMMAHAN YİĞİT	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.905909+00
+16	\N	\N	\N	\N	\N	CEM İBİL	\N	MERKEZ BÜRO	OTOMOTİV MEKANİKÇİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.908255+00
+17	\N	\N	\N	\N	\N	SERDAR ALBAYRAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.910723+00
+18	\N	\N	\N	\N	\N	FERDİ UÇAR	\N	TOPLU TAŞIMA	KOORDİNASYON SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.913111+00
+19	\N	\N	\N	\N	\N	FATİH CANTEKİN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.915917+00
+20	\N	\N	\N	\N	\N	SERHAT DİKİCİ	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.918769+00
+21	\N	\N	\N	\N	\N	SEMRA UYKUR	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.920947+00
+22	\N	\N	\N	\N	\N	ENGİN DURAL	\N	TOPLU TAŞIMA	İLÇE KOORDİNATÖRÜ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.922819+00
+23	\N	\N	\N	\N	\N	BİRGÜL ÖZTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.925112+00
+24	\N	\N	\N	\N	\N	PINAR SALİM	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.927953+00
+25	\N	\N	\N	\N	\N	BURCU KÜTÜKÇÜ	\N	MERKEZ BÜRO	SATIN ALMA SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.930268+00
+26	\N	\N	\N	\N	\N	MEHMET GÜL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.932497+00
+27	\N	\N	\N	\N	\N	NUSRET BAYER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.934738+00
+28	\N	\N	\N	\N	\N	YADİKAR ALBAYRAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.93748+00
+29	\N	\N	\N	\N	\N	AHMET MİRAÇ YAVUZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.939438+00
+30	\N	\N	\N	\N	\N	BERKAN ÜNAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.941385+00
+31	\N	\N	\N	\N	\N	ELİF BAŞAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.943618+00
+32	\N	\N	\N	\N	\N	GULGUN YALÇINKAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.946432+00
+33	\N	\N	\N	\N	\N	HAKAN ABRA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.94864+00
+34	\N	\N	\N	\N	\N	HALİL İBRAHİM BOZDEMİR	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.951173+00
+35	\N	\N	\N	\N	\N	HÜSEYİN CEM ALACA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.954211+00
+36	\N	\N	\N	\N	\N	KADİR BALCI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.957655+00
+37	\N	\N	\N	\N	\N	KEMAL ÇALIŞIR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.960919+00
+38	\N	\N	\N	\N	\N	MEHMET İNCİLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.964401+00
+39	\N	\N	\N	\N	\N	MUAMMER KURAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.967259+00
+40	\N	\N	\N	\N	\N	ALİ DAMGALI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.969819+00
+41	\N	\N	\N	\N	\N	MURAT ERDOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.972723+00
+42	\N	\N	\N	\N	\N	SALİH BULUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.975302+00
+43	\N	\N	\N	\N	\N	HATİCE YILMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.979004+00
+44	\N	\N	\N	\N	\N	YÜCEL BAYRAM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.981757+00
+45	\N	\N	\N	\N	\N	ADEM TURHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.984265+00
+46	\N	\N	\N	\N	\N	AKIN TABAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.987474+00
+47	\N	\N	\N	\N	\N	ALİ SERÇE	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.991804+00
+48	\N	\N	\N	\N	\N	İBRAHİM KARABULUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.994196+00
+49	\N	\N	\N	\N	\N	MURAT KIRGIZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.996609+00
+50	\N	\N	\N	\N	\N	ONUR BACAKOĞLU	\N	TOPLU TAŞIMA	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.000836+00
+51	\N	\N	\N	\N	\N	ONUR KOCAYİĞİT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.003486+00
+52	\N	\N	\N	\N	\N	OSMAN YAMAN GÜL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.007366+00
+53	\N	\N	\N	\N	\N	ŞİNASİ KARAÖMER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.009575+00
+54	\N	\N	\N	\N	\N	VELİ ERDAŞ	\N	TOPLU TAŞIMA	İLÇE ULAŞIM KOORDİNATÖRÜ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.012114+00
+55	\N	\N	\N	\N	\N	YÜKSEL KARATOP	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.014668+00
+56	\N	\N	\N	\N	\N	ABDULLAH YAMAN	\N	TOPLU TAŞIMA	İLÇE ULAŞIM KOORDİNATÖRÜ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.017373+00
+57	\N	\N	\N	\N	\N	ADEM YİĞİT	\N	TOPLU TAŞIMA	KOORDİNASYON SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.021788+00
+58	\N	\N	\N	\N	\N	ALİ UZUNOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.025218+00
+59	\N	\N	\N	\N	\N	BAYRAM ALİ YİĞİT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.027725+00
+60	\N	\N	\N	\N	\N	BESİM ÇAMURKÖYLÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.032086+00
+61	\N	\N	\N	\N	\N	BÜLENT DÖNMEZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.035399+00
+62	\N	\N	\N	\N	\N	DENİZ KAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.038803+00
+63	\N	\N	\N	\N	\N	DENİZ KOMİ	\N	TOPLU TAŞIMA	KOORDİNASYON SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.04246+00
+64	\N	\N	\N	\N	\N	ERDİNÇ ALTINOK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.045521+00
+65	\N	\N	\N	\N	\N	ERKAN YANTIR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.047979+00
+66	\N	\N	\N	\N	\N	GÖKAY SARIÇİÇEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.050321+00
+67	\N	\N	\N	\N	\N	HAMDİ AVCI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.053692+00
+68	\N	\N	\N	\N	\N	HÜSEYİN ARIKAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.056901+00
+69	\N	\N	\N	\N	\N	KADİR FEHMİ DURAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.060431+00
+70	\N	\N	\N	\N	\N	MERT KIZILKAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.063194+00
+71	\N	\N	\N	\N	\N	MESUT KOLCU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.065709+00
+72	\N	\N	\N	\N	\N	MURAT BALABAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.068329+00
+73	\N	\N	\N	\N	\N	MURAT ÖZDAŞ	\N	TOPLU TAŞIMA	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.07156+00
+74	\N	\N	\N	\N	\N	MUSTAFA KARABAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.074976+00
+75	\N	\N	\N	\N	\N	MUSTAFA SAĞIR	\N	TOPLU TAŞIMA	İLÇE ULAŞIM KOORDİNATÖRÜ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.078093+00
+76	\N	\N	\N	\N	\N	MUSTAFA USLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.080572+00
+77	\N	\N	\N	\N	\N	NAZMİ KANAT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.082986+00
+78	\N	\N	\N	\N	\N	NECATİ SOLAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.084889+00
+79	\N	\N	\N	\N	\N	ÖNDER KILINÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.087071+00
+80	\N	\N	\N	\N	\N	RAMAZAN ÖZTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.088871+00
+81	\N	\N	\N	\N	\N	YÜKSEL GAVCAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.091188+00
+82	\N	\N	\N	\N	\N	ABDURRAHMAN BOLCU	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.093148+00
+83	\N	\N	\N	\N	\N	BARIŞ YAĞLI	\N	OTOPARK	OTOPARK SAHA SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.095607+00
+84	\N	\N	\N	\N	\N	HÜSEYİN AYDIN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.097937+00
+85	\N	\N	\N	\N	\N	GONCA DURAL	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.10016+00
+86	\N	\N	\N	\N	\N	İBRAHİM DEMİRTAŞ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.102412+00
+87	\N	\N	\N	\N	\N	RÜSTEM AKGÜL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.105114+00
+88	\N	\N	\N	\N	\N	AVNİ ÇULHA	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.107012+00
+89	\N	\N	\N	\N	\N	HALİL İPEK	\N	TOPLU TAŞIMA	DİZEL OTOMOTİV MEKANİKERİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.108825+00
+90	\N	\N	\N	\N	\N	HASAN TOZLU	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.111323+00
+91	\N	\N	\N	\N	\N	SERGEN ORHAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.113313+00
+92	\N	\N	\N	\N	\N	TOLGA KAYNAK	\N	TOPLU TAŞIMA	KİMYAGER	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.115277+00
+93	\N	\N	\N	\N	\N	DURMUŞ ALİ DURMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.117173+00
+94	\N	\N	\N	\N	\N	FERHAT KOCAOĞLU	\N	BAKIM ONARIM	OTOMOTİV ELEKTRİKÇİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.1194+00
+95	\N	\N	\N	\N	\N	MEHMET MERSİN	\N	BAKIM ONARIM	OTOMOTİV KAPORTA USTASI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.121605+00
+96	\N	\N	\N	\N	\N	SEFER MUĞLA	\N	BAKIM ONARIM	OTO KAPORTA VE BOYA USTASI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.123623+00
+97	\N	\N	\N	\N	\N	UYGUN GÜDÜCÜ	\N	BAKIM ONARIM	OTOMOTİV MEKANİKERİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.126345+00
+98	\N	\N	\N	\N	\N	UĞUR ÇALIŞKAN	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.12925+00
+99	\N	\N	\N	\N	\N	HÜSEYİN ESKİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.131506+00
+100	\N	\N	\N	\N	\N	SELMAN GÜDÜCÜ	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.134677+00
+101	\N	\N	\N	\N	\N	AYDIN CELALETTİN DEMİRRAY	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.137343+00
+102	\N	\N	\N	\N	\N	KAAN AŞIK	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.139724+00
+103	\N	\N	\N	\N	\N	HÜSEYİN İĞCİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.141641+00
+104	\N	\N	\N	\N	\N	AKIN AY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.143504+00
+105	\N	\N	\N	\N	\N	ALİ KIVRIK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.145803+00
+106	\N	\N	\N	\N	\N	ALİM AYDOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.14962+00
+107	\N	\N	\N	\N	\N	DENİZ ORHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.151718+00
+108	\N	\N	\N	\N	\N	FEYYAZ ASLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.154341+00
+109	\N	\N	\N	\N	\N	ŞAHİN ATEŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.156615+00
+110	\N	\N	\N	\N	\N	GÜL YAKA KARATAŞ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.161382+00
+111	\N	\N	\N	\N	\N	ADEM BAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.163902+00
+112	\N	\N	\N	\N	\N	ALİ TOP	\N	MERKEZ BÜRO	FİNANS SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.166779+00
+113	\N	\N	\N	\N	\N	GÜLDEMET AYDIN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.168976+00
+114	\N	\N	\N	\N	\N	ZAFER YAKA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.171277+00
+115	\N	\N	\N	\N	\N	KUBİLAY FIRAT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.17326+00
+116	\N	\N	\N	\N	\N	MEHMET KAYHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.175585+00
+117	\N	\N	\N	\N	\N	YASİN ÜLKÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.177936+00
+118	\N	\N	\N	\N	\N	YASİN BOYACI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.180371+00
+119	\N	\N	\N	\N	\N	AHMET MAVİLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.182605+00
+120	\N	\N	\N	\N	\N	ABUZER ŞİVAN ASLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.185459+00
+121	\N	\N	\N	\N	\N	SEVİN ORHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.187348+00
+122	\N	\N	\N	\N	\N	MEHMET DANAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.189626+00
+123	\N	\N	\N	\N	\N	HÜSEYİN ŞAHİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.191513+00
+124	\N	\N	\N	\N	\N	MEHMET ÇOLAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.194319+00
+125	\N	\N	\N	\N	\N	MURAT DAĞ	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.197145+00
+126	\N	\N	\N	\N	\N	MEHMET ALİ KARADEMİR	\N	TOPLU TAŞIMA	MEKANİK BAKIM ONARIMCISI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.199214+00
+127	\N	\N	\N	\N	\N	HASAN ERDOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.201212+00
+128	\N	\N	\N	\N	\N	HASAN ŞENTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.204419+00
+129	\N	\N	\N	\N	\N	MUAMMER MERMİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.206994+00
+130	\N	\N	\N	\N	\N	AYSUN GÖKTEPE	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.209007+00
+131	\N	\N	\N	\N	\N	MEHMET OKKABAS	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.211418+00
+132	\N	\N	\N	\N	\N	BİROL YAVUZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.213879+00
+133	\N	\N	\N	\N	\N	SAVAŞ ÇITAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.215728+00
+134	\N	\N	\N	\N	\N	TOLGA ÖNER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.218249+00
+135	\N	\N	\N	\N	\N	CEM BÜYÜKBİNGÖL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.220651+00
+136	\N	\N	\N	\N	\N	SUAT ÖZTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.223529+00
+137	\N	\N	\N	\N	\N	MAHMUT ÖZTÜRK	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.226613+00
+138	\N	\N	\N	\N	\N	GALİP İRİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.229556+00
+139	\N	\N	\N	\N	\N	ALİ SONSUZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.232935+00
+140	\N	\N	\N	\N	\N	SERCAN BALKIŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.330406+00
+141	\N	\N	\N	\N	\N	ULAŞ ÇETİNKAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.333057+00
+142	\N	\N	\N	\N	\N	AHMET CEM PELİT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.335416+00
+143	\N	\N	\N	\N	\N	SEFA GİRİNCİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.337758+00
+144	\N	\N	\N	\N	\N	HÜSEYİN AKBULUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.340122+00
+145	\N	\N	\N	\N	\N	MEHMET GİRGİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.341796+00
+146	\N	\N	\N	\N	\N	SÜLEYMAN PEKÇOK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.343857+00
+147	\N	\N	\N	\N	\N	ENGİN DUYGU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.345956+00
+148	\N	\N	\N	\N	\N	HASAN AKINCI	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.348742+00
+149	\N	\N	\N	\N	\N	MEHMET KARA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.350531+00
+150	\N	\N	\N	\N	\N	MEHMET ALİ UZUN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.352659+00
+151	\N	\N	\N	\N	\N	TUNCAY EREN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.354824+00
+152	\N	\N	\N	\N	\N	BİROL DENEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.357213+00
+153	\N	\N	\N	\N	\N	OĞUZ TOLGA	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.359505+00
+154	\N	\N	\N	\N	\N	BUĞRA ÇAKMAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.362395+00
+155	\N	\N	\N	\N	\N	KERİM DURAL	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.364268+00
+156	\N	\N	\N	\N	\N	MUSTAFA SARIOĞLU	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.366896+00
+157	\N	\N	\N	\N	\N	ERKAN AKSAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.369172+00
+158	\N	\N	\N	\N	\N	HÜSEYİN DEMİRTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.371385+00
+159	\N	\N	\N	\N	\N	SERKAN UYSAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.373487+00
+160	\N	\N	\N	\N	\N	BAHATTİN CAN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.375868+00
+161	\N	\N	\N	\N	\N	KAAN ŞÜKRÜ ACAR	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.377978+00
+162	\N	\N	\N	\N	\N	BÜLENT MENEMENLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.379913+00
+163	\N	\N	\N	\N	\N	MUAMMER ARSLAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.381854+00
+164	\N	\N	\N	\N	\N	ŞAFAK ÇİFTÇİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.384408+00
+165	\N	\N	\N	\N	\N	ERMAN CAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.386436+00
+166	\N	\N	\N	\N	\N	MEHMET AYDIN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.389477+00
+167	\N	\N	\N	\N	\N	YASİN KANDİŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.391749+00
+168	\N	\N	\N	\N	\N	FEVZİ MENEMENLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.394091+00
+169	\N	\N	\N	\N	\N	MUSTAFA GÖKCE	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.395949+00
+170	\N	\N	\N	\N	\N	GÜLSAY ERYILMAZ	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.398168+00
+171	\N	\N	\N	\N	\N	ARİF DOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.399961+00
+172	\N	\N	\N	\N	\N	KEMAL MADRAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.402435+00
+173	\N	\N	\N	\N	\N	METİN ERTEM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.404288+00
+174	\N	\N	\N	\N	\N	SERDAR GÖZLEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.406193+00
+175	\N	\N	\N	\N	\N	ŞÜKRÜ ÖZGÜROĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.408158+00
+176	\N	\N	\N	\N	\N	ŞEVKET CEYLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.410618+00
+177	\N	\N	\N	\N	\N	ABDULLAH KAVAS	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.412524+00
+178	\N	\N	\N	\N	\N	FIRAT KADEM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.41434+00
+179	\N	\N	\N	\N	\N	MURDİN ÇAKIR	\N	TOPLU TAŞIMA	TAMİR BAKIM ONARIMCISI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.416599+00
+180	\N	\N	\N	\N	\N	NURCAN BALLI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.419364+00
+181	\N	\N	\N	\N	\N	COŞKUN GÖKTEPE	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.421405+00
+182	\N	\N	\N	\N	\N	BATUHAN KARACA	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.423754+00
+183	\N	\N	\N	\N	\N	ECEM ELMACI	\N	TOPLU TAŞIMA	FORMEN	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.425413+00
+184	\N	\N	\N	\N	\N	SERVET YALTIRAKLI	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.427584+00
+185	\N	\N	\N	\N	\N	CAFER TÜRKMEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.429937+00
+186	\N	\N	\N	\N	\N	BANU YAPA GEVİŞEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.432135+00
+187	\N	\N	\N	\N	\N	ALİ CAN KAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.434078+00
+188	\N	\N	\N	\N	\N	HALDUN DEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.436317+00
+189	\N	\N	\N	\N	\N	YÜCEL ALTIN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.438313+00
+190	\N	\N	\N	\N	\N	ABDULLAH ARSLAN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.440135+00
+191	\N	\N	\N	\N	\N	AHMET SÖKER	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.441912+00
+192	\N	\N	\N	\N	\N	ALİ AYGÜN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.444093+00
+193	\N	\N	\N	\N	\N	AYTEKİN KAYACAN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.445865+00
+194	\N	\N	\N	\N	\N	BERKAN KAZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.448183+00
+195	\N	\N	\N	\N	\N	COŞKUN MACAR	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.450803+00
+196	\N	\N	\N	\N	\N	DENİZ KAŞAN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.453272+00
+197	\N	\N	\N	\N	\N	EROL KIVRAK	\N	DENİZ KIYI	ELEKTRİK TEKNİKERİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.455172+00
+198	\N	\N	\N	\N	\N	GENCEBAY KURT	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.456991+00
+199	\N	\N	\N	\N	\N	GÖKHAN ASLAN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.459264+00
+200	\N	\N	\N	\N	\N	GÖZDE YALÇIN ZÜMBÜL	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.461451+00
+201	\N	\N	\N	\N	\N	HAKAN IŞIK	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.463729+00
+202	\N	\N	\N	\N	\N	HASAN GÜNEY	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.466176+00
+203	\N	\N	\N	\N	\N	İLKER KARADENİZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.468158+00
+204	\N	\N	\N	\N	\N	KADİR KONYALI	\N	DENİZ KIYI	ÇEKEK YERİ SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.470539+00
+205	\N	\N	\N	\N	\N	KEVSER MENEKŞE	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.47308+00
+206	\N	\N	\N	\N	\N	MEHMET ALİ BULUT	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.475593+00
+207	\N	\N	\N	\N	\N	MEHMET TÜRKAY ÜLKER	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.478444+00
+208	\N	\N	\N	\N	\N	NECİBE BİLEN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.481411+00
+209	\N	\N	\N	\N	\N	OSMAN CAN ÇIRPI	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.483691+00
+210	\N	\N	\N	\N	\N	OZAN AYAZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.486091+00
+211	\N	\N	\N	\N	\N	SAFİYE GÜR	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.488127+00
+212	\N	\N	\N	\N	\N	SELAHİ GÜMÜŞEL	\N	DENİZ KIYI	ELEKTRİK TEKNİSYENİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.490648+00
+213	\N	\N	\N	\N	\N	SEMİH KARADEMİR	\N	DENİZ KIYI	ELEKTRİK TEKNİSYENİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.492519+00
+214	\N	\N	\N	\N	\N	SEMİH KURNAZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.494394+00
+215	\N	\N	\N	\N	\N	TOLUNAY ECE	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.496388+00
+216	\N	\N	\N	\N	\N	YUSUF ÇEŞİT	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.499116+00
+217	\N	\N	\N	\N	\N	YALÇIN MEMİŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.501406+00
+218	\N	\N	\N	\N	\N	EZEL AVCI	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.503705+00
+219	\N	\N	\N	\N	\N	MAHMUT GÖKOVA	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.506036+00
+220	\N	\N	\N	\N	\N	OSMAN ÇAĞATAY BEKTAŞ	\N	DENİZ KIYI	DALGIÇ (BALIK ADAM)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.509077+00
+221	\N	\N	\N	\N	\N	SALİH TOK	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.51154+00
+222	\N	\N	\N	\N	\N	SEDAT BAYRAK	\N	MERKEZ BÜRO	GENEL MÜDÜR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.513981+00
+223	\N	\N	\N	\N	\N	ONUR BAYRAM	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.516719+00
+224	\N	\N	\N	\N	\N	TUFAN ÜNAL	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.51935+00
+225	\N	\N	\N	\N	\N	GÖZDE YAVUZ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.521711+00
+226	\N	\N	\N	\N	\N	GÜLŞAH AYDIN KABAKCI	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.524041+00
+227	\N	\N	\N	\N	\N	KÜRŞAT KORUKCU	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.525897+00
+228	\N	\N	\N	\N	\N	SELİN ÇETİN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.528241+00
+229	\N	\N	\N	\N	\N	YAĞMUR BAYRAM	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.530197+00
+230	\N	\N	\N	\N	\N	BERKAN ULU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.532153+00
+231	\N	\N	\N	\N	\N	GÜRSAN BÜTÜN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.534419+00
+232	\N	\N	\N	\N	\N	ÖMÜRAY DURAL KAYHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.537292+00
+233	\N	\N	\N	\N	\N	ALİ ZAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.539544+00
+234	\N	\N	\N	\N	\N	HAKAN KAHRAMAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.542252+00
+235	\N	\N	\N	\N	\N	SELİN KORKMAZ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.544513+00
+236	\N	\N	\N	\N	\N	ÇAĞATAY ALBAYRAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.546801+00
+237	\N	\N	\N	\N	\N	EMRE KAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.548955+00
+238	\N	\N	\N	\N	\N	ZERİN DAĞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.551146+00
+239	\N	\N	\N	\N	\N	AÇELYA OMAK	\N	DENİZ KIYI	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.553244+00
+240	\N	\N	\N	\N	\N	BUSE CAN BALABAN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.555405+00
+241	\N	\N	\N	\N	\N	RAMAZAN TAŞGIN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.557507+00
+242	\N	\N	\N	\N	\N	ABDULLAH ÇİZME	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.559626+00
+243	\N	\N	\N	\N	\N	ABDULSAMET ERDUVAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.561904+00
+244	\N	\N	\N	\N	\N	MUSTAFA TOKMAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.564429+00
+245	\N	\N	\N	\N	\N	OSMAN DALGIÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.566452+00
+246	\N	\N	\N	\N	\N	ÖMER KARAYEL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.568302+00
+247	\N	\N	\N	\N	\N	SERKAN ÖZER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.570309+00
+248	\N	\N	\N	\N	\N	SÜLEYMAN DAVASLI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.573098+00
+249	\N	\N	\N	\N	\N	YASEMİN BULUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.575443+00
+250	\N	\N	\N	\N	\N	EMİNE VARDAR	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.577748+00
+251	\N	\N	\N	\N	\N	TANJU TÜRÜDÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.580058+00
+252	\N	\N	\N	\N	\N	ERSAN KARANFİL	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.582793+00
+253	\N	\N	\N	\N	\N	KADER ÇOŞKUN	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.585366+00
+254	\N	\N	\N	\N	\N	MUSTAFA METE AKDENİZ	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.587662+00
+255	\N	\N	\N	\N	\N	NESLİHAN SÖĞÜT	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.590039+00
+256	\N	\N	\N	\N	\N	TURHAN SAMET ETKER	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.593179+00
+257	\N	\N	\N	\N	\N	HASAN BİROL	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.595502+00
+258	\N	\N	\N	\N	\N	ORHAN KARADENİZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.597689+00
+259	\N	\N	\N	\N	\N	RAHİM ÜSTÜN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.600003+00
+260	\N	\N	\N	\N	\N	İBRAHİM ONUR YAVUZ	\N	MERKEZ BÜRO	TEKNİK İŞLER PERSONELİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.602373+00
+261	\N	\N	\N	\N	\N	TUĞBANUR GÖKMEN	\N	FETHİYE BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.60523+00
+262	\N	\N	\N	\N	\N	ALİ IŞIK	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.607534+00
+263	\N	\N	\N	\N	\N	MURAT İLKER AKILLI	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.609824+00
+264	\N	\N	\N	\N	\N	ERDAL KESKİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.612081+00
+265	\N	\N	\N	\N	\N	FATİH TÜRCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.613975+00
+266	\N	\N	\N	\N	\N	ALİ SÜLLÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.615864+00
+267	\N	\N	\N	\N	\N	ALİ TÜRER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.618128+00
+268	\N	\N	\N	\N	\N	ENDER YANIK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.620608+00
+269	\N	\N	\N	\N	\N	FEYZULLAH DEMİRTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.622948+00
+270	\N	\N	\N	\N	\N	HASRET DEVECİOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.625468+00
+271	\N	\N	\N	\N	\N	MUSTAFA KAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.627443+00
+272	\N	\N	\N	\N	\N	SELİM ONAT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.629957+00
+273	\N	\N	\N	\N	\N	SERKAN SERTER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.632045+00
+274	\N	\N	\N	\N	\N	CANSU YILDIZ	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.634937+00
+275	\N	\N	\N	\N	\N	ELİF BALCI	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.636743+00
+276	\N	\N	\N	\N	\N	HÜSEYİN MERTER SATKAN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.639013+00
+277	\N	\N	\N	\N	\N	MUSTAFA BALCI	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.641367+00
+278	\N	\N	\N	\N	\N	OKTAY DURGUT	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.64369+00
+279	\N	\N	\N	\N	\N	YASEMİN AYDUĞAN	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.646102+00
+280	\N	\N	\N	\N	\N	GÖKSEL KOCABIYIK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.648781+00
+281	\N	\N	\N	\N	\N	MUHTEREM KÜÇÜK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.651172+00
+282	\N	\N	\N	\N	\N	SELİM DOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.6534+00
+283	\N	\N	\N	\N	\N	EMRE KAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.655601+00
+284	\N	\N	\N	\N	\N	SALİH DURAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.65801+00
+285	\N	\N	\N	\N	\N	SENİYE GÖKYÜZ	\N	MERKEZ BÜRO	MALİ MÜŞAVİR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.659979+00
+286	\N	\N	\N	\N	\N	İSMAİL AY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.661864+00
+287	\N	\N	\N	\N	\N	URKİDE ŞAHİN	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.664325+00
+288	\N	\N	\N	\N	\N	FİGEN ÇİLEN	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.667378+00
+289	\N	\N	\N	\N	\N	NESLİHAN SEVER	\N	MERKEZ BÜRO	MUHASEBE MESLEK ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.669295+00
+290	\N	\N	\N	\N	\N	BERAT YASİN MUSLUK	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.671519+00
+291	\N	\N	\N	\N	\N	DERYA TAŞ TURHAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.673356+00
+292	\N	\N	\N	\N	\N	FATMA SEÇER	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.675618+00
+293	\N	\N	\N	\N	\N	HAKAN DEMİR	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.677935+00
+294	\N	\N	\N	\N	\N	İLVE GÜL	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.679787+00
+295	\N	\N	\N	\N	\N	MERT DÜZ	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.682239+00
+296	\N	\N	\N	\N	\N	ALİ SÖMEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.684611+00
+297	\N	\N	\N	\N	\N	BUSE SULAK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.686926+00
+298	\N	\N	\N	\N	\N	ERDAL ŞAHİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.689198+00
+299	\N	\N	\N	\N	\N	KADİR TOPRAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.691448+00
+300	\N	\N	\N	\N	\N	NACİYE DEMİRTAŞ DAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.693678+00
+301	\N	\N	\N	\N	\N	NECATİ ELEMANA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.696426+00
+302	\N	\N	\N	\N	\N	UĞUR CAN ÖNDER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.69891+00
+303	\N	\N	\N	\N	\N	UTKU ALTIN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.701241+00
+304	\N	\N	\N	\N	\N	BİRDAL İŞLER	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.703504+00
+305	\N	\N	\N	\N	\N	NAZMİ MERT ARSLAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.705797+00
+306	\N	\N	\N	\N	\N	ERDEM ŞENGÜL	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.708175+00
+307	\N	\N	\N	\N	\N	GÖKHAN YAYMAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.71088+00
+308	\N	\N	\N	\N	\N	MUTLU YILDIZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.71366+00
+309	\N	\N	\N	\N	\N	GÜLÇİN YANPEŞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.71596+00
+310	\N	\N	\N	\N	\N	DOĞAN ÇETİN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.718188+00
+311	\N	\N	\N	\N	\N	EMİR AYŞE YALI	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.720064+00
+312	\N	\N	\N	\N	\N	HAYATİ BOZ	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.722546+00
+313	\N	\N	\N	\N	\N	MİNE İLGÜN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.724916+00
+314	\N	\N	\N	\N	\N	MUSTAFA DENİZKIRAN	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.727126+00
+315	\N	\N	\N	\N	\N	OĞULCAN DERMENCİ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.729814+00
+316	\N	\N	\N	\N	\N	SERKAN KARTAL	\N	DENİZ KIYI	KAYNAKÇI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.732257+00
+317	\N	\N	\N	\N	\N	ZELİHA SELEN	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.734467+00
+318	\N	\N	\N	\N	\N	ESER ÇINAR	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.736771+00
+319	\N	\N	\N	\N	\N	DUYGU CAN ÇAKMAK	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.739177+00
+320	\N	\N	\N	\N	\N	EBRU CAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.741435+00
+321	\N	\N	\N	\N	\N	ERSAN GÖKTEPE	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.743592+00
+322	\N	\N	\N	\N	\N	GAYE NASİBE DEMİREL	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.745947+00
+323	\N	\N	\N	\N	\N	İSMAİL GENEK	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.747782+00
+324	\N	\N	\N	\N	\N	ONUR YARAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.750453+00
+325	\N	\N	\N	\N	\N	OYLUM GÜR	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.752336+00
+326	\N	\N	\N	\N	\N	PINAR MEZİLİ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.754587+00
+327	\N	\N	\N	\N	\N	SEDA TEKKAYA	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.756483+00
+328	\N	\N	\N	\N	\N	SEVDİYE EREN	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.759324+00
+329	\N	\N	\N	\N	\N	TOLGA YILDIZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.76174+00
+330	\N	\N	\N	\N	\N	ZİYA ÇILDIRAMAZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.764087+00
+331	\N	\N	\N	\N	\N	UĞUR KARAŞAL	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.765904+00
+332	\N	\N	\N	\N	\N	HÜSEYİN ŞEN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.768273+00
+333	\N	\N	\N	\N	\N	ANIL DEMİRCİ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.770291+00
+334	\N	\N	\N	\N	\N	ALİ ANGIN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.772134+00
+335	\N	\N	\N	\N	\N	BURAK AVŞAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.774081+00
+336	\N	\N	\N	\N	\N	ÇAĞLAR AKBAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.776577+00
+337	\N	\N	\N	\N	\N	FEDAİ ÖZDEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.778501+00
+338	\N	\N	\N	\N	\N	FIRAT KARATAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.780481+00
+339	\N	\N	\N	\N	\N	MERVE DÖNMEZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.78283+00
+340	\N	\N	\N	\N	\N	MUSTAFA KEMAL KORKMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.785621+00
+341	\N	\N	\N	\N	\N	SÜLEYMAN YURCU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.787693+00
+342	\N	\N	\N	\N	\N	ŞEVKET ARSLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.790554+00
+343	\N	\N	\N	\N	\N	VOLKAN KARAİNLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.792718+00
+344	\N	\N	\N	\N	\N	YONCA ALACIK KARACA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.794654+00
+345	\N	\N	\N	\N	\N	HALİL ARSLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.797566+00
+346	\N	\N	\N	\N	\N	YUSUF ÇEVİK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.799991+00
+347	\N	\N	\N	\N	\N	BURCU BOZBAĞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.801902+00
+348	\N	\N	\N	\N	\N	FATMA DEMİR	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.804324+00
+349	\N	\N	\N	\N	\N	MEHMET SERTKAYA	\N	MERKEZ BÜRO	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.806725+00
+350	\N	\N	\N	\N	\N	MUSTAFA KEMAL YASAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.809068+00
+351	\N	\N	\N	\N	\N	ŞENER ÇALIŞKAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.811787+00
+352	\N	\N	\N	\N	\N	YAĞMUR GÜNEŞ	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.814385+00
+353	\N	\N	\N	\N	\N	FİDAN KARACA	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.817401+00
+354	\N	\N	\N	\N	\N	NURSEL TURGUT	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.820448+00
+355	\N	\N	\N	\N	\N	TANSU OLGUN KOÇ	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.823096+00
+356	\N	\N	\N	\N	\N	UMUT IRGAT KOCADAĞ	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.825603+00
+357	\N	\N	\N	\N	\N	GÖKHAN ATAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.828122+00
+358	\N	\N	\N	\N	\N	KAMİL AKBAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.830081+00
+359	\N	\N	\N	\N	\N	ÖMER YAYLA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.83222+00
+360	\N	\N	\N	\N	\N	MEHMET MAHİR ÖNEL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.834288+00
+361	\N	\N	\N	\N	\N	AYŞE KORKUT	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.836594+00
+362	\N	\N	\N	\N	\N	ERHAN KARAKOÇ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.838763+00
+363	\N	\N	\N	\N	\N	MERVE YAŞAR	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.840952+00
+364	\N	\N	\N	\N	\N	TÜLAY BİZ EVRAN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.843455+00
+365	\N	\N	\N	\N	\N	ARİF YAPICI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.846237+00
+366	\N	\N	\N	\N	\N	AYDIN AYAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.84817+00
+367	\N	\N	\N	\N	\N	ERKAN TÜRKMEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.85112+00
+368	\N	\N	\N	\N	\N	HATİCE SARIÇOBAN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.853577+00
+369	\N	\N	\N	\N	\N	İREM KAYA	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.856005+00
+370	\N	\N	\N	\N	\N	MEHMET GÖNÜL	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.858171+00
+371	\N	\N	\N	\N	\N	ŞAKİR GÜZELKÖYLÜ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.860566+00
+372	\N	\N	\N	\N	\N	ABDULLAH KORKUSUZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.863299+00
+373	\N	\N	\N	\N	\N	MEHMET ERCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.866067+00
+374	\N	\N	\N	\N	\N	SEZAİ DEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.868263+00
+375	\N	\N	\N	\N	\N	YÜKSEL ERKUL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.870278+00
+376	\N	\N	\N	\N	\N	GÖKHAN GÖKÇÜOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.872331+00
+377	\N	\N	\N	\N	\N	NEZİHA AYBÜKE YÜCEL	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.875318+00
+378	\N	\N	\N	\N	\N	FİLİZ ÇETİN	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.877644+00
+379	\N	\N	\N	\N	\N	GÜNDAR KABLANOĞLU	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.87996+00
+380	\N	\N	\N	\N	\N	SEDA ÜLKÜ AKGÜL	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.881895+00
+381	\N	\N	\N	\N	\N	SÜLEYMAN ŞAHİN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.884175+00
+382	\N	\N	\N	\N	\N	ALİ ÖKSÜZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.886139+00
+383	\N	\N	\N	\N	\N	FERDİ BÖLÜK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.888937+00
+384	\N	\N	\N	\N	\N	İHSAN BATUHAN AKIN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.891338+00
+385	\N	\N	\N	\N	\N	MEHMET ACILIOĞLU	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.893916+00
+386	\N	\N	\N	\N	\N	SEVİNÇ ÖZDEMİR	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.896165+00
+387	\N	\N	\N	\N	\N	SÜREYYA SARI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.898112+00
+388	\N	\N	\N	\N	\N	TUNCER GÜNDÜZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.900092+00
+389	\N	\N	\N	\N	\N	MURTAZA EREN PEKTAŞ	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.902779+00
+390	\N	\N	\N	\N	\N	NEZAHAT ÖVGÜ MAVİLİ	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.905061+00
+391	\N	\N	\N	\N	\N	ATILIM ŞAHYILMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.907293+00
+392	\N	\N	\N	\N	\N	EDA GÜLER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.909417+00
+393	\N	\N	\N	\N	\N	FIRAT BİÇEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.911654+00
+394	\N	\N	\N	\N	\N	HANİFE DUYSAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.914373+00
+395	\N	\N	\N	\N	\N	İLKER ESKİCİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.916294+00
+396	\N	\N	\N	\N	\N	MEHMET DURGUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.918483+00
+397	\N	\N	\N	\N	\N	MEHMET ERDOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.920694+00
+398	\N	\N	\N	\N	\N	MURAT KARADAĞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.922837+00
+399	\N	\N	\N	\N	\N	MUSTAFA BEŞTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.92519+00
+400	\N	\N	\N	\N	\N	SEDAT KIRLI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.92741+00
+401	\N	\N	\N	\N	\N	SELAHATTİN DÖKME	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.929658+00
+402	\N	\N	\N	\N	\N	ALİ ARLI	\N	DENİZ KIYI	ELEKTRİK TEKNİSYENİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.931964+00
+403	\N	\N	\N	\N	\N	ESMA SÖĞÜT	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.93392+00
+404	\N	\N	\N	\N	\N	EZEL KIRGIZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.93594+00
+405	\N	\N	\N	\N	\N	MELTEM ALMAMMADLI	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.938462+00
+406	\N	\N	\N	\N	\N	SAMİ YAĞCI	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.94049+00
+407	\N	\N	\N	\N	\N	YAKUP ÇALCA	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.942424+00
+408	\N	\N	\N	\N	\N	ULAŞ YILDIRIM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.945371+00
+409	\N	\N	\N	\N	\N	GÖKSUN KIZILER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.948084+00
+410	\N	\N	\N	\N	\N	CUMHUR PEKEL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.95055+00
+411	\N	\N	\N	\N	\N	HÜSEYİN CURA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.952443+00
+412	\N	\N	\N	\N	\N	ERSİN KOCASARI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.954507+00
+413	\N	\N	\N	\N	\N	GÜLFİYE YENİAKCA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.956978+00
+414	\N	\N	\N	\N	\N	TUFAN ÇETİNEL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.959374+00
+415	\N	\N	\N	\N	\N	ZEKERİYA GÖRÜNCÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.961757+00
+416	\N	\N	\N	\N	\N	BAHADIR DOĞAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.96419+00
+417	\N	\N	\N	\N	\N	DUYGU KAYALI	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.966671+00
+418	\N	\N	\N	\N	\N	EREN HAYTA	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.968971+00
+419	\N	\N	\N	\N	\N	MELEK DEMİR	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.97145+00
+420	\N	\N	\N	\N	\N	BAYRAM YETGİN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.973686+00
+421	\N	\N	\N	\N	\N	ESRA TOKUÇ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.976724+00
+422	\N	\N	\N	\N	\N	FAHRİ DURAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.978661+00
+423	\N	\N	\N	\N	\N	HAMİT KARKIN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.980618+00
+424	\N	\N	\N	\N	\N	HAMİT KOCA	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.98266+00
+425	\N	\N	\N	\N	\N	MURAT ES	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.985096+00
+426	\N	\N	\N	\N	\N	BENDENİZ YALÇIN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.987495+00
+427	\N	\N	\N	\N	\N	HATİCE DURAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.989691+00
+428	\N	\N	\N	\N	\N	İZEL YIKILMAZ	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.991938+00
+429	\N	\N	\N	\N	\N	MEHMET DUMAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.994238+00
+430	\N	\N	\N	\N	\N	MUHİTTİN GÜLSOY	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.996237+00
+431	\N	\N	\N	\N	\N	MUZAFFER ŞİMŞEK	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.998116+00
+432	\N	\N	\N	\N	\N	NİLÜFER KOCABIYIK	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:21.99994+00
+433	\N	\N	\N	\N	\N	ORHAN BİROL	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.00281+00
+434	\N	\N	\N	\N	\N	ORHAN YAVUZ YUNAK	\N	TOPLU TAŞIMA	TEKNİK İŞLER SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.005141+00
+435	\N	\N	\N	\N	\N	ÖZER CURA	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.007492+00
+436	\N	\N	\N	\N	\N	ÖZGÜL ERTOY	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.009876+00
+437	\N	\N	\N	\N	\N	ÖZLEM CAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.012501+00
+438	\N	\N	\N	\N	\N	SERDAR DÖĞERLİ	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.015062+00
+439	\N	\N	\N	\N	\N	SERGEN SEZER	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.017574+00
+440	\N	\N	\N	\N	\N	TOLGA ANIL İNAN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.020562+00
+441	\N	\N	\N	\N	\N	YAŞAR KAYA	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.023191+00
+442	\N	\N	\N	\N	\N	ZEYNEP KORUCU	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.025862+00
+443	\N	\N	\N	\N	\N	ADİLE UYSAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.029579+00
+444	\N	\N	\N	\N	\N	GÜLNUR DALOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.032321+00
+445	\N	\N	\N	\N	\N	İBRAHİM DEVECİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.036147+00
+446	\N	\N	\N	\N	\N	İBRAHİM YİĞİT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.038638+00
+447	\N	\N	\N	\N	\N	MEHMET KILIÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.041867+00
+448	\N	\N	\N	\N	\N	MUSTAFA YILMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.04533+00
+449	\N	\N	\N	\N	\N	AHMET VELİ KUŞDEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.048088+00
+450	\N	\N	\N	\N	\N	YASİN BERTAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.050202+00
+451	\N	\N	\N	\N	\N	BURAK MUSLUK	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.054425+00
+452	\N	\N	\N	\N	\N	HABİBE CEYLANLI	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.057384+00
+453	\N	\N	\N	\N	\N	İREM YENİGÜN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.059985+00
+454	\N	\N	\N	\N	\N	KADİR ÜLKER	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.062879+00
+455	\N	\N	\N	\N	\N	MEHMET ALİ KIZIL	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.065652+00
+456	\N	\N	\N	\N	\N	MEHMET DİNÇ BOZKURT	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.067959+00
+457	\N	\N	\N	\N	\N	NESLİHAN EVİRGEN	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.071169+00
+458	\N	\N	\N	\N	\N	SEDAT ALPER	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.077329+00
+459	\N	\N	\N	\N	\N	SERKAN ÇALIŞKAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.080783+00
+460	\N	\N	\N	\N	\N	UMMUHAN SEVİNÇ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.085511+00
+461	\N	\N	\N	\N	\N	YAREN ŞENTÜRK	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.090305+00
+462	\N	\N	\N	\N	\N	AYSUN ERDAL	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.092908+00
+463	\N	\N	\N	\N	\N	ABDULFETTAH YILDIRIM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.095537+00
+464	\N	\N	\N	\N	\N	HAKAN AY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.097722+00
+465	\N	\N	\N	\N	\N	HALİL ERTUĞRUL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.101425+00
+466	\N	\N	\N	\N	\N	KUDRET ÇAKMAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.104613+00
+467	\N	\N	\N	\N	\N	LEVENT KALAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.109362+00
+468	\N	\N	\N	\N	\N	MAHMUT YILDIRIM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.112577+00
+469	\N	\N	\N	\N	\N	ÖMER KARAKAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.115491+00
+470	\N	\N	\N	\N	\N	ŞENER BAŞTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.11879+00
+471	\N	\N	\N	\N	\N	YASİN ARIK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.121517+00
+472	\N	\N	\N	\N	\N	ZEYNAL CAN KALUÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.123972+00
+473	\N	\N	\N	\N	\N	İSKENDER ASLAN	\N	TOPLU TAŞIMA	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.126735+00
+474	\N	\N	\N	\N	\N	GÖKHAN DUYGU	\N	TOPLU TAŞIMA	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.128856+00
+475	\N	\N	\N	\N	\N	HULUSİ ALDAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.132512+00
+555	\N	\N	\N	\N	\N	MEHMET ZEKİ BOLAT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.417638+00
+476	\N	\N	\N	\N	\N	AHMET KARADENİZ	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.136888+00
+477	\N	\N	\N	\N	\N	BAKİ NARLI	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.140647+00
+478	\N	\N	\N	\N	\N	CAFER MUSTAFA AKSOY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.143745+00
+479	\N	\N	\N	\N	\N	ALEYNA NUR TUNÇSOY	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.146864+00
+480	\N	\N	\N	\N	\N	CANTUĞ AKALIN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.149734+00
+481	\N	\N	\N	\N	\N	ÇAĞRI KARACA	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.152498+00
+482	\N	\N	\N	\N	\N	DURMUŞ KATRANCI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.154992+00
+483	\N	\N	\N	\N	\N	ERKAN USTAOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.157814+00
+484	\N	\N	\N	\N	\N	FERDİ SAĞLAM	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.161327+00
+485	\N	\N	\N	\N	\N	İBRAHİM AKTAŞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.163825+00
+486	\N	\N	\N	\N	\N	MEHMET ALİ AŞICI	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.166868+00
+487	\N	\N	\N	\N	\N	MEHMET PEHLİVAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.168766+00
+488	\N	\N	\N	\N	\N	MUAMMER GİRGİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.171602+00
+489	\N	\N	\N	\N	\N	OKAN YARADILMIŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.17356+00
+490	\N	\N	\N	\N	\N	ÖZLEM ALKURT	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.176418+00
+491	\N	\N	\N	\N	\N	SEDAT SEZEK	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.178976+00
+492	\N	\N	\N	\N	\N	TEZCAN TAŞDEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.181421+00
+493	\N	\N	\N	\N	\N	UFUK TÜREMEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.183843+00
+494	\N	\N	\N	\N	\N	UĞUR ÇELİKÖZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.186214+00
+495	\N	\N	\N	\N	\N	MUHAMMED ALİ AKYOL	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.188514+00
+496	\N	\N	\N	\N	\N	AYSUN ŞAHİN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.190893+00
+497	\N	\N	\N	\N	\N	GÜRKAN ŞAHİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.193474+00
+498	\N	\N	\N	\N	\N	İSMAİL KESİCİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.196343+00
+499	\N	\N	\N	\N	\N	MUSTAFA MUTLU TEZCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.198875+00
+500	\N	\N	\N	\N	\N	RAMAZAN ÜNSAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.20129+00
+501	\N	\N	\N	\N	\N	YUSUF PEMPE	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.203571+00
+502	\N	\N	\N	\N	\N	KORAY TAŞAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.206038+00
+503	\N	\N	\N	\N	\N	CEM AVCI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.208514+00
+504	\N	\N	\N	\N	\N	HASAN FİDAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.211422+00
+505	\N	\N	\N	\N	\N	ENVER DURAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.213731+00
+506	\N	\N	\N	\N	\N	İLKAY KOÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.216164+00
+507	\N	\N	\N	\N	\N	MEHMET KARACA	\N	BODRUM	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.218569+00
+508	\N	\N	\N	\N	\N	FERİHA KAYA SÜNBÜL	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.221204+00
+509	\N	\N	\N	\N	\N	GÖNÜL NUR	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.223088+00
+510	\N	\N	\N	\N	\N	HASAN SARIKAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.225463+00
+511	\N	\N	\N	\N	\N	HATİCE İMREGÜN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.227875+00
+512	\N	\N	\N	\N	\N	MEHMET PAKİŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.230675+00
+513	\N	\N	\N	\N	\N	NEŞE KAYA	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.233673+00
+514	\N	\N	\N	\N	\N	ORHAN DOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.236437+00
+515	\N	\N	\N	\N	\N	SELİM GEVİŞEN	\N	TOPLU TAŞIMA	KOORDİNASYON SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.238311+00
+516	\N	\N	\N	\N	\N	ŞAFAK IŞILDAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.240706+00
+517	\N	\N	\N	\N	\N	SAİT EMEK HİŞMİOĞULLARI	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.242499+00
+518	\N	\N	\N	\N	\N	ALİ BİLGİÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.245034+00
+519	\N	\N	\N	\N	\N	ALİ BULUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.247327+00
+520	\N	\N	\N	\N	\N	HAKAN UYSAL	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.249602+00
+521	\N	\N	\N	\N	\N	ENİS SORGUÇ	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.251888+00
+522	\N	\N	\N	\N	\N	HASAN ÖNCÜ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.254429+00
+523	\N	\N	\N	\N	\N	OĞULCAN YERLEŞTİ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.256327+00
+524	\N	\N	\N	\N	\N	TEFİKHAN ORUÇ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.258921+00
+525	\N	\N	\N	\N	\N	ALEV TOPALOĞLU	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.262071+00
+526	\N	\N	\N	\N	\N	ÇAĞLAR SANCAK	\N	MERKEZ BÜRO	FİNANS HİZMETLERİ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.264469+00
+527	\N	\N	\N	\N	\N	EMRAH ŞENGÜL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.267314+00
+528	\N	\N	\N	\N	\N	HAYRİCAN ASLAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.269632+00
+529	\N	\N	\N	\N	\N	KORKUT ARDIÇOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.272555+00
+530	\N	\N	\N	\N	\N	MEJNUN KARA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.275082+00
+531	\N	\N	\N	\N	\N	MERT GÖKGEDİK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.27823+00
+532	\N	\N	\N	\N	\N	RECEP YÜCEL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.280362+00
+533	\N	\N	\N	\N	\N	EROL SARI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.282903+00
+534	\N	\N	\N	\N	\N	HALİL AKBAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.285423+00
+535	\N	\N	\N	\N	\N	HÜSEYİN BAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.287873+00
+536	\N	\N	\N	\N	\N	KUBİLAY BAĞCI	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.289689+00
+537	\N	\N	\N	\N	\N	OKTAY YİĞİTKAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.292804+00
+538	\N	\N	\N	\N	\N	SUAT MERDAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.295542+00
+539	\N	\N	\N	\N	\N	VOLKAN ÇETİN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.298552+00
+540	\N	\N	\N	\N	\N	ENİZ UÇAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.301363+00
+541	\N	\N	\N	\N	\N	ERDEM ŞAŞMAZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.305149+00
+542	\N	\N	\N	\N	\N	MUSTAFA KESKİN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.307415+00
+543	\N	\N	\N	\N	\N	NİYAZİ UYSAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.311193+00
+544	\N	\N	\N	\N	\N	SERHAT KINAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.385508+00
+545	\N	\N	\N	\N	\N	GÜRKAN KARATAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.389012+00
+546	\N	\N	\N	\N	\N	AHMET KOCUK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.391849+00
+547	\N	\N	\N	\N	\N	ALİ DURNA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.394868+00
+548	\N	\N	\N	\N	\N	İBRAHİM ÜZER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.397556+00
+549	\N	\N	\N	\N	\N	LALEN BİLEK	\N	DENİZ KIYI	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.400274+00
+550	\N	\N	\N	\N	\N	MEHMET HAZAR ÖZDEMİR	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.40295+00
+551	\N	\N	\N	\N	\N	RESUL ÖZTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.405938+00
+552	\N	\N	\N	\N	\N	UTKU AK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.408917+00
+553	\N	\N	\N	\N	\N	OSMAN GÖK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.412311+00
+554	\N	\N	\N	\N	\N	RAMAZAN ŞAHİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.414839+00
+556	\N	\N	\N	\N	\N	BURAK ÜNAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.420164+00
+557	\N	\N	\N	\N	\N	ABDULLAH REFİK	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.422748+00
+558	\N	\N	\N	\N	\N	AYBERK ARICI	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.425253+00
+559	\N	\N	\N	\N	\N	DİLEK SARI	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.427897+00
+560	\N	\N	\N	\N	\N	ERHAN GENÇ	\N	TOPLU TAŞIMA	FORMEN	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.430682+00
+561	\N	\N	\N	\N	\N	GİZEM YENİGÜN	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.433391+00
+562	\N	\N	\N	\N	\N	İLAYDA GÖKDEMİR	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.435794+00
+563	\N	\N	\N	\N	\N	MEHMET GÖNEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.438462+00
+564	\N	\N	\N	\N	\N	NEZAHAT COŞKUN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.440968+00
+565	\N	\N	\N	\N	\N	SEVDA SAĞLAM	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.443562+00
+566	\N	\N	\N	\N	\N	SÜLEYMAN BOZKURT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.445674+00
+567	\N	\N	\N	\N	\N	TUĞAY YILDIRIM	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.448604+00
+568	\N	\N	\N	\N	\N	ZEKİ FIRAT ERDOĞAN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.45107+00
+569	\N	\N	\N	\N	\N	BAŞAR UYSAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.453603+00
+570	\N	\N	\N	\N	\N	CEMİL AKABALI	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.456124+00
+571	\N	\N	\N	\N	\N	ERSİN SERİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.458667+00
+572	\N	\N	\N	\N	\N	MERYEM TEPE	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.461236+00
+573	\N	\N	\N	\N	\N	MUSTAFA EROL KARAKAYA	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.463845+00
+574	\N	\N	\N	\N	\N	ÖYKÜ UYAR	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.466469+00
+575	\N	\N	\N	\N	\N	ÖZLEM GÖK	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.469234+00
+576	\N	\N	\N	\N	\N	SERHAT TUZER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.472167+00
+577	\N	\N	\N	\N	\N	YUNUS GÜL	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.474883+00
+578	\N	\N	\N	\N	\N	MERVE DURAK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.477503+00
+579	\N	\N	\N	\N	\N	SEÇKİN SUDANÇIKMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.480662+00
+580	\N	\N	\N	\N	\N	MUSTAFA ACUN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.483505+00
+581	\N	\N	\N	\N	\N	ÇAĞLAYAN İPEK	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.486068+00
+582	\N	\N	\N	\N	\N	NİLÜFER GÖBEK	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.488679+00
+583	\N	\N	\N	\N	\N	SONGÜL YILDIRIM	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.491185+00
+584	\N	\N	\N	\N	\N	RIZA KARACA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.493936+00
+585	\N	\N	\N	\N	\N	AHMET ÇİFTLİKLİ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.496503+00
+586	\N	\N	\N	\N	\N	BAYRAM KİLLİK	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.499879+00
+587	\N	\N	\N	\N	\N	FATİH SELMAN ONARAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.502377+00
+588	\N	\N	\N	\N	\N	MİRSAD ÜLGEN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.504803+00
+589	\N	\N	\N	\N	\N	MUSA YİĞİT ABBAS	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.507399+00
+590	\N	\N	\N	\N	\N	SELİN AYBERK	\N	DENİZ KIYI	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.509964+00
+591	\N	\N	\N	\N	\N	HÜSEYİN ÖTEN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.512338+00
+592	\N	\N	\N	\N	\N	NİLGÜN KERMAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.514679+00
+593	\N	\N	\N	\N	\N	HÜSEYİN OKUR	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.517049+00
+594	\N	\N	\N	\N	\N	ALİ DEMİRTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.520092+00
+595	\N	\N	\N	\N	\N	CİHAT TOPAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.522846+00
+596	\N	\N	\N	\N	\N	DİLEK GÖNCÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.525493+00
+597	\N	\N	\N	\N	\N	MUSTAFA SOYDAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.527925+00
+598	\N	\N	\N	\N	\N	RAMAZAN YILDIZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.530533+00
+599	\N	\N	\N	\N	\N	SEFER KILINÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.533361+00
+600	\N	\N	\N	\N	\N	AYTEKİN YİNELEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.535901+00
+601	\N	\N	\N	\N	\N	ERGÜN ALPAR	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.537865+00
+602	\N	\N	\N	\N	\N	FERHAT KÜMÜŞTEKİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.540356+00
+603	\N	\N	\N	\N	\N	FERHAT TÜRKOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.542424+00
+604	\N	\N	\N	\N	\N	HALİL KILINÇARSLAN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.544865+00
+605	\N	\N	\N	\N	\N	İZZET DUMAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.54725+00
+606	\N	\N	\N	\N	\N	MEHMET AYDOĞMUŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.549605+00
+607	\N	\N	\N	\N	\N	MELEK YILDIZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.551966+00
+608	\N	\N	\N	\N	\N	NECDET CANDAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.554554+00
+609	\N	\N	\N	\N	\N	ÖZLEM EREN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.557109+00
+610	\N	\N	\N	\N	\N	SELÇUK ÖZKARA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.559693+00
+611	\N	\N	\N	\N	\N	MEHMET ÇETİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.562283+00
+612	\N	\N	\N	\N	\N	AYHAN ASLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.565067+00
+613	\N	\N	\N	\N	\N	ZEKAİ ZENGİN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.567555+00
+614	\N	\N	\N	\N	\N	MUSTAFA YAVUZ	\N	TOPLU TAŞIMA	BAKIM ONARIM SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.570566+00
+615	\N	\N	\N	\N	\N	ANIL ÖZDEMİR	\N	MERKEZ BÜRO	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.573371+00
+616	\N	\N	\N	\N	\N	ERCAN ÇALKIN	\N	GÖCEK OTOPARKI	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.576168+00
+617	\N	\N	\N	\N	\N	FERRUH ÇAĞIN GÖKDEMİR	\N	GÖCEK OTOPARKI	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.578568+00
+618	\N	\N	\N	\N	\N	LEVENT KANAT	\N	MERKEZ BÜRO	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.581013+00
+619	\N	\N	\N	\N	\N	MELTEM YALDIZ	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.583995+00
+620	\N	\N	\N	\N	\N	NİHAL BİLGİNER	\N	GÖCEK OTOPARKI	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.586388+00
+621	\N	\N	\N	\N	\N	SERGÜL KANAT	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.588729+00
+622	\N	\N	\N	\N	\N	SERHAT MERAL	\N	MERKEZ BÜRO	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.591383+00
+623	\N	\N	\N	\N	\N	SERKAN SAĞLAM	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.59407+00
+624	\N	\N	\N	\N	\N	SILA DURMAZ	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.596663+00
+625	\N	\N	\N	\N	\N	AŞKIN KADEM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.599193+00
+626	\N	\N	\N	\N	\N	CAN NERGİZ	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.602505+00
+627	\N	\N	\N	\N	\N	DENİZ KARADENİZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.604559+00
+628	\N	\N	\N	\N	\N	EMRAH KARAGÖL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.60744+00
+629	\N	\N	\N	\N	\N	ERKAN ALPAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.609942+00
+630	\N	\N	\N	\N	\N	ESMA TOPÖZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.61249+00
+631	\N	\N	\N	\N	\N	FATİH GER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.615262+00
+632	\N	\N	\N	\N	\N	HAMDİ TOSUN	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.617815+00
+633	\N	\N	\N	\N	\N	HAMZA GÜNDÜZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.620514+00
+634	\N	\N	\N	\N	\N	İSMET ÖZDEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.623152+00
+635	\N	\N	\N	\N	\N	KEMAL ÇİÇEN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.625686+00
+636	\N	\N	\N	\N	\N	MELİS BUĞAZ	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.628462+00
+637	\N	\N	\N	\N	\N	MUHAMMET ŞİMŞEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.630402+00
+638	\N	\N	\N	\N	\N	TUFAN BAYAR	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.633552+00
+639	\N	\N	\N	\N	\N	UFUK GÜRER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.636098+00
+640	\N	\N	\N	\N	\N	VOLKAN ŞENER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.638851+00
+641	\N	\N	\N	\N	\N	ZAFER ÖZCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.641289+00
+642	\N	\N	\N	\N	\N	ÜMİT BALCI	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.643572+00
+643	\N	\N	\N	\N	\N	FATMA AKYAĞCI	\N	DENİZ KIYI	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.645979+00
+644	\N	\N	\N	\N	\N	FİGEN YAKIN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.648293+00
+645	\N	\N	\N	\N	\N	MUSTAFA ORHAN TURGUT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.650686+00
+646	\N	\N	\N	\N	\N	ŞÜKRAN FADILLIOĞLU	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.653162+00
+647	\N	\N	\N	\N	\N	FERAT TOPRAKCI	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.655005+00
+648	\N	\N	\N	\N	\N	MEHMET ÇURA	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.657921+00
+649	\N	\N	\N	\N	\N	AYŞE ERDOĞAN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.660425+00
+650	\N	\N	\N	\N	\N	HAKAN KAHRAMAN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.663306+00
+651	\N	\N	\N	\N	\N	HATİCE ECE YÜCEL	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.665505+00
+652	\N	\N	\N	\N	\N	MERYEM YÜZBAŞI GÖK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.668173+00
+653	\N	\N	\N	\N	\N	CEM GEBEN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.67057+00
+654	\N	\N	\N	\N	\N	SEVİLAY DEMİRTAŞ YILDIRIM	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.673599+00
+655	\N	\N	\N	\N	\N	ELA DENİZLİ	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.676055+00
+656	\N	\N	\N	\N	\N	HAKAN ÖNİZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.67856+00
+657	\N	\N	\N	\N	\N	HATİCE BENEK	\N	MERKEZ BÜRO	MUHASEBE MESLEK ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.680619+00
+658	\N	\N	\N	\N	\N	MELTEM DUYGU	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.683252+00
+659	\N	\N	\N	\N	\N	ÖZGECAN GÖK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.685826+00
+660	\N	\N	\N	\N	\N	SUDE NAZ ÇATAK	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.688529+00
+661	\N	\N	\N	\N	\N	YUSUF BAYAR	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.690848+00
+662	\N	\N	\N	\N	\N	EMİNE ULUSAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.69379+00
+663	\N	\N	\N	\N	\N	FİGEN KAYA	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.696255+00
+664	\N	\N	\N	\N	\N	SERMİN KESKİN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.698841+00
+665	\N	\N	\N	\N	\N	ŞEVKET TULUP	\N	DENİZ KIYI	LİMAN ŞEFİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.70112+00
+666	\N	\N	\N	\N	\N	ALİ MEHMET ÇAMEVLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.704026+00
+667	\N	\N	\N	\N	\N	CELAL KAYHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.706331+00
+668	\N	\N	\N	\N	\N	CİHAN TÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.70903+00
+669	\N	\N	\N	\N	\N	ENGİN ÖZGÜL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.711558+00
+670	\N	\N	\N	\N	\N	ERDEM SARKIN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.714356+00
+671	\N	\N	\N	\N	\N	ERHAN ÇİMEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.716516+00
+672	\N	\N	\N	\N	\N	HASAN AKGÜL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.718863+00
+673	\N	\N	\N	\N	\N	MUHAMMET AYDIN TUNÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.721637+00
+674	\N	\N	\N	\N	\N	MUSTAFA ÖZTÜRK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.724045+00
+675	\N	\N	\N	\N	\N	RAMAZAN ŞİMŞEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.726138+00
+676	\N	\N	\N	\N	\N	SİNAN HAFİF	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.728611+00
+677	\N	\N	\N	\N	\N	SÜBAHAN BAYAZIT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.730974+00
+678	\N	\N	\N	\N	\N	TAHİR SERHAT BEGEÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.733738+00
+679	\N	\N	\N	\N	\N	UMUT YAPAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.73631+00
+680	\N	\N	\N	\N	\N	VOLKAN YILDIRIM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.739084+00
+681	\N	\N	\N	\N	\N	YASİN YALPI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.74108+00
+682	\N	\N	\N	\N	\N	AKIN ÇILDIRAMAZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.743727+00
+683	\N	\N	\N	\N	\N	AYŞEGÜL ÖZCAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.746066+00
+684	\N	\N	\N	\N	\N	BUSE NUR KAPLAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.748781+00
+685	\N	\N	\N	\N	\N	BUSE SULTAN YÜKÜNÇ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.750984+00
+686	\N	\N	\N	\N	\N	CAN ESKİCİ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.753553+00
+687	\N	\N	\N	\N	\N	FERDİ ÜSTÜN	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.755552+00
+688	\N	\N	\N	\N	\N	HAKİME İŞİN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.758869+00
+689	\N	\N	\N	\N	\N	HAVVA ARSLAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.761394+00
+690	\N	\N	\N	\N	\N	HÜSEYİN CAN BAYKIN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.764234+00
+691	\N	\N	\N	\N	\N	İSMAİL BULUT	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.766789+00
+692	\N	\N	\N	\N	\N	SERAP ÇILDIRAMAZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.769491+00
+693	\N	\N	\N	\N	\N	UĞUR BEKTAŞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.771471+00
+694	\N	\N	\N	\N	\N	UĞUR CAN YURTSEV	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.774311+00
+695	\N	\N	\N	\N	\N	ÜMİT İFTAR	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.776355+00
+696	\N	\N	\N	\N	\N	ŞÜKRÜ GENÇER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.779187+00
+697	\N	\N	\N	\N	\N	TUNCER ÜNLÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.781282+00
+698	\N	\N	\N	\N	\N	ALİ KOCAMAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.783858+00
+699	\N	\N	\N	\N	\N	ARMAĞAN OLGUN KORKMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.786345+00
+700	\N	\N	\N	\N	\N	BAYRAM ARSLAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.788801+00
+701	\N	\N	\N	\N	\N	BİLAL SARI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.791367+00
+702	\N	\N	\N	\N	\N	BURHAN KARABAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.794588+00
+703	\N	\N	\N	\N	\N	EMRAH AK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.79731+00
+704	\N	\N	\N	\N	\N	FERDİ KARABIYIK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.800013+00
+705	\N	\N	\N	\N	\N	FERİT GÖK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.80223+00
+706	\N	\N	\N	\N	\N	GÜRCAN KARATAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.805273+00
+707	\N	\N	\N	\N	\N	HABİB ÖZER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.807637+00
+708	\N	\N	\N	\N	\N	KUBİLAY KÖSEOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.810324+00
+709	\N	\N	\N	\N	\N	MEHMET ERSOY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.812908+00
+710	\N	\N	\N	\N	\N	MEHMET YILMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.81559+00
+711	\N	\N	\N	\N	\N	MEVLÜT COŞKUN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.818308+00
+712	\N	\N	\N	\N	\N	MUHARREM DERELİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.820914+00
+713	\N	\N	\N	\N	\N	SERBAY ÇELİK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.823697+00
+714	\N	\N	\N	\N	\N	SERCAN ÇELİK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.826491+00
+715	\N	\N	\N	\N	\N	SERTAÇ AKSOY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.829208+00
+716	\N	\N	\N	\N	\N	SEZGİ AKBOYUN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.832443+00
+717	\N	\N	\N	\N	\N	ŞAFAK BOZBAĞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.835121+00
+718	\N	\N	\N	\N	\N	ŞEYDA AKÇAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.837743+00
+719	\N	\N	\N	\N	\N	UFUK ŞANLI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.839824+00
+720	\N	\N	\N	\N	\N	EMRE TAHTA	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.842574+00
+721	\N	\N	\N	\N	\N	SAMET ATİK	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.844771+00
+722	\N	\N	\N	\N	\N	ALEYNA BERRA TOSUN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.847608+00
+723	\N	\N	\N	\N	\N	ASLI POTUR	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.850461+00
+724	\N	\N	\N	\N	\N	AYŞE EROL	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.853292+00
+725	\N	\N	\N	\N	\N	AYŞEGÜL ÇİMEN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.855863+00
+726	\N	\N	\N	\N	\N	BAHAR AYDIN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.858658+00
+727	\N	\N	\N	\N	\N	BURCU BURCU	\N	DENİZ KIYI	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.860923+00
+728	\N	\N	\N	\N	\N	DENİZ ALKAN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.863957+00
+729	\N	\N	\N	\N	\N	ERDEM FERHAT ALYÜZ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.867774+00
+730	\N	\N	\N	\N	\N	ESEN KOÇ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.87139+00
+731	\N	\N	\N	\N	\N	FATİH BALTA	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.873764+00
+732	\N	\N	\N	\N	\N	FATİH CAYBAK	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.876778+00
+733	\N	\N	\N	\N	\N	FATMA YASEMİN ÇULHAOĞLU	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.879392+00
+734	\N	\N	\N	\N	\N	FUNDA ECE ÇATAK	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.882683+00
+735	\N	\N	\N	\N	\N	GİZEM ÜN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.885848+00
+736	\N	\N	\N	\N	\N	GÜLSÜM KILIÇ	\N	PARKOMAT	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.888886+00
+737	\N	\N	\N	\N	\N	HAKAN YILDIRIM	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.891417+00
+738	\N	\N	\N	\N	\N	İHSAN AKKAYA	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.894987+00
+739	\N	\N	\N	\N	\N	İZZETTİN ASLAN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.897405+00
+740	\N	\N	\N	\N	\N	MEHMET AYAZOĞLU	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.900601+00
+741	\N	\N	\N	\N	\N	MEHMET BEYER	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.903376+00
+742	\N	\N	\N	\N	\N	MEHMET DEMİRTAŞ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.906538+00
+743	\N	\N	\N	\N	\N	MEMDUH KORKUT	\N	PARKOMAT	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.909208+00
+744	\N	\N	\N	\N	\N	MERT YÜREKLİ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.911672+00
+745	\N	\N	\N	\N	\N	MUSTAFA BAYLAN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.913802+00
+746	\N	\N	\N	\N	\N	MUTLU KÖMÜRCÜ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.916902+00
+747	\N	\N	\N	\N	\N	NERCAN DEMİR	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.91952+00
+748	\N	\N	\N	\N	\N	NİLİFER DEMİRÖZ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.922595+00
+749	\N	\N	\N	\N	\N	OSMAN BAL	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.92509+00
+750	\N	\N	\N	\N	\N	ÖMÜRCAN TAHTA	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.927823+00
+751	\N	\N	\N	\N	\N	ÖZLEM ÖZADA	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.929771+00
+752	\N	\N	\N	\N	\N	REHA YİĞİTCAN YİĞİT	\N	PARKOMAT	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.932328+00
+753	\N	\N	\N	\N	\N	RIZA KARAGÖZ	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.934376+00
+754	\N	\N	\N	\N	\N	SAVAŞ DEMİR	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.937097+00
+755	\N	\N	\N	\N	\N	SEMİH ÇAĞAN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.939149+00
+756	\N	\N	\N	\N	\N	SEVİLAY HASGÜL	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.942313+00
+757	\N	\N	\N	\N	\N	SİBEL ACAR	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.944633+00
+758	\N	\N	\N	\N	\N	TÜRKAY AKSOY	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.947385+00
+759	\N	\N	\N	\N	\N	VOLKAN BOZKURT	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.949767+00
+760	\N	\N	\N	\N	\N	YAĞMUR ÇETİN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.952086+00
+761	\N	\N	\N	\N	\N	YEŞİM GÜREL	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.954379+00
+762	\N	\N	\N	\N	\N	ZEYNEP GENEL	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.956683+00
+763	\N	\N	\N	\N	\N	ZEYNEP KABLI	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.959163+00
+764	\N	\N	\N	\N	\N	HALİL GÜMÜŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.961908+00
+765	\N	\N	\N	\N	\N	ZÜLCE ESKİCİ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.964404+00
+766	\N	\N	\N	\N	\N	AYŞE ÖRER	\N	DENİZ KIYI	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.966831+00
+767	\N	\N	\N	\N	\N	BAYRAM AŞKIN	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.969294+00
+768	\N	\N	\N	\N	\N	CAFER BÜLENT AKYOL	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.97254+00
+769	\N	\N	\N	\N	\N	EZGİ UZAKGİDEN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.974826+00
+770	\N	\N	\N	\N	\N	GİZEM EZGİ DUMLU	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.977323+00
+771	\N	\N	\N	\N	\N	GÜLŞAH KÖSE	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.979864+00
+772	\N	\N	\N	\N	\N	GÜRKAN KOÇAR	\N	DENİZ KIYI	SIHHİ TESİSATÇI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.98256+00
+773	\N	\N	\N	\N	\N	HÜSEYİN TOKAT	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.984988+00
+774	\N	\N	\N	\N	\N	MEHMET GÖKBEL	\N	BAKIM ONARIM	MEKANİK BAKIM ONARIMCISI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.987312+00
+775	\N	\N	\N	\N	\N	MEHMET TORAMAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.989731+00
+776	\N	\N	\N	\N	\N	MEHTAP YAŞAR	\N	DENİZ KIYI	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.992171+00
+777	\N	\N	\N	\N	\N	MUHAMMED ALPEREN SÖYLEMEZ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.994576+00
+778	\N	\N	\N	\N	\N	MÜCAHİT ATİK	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.996985+00
+779	\N	\N	\N	\N	\N	MÜZEYYEN YENİLMEZ	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:22.998856+00
+780	\N	\N	\N	\N	\N	RAZİYE KADEM	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.001334+00
+781	\N	\N	\N	\N	\N	SELDA GÜMÜŞ	\N	TOPLU TAŞIMA	BİLET SATIŞ ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.003272+00
+782	\N	\N	\N	\N	\N	SÜHEYLA ZAN	\N	DENİZ KIYI	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.005893+00
+783	\N	\N	\N	\N	\N	TANER GÖLBAŞI	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.008528+00
+784	\N	\N	\N	\N	\N	TARIK ÇULHAOĞLU	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.011081+00
+785	\N	\N	\N	\N	\N	TAYFUN EREN	\N	DENİZ KIYI	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.013563+00
+786	\N	\N	\N	\N	\N	YAŞAR İNCE	\N	DENİZ KIYI	ELEKTRİK TEKNİSYENİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.016137+00
+787	\N	\N	\N	\N	\N	YUNUS YİĞİTTEKİN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.018404+00
+788	\N	\N	\N	\N	\N	HACER SAYNAK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.020905+00
+789	\N	\N	\N	\N	\N	MEHMET REFİK PARLAK	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.023505+00
+790	\N	\N	\N	\N	\N	AHMET ÖZEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.026256+00
+791	\N	\N	\N	\N	\N	ÇAĞDAŞ BEKTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.028661+00
+792	\N	\N	\N	\N	\N	İBRAHİM BİRGİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.031314+00
+793	\N	\N	\N	\N	\N	MEHMET DEMİRTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.033357+00
+794	\N	\N	\N	\N	\N	MEHMET MAHLEÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.035863+00
+795	\N	\N	\N	\N	\N	SADIK ŞAHİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.038264+00
+796	\N	\N	\N	\N	\N	UĞUR GÜNAY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.126351+00
+797	\N	\N	\N	\N	\N	AHMET HİÇYILMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.129737+00
+798	\N	\N	\N	\N	\N	OGÜN MELENGEÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.13357+00
+799	\N	\N	\N	\N	\N	FIRAT TAŞKIRAN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.136667+00
+800	\N	\N	\N	\N	\N	ÜMİT KORKMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.139762+00
+801	\N	\N	\N	\N	\N	YÜCEL DOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.142556+00
+802	\N	\N	\N	\N	\N	LALEŞ ÖZTÜRK	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.145762+00
+803	\N	\N	\N	\N	\N	MAHİNUR SU AÇIK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.149171+00
+804	\N	\N	\N	\N	\N	GÜLDEN YILDIRIM	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.152119+00
+805	\N	\N	\N	\N	\N	ORKUN POLAT	\N	MERKEZ BÜRO (A.)	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.155099+00
+806	\N	\N	\N	\N	\N	ILGIN YAPRAK SAVRAN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.158325+00
+807	\N	\N	\N	\N	\N	MEHTAP GENÇ	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.161412+00
+808	\N	\N	\N	\N	\N	ABDULLAH GÖKTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.167597+00
+809	\N	\N	\N	\N	\N	AHMET ÇÖLLÜOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.170684+00
+810	\N	\N	\N	\N	\N	AYCAN KELEŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.174328+00
+811	\N	\N	\N	\N	\N	AYŞEN BAYDOĞAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.177338+00
+812	\N	\N	\N	\N	\N	DOĞUŞ SALMAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.181035+00
+813	\N	\N	\N	\N	\N	FATMA ÖZCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.183488+00
+814	\N	\N	\N	\N	\N	GÜLŞAH ERGÜN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.186477+00
+815	\N	\N	\N	\N	\N	HALİL İBRAHİM KARADAĞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.188535+00
+816	\N	\N	\N	\N	\N	KAMİL ŞEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.191739+00
+817	\N	\N	\N	\N	\N	KEMAL HANEY	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.194272+00
+818	\N	\N	\N	\N	\N	MUSTAFA ERHAN ESEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.200043+00
+819	\N	\N	\N	\N	\N	NECDET ŞAHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.205172+00
+820	\N	\N	\N	\N	\N	ONUR ERCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.208231+00
+821	\N	\N	\N	\N	\N	ÖZCAN KARADAĞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.211252+00
+822	\N	\N	\N	\N	\N	SERDAR YILDIZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.214011+00
+823	\N	\N	\N	\N	\N	TANER ORHAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.217599+00
+824	\N	\N	\N	\N	\N	TAYFUN ARIK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.221226+00
+825	\N	\N	\N	\N	\N	UĞUR CAN AKGÜN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.223539+00
+826	\N	\N	\N	\N	\N	VELİ AYKAÇ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.227397+00
+827	\N	\N	\N	\N	\N	ZEYNEP KOZALI	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.230582+00
+828	\N	\N	\N	\N	\N	SELAHATTİN BEYOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.233753+00
+829	\N	\N	\N	\N	\N	BAHATTİN ACAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.236393+00
+830	\N	\N	\N	\N	\N	MEHMET ALİ YILDIRIM	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.239418+00
+831	\N	\N	\N	\N	\N	SERDAR CAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.241989+00
+832	\N	\N	\N	\N	\N	SÜLEYMAN USTA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.244599+00
+833	\N	\N	\N	\N	\N	TAYFUN ÇİNAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.247283+00
+834	\N	\N	\N	\N	\N	AYDIN FERHAT KOCABAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.250006+00
+835	\N	\N	\N	\N	\N	ERSİN DEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.252603+00
+836	\N	\N	\N	\N	\N	SİNAN GÜLDAĞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.255483+00
+837	\N	\N	\N	\N	\N	HÜSEYİN CAN ÖZSAVRAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.25805+00
+838	\N	\N	\N	\N	\N	MUSTAFA MEVLÜTOĞLU	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.26091+00
+839	\N	\N	\N	\N	\N	MEHMET YANIK	\N	BAKIM ONARIM	MEKANİK BAKIM ONARIMCISI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.263193+00
+840	\N	\N	\N	\N	\N	ONUR KANAVUZLAR	\N	BAKIM ONARIM	MEKANİK BAKIM ONARIMCISI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.265999+00
+841	\N	\N	\N	\N	\N	ALİ ERKEK	\N	DENİZ KIYI	DALGIÇ (BALIK ADAM)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.26871+00
+842	\N	\N	\N	\N	\N	MUHAMMED DOĞAN	\N	TOPLU TAŞIMA	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.271262+00
+843	\N	\N	\N	\N	\N	MÜJDE KABADAYI	\N	TOPLU TAŞIMA	LOJİSTİK OPERASYON ELEMANI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.273391+00
+844	\N	\N	\N	\N	\N	YUSUF YAVUZ	\N	TOPLU TAŞIMA	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.275919+00
+845	\N	\N	\N	\N	\N	MİKAİL ZEYBEK	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.278321+00
+846	\N	\N	\N	\N	\N	MUSTAFA ÜNAL	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.280976+00
+847	\N	\N	\N	\N	\N	CEM ÖZTÜRK	\N	BAKIM ONARIM	MEKANİK BAKIM ONARIMCISI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.283563+00
+848	\N	\N	\N	\N	\N	DAMLA OKULU	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.286337+00
+849	\N	\N	\N	\N	\N	ÖZGÜR CAN BÜYÜKÇOBAN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.28833+00
+850	\N	\N	\N	\N	\N	SÜLEYMAN ARABACI	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.290702+00
+851	\N	\N	\N	\N	\N	ALİ SERVER KARAKUŞ	\N	DENİZ KIYI	ELEKTRİKÇİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.293483+00
+852	\N	\N	\N	\N	\N	BETÜL YAĞLI	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.295889+00
+853	\N	\N	\N	\N	\N	GÜLPINAR SAVRAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.297804+00
+854	\N	\N	\N	\N	\N	İZEL İLHAN	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.300643+00
+855	\N	\N	\N	\N	\N	MİRAY PEMPE	\N	TOPLU TAŞIMA	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.302725+00
+856	\N	\N	\N	\N	\N	MELİSA SÖKDÜ	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.305142+00
+857	\N	\N	\N	\N	\N	DENİZ GİZEM DOĞANAY	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.307525+00
+858	\N	\N	\N	\N	\N	BARIŞ GENÇ	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.310198+00
+859	\N	\N	\N	\N	\N	AYFER ULUÇAY	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.312027+00
+860	\N	\N	\N	\N	\N	ONUR ERGÜN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.314399+00
+861	\N	\N	\N	\N	\N	YAŞAR ERDAN	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.317069+00
+862	\N	\N	\N	\N	\N	ZÜLAL AKYÜZ TOKAY	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.319591+00
+863	\N	\N	\N	\N	\N	HALİL İBRAHİM ERDOĞAN	\N	DENİZ KIYI	ELEKTRİKÇİ (GENEL)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.321458+00
+864	\N	\N	\N	\N	\N	SAYGIN ZEYBEKOĞLU	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.323888+00
+865	\N	\N	\N	\N	\N	SİBEL ÇAVUŞOĞLU	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.325713+00
+866	\N	\N	\N	\N	\N	DENİZ ÇUR	\N	DENİZ KIYI	KIZAKÇI (GEMİ)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.328193+00
+867	\N	\N	\N	\N	\N	MUAMMER SAĞLAM	\N	DENİZ KIYI	KIZAKÇI (GEMİ)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.33061+00
+868	\N	\N	\N	\N	\N	HATİCE ÇANDAR	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.333238+00
+869	\N	\N	\N	\N	\N	MELİH  DEVECİ	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.335655+00
+870	\N	\N	\N	\N	\N	SERVET ÜNLÜ	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.338456+00
+871	\N	\N	\N	\N	\N	VOLKAN KÖSE	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.341028+00
+872	\N	\N	\N	\N	\N	AÇELYA İZMİRLİ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.34337+00
+873	\N	\N	\N	\N	\N	DELAL ÖZGÜN DOĞAN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.34556+00
+874	\N	\N	\N	\N	\N	LEVENT ARIKAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.34813+00
+875	\N	\N	\N	\N	\N	UMUT YALDIZ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.350371+00
+876	\N	\N	\N	\N	\N	ALTAY UYSAL	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.35305+00
+877	\N	\N	\N	\N	\N	ANIL CAN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.355258+00
+878	\N	\N	\N	\N	\N	FATİH KIRAN	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.358347+00
+879	\N	\N	\N	\N	\N	VELİ DOĞAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.360751+00
+880	\N	\N	\N	\N	\N	NUR DİLAYDA KARAKUŞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.363553+00
+881	\N	\N	\N	\N	\N	SİBEL ÇETİNTAŞ	\N	MERKEZ BÜRO	TEMİZLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.366324+00
+882	\N	\N	\N	\N	\N	ÖMER AKALAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.369369+00
+883	\N	\N	\N	\N	\N	DOĞUKAN GÜNEŞ	\N	DENİZ KIYI	KIZAKÇI (GEMİ)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.371648+00
+884	\N	\N	\N	\N	\N	ESMERAY DOĞAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.375417+00
+885	\N	\N	\N	\N	\N	GÜLENDER TÜREL	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.377719+00
+886	\N	\N	\N	\N	\N	HÜSEYİN ÜCEL	\N	DENİZ KIYI	SIHHİ TESİSATÇI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.381542+00
+887	\N	\N	\N	\N	\N	İLTER ÖNER	\N	DENİZ KIYI	KIZAKÇI (GEMİ)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.385886+00
+888	\N	\N	\N	\N	\N	MUSTAFA YANIK	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.389317+00
+889	\N	\N	\N	\N	\N	SERHAT YILMAZSOY	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.392169+00
+890	\N	\N	\N	\N	\N	SEVDA DİLEK TOPAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.396127+00
+891	\N	\N	\N	\N	\N	MEHMET MERT KOLCU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.399656+00
+892	\N	\N	\N	\N	\N	MERT ÇETİN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.40356+00
+893	\N	\N	\N	\N	\N	NAZLI DÜKKAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.406575+00
+894	\N	\N	\N	\N	\N	OGÜN ÖZDEMİR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.410635+00
+895	\N	\N	\N	\N	\N	ONUR BAŞIBÜYÜK	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.413463+00
+896	\N	\N	\N	\N	\N	ONUR ŞAHİN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.417469+00
+897	\N	\N	\N	\N	\N	SÜLEYMAN ERSOY	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.419746+00
+898	\N	\N	\N	\N	\N	ABDÜSSAMED ESKİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.423793+00
+899	\N	\N	\N	\N	\N	ALİ ATAKAN SAĞIR	\N	FETHİYE WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.427042+00
+900	\N	\N	\N	\N	\N	ALİ BAHAR	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.429678+00
+901	\N	\N	\N	\N	\N	ANIL KARAUSTA	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.432562+00
+902	\N	\N	\N	\N	\N	ATAKAN ŞENSES	\N	FETHİYE WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.435591+00
+903	\N	\N	\N	\N	\N	AYBERKCAN ÇINAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.437699+00
+904	\N	\N	\N	\N	\N	AYŞE NAZ TOKER	\N	BODRUM WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.441892+00
+905	\N	\N	\N	\N	\N	BÜŞRA AYKAŞ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.444952+00
+906	\N	\N	\N	\N	\N	CEREN KIRLI	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.448478+00
+907	\N	\N	\N	\N	\N	COŞKUN ÇALIŞMAZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.451187+00
+908	\N	\N	\N	\N	\N	DEVRİM ÇETİNKAYA	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.453883+00
+909	\N	\N	\N	\N	\N	DOĞUKAN KOYUNBABA	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.455894+00
+910	\N	\N	\N	\N	\N	DÖNDÜ DOĞAN	\N	BODRUM WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.458852+00
+911	\N	\N	\N	\N	\N	EMRAH KARAKAŞ	\N	BODRUM WC	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.46122+00
+912	\N	\N	\N	\N	\N	EMRE DEMİRELLİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.464488+00
+913	\N	\N	\N	\N	\N	ERDAL ÖNTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.46751+00
+914	\N	\N	\N	\N	\N	FİLİZ KONCA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.47059+00
+915	\N	\N	\N	\N	\N	FUNDA KAZAN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.473265+00
+916	\N	\N	\N	\N	\N	HARUN ŞEKER	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.475507+00
+917	\N	\N	\N	\N	\N	HÜSEYİN ÇAĞLAR ALKAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.477953+00
+918	\N	\N	\N	\N	\N	HÜSEYİN KILIÇ	\N	FETHİYE WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.480445+00
+919	\N	\N	\N	\N	\N	İBRAHİM ÇELİKOĞLU	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.482903+00
+920	\N	\N	\N	\N	\N	İLHANCAN KILIÇDOĞAN	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.484882+00
+921	\N	\N	\N	\N	\N	İRFAN ÇOLAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.487501+00
+922	\N	\N	\N	\N	\N	İSMAİL ÇETİNKAYA	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.489907+00
+923	\N	\N	\N	\N	\N	İSMAİL TOMAK	\N	FETHİYE WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.492408+00
+924	\N	\N	\N	\N	\N	KENAN ÖZKUL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.494467+00
+925	\N	\N	\N	\N	\N	MELİKE DEĞİRMENCİ	\N	FETHİYE WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.496801+00
+926	\N	\N	\N	\N	\N	MERT ÇİFTÇİ	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.499208+00
+927	\N	\N	\N	\N	\N	MUHAMMET TİLKİ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.501539+00
+928	\N	\N	\N	\N	\N	MURAT CAN AKCAN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.503371+00
+929	\N	\N	\N	\N	\N	MUSTAFA DALBAŞ	\N	DENİZ KIYI	PALAMARCI	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.505692+00
+930	\N	\N	\N	\N	\N	MUSTAFA UTKU UÇAR	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.507993+00
+931	\N	\N	\N	\N	\N	NECATİ FIRAT ÇOŞKUN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.510459+00
+932	\N	\N	\N	\N	\N	ONUR DİNEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.512287+00
+933	\N	\N	\N	\N	\N	PELİN KILIÇDOĞAN	\N	GÜVENLİK	GÜVENLİK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.514606+00
+934	\N	\N	\N	\N	\N	RAMAZAN ÇOMAK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.516921+00
+935	\N	\N	\N	\N	\N	RAMAZAN KARATAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.51929+00
+936	\N	\N	\N	\N	\N	SEHER ŞİMŞEK	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.52154+00
+937	\N	\N	\N	\N	\N	SERCAN KINCAL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.523999+00
+938	\N	\N	\N	\N	\N	SEZGİN YARIŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.526494+00
+939	\N	\N	\N	\N	\N	SÜLEYMAN  KORTUN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.528829+00
+940	\N	\N	\N	\N	\N	ŞENAY GÜLTEKİN	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.531234+00
+941	\N	\N	\N	\N	\N	TÜLAY SALAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.533835+00
+942	\N	\N	\N	\N	\N	UMUT GÜLSAT	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.536366+00
+943	\N	\N	\N	\N	\N	YASEMİN AKÇİN	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.539124+00
+944	\N	\N	\N	\N	\N	ZEHRA ERGÜL ÖZKUL	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.541678+00
+945	\N	\N	\N	\N	\N	SALİH NARDALI	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.544335+00
+946	\N	\N	\N	\N	\N	TARIK MENEKŞE	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.547004+00
+947	\N	\N	\N	\N	\N	ZERRİN KÖK	\N	BODRUM WC	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.549521+00
+948	\N	\N	\N	\N	\N	AYTUĞ YILDIZ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.552064+00
+949	\N	\N	\N	\N	\N	NESLİHAN DEMİRTAŞ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.554691+00
+950	\N	\N	\N	\N	\N	SERDAR BAYIR	\N	TOPLU TAŞIMA	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.556767+00
+951	\N	\N	\N	\N	\N	UĞUR GÖÇMEN	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.559792+00
+952	\N	\N	\N	\N	\N	ATİYE DİKER	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.563475+00
+953	\N	\N	\N	\N	\N	HÜSEYİN USLU	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.566294+00
+954	\N	\N	\N	\N	\N	ZEHRA ÇAMOĞLU	\N	B.OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.568423+00
+955	\N	\N	\N	\N	\N	SABAHATTİN ÖRÜCÜ	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.571395+00
+956	\N	\N	\N	\N	\N	FATMA AZMAKÇI	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.573947+00
+957	\N	\N	\N	\N	\N	MESUT PAZARLIOĞLU	\N	PARKOMAT	PARKOMAT GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.576773+00
+958	\N	\N	\N	\N	\N	ONUR KÜPELİOĞLU	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.579576+00
+959	\N	\N	\N	\N	\N	UĞUR CAN SAKAL	\N	DENİZ KIYI	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.582808+00
+960	\N	\N	\N	\N	\N	ZÜLEYHA ASLAN	\N	MERKEZ BÜRO	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.58513+00
+961	\N	\N	\N	\N	\N	MEHMET KAVCAR	\N	TOPLU TAŞIMA	ŞOFÖR	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.587903+00
+962	\N	\N	\N	\N	\N	ESİN KARA	\N	DENİZ KIYI	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.590804+00
+963	\N	\N	\N	\N	\N	BEYTULLAH ÇAKMAK	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.593614+00
+964	\N	\N	\N	\N	\N	MEHMET ALİ BİLGİLİ	\N	OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.596273+00
+965	\N	\N	\N	\N	\N	YUSUF EREN TAŞ	\N	DENİZ KIYI	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.599327+00
+966	\N	\N	\N	\N	\N	BERFİN AKBAL	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.601434+00
+967	\N	\N	\N	\N	\N	SEÇKİN YALI	\N	TOPLU TAŞIMA	BEDEN İŞÇİSİ (TEMİZLİK)	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.604379+00
+968	\N	\N	\N	\N	\N	MUZAFFER CANTEKİN	\N	DENİZ KIYI	MİSAFİR İLİŞKİLERİ GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.60644+00
+969	\N	\N	\N	\N	\N	ŞAFAK DAYAL	\N	TOPLU TAŞIMA	BÜRO MEMURU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:23.608851+00
+1	12345678901	\N	\N	\N	\N	EDA NARİN	\N	MERKEZ BÜRO	İK/İDARİ İŞLER PERSONELİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.833949+00
+2	98765432109	\N	\N	\N	\N	ENGİN KILINÇ	\N	MENTEŞE OTOPARK	OTOPARK GÖREVLİSİ	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.871316+00
+3	11111111110	\N	\N	\N	\N	UĞUR YAKA	\N	MERKEZ BÜRO	İK/İDARİ İŞLER SORUMLUSU	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	\N	0	f	\N	\N	\N	\N	\N	t	2026-02-22 00:07:20.874319+00
+\.
+
+
+--
+-- Name: personel_id_seq; Type: SEQUENCE SET; Schema: public; Owner: -
+--
+
+SELECT pg_catalog.setval('public.personel_id_seq', 969, true);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
