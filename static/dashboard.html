@@ -146,6 +146,39 @@ html, body {
 .badge-admin  { background: #fef3c7; color: #92400e; }
 .badge-user   { background: var(--accent-bg); color: var(--accent); }
 
+/* Toast */
+#toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,.15);
+  pointer-events: auto;
+  animation: toastIn .25s ease;
+  min-width: 240px;
+  max-width: 380px;
+}
+.toast.success { background: #ecfdf5; color: #065f46; border-left: 4px solid #10b981; }
+.toast.error   { background: #fff1f2; color: #9f1239; border-left: 4px solid #f43f5e; }
+.toast.info    { background: #eff6ff; color: #1e40af; border-left: 4px solid #3b82f6; }
+.toast.warning { background: #fffbeb; color: #92400e; border-left: 4px solid #f59e0b; }
+.toast-icon    { font-size: 18px; flex-shrink: 0; }
+@keyframes toastIn  { from { opacity:0; transform: translateX(40px); } to { opacity:1; transform: translateX(0); } }
+@keyframes toastOut { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(40px); } }
+
 /* Nav */
 .sb-nav {
   flex: 1;
@@ -2101,6 +2134,24 @@ let currentLiman = null;
 let canEditIK    = false;
 let canEditLiman = false;
 
+const TOAST_ICONS = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+
+function showToast(mesaj, tip = 'info', sure = 3500) {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const el = document.createElement('div');
+  el.className = `toast ${tip}`;
+  el.innerHTML = `<span class="toast-icon">${TOAST_ICONS[tip] || 'ℹ️'}</span><span>${mesaj}</span>`;
+
+  container.appendChild(el);
+
+  setTimeout(() => {
+    el.style.animation = 'toastOut .3s ease forwards';
+    setTimeout(() => el.remove(), 320);
+  }, sure);
+}
+
 function applyRoleUI(rol) {
   const isAdmin = rol === 'admin';
   const isIK    = rol === 'ik_admin' || rol === 'ik_viewer';
@@ -4040,9 +4091,10 @@ function ftExport() {
     </div><!-- /prs-panel-evraklar -->
 
   </div>
+  <div id="prs-drawer-msg" style="display:none;margin:0 20px 8px;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500"></div>
   <div class="drawer-footer" style="gap:8px" id="prs-drawer-footer">
     <button class="btn btn-outline" onclick="closePersonelDrawer()">İptal</button>
-    <button class="btn btn-primary" onclick="savePersonel()">💾 Kaydet</button>
+    <button class="btn btn-primary" id="prs-save-btn" onclick="savePersonel()">💾 Kaydet</button>
   </div>
 </div>
 
@@ -4352,6 +4404,7 @@ function closePersonelDrawer() {
   document.getElementById('prs-drawer-overlay').classList.remove('open');
   document.getElementById('prs-drawer').classList.remove('open');
   prsEditId = null;
+  prsMsg('', '');
 }
 
 function switchPrsTab(tab) {
@@ -4460,6 +4513,20 @@ async function evrakSil(eid) {
   loadEvraklar(prsEditId);
 }
 
+function prsMsg(mesaj, tip) {
+  const el = document.getElementById('prs-drawer-msg');
+  if (!el) return;
+  if (!mesaj) { el.style.display = 'none'; return; }
+  const styles = {
+    error:   'background:#fff1f2;color:#9f1239;border:1px solid #fecdd3',
+    success: 'background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0',
+    info:    'background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe',
+  };
+  el.setAttribute('style', `display:block;margin:0 20px 8px;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;${styles[tip] || ''}`);
+  el.innerHTML = (tip === 'error' ? '⚠️ ' : tip === 'success' ? '✅ ' : '') + mesaj;
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
 async function savePersonel() {
   const v = id => document.getElementById('prs-form-' + id)?.value || null;
   const body = {
@@ -4492,31 +4559,54 @@ async function savePersonel() {
     notlar:               document.getElementById('prs-form-notlar')?.value || null,
   };
 
-  if (!body.ad_soyad)    { showToast('Ad Soyad zorunludur', 'error'); return; }
-  if (!body.tc_kimlik)   { showToast('TC Kimlik No zorunludur', 'error'); return; }
-  if (!body.cinsiyet)    { showToast('Cinsiyet zorunludur', 'error'); return; }
-  if (!body.dogum_tarihi){ showToast('Doğum Tarihi zorunludur', 'error'); return; }
-  if (!body.bolum)       { showToast('Bölüm zorunludur', 'error'); return; }
-  if (!body.unvan)       { showToast('Ünvan zorunludur', 'error'); return; }
-  if (!body.ise_giris)   { showToast('İşe Giriş Tarihi zorunludur', 'error'); return; }
-  if (!body.telefon)     { showToast('Telefon zorunludur', 'error'); return; }
+  prsMsg('', '');
 
+  const zorunlu = [
+    [body.ad_soyad,    'Ad Soyad zorunludur'],
+    [body.tc_kimlik,   'TC Kimlik No zorunludur'],
+    [body.cinsiyet,    'Cinsiyet zorunludur'],
+    [body.dogum_tarihi,'Doğum Tarihi zorunludur'],
+    [body.bolum,       'Bölüm zorunludur'],
+    [body.unvan,       'Ünvan zorunludur'],
+    [body.ise_giris,   'İşe Giriş Tarihi zorunludur'],
+    [body.telefon,     'Telefon zorunludur'],
+  ];
+  for (const [deger, mesaj] of zorunlu) {
+    if (!deger) { prsMsg(mesaj, 'error'); showToast(mesaj, 'error'); return; }
+  }
+
+  const btn    = document.getElementById('prs-save-btn');
   const url    = prsEditId ? '/personel/' + prsEditId : '/personel';
   const method = prsEditId ? 'PUT' : 'POST';
+  const label  = prsEditId ? 'güncelleniyor…' : 'kaydediliyor…';
 
-  const res = await fetch(url, {
-    method,
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
-    body: JSON.stringify(body),
-  });
+  btn.disabled = true;
+  btn.textContent = '⏳ ' + label;
 
-  if (res.ok) {
-    showToast(prsEditId ? 'Personel güncellendi' : 'Personel eklendi', 'success');
-    closePersonelDrawer();
-    loadPersonel(prsPage);
-  } else {
-    const err = await res.json().catch(() => ({}));
-    showToast(err.detail || 'Kayıt başarısız', 'error');
+  try {
+    const res = await fetch(url, {
+      method,
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify(body),
+    });
+
+    if (res.ok) {
+      const mesaj = prsEditId ? 'Personel güncellendi' : 'Personel başarıyla eklendi';
+      showToast(mesaj, 'success');
+      closePersonelDrawer();
+      loadPersonel(prsPage);
+    } else {
+      const err = await res.json().catch(() => ({}));
+      const hata = err.detail || 'Kayıt sırasında bir hata oluştu.';
+      prsMsg(hata, 'error');
+      showToast(hata, 'error');
+    }
+  } catch {
+    prsMsg('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.', 'error');
+    showToast('Bağlantı hatası', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💾 Kaydet';
   }
 }
 
@@ -5271,6 +5361,8 @@ async function saveKullanici() {
   }
 }
 </script>
+
+<div id="toast-container"></div>
 
 </body>
 </html>
