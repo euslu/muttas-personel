@@ -142,7 +142,7 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         r = await conn.fetchrow("""
-            SELECT i.*, p.ad_soyad, p.bolum, p.unvan, p.ilce, p.hizmet_noktasi
+            SELECT i.*, p.ad_soyad, p.tc_kimlik, p.bolum, p.unvan, p.ilce, p.hizmet_noktasi
             FROM izinler i
             JOIN personel p ON p.id = i.personel_id
             WHERE i.id = $1
