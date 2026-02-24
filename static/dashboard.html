@@ -4179,7 +4179,7 @@ function ftExport() {
         </div>
         <div class="form-field">
           <label>Onaylayan Adı</label>
-          <input type="text" id="iz-form-onaylayan" placeholder="Onaylayan kişi">
+          <input type="text" id="iz-form-onaylayan" readonly style="background:#f3f4f6;cursor:default">
         </div>
       </div>
       <button class="btn btn-primary" style="margin-top:8px;width:100%" onclick="izOnayKaydet()">✅ Onayı Kaydet</button>
@@ -4736,9 +4736,11 @@ async function openIzinDrawer(id) {
   document.getElementById('iz-personel-bilgi').style.display = 'none';
 
   // Reset form
-  ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-notlar','iz-form-onaylayan'].forEach(fid => {
+  ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-notlar'].forEach(fid => {
     const el = document.getElementById(fid); if (el) el.value = '';
   });
+  document.getElementById('iz-form-onaylayan').value =
+    currentUser ? (currentUser.ad + ' ' + currentUser.soyad) : '';
   izImzaTemizle();
   document.getElementById('iz-form-personel-id').value = '';
   document.getElementById('iz-form-tur').value = 'yillik';
