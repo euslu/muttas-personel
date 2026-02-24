@@ -66,22 +66,20 @@ html, body {
 }
 
 .sb-logo-mark {
-  width: 34px;
-  height: 34px;
-  background: var(--text);
-  border-radius: 9px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  overflow: hidden;
 }
 
-.sb-logo-mark svg {
-  width: 17px; height: 17px;
-  fill: none; stroke: #fff;
-  stroke-width: 1.8;
-  stroke-linecap: round;
-  stroke-linejoin: round;
+.sb-logo-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .sb-logo-text {
@@ -1112,16 +1110,11 @@ tr:hover td { background: var(--bg-soft); }
     <!-- Logo -->
     <div class="sb-logo">
       <div class="sb-logo-mark">
-        <svg viewBox="0 0 24 24">
-          <circle cx="12" cy="5" r="2"/>
-          <line x1="12" y1="7" x2="12" y2="19"/>
-          <path d="M5 12H2a10 10 0 0 0 20 0h-3"/>
-          <line x1="5" y1="12" x2="19" y2="12"/>
-        </svg>
+        <img src="/static/logo.png" alt="MUTTAŞ Logo">
       </div>
       <div class="sb-logo-text">
-        <span class="brand" id="sb-brand">MUTTAŞ</span>
-        <span class="sub" id="sb-subtitle">Yönetim Paneli</span>
+        <span class="brand" id="sb-brand">MUTTAŞ İK</span>
+        <span class="sub" id="sb-subtitle">İnsan Kaynakları</span>
       </div>
     </div>
 
