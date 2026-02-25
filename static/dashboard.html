@@ -4004,7 +4004,11 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Maliyet Merkezi</label>
-        <input type="text" id="prs-form-maliyet" placeholder="Maliyet Merkezi">
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-maliyet" placeholder="Maliyet merkezi seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-maliyet')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-maliyet')">▾</button>
+          <div class="combo-drop" id="prs-form-maliyet-drop"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>Çalıştığı İlçe</label>
@@ -4016,7 +4020,11 @@ function ftExport() {
       </div>
       <div class="form-field" style="grid-column:span 2">
         <label>Hizmet Noktası</label>
-        <input type="text" id="prs-form-hizmet" placeholder="Hizmet Noktası">
+        <div class="combo-wrap">
+          <input type="text" id="prs-form-hizmet" placeholder="Hizmet noktası seçin veya yazın" autocomplete="off" oninput="comboFilter('prs-form-hizmet')">
+          <button type="button" class="combo-btn" onclick="comboToggle('prs-form-hizmet')">▾</button>
+          <div class="combo-drop" id="prs-form-hizmet-drop"></div>
+        </div>
       </div>
       <div class="form-field">
         <label>İşe Giriş Tarihi *</label>
@@ -5252,6 +5260,26 @@ const COMBO_OPTIONS = {
     'Gebze','Derince','Gölcük','İzmit','Kandıra','Karamürsel','Kartepe','Körfez',
     'Battalgazi','Doğanşehir','Yeşilyurt',
     'Akhisar','Alaşehir','Demirci','Gölmarmara','Gördes','Kırkağaç','Köprübaşı','Kula','Salihli','Sarıgöl','Saruhanlı','Selendi','Soma','Şehzadeler','Turgutlu','Yunusemre',
+  ],
+  'prs-form-maliyet': [
+    'B.OTOPARK','BAKIM ONARIM','BODRUM WC','DENİZ KIYI','FETHİYE WC',
+    'GÖCEK 1 NOLU OTOPARK','GÖCEK 2 NOLU OTOPARK','GÖCEK OTOPARKI','GÜVENLİK',
+    'KATLI OTOPARK','KENT KART BASIM','KENT MEYDANI','MENTEŞE OTOGAR OTOPARK',
+    'MERKEZ BÜRO','PARKOMAT','PAZARYERİ OTOPARK','TOPLU TAŞIMA',
+    'TURGUTREİS YAŞAM MERKEZİ OTOPARKI','TÜRKAN SAYLAN','UĞUR MUMCU OTOPARKI',
+  ],
+  'prs-form-hizmet': [
+    '100. YIL EVİ','AKYAKA','BODRUM','BODRUM LİMAN','BODRUM OTOGAR OTOPARKI',
+    'BODRUM TT','BODRUM WC','DALAMAN','DALAMAN TT','DATÇA TT','DENİZ KIYI',
+    'FETHİYE','FETHİYE LİMAN','FETHİYE TT','FETHİYE WC',
+    'GÖCEK 1 NOLU OTOPARK','GÖCEK 2 NOLU OTOPARK','GÜLLÜK LİMAN','KADEME',
+    'KATLI OTOPARK','KENT KART 2NOLU','KENT KART BASIM','KENT MEYDANI',
+    'KÖYCEĞİZ TT','MARMARİS','MARMARİS LİMAN','MARMARİS TT','MENTEŞE',
+    'MENTEŞE D.K.','MENTEŞE OTOGAR','MENTEŞE OTOPARK','MENTEŞE TT',
+    'MERKEZ OFİS','MİLAS','MİLAS TT','MİLAS/GÜLLÜK ÇEKEK YERİ',
+    'ORTACA','ORTACA TT','OTOBÜS TOPLANMA','OTOBÜS ŞEFLİĞİ','OTOGAR',
+    'PAZARYERİ OTOPARK','TURGUTREİS YAŞAM MERKEZİ OTOPARKI','TÜRKAN SAYLAN',
+    'ULAŞIM DAİRE','UĞUR MUMCU OTOPARKI','YATAĞAN','YATAĞAN TT',
   ],
   'prs-form-ilce': [
     'Bodrum','Dalaman','Datça','Fethiye','Kavaklıdere','Köyceğiz',
