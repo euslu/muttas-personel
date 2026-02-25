@@ -21,7 +21,7 @@ permissions.py    - JWT decode, role guards (require_ik_editor vb.)
 static/
   login.html      - JWT login formu (TC kimlik ile giriş)
   dashboard.html  - Ana panel (sidebar + tüm sayfalar)
-  personel_detay.html - Personel detay sayfası (yeni pencerede açılır)
+  personel_detay.html - Personel detay sayfası (standalone, artık dashboard içinde inline açılır)
   logo.png        - Muttaş logosu
   izin-basvuru.html - Self-servis izin başvuru formu
 uploads/

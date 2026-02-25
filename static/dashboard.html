@@ -1198,6 +1198,73 @@ tr:hover td { background: var(--bg-soft); }
 
 @media (max-width: 1100px) { .dash-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 700px) { .dash-grid { grid-template-columns: 1fr; } }
+
+.pd-container { max-width: 1100px; margin: 0 auto; }
+.pd-back { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text-2); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 16px; transition: all .15s; }
+.pd-back:hover { background: var(--bg-soft); border-color: var(--border-dark); }
+.pd-profile-header { display: flex; gap: 24px; align-items: flex-start; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
+.pd-photo-area { position: relative; flex-shrink: 0; }
+.pd-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); background: var(--accent-bg); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: var(--accent); overflow: hidden; }
+.pd-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.pd-photo-upload { position: absolute; bottom: 2px; right: 2px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: background .15s; }
+.pd-photo-upload:hover { background: var(--accent-hover); }
+.pd-photo-upload input { display: none; }
+.pd-info { flex: 1; min-width: 0; }
+.pd-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.pd-title { font-size: 14px; color: var(--text-2); margin-bottom: 8px; }
+.pd-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.pd-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.pd-badge-aktif { background: #dcfce7; color: #16a34a; }
+.pd-badge-pasif { background: #fee2e2; color: #dc2626; }
+.pd-badge-info { background: var(--accent-bg); color: var(--accent); }
+.pd-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); }
+.pd-meta span { display: flex; align-items: center; gap: 4px; }
+.pd-actions { display: flex; gap: 8px; margin-top: 12px; }
+.pd-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; background: var(--bg); border-radius: 12px 12px 0 0; padding: 0 8px; box-shadow: var(--shadow-sm); }
+.pd-tab-btn { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--text-3); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; margin-bottom: -2px; }
+.pd-tab-btn:hover { color: var(--text); }
+.pd-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+.pd-panel { display: none; }
+.pd-panel.active { display: block; }
+.pd-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+.pd-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+.pd-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.pd-info-item label { display: block; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.pd-info-item .val { font-size: 14px; color: var(--text); font-weight: 500; }
+.pd-info-item .val.empty { color: var(--text-3); font-style: italic; }
+.pd-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.pd-form-grid .span2 { grid-column: span 2; }
+.pd-form-field { display: flex; flex-direction: column; gap: 4px; }
+.pd-form-field label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.pd-form-field input, .pd-form-field select, .pd-form-field textarea { padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg); transition: border-color .15s; }
+.pd-form-field input:focus, .pd-form-field select:focus, .pd-form-field textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+.pd-combo-wrap { position: relative; display: flex; }
+.pd-combo-wrap input { flex: 1; border-radius: var(--radius) 0 0 var(--radius); }
+.pd-combo-btn { width: 32px; border: 1px solid var(--border); border-left: none; border-radius: 0 var(--radius) var(--radius) 0; background: var(--bg-soft); cursor: pointer; font-size: 11px; color: var(--text-3); }
+.pd-combo-drop { display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 50; max-height: 200px; overflow-y: auto; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); margin-top: 2px; }
+.pd-combo-drop.open { display: block; }
+.pd-combo-drop-item { padding: 8px 12px; font-size: 12px; cursor: pointer; }
+.pd-combo-drop-item:hover { background: var(--accent-bg); }
+.pd-evrak-item { display: flex; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px; }
+.pd-evrak-icon { font-size: 22px; }
+.pd-evrak-info { flex: 1; min-width: 0; }
+.pd-evrak-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pd-evrak-meta { font-size: 11px; color: var(--text-3); }
+.pd-evrak-actions { display: flex; gap: 4px; }
+.pd-btn-icon { width: 30px; height: 30px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all .15s; }
+.pd-btn-icon:hover { background: var(--bg-soft); }
+.pd-btn-icon.del:hover { background: #fee2e2; border-color: var(--danger); }
+.pd-loading { text-align: center; padding: 60px; color: var(--text-3); }
+.loading-spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (max-width: 768px) {
+  .pd-profile-header { flex-direction: column; align-items: center; text-align: center; }
+  .pd-meta { justify-content: center; }
+  .pd-actions { justify-content: center; }
+  .pd-form-grid { grid-template-columns: 1fr; }
+  .pd-form-grid .span2 { grid-column: span 1; }
+  .pd-info-grid { grid-template-columns: 1fr 1fr; }
+}
 </style>
 </head>
 <body>
@@ -2133,6 +2200,19 @@ tr:hover td { background: var(--bg-soft); }
           </div>
         </div>
       </div><!-- /page-personel -->
+
+      <!-- ── Personel Detay (inline) ── -->
+      <div class="page" id="page-personel-detay">
+        <div class="pd-container">
+          <button class="pd-back" onclick="pdBack()">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 12L6 8l4-4"/></svg>
+            Personel Listesine Dön
+          </button>
+          <div id="pd-content">
+            <div class="pd-loading"><div class="loading-spinner"></div><p style="margin-top:12px">Yükleniyor...</p></div>
+          </div>
+        </div>
+      </div>
 
       <!-- ── İzin Yönetimi ── -->
       <div class="page" id="page-izinler">
@@ -4553,8 +4633,429 @@ async function loadPersonel(page) {
   document.getElementById('prs-next').disabled = prsPage >= totalPages;
 }
 
+let pdData = null;
+let pdEditMode = false;
+let pdCurrentId = null;
+
 function openPersonelDetay(id) {
-  window.open('/static/personel_detay.html?id=' + id + '&token=' + getToken(), '_blank');
+  pdCurrentId = id;
+  pdData = null;
+  pdEditMode = false;
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-personel-detay').classList.add('active');
+  document.getElementById('topbar-title').textContent = 'Personel Detay';
+  document.getElementById('topbar-sub').textContent = '';
+  document.getElementById('pd-content').innerHTML = '<div class="pd-loading"><div class="loading-spinner"></div><p style="margin-top:12px">Yükleniyor...</p></div>';
+  pdLoadPersonel();
+}
+
+function pdBack() {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-personel').classList.add('active');
+  updateTopbar('personel');
+}
+
+function pdFmt(d) {
+  if (!d) return '—';
+  return d.split('T')[0].split('-').reverse().join('.');
+}
+
+function pdGetInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+}
+
+async function pdLoadPersonel() {
+  const token = getToken();
+  try {
+    const res = await fetch('/personel/' + pdCurrentId, { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) throw new Error('Veri alınamadı');
+    pdData = await res.json();
+    pdRenderPage();
+  } catch(e) {
+    document.getElementById('pd-content').innerHTML = '<div class="pd-loading"><p style="color:var(--danger)">Hata: ' + e.message + '</p></div>';
+  }
+}
+
+function pdRenderPage() {
+  const p = pdData;
+  const aktifBadge = p.aktif !== false
+    ? '<span class="pd-badge pd-badge-aktif">Aktif</span>'
+    : '<span class="pd-badge pd-badge-pasif">Pasif</span>';
+  const photoContent = p.foto_url
+    ? '<img src="' + p.foto_url + '" alt="Profil">'
+    : pdGetInitials(p.ad_soyad);
+
+  document.getElementById('pd-content').innerHTML = `
+    <div class="pd-profile-header">
+      <div class="pd-photo-area">
+        <div class="pd-photo" id="pd-photo">${photoContent}</div>
+        <label class="pd-photo-upload" title="Fotoğraf yükle">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 1v12M1 7h12"/></svg>
+          <input type="file" accept="image/*" onchange="pdUploadFoto(this)">
+        </label>
+      </div>
+      <div class="pd-info">
+        <div class="pd-name">${p.ad_soyad}</div>
+        <div class="pd-title">${[p.unvan, p.bolum].filter(Boolean).join(' — ') || 'Pozisyon belirtilmemiş'}</div>
+        <div class="pd-badges">
+          ${aktifBadge}
+          ${p.cinsiyet ? '<span class="pd-badge pd-badge-info">' + p.cinsiyet + '</span>' : ''}
+          ${p.ogrenim ? '<span class="pd-badge pd-badge-info">' + p.ogrenim + '</span>' : ''}
+        </div>
+        <div class="pd-meta">
+          ${p.tc_kimlik ? '<span>TC: ' + p.tc_kimlik + '</span>' : ''}
+          ${p.telefon ? '<span>Tel: ' + p.telefon + '</span>' : ''}
+          ${p.ise_giris ? '<span>İşe Giriş: ' + pdFmt(p.ise_giris) + '</span>' : ''}
+        </div>
+        <div class="pd-actions">
+          <button class="btn btn-primary" onclick="pdToggleEdit()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 1.5l1.5 1.5L5 10.5 2.5 11l.5-2.5z"/></svg>
+            Düzenle
+          </button>
+          <button class="btn btn-outline" onclick="pdPrint()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4V1h6v3M4 11H2V7h10v4h-2M4 9h6v4H4z"/></svg>
+            Yazdır
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="pd-tabs">
+      <button class="pd-tab-btn active" onclick="pdSwitchTab('bilgiler', this)">Kişisel Bilgiler</button>
+      <button class="pd-tab-btn" onclick="pdSwitchTab('gorev', this)">Görev Bilgileri</button>
+      <button class="pd-tab-btn" onclick="pdSwitchTab('iletisim', this)">İletişim</button>
+      <button class="pd-tab-btn" onclick="pdSwitchTab('evraklar', this)">Evraklar</button>
+    </div>
+
+    <div class="pd-panel active" id="pd-panel-bilgiler">
+      <div class="pd-card" id="pd-card-bilgiler">
+        <div class="pd-card-title">Kişisel Bilgiler</div>
+        <div class="pd-info-grid" id="pd-info-bilgiler"></div>
+      </div>
+    </div>
+    <div class="pd-panel" id="pd-panel-gorev">
+      <div class="pd-card" id="pd-card-gorev">
+        <div class="pd-card-title">Görev ve Çalışma Bilgileri</div>
+        <div class="pd-info-grid" id="pd-info-gorev"></div>
+      </div>
+    </div>
+    <div class="pd-panel" id="pd-panel-iletisim">
+      <div class="pd-card" id="pd-card-iletisim">
+        <div class="pd-card-title">İletişim Bilgileri</div>
+        <div class="pd-info-grid" id="pd-info-iletisim"></div>
+      </div>
+    </div>
+    <div class="pd-panel" id="pd-panel-evraklar">
+      <div class="pd-card">
+        <div class="pd-card-title">Evrak Yönetimi</div>
+        <div id="pd-evrak-upload" style="margin-bottom:16px">
+          <div class="pd-form-grid" style="margin-bottom:8px">
+            <div class="pd-form-field">
+              <label>Evrak Türü</label>
+              <select id="pd-ev-tur" onchange="pdEvTurChange()">
+                <option value="">Seçiniz</option>
+                <option value="Kimlik Kartı">Kimlik Kartı</option>
+                <option value="Ehliyet">Ehliyet</option>
+                <option value="Adli Sicil Kaydı">Adli Sicil Kaydı</option>
+                <option value="Sürücü Belgesi">Sürücü Belgesi</option>
+                <option value="Sağlık Raporu">Sağlık Raporu</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+            <div class="pd-form-field" id="pd-ev-ad-wrap" style="display:none">
+              <label>Evrak Adı</label>
+              <input type="text" id="pd-ev-ad" placeholder="Evrak adını yazın">
+            </div>
+            <div class="pd-form-field">
+              <label>Dosya</label>
+              <input type="file" id="pd-ev-dosya" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="pdEvrakYukle()">Yükle</button>
+        </div>
+        <div id="pd-ev-list"><div class="pd-loading"><p>Yükleniyor...</p></div></div>
+      </div>
+    </div>
+  `;
+  pdRenderInfoView();
+  pdLoadEvraklar();
+}
+
+function pdRenderInfoView() {
+  const p = pdData;
+  const ii = (label, val) => '<div class="pd-info-item"><label>' + label + '</label><div class="val ' + (val ? '' : 'empty') + '">' + (val || '—') + '</div></div>';
+  document.getElementById('pd-info-bilgiler').innerHTML = [
+    ii('Ad Soyad', p.ad_soyad), ii('TC Kimlik No', p.tc_kimlik), ii('SGK Sicil', p.sgk_sicil),
+    ii('Cinsiyet', p.cinsiyet), ii('Medeni Hal', p.medeni_hal), ii('Doğum Tarihi', pdFmt(p.dogum_tarihi)),
+    ii('Doğum Yeri', p.dogum_yeri), ii('Kan Grubu', p.kan_grubu),
+    ii('Çocuk Sayısı', p.cocuk_sayisi != null ? String(p.cocuk_sayisi) : null),
+    ii('Öğrenim Durumu', p.ogrenim), ii('Engelli', p.engelli ? 'Evet' : 'Hayır'), ii('Sendika Üyeliği', p.sendika_uyesi),
+  ].join('');
+  document.getElementById('pd-info-gorev').innerHTML = [
+    ii('Bölüm', p.bolum), ii('Ünvan', p.unvan), ii('Maliyet Merkezi', p.maliyet_merkezi),
+    ii('Çalıştığı İlçe', p.ilce), ii('Hizmet Noktası', p.hizmet_noktasi),
+    ii('İşe Giriş Tarihi', pdFmt(p.ise_giris)), ii('İşten Çıkış Tarihi', pdFmt(p.isten_cikis)),
+    ii('Çıkış Kodu', p.cikis_kodu), ii('Meslek Kodu', p.meslek_kodu), ii('Meslek Adı', p.meslek_adi),
+    ii('Güvenlik Belgesi Geç. Tar.', pdFmt(p.guvenlik_belge_tarih)), ii('Sigortacılık Başlama', pdFmt(p.sigortalilik_baslama)),
+  ].join('');
+  document.getElementById('pd-info-iletisim').innerHTML = [
+    ii('Telefon', p.telefon), ii('Adres', p.adres), ii('Notlar', p.notlar),
+  ].join('');
+}
+
+function pdSwitchTab(tab, btn) {
+  document.querySelectorAll('.pd-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pd-tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pd-panel-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+function pdToggleEdit() {
+  pdEditMode = !pdEditMode;
+  if (pdEditMode) pdShowEditForm();
+  else pdRenderInfoView();
+}
+
+function pdShowEditForm() {
+  const p = pdData;
+  const dtVal = d => d ? d.split('T')[0] : '';
+  const bilgiPanel = document.getElementById('pd-card-bilgiler');
+  bilgiPanel.innerHTML = `
+    <div class="pd-card-title" style="display:flex;justify-content:space-between;align-items:center">
+      Bilgileri Düzenle
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" onclick="pdCancelEdit()">İptal</button>
+        <button class="btn btn-primary" id="pd-save-btn" onclick="pdSavePersonel()">Kaydet</button>
+      </div>
+    </div>
+    <div class="pd-form-grid">
+      <div class="pd-form-field span2"><label>Ad Soyad *</label><input type="text" id="pd-f-ad-soyad" value="${p.ad_soyad || ''}"></div>
+      <div class="pd-form-field"><label>TC Kimlik No *</label><input type="text" id="pd-f-tc" maxlength="11" value="${p.tc_kimlik || ''}"></div>
+      <div class="pd-form-field"><label>SGK Sicil</label><input type="text" id="pd-f-sgk" value="${p.sgk_sicil || ''}"></div>
+      <div class="pd-form-field"><label>Cinsiyet *</label><select id="pd-f-cinsiyet"><option value="">Seçiniz</option><option value="ERKEK" ${p.cinsiyet==='ERKEK'?'selected':''}>Erkek</option><option value="KADIN" ${p.cinsiyet==='KADIN'?'selected':''}>Kadın</option></select></div>
+      <div class="pd-form-field"><label>Medeni Hal</label><select id="pd-f-medeni"><option value="">Seçiniz</option><option value="EVLİ" ${p.medeni_hal==='EVLİ'?'selected':''}>Evli</option><option value="BEKAR" ${p.medeni_hal==='BEKAR'?'selected':''}>Bekar</option></select></div>
+      <div class="pd-form-field"><label>Doğum Tarihi *</label><input type="date" id="pd-f-dogum-tarihi" value="${dtVal(p.dogum_tarihi)}"></div>
+      <div class="pd-form-field"><label>Doğum Yeri</label><input type="text" id="pd-f-dogum-yeri" value="${p.dogum_yeri || ''}"></div>
+      <div class="pd-form-field"><label>Kan Grubu</label><select id="pd-f-kan"><option value="">Seçiniz</option>${['A Rh+','A Rh-','B Rh+','B Rh-','AB Rh+','AB Rh-','0 Rh+','0 Rh-'].map(k=>'<option'+(p.kan_grubu===k?' selected':'')+'>'+k+'</option>').join('')}</select></div>
+      <div class="pd-form-field"><label>Çocuk Sayısı</label><input type="number" id="pd-f-cocuk" min="0" value="${p.cocuk_sayisi ?? 0}"></div>
+      <div class="pd-form-field"><label>Öğrenim Durumu</label><select id="pd-f-ogrenim"><option value="">Seçiniz</option>${['İLKOKUL','ORTAOKUL','LİSE','ÖN LİSANS','LİSANS','YÜKSEK LİSANS'].map(o=>'<option value="'+o+'"'+(p.ogrenim===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="pd-form-field"><label>Sendika Üyeliği</label><input type="text" id="pd-f-sendika" value="${p.sendika_uyesi || ''}"></div>
+      <div class="pd-form-field"><label>Engelli</label><select id="pd-f-engelli"><option value="false" ${!p.engelli?'selected':''}>Hayır</option><option value="true" ${p.engelli?'selected':''}>Evet</option></select></div>
+    </div>
+    <div class="pd-card-title" style="margin-top:24px">Görev Bilgileri</div>
+    <div class="pd-form-grid">
+      <div class="pd-form-field"><label>Bölüm *</label><input type="text" id="pd-f-bolum" value="${p.bolum || ''}"></div>
+      <div class="pd-form-field"><label>Ünvan *</label><input type="text" id="pd-f-unvan" value="${p.unvan || ''}"></div>
+      <div class="pd-form-field"><label>Maliyet Merkezi</label><input type="text" id="pd-f-maliyet" value="${p.maliyet_merkezi || ''}"></div>
+      <div class="pd-form-field"><label>Çalıştığı İlçe</label><input type="text" id="pd-f-ilce" value="${p.ilce || ''}"></div>
+      <div class="pd-form-field span2"><label>Hizmet Noktası</label><input type="text" id="pd-f-hizmet" value="${p.hizmet_noktasi || ''}"></div>
+      <div class="pd-form-field"><label>İşe Giriş Tarihi *</label><input type="date" id="pd-f-ise-giris" value="${dtVal(p.ise_giris)}"></div>
+      <div class="pd-form-field"><label>İşten Çıkış Tarihi</label><input type="date" id="pd-f-isten-cikis" value="${dtVal(p.isten_cikis)}"></div>
+      <div class="pd-form-field span2"><label>Çıkış Kodu / Nedeni</label><input type="text" id="pd-f-cikis-kodu" value="${p.cikis_kodu || ''}"></div>
+      <div class="pd-form-field"><label>Meslek Kodu</label><input type="text" id="pd-f-meslek-kodu" value="${p.meslek_kodu || ''}"></div>
+      <div class="pd-form-field"><label>Meslek Adı</label><input type="text" id="pd-f-meslek-adi" value="${p.meslek_adi || ''}"></div>
+      <div class="pd-form-field"><label>Güvenlik Belgesi Geç. Tar.</label><input type="date" id="pd-f-guvenlik" value="${dtVal(p.guvenlik_belge_tarih)}"></div>
+      <div class="pd-form-field"><label>Sigortacılık Başlama</label><input type="date" id="pd-f-sigorta-bas" value="${dtVal(p.sigortalilik_baslama)}"></div>
+    </div>
+    <div class="pd-card-title" style="margin-top:24px">İletişim</div>
+    <div class="pd-form-grid">
+      <div class="pd-form-field"><label>Telefon *</label><input type="tel" id="pd-f-telefon" value="${p.telefon || ''}"></div>
+      <div class="pd-form-field span2"><label>Adres</label><textarea id="pd-f-adres" rows="2">${p.adres || ''}</textarea></div>
+      <div class="pd-form-field span2"><label>Notlar</label><textarea id="pd-f-notlar" rows="2">${p.notlar || ''}</textarea></div>
+    </div>
+  `;
+  document.querySelectorAll('.pd-tab-btn')[0].click();
+}
+
+function pdCancelEdit() {
+  pdEditMode = false;
+  const bilgiPanel = document.getElementById('pd-card-bilgiler');
+  bilgiPanel.innerHTML = '<div class="pd-card-title">Kişisel Bilgiler</div><div class="pd-info-grid" id="pd-info-bilgiler"></div>';
+  pdRenderInfoView();
+}
+
+async function pdSavePersonel() {
+  const v = id => document.getElementById('pd-f-' + id)?.value || null;
+  const body = {
+    ad_soyad: (v('ad-soyad') || '').trim(),
+    tc_kimlik: v('tc'), sgk_sicil: v('sgk'), cinsiyet: v('cinsiyet'),
+    medeni_hal: v('medeni'), dogum_tarihi: v('dogum-tarihi') || null,
+    dogum_yeri: v('dogum-yeri'), kan_grubu: v('kan'),
+    cocuk_sayisi: parseInt(document.getElementById('pd-f-cocuk')?.value) || 0,
+    bolum: v('bolum'), unvan: v('unvan'), maliyet_merkezi: v('maliyet'),
+    ilce: v('ilce'), hizmet_noktasi: v('hizmet'),
+    ise_giris: v('ise-giris') || null, isten_cikis: v('isten-cikis') || null,
+    cikis_kodu: v('cikis-kodu'), meslek_kodu: v('meslek-kodu'), meslek_adi: v('meslek-adi'),
+    guvenlik_belge_tarih: v('guvenlik') || null,
+    sigortalilik_baslama: v('sigorta-bas') || null,
+    ogrenim: v('ogrenim'), sendika_uyesi: v('sendika'),
+    engelli: document.getElementById('pd-f-engelli')?.value === 'true',
+    telefon: v('telefon'),
+    adres: document.getElementById('pd-f-adres')?.value || null,
+    notlar: document.getElementById('pd-f-notlar')?.value || null,
+  };
+  const zorunlu = [
+    [body.ad_soyad, 'Ad Soyad zorunludur'], [body.tc_kimlik, 'TC Kimlik No zorunludur'],
+    [body.cinsiyet, 'Cinsiyet zorunludur'], [body.dogum_tarihi, 'Doğum Tarihi zorunludur'],
+    [body.bolum, 'Bölüm zorunludur'], [body.unvan, 'Ünvan zorunludur'],
+    [body.ise_giris, 'İşe Giriş Tarihi zorunludur'], [body.telefon, 'Telefon zorunludur'],
+  ];
+  for (const [deger, mesaj] of zorunlu) {
+    if (!deger) { showToast(mesaj, 'error'); return; }
+  }
+  const btn = document.getElementById('pd-save-btn');
+  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+  try {
+    const res = await fetch('/personel/' + pdCurrentId, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      showToast('Personel güncellendi', 'success');
+      pdEditMode = false;
+      await pdLoadPersonel();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast(err.detail || 'Kayıt başarısız', 'error');
+    }
+  } catch(e) {
+    showToast('Bağlantı hatası', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Kaydet'; }
+  }
+}
+
+async function pdUploadFoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('dosya', file);
+  try {
+    const res = await fetch('/personel/' + pdCurrentId + '/foto', {
+      method: 'POST', headers: { Authorization: 'Bearer ' + getToken() }, body: fd,
+    });
+    if (res.ok) {
+      const data = await res.json();
+      pdData.foto_url = data.foto_url;
+      const photoEl = document.getElementById('pd-photo');
+      photoEl.innerHTML = '<img src="' + data.foto_url + '?' + Date.now() + '" alt="Profil">';
+      showToast('Fotoğraf güncellendi', 'success');
+    } else {
+      showToast('Fotoğraf yüklenemedi', 'error');
+    }
+  } catch(e) {
+    showToast('Bağlantı hatası', 'error');
+  }
+}
+
+async function pdLoadEvraklar() {
+  const list = document.getElementById('pd-ev-list');
+  if (!list) return;
+  try {
+    const res = await fetch('/personel/' + pdCurrentId + '/evraklar', { headers: { Authorization: 'Bearer ' + getToken() } });
+    if (!res.ok) { list.innerHTML = '<p style="color:var(--danger)">Hata oluştu.</p>'; return; }
+    const rows = await res.json();
+    if (!rows.length) { list.innerHTML = '<p style="color:var(--text-3);text-align:center;padding:24px">Henüz evrak yüklenmemiş.</p>'; return; }
+    const fmtB = b => b ? (b > 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB') : '';
+    const icon = mime => { if (!mime) return '&#128196;'; if (mime.includes('pdf')) return '&#128213;'; if (mime.includes('image')) return '&#128444;'; return '&#128196;'; };
+    list.innerHTML = rows.map(r => `
+      <div class="pd-evrak-item">
+        <div class="pd-evrak-icon">${icon(r.mime_type)}</div>
+        <div class="pd-evrak-info">
+          <div class="pd-evrak-name">${r.evrak_adi}</div>
+          <div class="pd-evrak-meta">${r.dosya_adi} &middot; ${fmtB(r.dosya_boyut)} &middot; ${pdFmt(r.yuklendi_at)}</div>
+        </div>
+        <div class="pd-evrak-actions">
+          <a class="pd-btn-icon" title="İndir" href="/personel/evrak/${r.id}/indir?token=${getToken()}" download>&#11015;</a>
+          <button class="pd-btn-icon del" title="Sil" onclick="pdEvrakSil(${r.id})">&#128465;</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<p style="color:var(--danger)">Bağlantı hatası.</p>';
+  }
+}
+
+function pdEvTurChange() {
+  const wrap = document.getElementById('pd-ev-ad-wrap');
+  wrap.style.display = document.getElementById('pd-ev-tur').value === 'Diğer' ? '' : 'none';
+}
+
+async function pdEvrakYukle() {
+  const tur = document.getElementById('pd-ev-tur').value;
+  if (!tur) { showToast('Evrak türü seçin', 'error'); return; }
+  const ad = tur === 'Diğer' ? document.getElementById('pd-ev-ad').value.trim() : tur;
+  if (tur === 'Diğer' && !ad) { showToast('Evrak adı zorunlu', 'error'); return; }
+  const file = document.getElementById('pd-ev-dosya').files[0];
+  if (!file) { showToast('Dosya seçin', 'error'); return; }
+  const fd = new FormData();
+  fd.append('evrak_adi', ad);
+  fd.append('dosya', file);
+  try {
+    const res = await fetch('/personel/' + pdCurrentId + '/evraklar', {
+      method: 'POST', headers: { Authorization: 'Bearer ' + getToken() }, body: fd,
+    });
+    if (res.ok) {
+      showToast('Evrak yüklendi', 'success');
+      document.getElementById('pd-ev-tur').value = '';
+      document.getElementById('pd-ev-dosya').value = '';
+      document.getElementById('pd-ev-ad-wrap').style.display = 'none';
+      pdLoadEvraklar();
+    } else {
+      showToast('Yükleme başarısız', 'error');
+    }
+  } catch(e) {
+    showToast('Bağlantı hatası', 'error');
+  }
+}
+
+async function pdEvrakSil(eid) {
+  if (!confirm('Bu evrak silinecek. Onaylıyor musunuz?')) return;
+  try {
+    const res = await fetch('/personel/evrak/' + eid, {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + getToken() },
+    });
+    if (res.ok) { showToast('Evrak silindi', 'success'); pdLoadEvraklar(); }
+    else showToast('Silme başarısız', 'error');
+  } catch(e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+function pdPrint() {
+  const p = pdData;
+  const w = window.open('', '_blank', 'width=800,height=900');
+  w.document.write(`<!DOCTYPE html><html><head><title>${p.ad_soyad}</title>
+    <style>body{font-family:Arial,sans-serif;padding:30px;font-size:13px}
+    h2{margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-top:16px}
+    td{padding:6px 10px;border:1px solid #ddd}td:first-child{font-weight:bold;width:180px;background:#f5f5f5}
+    .section{background:#2563eb;color:#fff;font-weight:bold;padding:8px 10px;text-align:left}
+    </style></head><body>
+    <h2>${p.ad_soyad}</h2><p style="color:#666">${p.unvan || ''} — ${p.bolum || ''}</p>
+    <table>
+    <tr><td colspan="2" class="section">Kişisel Bilgiler</td></tr>
+    <tr><td>TC Kimlik No</td><td>${p.tc_kimlik||'—'}</td></tr>
+    <tr><td>Cinsiyet</td><td>${p.cinsiyet||'—'}</td></tr>
+    <tr><td>Doğum Tarihi</td><td>${pdFmt(p.dogum_tarihi)}</td></tr>
+    <tr><td>Doğum Yeri</td><td>${p.dogum_yeri||'—'}</td></tr>
+    <tr><td>Kan Grubu</td><td>${p.kan_grubu||'—'}</td></tr>
+    <tr><td>Medeni Hal</td><td>${p.medeni_hal||'—'}</td></tr>
+    <tr><td>Öğrenim</td><td>${p.ogrenim||'—'}</td></tr>
+    <tr><td colspan="2" class="section">Görev Bilgileri</td></tr>
+    <tr><td>Bölüm</td><td>${p.bolum||'—'}</td></tr>
+    <tr><td>Ünvan</td><td>${p.unvan||'—'}</td></tr>
+    <tr><td>Maliyet Merkezi</td><td>${p.maliyet_merkezi||'—'}</td></tr>
+    <tr><td>Hizmet Noktası</td><td>${p.hizmet_noktasi||'—'}</td></tr>
+    <tr><td>İlçe</td><td>${p.ilce||'—'}</td></tr>
+    <tr><td>İşe Giriş</td><td>${pdFmt(p.ise_giris)}</td></tr>
+    <tr><td>İşten Çıkış</td><td>${pdFmt(p.isten_cikis)}</td></tr>
+    <tr><td>Meslek</td><td>${p.meslek_adi||'—'}</td></tr>
+    <tr><td colspan="2" class="section">İletişim</td></tr>
+    <tr><td>Telefon</td><td>${p.telefon||'—'}</td></tr>
+    <tr><td>Adres</td><td>${p.adres||'—'}</td></tr>
+    </table></body></html>`);
+  w.document.close();
+  w.print();
 }
 
 function openPersonelDrawer(id) {
