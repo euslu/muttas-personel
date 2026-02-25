@@ -320,7 +320,7 @@ async def lifespan(app: FastAPI):
     await close_pool()
 
 
-app = FastAPI(title="muttas-liman-api", lifespan=lifespan)
+app = FastAPI(title="muttas-ik-api", lifespan=lifespan)
 
 app.add_middleware(CSPMiddleware)
 app.add_middleware(RateLimitMiddleware)
