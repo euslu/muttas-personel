@@ -2866,7 +2866,8 @@ function drawDonut(data) {
 
 function navigate(page, el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-  el.classList.add('active');
+  if (!el) el = document.querySelector('button[onclick*="' + page + '"]');
+  if (el) el.classList.add('active');
 
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
