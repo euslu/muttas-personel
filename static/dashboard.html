@@ -2502,18 +2502,8 @@ function applyRoleUI(rol) {
     sel.value = currentLiman;
   }
 
-  if (isIK && !isAdmin) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-personel').classList.add('active');
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    const pBtn = document.querySelector('button[onclick*="personel"]');
-    if (pBtn) pBtn.classList.add('active');
-    updateTopbar('personel');
-    setTimeout(() => { loadPersonelMeta(); loadPersonel(1); loadDashboard(); }, 100);
-  } else {
-    updateTopbar('dashboard');
-    loadDashboard();
-  }
+  updateTopbar('dashboard');
+  loadDashboard();
 })();
 
 async function loadDashboard() {
