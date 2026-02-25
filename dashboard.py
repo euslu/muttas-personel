@@ -1,5 +1,5 @@
 import os
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Depends
@@ -187,4 +187,92 @@ async def get_gunluk_trafik(
             }
             for r in rows
         ]
+    }
+
+
+@router.get("/ik-ozet")
+async def ik_ozet(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    today = date.today()
+    async with pool.acquire() as conn:
+        toplam = await conn.fetchval("SELECT COUNT(*) FROM personel WHERE aktif = true")
+        bekleyen_izin = await conn.fetchval("SELECT COUNT(*) FROM izinler WHERE durum = 'beklemede'")
+
+        bolum_rows = await conn.fetch(
+            "SELECT bolum, COUNT(*) as c FROM personel WHERE aktif = true AND bolum IS NOT NULL GROUP BY bolum ORDER BY c DESC LIMIT 10"
+        )
+        bolum_dagilim = [{"bolum": r["bolum"], "sayi": r["c"]} for r in bolum_rows]
+
+        dogum_rows = await conn.fetch("""
+            SELECT id, ad_soyad, dogum_tarihi, foto_url FROM personel
+            WHERE aktif = true AND dogum_tarihi IS NOT NULL
+            AND (EXTRACT(MONTH FROM dogum_tarihi) * 100 + EXTRACT(DAY FROM dogum_tarihi))
+                BETWEEN ($1 * 100 + $2) AND (($1 * 100 + $2) + 30)
+            ORDER BY EXTRACT(MONTH FROM dogum_tarihi), EXTRACT(DAY FROM dogum_tarihi)
+            LIMIT 5
+        """, today.month, today.day)
+        dogumlar = []
+        for r in dogum_rows:
+            dt = r["dogum_tarihi"]
+            this_year = dt.replace(year=today.year)
+            if this_year < today:
+                this_year = dt.replace(year=today.year + 1)
+            kalan = (this_year - today).days
+            dogumlar.append({
+                "id": r["id"], "ad_soyad": r["ad_soyad"],
+                "tarih": str(dt), "kalan_gun": kalan, "foto_url": r["foto_url"]
+            })
+
+        izin_talep_rows = await conn.fetch("""
+            SELECT i.id, i.personel_id, p.ad_soyad, p.foto_url,
+                   i.izin_turu, i.baslangic, i.bitis, i.gun_sayisi, i.durum
+            FROM izinler i JOIN personel p ON p.id = i.personel_id
+            WHERE i.durum = 'beklemede'
+            ORDER BY i.id DESC LIMIT 6
+        """)
+        izin_talepleri = [{
+            "id": r["id"], "personel_id": r["personel_id"],
+            "ad_soyad": r["ad_soyad"], "foto_url": r["foto_url"],
+            "izin_turu": r["izin_turu"],
+            "gun_sayisi": float(r["gun_sayisi"]) if r["gun_sayisi"] else 0,
+            "baslangic": str(r["baslangic"]) if r["baslangic"] else None,
+            "bitis": str(r["bitis"]) if r["bitis"] else None,
+        } for r in izin_talep_rows]
+
+        yaklasan_izin_rows = await conn.fetch("""
+            SELECT i.id, p.ad_soyad, p.foto_url, i.izin_turu, i.baslangic, i.bitis, i.gun_sayisi
+            FROM izinler i JOIN personel p ON p.id = i.personel_id
+            WHERE i.durum IN ('onaylandi','ik_onayladi','mudur_onayladi')
+            AND i.baslangic >= $1 AND i.baslangic <= $2
+            ORDER BY i.baslangic LIMIT 5
+        """, today, today + timedelta(days=14))
+        yaklasan_izinler = [{
+            "ad_soyad": r["ad_soyad"], "foto_url": r["foto_url"],
+            "izin_turu": r["izin_turu"],
+            "gun_sayisi": float(r["gun_sayisi"]) if r["gun_sayisi"] else 0,
+            "baslangic": str(r["baslangic"]) if r["baslangic"] else None,
+        } for r in yaklasan_izin_rows]
+
+    resmi_tatiller = [
+        {"ad": "Ramazan Bayramı Arefesi", "gun": 0.5, "tarih": "2026-03-19"},
+        {"ad": "Ramazan Bayramı", "gun": 3, "tarih": "2026-03-20"},
+        {"ad": "Ulusal Egemenlik ve Çocuk Bayramı", "gun": 1, "tarih": "2026-04-23"},
+        {"ad": "Emek ve Dayanışma Günü", "gun": 1, "tarih": "2026-05-01"},
+        {"ad": "Atatürk'ü Anma, Gençlik ve Spor Bayramı", "gun": 1, "tarih": "2026-05-19"},
+        {"ad": "Kurban Bayramı Arefesi", "gun": 0.5, "tarih": "2026-05-26"},
+        {"ad": "Kurban Bayramı", "gun": 4, "tarih": "2026-05-27"},
+        {"ad": "Demokrasi ve Millî Birlik Günü", "gun": 1, "tarih": "2026-07-15"},
+        {"ad": "Zafer Bayramı", "gun": 1, "tarih": "2026-08-30"},
+        {"ad": "Cumhuriyet Bayramı", "gun": 1.5, "tarih": "2026-10-29"},
+    ]
+    gelecek_tatiller = [t for t in resmi_tatiller if t["tarih"] >= str(today)][:5]
+
+    return {
+        "toplam_personel": toplam,
+        "bekleyen_izin": bekleyen_izin,
+        "bolum_dagilim": bolum_dagilim,
+        "yaklasan_dogumlar": dogumlar,
+        "izin_talepleri": izin_talepleri,
+        "yaklasan_izinler": yaklasan_izinler,
+        "resmi_tatiller": gelecek_tatiller,
     }
