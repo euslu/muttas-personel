@@ -1235,17 +1235,17 @@ tr:hover td { background: var(--bg-soft); }
       <!-- ── Dashboard ── -->
       <div class="page active" id="page-dashboard">
         <div class="stats-grid">
-          <div class="stat-card">
+          <div class="stat-card dash-liman">
             <div class="stat-label">Aktif Bağlamalar</div>
             <div class="stat-value blue" id="stat-aktif-baglamalar">—</div>
             <div class="stat-sub">Şu an doluluk</div>
           </div>
-          <div class="stat-card" id="card-bekleyenler">
+          <div class="stat-card dash-liman" id="card-bekleyenler">
             <div class="stat-label">Bekleyenler</div>
             <div class="stat-value yellow" id="stat-bekleyen-basvuru">—</div>
             <div class="stat-sub" id="sub-bekleyen-basvuru">Onay bekleyen toplam</div>
           </div>
-          <div class="stat-card" id="card-basvuru-bugun">
+          <div class="stat-card dash-liman" id="card-basvuru-bugun">
             <div class="stat-label">Yeni Başvurular</div>
             <div style="margin-top:10px;display:flex;flex-direction:column;gap:0">
               <div style="display:flex;justify-content:space-between;align-items:center;padding:6px 0">
@@ -1263,19 +1263,29 @@ tr:hover td { background: var(--bg-soft); }
             </div>
             <div class="stat-sub" id="sub-basvuru-bugun" style="margin-top:6px">Onaylanmamış başvurular</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card dash-liman">
             <div class="stat-label">Kayıtlı Tekne</div>
             <div class="stat-value" id="stat-kayitli-tekne">—</div>
             <div class="stat-sub">Toplam</div>
           </div>
-          <div class="stat-card">
+          <div class="stat-card dash-liman">
             <div class="stat-label">Aylık Tahsilat</div>
             <div class="stat-value green" id="stat-aylik-tahsilat">—</div>
             <div class="stat-sub">Bu ay ödenen</div>
           </div>
+          <div class="stat-card dash-ik">
+            <div class="stat-label">Toplam Personel</div>
+            <div class="stat-value blue" id="stat-toplam-personel">—</div>
+            <div class="stat-sub">Aktif çalışan</div>
+          </div>
+          <div class="stat-card dash-ik">
+            <div class="stat-label">Bekleyen İzinler</div>
+            <div class="stat-value yellow" id="stat-bekleyen-izin">—</div>
+            <div class="stat-sub">Onay bekleyen</div>
+          </div>
         </div>
 
-        <div class="card">
+        <div class="card dash-liman">
           <div class="card-header">
             <h2>Son Hareketler</h2>
             <button class="btn btn-outline">Tümünü gör</button>
@@ -2148,25 +2158,32 @@ function showToast(mesaj, tip = 'info', sure = 3500) {
 function applyRoleUI(rol) {
   const isAdmin = rol === 'admin';
   const isIK    = rol === 'ik_admin' || rol === 'ik_viewer';
-  const isLiman = isAdmin || (!isIK);
+  const isLimanAdmin = rol === 'admin';
+  const isLiman = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
 
-  canEditIK    = isAdmin || rol === 'ik_admin';
-  canEditLiman = isAdmin || rol === 'liman_admin';
+  canEditIK    = isLimanAdmin || rol === 'ik_admin';
+  canEditLiman = isLimanAdmin || rol === 'liman_admin';
 
   document.querySelectorAll('.nav-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
   });
   document.querySelectorAll('.nav-ik').forEach(el => {
-    el.style.display = isIK || isAdmin ? '' : 'none';
+    el.style.display = isIK || isLimanAdmin ? '' : 'none';
+  });
+  document.querySelectorAll('.dash-liman').forEach(el => {
+    el.style.display = isLiman ? '' : 'none';
+  });
+  document.querySelectorAll('.dash-ik').forEach(el => {
+    el.style.display = isIK || isLimanAdmin ? '' : 'none';
   });
 
   const subtitle = document.getElementById('sb-subtitle');
   const brand    = document.getElementById('sb-brand');
-  if (isIK) {
+  if (isIK && !isLimanAdmin) {
     if (brand)    brand.textContent    = 'MUTTAŞ İK';
     if (subtitle) subtitle.textContent = 'İnsan Kaynakları Paneli';
     document.title = 'Muttaş İK Paneli';
-  } else if (isAdmin) {
+  } else if (isLimanAdmin) {
     if (brand)    brand.textContent    = 'MUTTAŞ';
     if (subtitle) subtitle.textContent = 'Yönetim Paneli';
     document.title = 'Muttaş Yönetim Paneli';
@@ -2223,8 +2240,18 @@ function applyRoleUI(rol) {
     sel.value = currentLiman;
   }
 
-  updateTopbar('dashboard');
-  loadDashboard();
+  if (isIK && !isAdmin) {
+    updateTopbar('personel');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-personel').classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    document.querySelector('.nav-ik .nav-item, [onclick*="personel"]')?.classList.add('active');
+    loadPersonelMeta();
+    loadPersonel(1);
+  } else {
+    updateTopbar('dashboard');
+    loadDashboard();
+  }
 })();
 
 async function loadDashboard() {
@@ -2295,6 +2322,27 @@ async function loadDashboard() {
     }
   } catch (e) {
     console.error('Dashboard yüklenemedi:', e);
+  }
+
+  try {
+    const rol = currentUser?.rol || '';
+    const isIK = rol === 'ik_admin' || rol === 'ik_viewer' || rol === 'admin';
+    if (isIK) {
+      const res2 = await fetch('/personel?page=1&per_page=1', { headers: { Authorization: 'Bearer ' + token } });
+      if (res2.ok) {
+        const d2 = await res2.json();
+        const el = document.getElementById('stat-toplam-personel');
+        if (el) el.textContent = d2.toplam ?? '—';
+      }
+      const res3 = await fetch('/izinler?page=1&per_page=1&durum=beklemede', { headers: { Authorization: 'Bearer ' + token } });
+      if (res3.ok) {
+        const d3 = await res3.json();
+        const el = document.getElementById('stat-bekleyen-izin');
+        if (el) el.textContent = d3.toplam ?? '0';
+      }
+    }
+  } catch (e) {
+    console.error('IK dashboard yüklenemedi:', e);
   }
 }
 
