@@ -2241,13 +2241,13 @@ function applyRoleUI(rol) {
   }
 
   if (isIK && !isAdmin) {
-    updateTopbar('personel');
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.getElementById('page-personel').classList.add('active');
     document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    document.querySelector('.nav-ik .nav-item, [onclick*="personel"]')?.classList.add('active');
-    loadPersonelMeta();
-    loadPersonel(1);
+    const pBtn = document.querySelector('button[onclick*="personel"]');
+    if (pBtn) pBtn.classList.add('active');
+    updateTopbar('personel');
+    setTimeout(() => { loadPersonelMeta(); loadPersonel(1); loadDashboard(); }, 100);
   } else {
     updateTopbar('dashboard');
     loadDashboard();
