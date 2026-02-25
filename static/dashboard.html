@@ -939,8 +939,10 @@ tbody tr:hover td { background: var(--bg-soft); }
   white-space: nowrap;
 }
 .prs-table-card thead th:first-child { padding-left: 18px; }
+.prs-table-card thead tr:hover th,
+.prs-table-card thead th:hover { background: var(--sb-bg) !important; color: rgba(255,255,255,.85) !important; }
 .prs-table-card thead th.prs-sort { cursor: pointer; user-select: none; }
-.prs-table-card thead th.prs-sort:hover { background: rgba(255,255,255,.06); }
+.prs-table-card thead th.prs-sort:hover { background: #263357 !important; }
 .prs-table-card thead th.prs-sort::after { content: ' ⇅'; opacity: .4; font-size: 10px; }
 .prs-table-card thead th.prs-sort.asc::after  { content: ' ↑'; opacity: 1; }
 .prs-table-card thead th.prs-sort.desc::after { content: ' ↓'; opacity: 1; }
@@ -955,6 +957,7 @@ tbody tr:hover td { background: var(--bg-soft); }
 .prs-table-card tbody td:first-child { padding-left: 18px; }
 .prs-table-card tbody tr:nth-child(even) td { background: #f8fafc; }
 .prs-table-card tbody tr:last-child td { border-bottom: none; }
+.prs-table-card tbody tr:hover td { background: #f1f5f9; }
 
 .prs-avatar {
   display: inline-flex;
