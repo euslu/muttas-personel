@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Personel Detay — MUTTAŞ İK</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #ffffff; --bg-soft: #f7f7f5; --border: #e8e8e5; --border-dark: #d5d5d0;
+  --text: #1a1a18; --text-2: #5a5a55; --text-3: #9b9b95;
+  --accent: #2563eb; --accent-bg: #eff6ff; --accent-hover: #1d4ed8;
+  --danger: #dc2626; --success: #16a34a; --warn: #d97706;
+  --radius: 8px; --shadow-sm: 0 1px 3px rgba(0,0,0,0.07); --shadow: 0 4px 16px rgba(0,0,0,0.08);
+}
+html, body { height: 100%; font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); background: var(--bg-soft); }
+
+.topbar {
+  height: 56px; background: var(--bg); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 24px; gap: 12px;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar .logo { height: 28px; }
+.topbar h1 { font-size: 15px; font-weight: 600; color: var(--text); }
+.topbar .spacer { flex: 1; }
+.topbar .back-btn {
+  display: flex; align-items: center; gap: 6px; padding: 6px 14px;
+  border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg);
+  color: var(--text-2); font-size: 13px; font-weight: 500; cursor: pointer;
+  transition: all .15s;
+}
+.topbar .back-btn:hover { background: var(--bg-soft); border-color: var(--border-dark); }
+
+.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+
+.profile-header {
+  display: flex; gap: 24px; align-items: flex-start;
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow-sm);
+}
+.profile-photo-area { position: relative; flex-shrink: 0; }
+.profile-photo {
+  width: 120px; height: 120px; border-radius: 50%;
+  object-fit: cover; border: 3px solid var(--border);
+  background: var(--accent-bg); display: flex; align-items: center; justify-content: center;
+  font-size: 36px; font-weight: 700; color: var(--accent); overflow: hidden;
+}
+.profile-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+.photo-upload-btn {
+  position: absolute; bottom: 2px; right: 2px;
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--accent); color: #fff; border: 2px solid var(--bg);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; transition: background .15s;
+}
+.photo-upload-btn:hover { background: var(--accent-hover); }
+.photo-upload-btn input { display: none; }
+
+.profile-info { flex: 1; min-width: 0; }
+.profile-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
+.profile-title { font-size: 14px; color: var(--text-2); margin-bottom: 8px; }
+.profile-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+.badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.badge-aktif { background: #dcfce7; color: #16a34a; }
+.badge-pasif { background: #fee2e2; color: #dc2626; }
+.badge-info { background: var(--accent-bg); color: var(--accent); }
+.profile-meta {
+  display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--text-2);
+}
+.profile-meta span { display: flex; align-items: center; gap: 4px; }
+.profile-actions { display: flex; gap: 8px; margin-top: 12px; }
+
+.tabs {
+  display: flex; gap: 0; border-bottom: 2px solid var(--border);
+  margin-bottom: 20px; background: var(--bg); border-radius: 12px 12px 0 0;
+  padding: 0 8px; box-shadow: var(--shadow-sm);
+}
+.tab-btn {
+  padding: 12px 20px; font-size: 13px; font-weight: 600;
+  color: var(--text-3); background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; transition: all .15s; margin-bottom: -2px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+
+.card {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-sm);
+}
+.card-title {
+  font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px;
+  padding-bottom: 10px; border-bottom: 1px solid var(--border);
+}
+
+.info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+.info-item label { display: block; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.info-item .val { font-size: 14px; color: var(--text); font-weight: 500; }
+.info-item .val.empty { color: var(--text-3); font-style: italic; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.form-grid .span2 { grid-column: span 2; }
+.form-field { display: flex; flex-direction: column; gap: 4px; }
+.form-field label { font-size: 12px; font-weight: 600; color: var(--text-2); }
+.form-field input, .form-field select, .form-field textarea {
+  padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--radius);
+  font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg);
+  transition: border-color .15s;
+}
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+  outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.combo-wrap { position: relative; display: flex; }
+.combo-wrap input { flex: 1; border-radius: var(--radius) 0 0 var(--radius); }
+.combo-btn {
+  width: 32px; border: 1px solid var(--border); border-left: none;
+  border-radius: 0 var(--radius) var(--radius) 0; background: var(--bg-soft);
+  cursor: pointer; font-size: 11px; color: var(--text-3);
+}
+.combo-drop {
+  display: none; position: absolute; top: 100%; left: 0; right: 0; z-index: 50;
+  max-height: 200px; overflow-y: auto; background: var(--bg);
+  border: 1px solid var(--border); border-radius: var(--radius);
+  box-shadow: var(--shadow); margin-top: 2px;
+}
+.combo-drop.open { display: block; }
+.combo-drop-item { padding: 8px 12px; font-size: 12px; cursor: pointer; }
+.combo-drop-item:hover { background: var(--accent-bg); }
+.combo-drop-empty { padding: 8px 12px; font-size: 12px; color: var(--text-3); }
+
+.btn {
+  padding: 8px 18px; border-radius: var(--radius); font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .15s; border: none; font-family: inherit;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-outline { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-outline:hover { background: var(--bg-soft); }
+.btn-danger { background: #fee2e2; color: var(--danger); }
+.btn-danger:hover { background: #fecdd3; }
+.btn-success { background: #dcfce7; color: var(--success); }
+.btn-success:hover { background: #bbf7d0; }
+
+.evrak-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px;
+  border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 8px;
+}
+.evrak-icon { font-size: 22px; }
+.evrak-info { flex: 1; min-width: 0; }
+.evrak-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.evrak-meta { font-size: 11px; color: var(--text-3); }
+.evrak-actions { display: flex; gap: 4px; }
+.btn-icon {
+  width: 30px; height: 30px; border: 1px solid var(--border); border-radius: var(--radius);
+  background: var(--bg); display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; transition: all .15s;
+}
+.btn-icon:hover { background: var(--bg-soft); }
+.btn-icon.del:hover { background: #fee2e2; border-color: var(--danger); }
+
+.toast {
+  position: fixed; bottom: 24px; right: 24px; z-index: 1000;
+  padding: 12px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500;
+  color: #fff; transform: translateY(100px); opacity: 0;
+  transition: all .3s ease;
+}
+.toast.show { transform: translateY(0); opacity: 1; }
+.toast.success { background: var(--success); }
+.toast.error { background: var(--danger); }
+
+.loading { text-align: center; padding: 60px; color: var(--text-3); }
+.loading-spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 768px) {
+  .profile-header { flex-direction: column; align-items: center; text-align: center; }
+  .profile-meta { justify-content: center; }
+  .profile-actions { justify-content: center; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid .span2 { grid-column: span 1; }
+  .info-grid { grid-template-columns: 1fr 1fr; }
+  .container { padding: 12px; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <img src="/static/logo.png" alt="Muttaş" class="logo">
+  <h1>Personel Detay</h1>
+  <div class="spacer"></div>
+  <button class="back-btn" onclick="window.close()">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 12L6 8l4-4"/></svg>
+    Kapat
+  </button>
+</div>
+
+<div class="container" id="main-content">
+  <div class="loading">
+    <div class="loading-spinner"></div>
+    <p style="margin-top:12px">Yükleniyor...</p>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const PID = params.get('id');
+const TOKEN = params.get('token');
+let personelData = null;
+let editMode = false;
+
+function getInitials(name) {
+  if (!name) return '?';
+  return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
+}
+
+function fmt(d) {
+  if (!d) return '—';
+  return d.split('T')[0].split('-').reverse().join('.');
+}
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast ' + type + ' show';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function loadPersonel() {
+  if (!PID || !TOKEN) {
+    document.getElementById('main-content').innerHTML = '<div class="loading"><p>Geçersiz parametre. Pencereyi kapatıp tekrar deneyin.</p></div>';
+    return;
+  }
+  try {
+    const res = await fetch('/personel/' + PID, { headers: { Authorization: 'Bearer ' + TOKEN } });
+    if (!res.ok) throw new Error('Veri alınamadı');
+    personelData = await res.json();
+    document.title = personelData.ad_soyad + ' — MUTTAŞ İK';
+    renderPage();
+  } catch(e) {
+    document.getElementById('main-content').innerHTML = '<div class="loading"><p style="color:var(--danger)">Hata: ' + e.message + '</p></div>';
+  }
+}
+
+function renderPage() {
+  const p = personelData;
+  const aktifBadge = p.aktif !== false
+    ? '<span class="badge badge-aktif">Aktif</span>'
+    : '<span class="badge badge-pasif">Pasif</span>';
+
+  const photoContent = p.foto_url
+    ? '<img src="' + p.foto_url + '" alt="Profil">'
+    : getInitials(p.ad_soyad);
+
+  document.getElementById('main-content').innerHTML = `
+    <div class="profile-header">
+      <div class="profile-photo-area">
+        <div class="profile-photo" id="profile-photo">${photoContent}</div>
+        <label class="photo-upload-btn" title="Fotoğraf yükle">
+          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 1v12M1 7h12"/></svg>
+          <input type="file" accept="image/*" onchange="uploadFoto(this)">
+        </label>
+      </div>
+      <div class="profile-info">
+        <div class="profile-name">${p.ad_soyad}</div>
+        <div class="profile-title">${[p.unvan, p.bolum].filter(Boolean).join(' — ') || 'Pozisyon belirtilmemiş'}</div>
+        <div class="profile-badges">
+          ${aktifBadge}
+          ${p.cinsiyet ? '<span class="badge badge-info">' + p.cinsiyet + '</span>' : ''}
+          ${p.ogrenim ? '<span class="badge badge-info">' + p.ogrenim + '</span>' : ''}
+        </div>
+        <div class="profile-meta">
+          ${p.tc_kimlik ? '<span>TC: ' + p.tc_kimlik + '</span>' : ''}
+          ${p.telefon ? '<span>Tel: ' + p.telefon + '</span>' : ''}
+          ${p.ise_giris ? '<span>İşe Giriş: ' + fmt(p.ise_giris) + '</span>' : ''}
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-primary" onclick="toggleEdit()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 1.5l1.5 1.5L5 10.5 2.5 11l.5-2.5z"/></svg>
+            Düzenle
+          </button>
+          <button class="btn btn-outline" onclick="printPersonel()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4V1h6v3M4 11H2V7h10v4h-2M4 9h6v4H4z"/></svg>
+            Yazdır
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('bilgiler', this)">Kişisel Bilgiler</button>
+      <button class="tab-btn" onclick="switchTab('gorev', this)">Görev Bilgileri</button>
+      <button class="tab-btn" onclick="switchTab('iletisim', this)">İletişim</button>
+      <button class="tab-btn" onclick="switchTab('evraklar', this)">Evraklar</button>
+    </div>
+
+    <div class="tab-panel active" id="panel-bilgiler">
+      <div class="card" id="card-bilgiler">
+        <div class="card-title">Kişisel Bilgiler</div>
+        <div class="info-grid" id="info-bilgiler"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-gorev">
+      <div class="card" id="card-gorev">
+        <div class="card-title">Görev ve Çalışma Bilgileri</div>
+        <div class="info-grid" id="info-gorev"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-iletisim">
+      <div class="card" id="card-iletisim">
+        <div class="card-title">İletişim Bilgileri</div>
+        <div class="info-grid" id="info-iletisim"></div>
+      </div>
+    </div>
+
+    <div class="tab-panel" id="panel-evraklar">
+      <div class="card">
+        <div class="card-title">Evrak Yönetimi</div>
+        <div id="evrak-upload" style="margin-bottom:16px">
+          <div class="form-grid" style="margin-bottom:8px">
+            <div class="form-field">
+              <label>Evrak Türü</label>
+              <select id="ev-tur" onchange="evTurChange()">
+                <option value="">Seçiniz</option>
+                <option value="Kimlik Kartı">Kimlik Kartı</option>
+                <option value="Ehliyet">Ehliyet</option>
+                <option value="Adli Sicil Kaydı">Adli Sicil Kaydı</option>
+                <option value="Sürücü Belgesi">Sürücü Belgesi</option>
+                <option value="Sağlık Raporu">Sağlık Raporu</option>
+                <option value="Diğer">Diğer</option>
+              </select>
+            </div>
+            <div class="form-field" id="ev-ad-wrap" style="display:none">
+              <label>Evrak Adı</label>
+              <input type="text" id="ev-ad" placeholder="Evrak adını yazın">
+            </div>
+            <div class="form-field">
+              <label>Dosya</label>
+              <input type="file" id="ev-dosya" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx,.xls,.xlsx">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="evrakYukle()">Yükle</button>
+        </div>
+        <div id="ev-list"><div class="loading"><p>Yükleniyor...</p></div></div>
+      </div>
+    </div>
+
+    <div id="edit-panel" style="display:none"></div>
+  `;
+
+  renderInfoView();
+  loadEvraklar();
+}
+
+function renderInfoView() {
+  const p = personelData;
+  const infoItem = (label, val) => '<div class="info-item"><label>' + label + '</label><div class="val ' + (val ? '' : 'empty') + '">' + (val || '—') + '</div></div>';
+
+  document.getElementById('info-bilgiler').innerHTML = [
+    infoItem('Ad Soyad', p.ad_soyad),
+    infoItem('TC Kimlik No', p.tc_kimlik),
+    infoItem('SGK Sicil', p.sgk_sicil),
+    infoItem('Cinsiyet', p.cinsiyet),
+    infoItem('Medeni Hal', p.medeni_hal),
+    infoItem('Doğum Tarihi', fmt(p.dogum_tarihi)),
+    infoItem('Doğum Yeri', p.dogum_yeri),
+    infoItem('Kan Grubu', p.kan_grubu),
+    infoItem('Çocuk Sayısı', p.cocuk_sayisi != null ? String(p.cocuk_sayisi) : null),
+    infoItem('Öğrenim Durumu', p.ogrenim),
+    infoItem('Engelli', p.engelli ? 'Evet' : 'Hayır'),
+    infoItem('Sendika Üyeliği', p.sendika_uyesi),
+  ].join('');
+
+  document.getElementById('info-gorev').innerHTML = [
+    infoItem('Bölüm', p.bolum),
+    infoItem('Ünvan', p.unvan),
+    infoItem('Maliyet Merkezi', p.maliyet_merkezi),
+    infoItem('Çalıştığı İlçe', p.ilce),
+    infoItem('Hizmet Noktası', p.hizmet_noktasi),
+    infoItem('İşe Giriş Tarihi', fmt(p.ise_giris)),
+    infoItem('İşten Çıkış Tarihi', fmt(p.isten_cikis)),
+    infoItem('Çıkış Kodu', p.cikis_kodu),
+    infoItem('Meslek Kodu', p.meslek_kodu),
+    infoItem('Meslek Adı', p.meslek_adi),
+    infoItem('Güvenlik Belgesi Geç. Tar.', fmt(p.guvenlik_belge_tarih)),
+    infoItem('Sigortacılık Başlama', fmt(p.sigortalilik_baslama)),
+  ].join('');
+
+  document.getElementById('info-iletisim').innerHTML = [
+    infoItem('Telefon', p.telefon),
+    infoItem('Adres', p.adres),
+    infoItem('Notlar', p.notlar),
+  ].join('');
+}
+
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleEdit() {
+  editMode = !editMode;
+  if (editMode) {
+    showEditForm();
+  } else {
+    renderInfoView();
+  }
+}
+
+function showEditForm() {
+  const p = personelData;
+  const dtVal = d => d ? d.split('T')[0] : '';
+
+  const bilgiPanel = document.getElementById('card-bilgiler');
+  bilgiPanel.innerHTML = `
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center">
+      Bilgileri Düzenle
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-outline" onclick="cancelEdit()">İptal</button>
+        <button class="btn btn-primary" id="save-btn" onclick="savePersonel()">Kaydet</button>
+      </div>
+    </div>
+    <div class="form-grid">
+      <div class="form-field span2"><label>Ad Soyad *</label><input type="text" id="f-ad-soyad" value="${p.ad_soyad || ''}"></div>
+      <div class="form-field"><label>TC Kimlik No *</label><input type="text" id="f-tc" maxlength="11" value="${p.tc_kimlik || ''}"></div>
+      <div class="form-field"><label>SGK Sicil</label><input type="text" id="f-sgk" value="${p.sgk_sicil || ''}"></div>
+      <div class="form-field"><label>Cinsiyet *</label><select id="f-cinsiyet"><option value="">Seçiniz</option><option value="ERKEK" ${p.cinsiyet==='ERKEK'?'selected':''}>Erkek</option><option value="KADIN" ${p.cinsiyet==='KADIN'?'selected':''}>Kadın</option></select></div>
+      <div class="form-field"><label>Medeni Hal</label><select id="f-medeni"><option value="">Seçiniz</option><option value="EVLİ" ${p.medeni_hal==='EVLİ'?'selected':''}>Evli</option><option value="BEKAR" ${p.medeni_hal==='BEKAR'?'selected':''}>Bekar</option></select></div>
+      <div class="form-field"><label>Doğum Tarihi *</label><input type="date" id="f-dogum-tarihi" value="${dtVal(p.dogum_tarihi)}"></div>
+      <div class="form-field"><label>Doğum Yeri</label>
+        <div class="combo-wrap"><input type="text" id="f-dogum-yeri" value="${p.dogum_yeri || ''}" autocomplete="off" oninput="comboFilter('f-dogum-yeri')"><button type="button" class="combo-btn" onclick="comboToggle('f-dogum-yeri')">&#9662;</button><div class="combo-drop" id="f-dogum-yeri-drop"></div></div>
+      </div>
+      <div class="form-field"><label>Kan Grubu</label><select id="f-kan"><option value="">Seçiniz</option>${['A Rh+','A Rh-','B Rh+','B Rh-','AB Rh+','AB Rh-','0 Rh+','0 Rh-'].map(k=>'<option'+(p.kan_grubu===k?' selected':'')+'>'+k+'</option>').join('')}</select></div>
+      <div class="form-field"><label>Çocuk Sayısı</label><input type="number" id="f-cocuk" min="0" value="${p.cocuk_sayisi ?? 0}"></div>
+      <div class="form-field"><label>Öğrenim Durumu</label><select id="f-ogrenim"><option value="">Seçiniz</option>${['İLKOKUL','ORTAOKUL','LİSE','ÖN LİSANS','LİSANS','YÜKSEK LİSANS'].map(o=>'<option value="'+o+'"'+(p.ogrenim===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
+      <div class="form-field"><label>Sendika Üyeliği</label><input type="text" id="f-sendika" value="${p.sendika_uyesi || ''}"></div>
+      <div class="form-field"><label>Engelli</label><select id="f-engelli"><option value="false" ${!p.engelli?'selected':''}>Hayır</option><option value="true" ${p.engelli?'selected':''}>Evet</option></select></div>
+    </div>
+    <div class="card-title" style="margin-top:24px">Görev Bilgileri</div>
+    <div class="form-grid">
+      <div class="form-field"><label>Bölüm *</label>
+        <div class="combo-wrap"><input type="text" id="f-bolum" value="${p.bolum || ''}" autocomplete="off" oninput="comboFilter('f-bolum')"><button type="button" class="combo-btn" onclick="comboToggle('f-bolum')">&#9662;</button><div class="combo-drop" id="f-bolum-drop"></div></div>
+      </div>
+      <div class="form-field"><label>Ünvan *</label>
+        <div class="combo-wrap"><input type="text" id="f-unvan" value="${p.unvan || ''}" autocomplete="off" oninput="comboFilter('f-unvan')"><button type="button" class="combo-btn" onclick="comboToggle('f-unvan')">&#9662;</button><div class="combo-drop" id="f-unvan-drop"></div></div>
+      </div>
+      <div class="form-field"><label>Maliyet Merkezi</label>
+        <div class="combo-wrap"><input type="text" id="f-maliyet" value="${p.maliyet_merkezi || ''}" autocomplete="off" oninput="comboFilter('f-maliyet')"><button type="button" class="combo-btn" onclick="comboToggle('f-maliyet')">&#9662;</button><div class="combo-drop" id="f-maliyet-drop"></div></div>
+      </div>
+      <div class="form-field"><label>Çalıştığı İlçe</label>
+        <div class="combo-wrap"><input type="text" id="f-ilce" value="${p.ilce || ''}" autocomplete="off" oninput="comboFilter('f-ilce')"><button type="button" class="combo-btn" onclick="comboToggle('f-ilce')">&#9662;</button><div class="combo-drop" id="f-ilce-drop"></div></div>
+      </div>
+      <div class="form-field span2"><label>Hizmet Noktası</label>
+        <div class="combo-wrap"><input type="text" id="f-hizmet" value="${p.hizmet_noktasi || ''}" autocomplete="off" oninput="comboFilter('f-hizmet')"><button type="button" class="combo-btn" onclick="comboToggle('f-hizmet')">&#9662;</button><div class="combo-drop" id="f-hizmet-drop"></div></div>
+      </div>
+      <div class="form-field"><label>İşe Giriş Tarihi *</label><input type="date" id="f-ise-giris" value="${dtVal(p.ise_giris)}"></div>
+      <div class="form-field"><label>İşten Çıkış Tarihi</label><input type="date" id="f-isten-cikis" value="${dtVal(p.isten_cikis)}"></div>
+      <div class="form-field span2"><label>Çıkış Kodu / Nedeni</label>
+        <div class="combo-wrap"><input type="text" id="f-cikis-kodu" value="${p.cikis_kodu || ''}" autocomplete="off" oninput="comboFilter('f-cikis-kodu')"><button type="button" class="combo-btn" onclick="comboToggle('f-cikis-kodu')">&#9662;</button><div class="combo-drop" id="f-cikis-kodu-drop"></div></div>
+      </div>
+      <div class="form-field span2"><label>Meslek (Kod - Ad)</label>
+        <div class="combo-wrap"><input type="text" id="f-meslek-adi" value="${p.meslek_adi || ''}" autocomplete="off" oninput="comboFilter('f-meslek-adi')"><button type="button" class="combo-btn" onclick="comboToggle('f-meslek-adi')">&#9662;</button><div class="combo-drop" id="f-meslek-adi-drop"></div></div>
+        <input type="hidden" id="f-meslek-kodu" value="${p.meslek_kodu || ''}">
+      </div>
+      <div class="form-field"><label>Güvenlik Belgesi Geç. Tar.</label><input type="date" id="f-guvenlik" value="${dtVal(p.guvenlik_belge_tarih)}"></div>
+      <div class="form-field"><label>Sigortacılık Başlama</label><input type="date" id="f-sigorta-bas" value="${dtVal(p.sigortalilik_baslama)}"></div>
+    </div>
+    <div class="card-title" style="margin-top:24px">İletişim</div>
+    <div class="form-grid">
+      <div class="form-field"><label>Telefon *</label><input type="tel" id="f-telefon" value="${p.telefon || ''}"></div>
+      <div class="form-field span2"><label>Adres</label><textarea id="f-adres" rows="2">${p.adres || ''}</textarea></div>
+      <div class="form-field span2"><label>Notlar</label><textarea id="f-notlar" rows="2">${p.notlar || ''}</textarea></div>
+    </div>
+  `;
+
+  document.querySelectorAll('.tab-btn')[0].click();
+}
+
+function cancelEdit() {
+  editMode = false;
+  const bilgiPanel = document.getElementById('card-bilgiler');
+  bilgiPanel.innerHTML = '<div class="card-title">Kişisel Bilgiler</div><div class="info-grid" id="info-bilgiler"></div>';
+  renderInfoView();
+}
+
+async function savePersonel() {
+  const v = id => document.getElementById('f-' + id)?.value || null;
+  const body = {
+    ad_soyad: (v('ad-soyad') || '').trim(),
+    tc_kimlik: v('tc'), sgk_sicil: v('sgk'), cinsiyet: v('cinsiyet'),
+    medeni_hal: v('medeni'), dogum_tarihi: v('dogum-tarihi') || null,
+    dogum_yeri: v('dogum-yeri'), kan_grubu: v('kan'),
+    cocuk_sayisi: parseInt(document.getElementById('f-cocuk')?.value) || 0,
+    bolum: v('bolum'), unvan: v('unvan'), maliyet_merkezi: v('maliyet'),
+    ilce: v('ilce'), hizmet_noktasi: v('hizmet'),
+    ise_giris: v('ise-giris') || null, isten_cikis: v('isten-cikis') || null,
+    cikis_kodu: v('cikis-kodu'), meslek_kodu: v('meslek-kodu'), meslek_adi: v('meslek-adi'),
+    guvenlik_belge_tarih: v('guvenlik') || null,
+    sigortalilik_baslama: v('sigorta-bas') || null,
+    ogrenim: v('ogrenim'), sendika_uyesi: v('sendika'),
+    engelli: document.getElementById('f-engelli')?.value === 'true',
+    telefon: v('telefon'),
+    adres: document.getElementById('f-adres')?.value || null,
+    notlar: document.getElementById('f-notlar')?.value || null,
+  };
+
+  const zorunlu = [
+    [body.ad_soyad, 'Ad Soyad zorunludur'], [body.tc_kimlik, 'TC Kimlik No zorunludur'],
+    [body.cinsiyet, 'Cinsiyet zorunludur'], [body.dogum_tarihi, 'Doğum Tarihi zorunludur'],
+    [body.bolum, 'Bölüm zorunludur'], [body.unvan, 'Ünvan zorunludur'],
+    [body.ise_giris, 'İşe Giriş Tarihi zorunludur'], [body.telefon, 'Telefon zorunludur'],
+  ];
+  for (const [deger, mesaj] of zorunlu) {
+    if (!deger) { showToast(mesaj, 'error'); return; }
+  }
+
+  const btn = document.getElementById('save-btn');
+  btn.disabled = true; btn.textContent = 'Kaydediliyor...';
+
+  try {
+    const res = await fetch('/personel/' + PID, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + TOKEN },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      showToast('Personel güncellendi', 'success');
+      editMode = false;
+      await loadPersonel();
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast(err.detail || 'Kayıt başarısız', 'error');
+    }
+  } catch(e) {
+    showToast('Bağlantı hatası', 'error');
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Kaydet'; }
+  }
+}
+
+async function uploadFoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const fd = new FormData();
+  fd.append('dosya', file);
+  try {
+    const res = await fetch('/personel/' + PID + '/foto', {
+      method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN }, body: fd,
+    });
+    if (res.ok) {
+      const data = await res.json();
+      personelData.foto_url = data.foto_url;
+      const photoEl = document.getElementById('profile-photo');
+      photoEl.innerHTML = '<img src="' + data.foto_url + '?' + Date.now() + '" alt="Profil">';
+      showToast('Fotoğraf güncellendi', 'success');
+    } else {
+      showToast('Fotoğraf yüklenemedi', 'error');
+    }
+  } catch(e) {
+    showToast('Bağlantı hatası', 'error');
+  }
+}
+
+async function loadEvraklar() {
+  const list = document.getElementById('ev-list');
+  if (!list) return;
+  try {
+    const res = await fetch('/personel/' + PID + '/evraklar', { headers: { Authorization: 'Bearer ' + TOKEN } });
+    if (!res.ok) { list.innerHTML = '<p style="color:var(--danger)">Hata oluştu.</p>'; return; }
+    const rows = await res.json();
+    if (!rows.length) { list.innerHTML = '<p style="color:var(--text-3);text-align:center;padding:24px">Henüz evrak yüklenmemiş.</p>'; return; }
+    const fmtB = b => b ? (b > 1048576 ? (b/1048576).toFixed(1)+' MB' : (b/1024).toFixed(0)+' KB') : '';
+    const icon = mime => { if (!mime) return '&#128196;'; if (mime.includes('pdf')) return '&#128213;'; if (mime.includes('image')) return '&#128444;'; return '&#128196;'; };
+    list.innerHTML = rows.map(r => `
+      <div class="evrak-item">
+        <div class="evrak-icon">${icon(r.mime_type)}</div>
+        <div class="evrak-info">
+          <div class="evrak-name">${r.evrak_adi}</div>
+          <div class="evrak-meta">${r.dosya_adi} &middot; ${fmtB(r.dosya_boyut)} &middot; ${fmt(r.yuklendi_at)}</div>
+        </div>
+        <div class="evrak-actions">
+          <a class="btn-icon" title="İndir" href="/personel/evrak/${r.id}/indir?token=${TOKEN}" download>&#11015;</a>
+          <button class="btn-icon del" title="Sil" onclick="evrakSil(${r.id})">&#128465;</button>
+        </div>
+      </div>
+    `).join('');
+  } catch(e) {
+    list.innerHTML = '<p style="color:var(--danger)">Bağlantı hatası.</p>';
+  }
+}
+
+function evTurChange() {
+  const wrap = document.getElementById('ev-ad-wrap');
+  wrap.style.display = document.getElementById('ev-tur').value === 'Diğer' ? '' : 'none';
+}
+
+async function evrakYukle() {
+  const tur = document.getElementById('ev-tur').value;
+  if (!tur) { showToast('Evrak türü seçin', 'error'); return; }
+  const ad = tur === 'Diğer' ? document.getElementById('ev-ad').value.trim() : tur;
+  if (tur === 'Diğer' && !ad) { showToast('Evrak adı zorunlu', 'error'); return; }
+  const file = document.getElementById('ev-dosya').files[0];
+  if (!file) { showToast('Dosya seçin', 'error'); return; }
+  const fd = new FormData();
+  fd.append('evrak_adi', ad);
+  fd.append('dosya', file);
+  try {
+    const res = await fetch('/personel/' + PID + '/evraklar', {
+      method: 'POST', headers: { Authorization: 'Bearer ' + TOKEN }, body: fd,
+    });
+    if (res.ok) {
+      showToast('Evrak yüklendi', 'success');
+      document.getElementById('ev-tur').value = '';
+      document.getElementById('ev-dosya').value = '';
+      document.getElementById('ev-ad-wrap').style.display = 'none';
+      loadEvraklar();
+    } else {
+      showToast('Yükleme başarısız', 'error');
+    }
+  } catch(e) {
+    showToast('Bağlantı hatası', 'error');
+  }
+}
+
+async function evrakSil(eid) {
+  if (!confirm('Bu evrak silinecek. Onaylıyor musunuz?')) return;
+  try {
+    const res = await fetch('/personel/evrak/' + eid, {
+      method: 'DELETE', headers: { Authorization: 'Bearer ' + TOKEN },
+    });
+    if (res.ok) { showToast('Evrak silindi', 'success'); loadEvraklar(); }
+    else showToast('Silme başarısız', 'error');
+  } catch(e) { showToast('Bağlantı hatası', 'error'); }
+}
+
+function printPersonel() {
+  const p = personelData;
+  const w = window.open('', '_blank', 'width=800,height=900');
+  w.document.write(`<!DOCTYPE html><html><head><title>${p.ad_soyad}</title>
+    <style>body{font-family:Arial,sans-serif;padding:30px;font-size:13px}
+    h2{margin-bottom:4px}table{width:100%;border-collapse:collapse;margin-top:16px}
+    td{padding:6px 10px;border:1px solid #ddd}td:first-child{font-weight:bold;width:180px;background:#f5f5f5}
+    .section{background:#2563eb;color:#fff;font-weight:bold;padding:8px 10px;text-align:left}
+    </style></head><body>
+    <h2>${p.ad_soyad}</h2><p style="color:#666">${p.unvan || ''} — ${p.bolum || ''}</p>
+    <table>
+    <tr><td colspan="2" class="section">Kişisel Bilgiler</td></tr>
+    <tr><td>TC Kimlik No</td><td>${p.tc_kimlik||'—'}</td></tr>
+    <tr><td>Cinsiyet</td><td>${p.cinsiyet||'—'}</td></tr>
+    <tr><td>Doğum Tarihi</td><td>${fmt(p.dogum_tarihi)}</td></tr>
+    <tr><td>Doğum Yeri</td><td>${p.dogum_yeri||'—'}</td></tr>
+    <tr><td>Kan Grubu</td><td>${p.kan_grubu||'—'}</td></tr>
+    <tr><td>Medeni Hal</td><td>${p.medeni_hal||'—'}</td></tr>
+    <tr><td>Öğrenim</td><td>${p.ogrenim||'—'}</td></tr>
+    <tr><td colspan="2" class="section">Görev Bilgileri</td></tr>
+    <tr><td>Bölüm</td><td>${p.bolum||'—'}</td></tr>
+    <tr><td>Ünvan</td><td>${p.unvan||'—'}</td></tr>
+    <tr><td>Maliyet Merkezi</td><td>${p.maliyet_merkezi||'—'}</td></tr>
+    <tr><td>Hizmet Noktası</td><td>${p.hizmet_noktasi||'—'}</td></tr>
+    <tr><td>İlçe</td><td>${p.ilce||'—'}</td></tr>
+    <tr><td>İşe Giriş</td><td>${fmt(p.ise_giris)}</td></tr>
+    <tr><td>İşten Çıkış</td><td>${fmt(p.isten_cikis)}</td></tr>
+    <tr><td>Meslek</td><td>${p.meslek_adi||'—'}</td></tr>
+    <tr><td colspan="2" class="section">İletişim</td></tr>
+    <tr><td>Telefon</td><td>${p.telefon||'—'}</td></tr>
+    <tr><td>Adres</td><td>${p.adres||'—'}</td></tr>
+    </table></body></html>`);
+  w.document.close();
+  w.print();
+}
+
+const COMBO_OPTIONS = {
+  'f-dogum-yeri': [
+    'ADANA','ADIYAMAN','AFYONKARAHİSAR','AĞRI','AMASYA','ANKARA','ANTALYA','ARTVİN',
+    'AYDIN','BALIKESİR','BİLECİK','BİNGÖL','BİTLİS','BOLU','BURDUR','BURSA','ÇANAKKALE',
+    'ÇANKIRI','ÇORUM','DENİZLİ','DİYARBAKIR','EDİRNE','ELAZIĞ','ERZİNCAN','ERZURUM',
+    'ESKİŞEHİR','GAZİANTEP','GİRESUN','GÜMÜŞHANE','HAKKARİ','HATAY','ISPARTA','MERSİN',
+    'İSTANBUL','İZMİR','KARS','KASTAMONU','KAYSERİ','KIRKLARELİ','KIRŞEHİR','KOCAELİ',
+    'KONYA','KÜTAHYA','MALATYA','MANİSA','KAHRAMANMARAŞ','MARDİN','MUĞLA','MUŞ',
+    'NEVŞEHİR','NİĞDE','ORDU','RİZE','SAKARYA','SAMSUN','SİİRT','SİNOP','SİVAS',
+    'TEKİRDAĞ','TOKAT','TRABZON','TUNCELİ','ŞANLIURFA','UŞAK','VAN','YOZGAT',
+    'ZONGULDAK','AKSARAY','BAYBURT','KARAMAN','KIRIKKALE','BATMAN','ŞIRNAK','BARTIN',
+    'ARDAHAN','IĞDIR','YALOVA','KARABÜK','KİLİS','OSMANİYE','DÜZCE',
+  ],
+  'f-maliyet': [
+    'B.OTOPARK','BAKIM ONARIM','BODRUM WC','DENİZ KIYI','FETHİYE WC',
+    'GÖCEK 1 NOLU OTOPARK','GÖCEK 2 NOLU OTOPARK','GÖCEK OTOPARKI','GÜVENLİK',
+    'KATLI OTOPARK','KENT KART BASIM','KENT MEYDANI','MENTEŞE OTOGAR OTOPARK',
+    'MERKEZ BÜRO','PARKOMAT','PAZARYERİ OTOPARK','TOPLU TAŞIMA',
+    'TURGUTREİS YAŞAM MERKEZİ OTOPARKI','TÜRKAN SAYLAN','UĞUR MUMCU OTOPARKI',
+  ],
+  'f-hizmet': [
+    '100. YIL EVİ','AKYAKA','BODRUM','BODRUM LİMAN','BODRUM OTOGAR OTOPARKI',
+    'BODRUM TT','BODRUM WC','DALAMAN','DALAMAN TT','DATÇA TT','DENİZ KIYI',
+    'FETHİYE','FETHİYE LİMAN','FETHİYE TT','FETHİYE WC',
+    'GÖCEK 1 NOLU OTOPARK','GÖCEK 2 NOLU OTOPARK','GÜLLÜK LİMAN','KADEME',
+    'KATLI OTOPARK','KENT KART 2NOLU','KENT KART BASIM','KENT MEYDANI',
+    'KÖYCEĞİZ TT','MARMARİS','MARMARİS LİMAN','MARMARİS TT','MENTEŞE',
+    'MENTEŞE D.K.','MENTEŞE OTOGAR','MENTEŞE OTOPARK','MENTEŞE TT',
+    'MERKEZ OFİS','MİLAS','MİLAS TT','MİLAS/GÜLLÜK ÇEKEK YERİ',
+    'ORTACA','ORTACA TT','OTOBÜS TOPLANMA','OTOBÜS ŞEFLİĞİ','OTOGAR',
+    'PAZARYERİ OTOPARK','TURGUTREİS YAŞAM MERKEZİ OTOPARKI','TÜRKAN SAYLAN',
+    'ULAŞIM DAİRE','UĞUR MUMCU OTOPARKI','YATAĞAN','YATAĞAN TT',
+  ],
+  'f-ilce': [
+    'Bodrum','Dalaman','Datça','Fethiye','Kavaklıdere','Köyceğiz',
+    'Marmaris','Menteşe','Milas','Ortaca','Seydikemer','Ula','Yatağan',
+  ],
+  'f-meslek-adi': [
+    '1120 - Genel Müdür / Üst Düzey Yönetici','1211 - Finans Müdürü',
+    '1212 - İnsan Kaynakları Müdürü','1219 - Diğer Departman Müdürleri',
+    '1221 - Şube ve Birim Müdürü','1321 - İmalat Müdürü',
+    '2141 - Endüstri ve Üretim Mühendisi','2142 - İnşaat Mühendisi',
+    '2143 - Çevre Mühendisi','2144 - Makine Mühendisi',
+    '2411 - Muhasebe Uzmanı / Mali Müşavir','3112 - İnşaat Teknisyeni',
+    '3113 - Elektrik Teknisyeni','3115 - Makine Teknisyeni',
+    '3313 - Muhasebe Meslek Elemanı','3323 - Satın Alma Sorumlusu',
+    '4110 - Genel Büro Görevlisi','4190 - Büro Memuru / İdari Personel',
+    '5414 - Güvenlik Görevlisi','5419 - Koruma ve Güvenlik Personeli',
+    '7231 - Motorlu Araç Motoru Tamircisi','7411 - Elektrik Tesisatçısı',
+    '8322 - Otomobil ve Hafif Ticari Araç Sürücüsü','8331 - Otobüs Sürücüsü',
+    '8332 - Ağır Kamyon Sürücüsü','9111 - Ev İçi Temizlik Görevlisi',
+    '9141 - Apartman ve Otopark Görevlisi','9611 - Çöp Toplayıcısı / Temizlik İşçisi',
+  ],
+  'f-cikis-kodu': [
+    'Kod 1 - Deneme süreli sözleşmenin işçi tarafından feshi',
+    'Kod 2 - Deneme süreli sözleşmenin işveren tarafından feshi',
+    'Kod 3 - Belirsiz süreli sözleşmenin işçi tarafından feshi (istifa)',
+    'Kod 4 - Belirsiz süreli sözleşmenin işveren tarafından haklı sebepsiz feshi',
+    'Kod 5 - Belirli süreli sözleşmenin sona ermesi',
+    'Kod 8 - Emeklilik (yaşlılık) veya toptan ödeme',
+    'Kod 12 - Askerlik','Kod 14 - Emeklilik için yaş dışı şartların tamamlanması',
+    'Kod 17 - İşçinin kendi isteği ve kusuru dışında fesih',
+    'Kod 22 - Diğer nedenler','Kod 48 - Devamsızlık',
+  ],
+  'f-bolum': [
+    'TOPLU TAŞIMA','DENİZ KIYI','GÜVENLİK','MERKEZ BÜRO','PARKOMAT',
+    'MENTEŞE OTOPARK','OTOPARK','B.OTOPARK','BAKIM ONARIM','FETHİYE WC',
+    'BODRUM WC','GÖCEK OTOPARKI','BODRUM','FETHİYE BÜRO','MERKEZ BÜRO (A.)',
+  ],
+  'f-unvan': [
+    'ŞOFÖR','GÜVENLİK GÖREVLİSİ','BÜRO MEMURU','OTOPARK GÖREVLİSİ',
+    'TEMİZLİK GÖREVLİSİ','PARKOMAT GÖREVLİSİ','BEDEN İŞÇİSİ (TEMİZLİK)',
+    'PALAMARCI','LOJİSTİK OPERASYON ELEMANI','MİSAFİR İLİŞKİLERİ GÖREVLİSİ',
+    'BİLET SATIŞ ELEMANI','BİLET SATIŞ SORUMLUSU','MEKANİK BAKIM ONARIMCISI',
+    'BAKIM ONARIM SORUMLUSU','TAMİR BAKIM ONARIMCISI','ELEKTRİK TEKNİSYENİ',
+    'ELEKTRİKÇİ','OTOMOTİV MEKANİKERİ','KAYNAKÇI','FORMEN',
+    'KOORDİNASYON SORUMLUSU','İLÇE ULAŞIM KOORDİNATÖRÜ','LİMAN ŞEFİ',
+    'ÇEKEK YERİ SORUMLUSU','OTOPARK SAHA SORUMLUSU','TEKNİK İŞLER PERSONELİ',
+    'MUHASEBE MESLEK ELEMANI','FİNANS SORUMLUSU','SATIN ALMA SORUMLUSU',
+    'MALİ MÜŞAVİR','İK/İDARİ İŞLER PERSONELİ','GENEL MÜDÜR',
+  ],
+};
+
+function comboRender(id, q) {
+  const drop = document.getElementById(id + '-drop');
+  if (!drop) return;
+  const opts = COMBO_OPTIONS[id] || [];
+  const qLow = (q || '').toLowerCase();
+  const filtered = qLow ? opts.filter(o => o.toLowerCase().includes(qLow)) : opts;
+  if (!filtered.length) {
+    drop.innerHTML = '<div class="combo-drop-empty">Sonuç bulunamadı</div>';
+  } else {
+    drop.innerHTML = filtered.map(o =>
+      '<div class="combo-drop-item" onmousedown="comboSelect(\'' + id + '\',\'' + o.replace(/'/g, "\\'") + '\')">' + o + '</div>'
+    ).join('');
+  }
+}
+function comboToggle(id) {
+  const drop = document.getElementById(id + '-drop');
+  if (!drop) return;
+  const isOpen = drop.classList.contains('open');
+  document.querySelectorAll('.combo-drop.open').forEach(d => d.classList.remove('open'));
+  if (!isOpen) { comboRender(id, ''); drop.classList.add('open'); }
+}
+function comboFilter(id) {
+  const input = document.getElementById(id);
+  const drop = document.getElementById(id + '-drop');
+  if (!drop) return;
+  comboRender(id, input?.value || '');
+  drop.classList.add('open');
+}
+function comboSelect(id, val) {
+  document.getElementById(id).value = val;
+  document.getElementById(id + '-drop').classList.remove('open');
+  if (id === 'f-meslek-adi') {
+    const code = val.split(' - ')[0];
+    const kEl = document.getElementById('f-meslek-kodu');
+    if (kEl) kEl.value = code;
+  }
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.combo-wrap')) {
+    document.querySelectorAll('.combo-drop.open').forEach(d => d.classList.remove('open'));
+  }
+});
+
+loadPersonel();
+</script>
+</body>
+</html>

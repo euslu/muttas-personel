@@ -1,83 +1,70 @@
 # muttas-liman-api
 
-Marina yönetim sistemi — Python FastAPI + PostgreSQL.
+Marina ve İnsan Kaynakları yönetim sistemi — Python FastAPI + PostgreSQL.
 
 ## Stack
 - **Backend:** Python 3.11, FastAPI, asyncpg, python-jose, bcrypt
 - **Frontend:** Vanilla HTML/CSS/JS (static/dashboard.html, static/login.html)
 - **Database:** PostgreSQL (Replit managed)
 - **Auth:** JWT token (localStorage), Bearer header
-- **Port:** 8000
+- **Port:** 5000 (Replit), 8000 (DO production)
 
 ## Dosya Yapısı
 ```
-main.py          - FastAPI app, CORS, CSP middleware, tablo oluşturma
-db.py            - asyncpg connection pool
-auth.py          - /auth/login, /auth/me, kullanıcı yönetimi
-gunluk.py        - /gunluk (liman günlüğü CRUD), /limanlar, /tekneler/ara
-basvurular.py    - /basvurular (bağlama başvuruları CRUD + export)
-dashboard.py     - /dashboard/ozet, /dashboard/gunluk-trafik
+personel_app.py   - FastAPI app, CORS, CSP middleware, tablo oluşturma
+main.py           - uvicorn runner (personel_app import)
+db.py             - asyncpg connection pool
+auth.py           - /auth/login, /auth/me, kullanıcı yönetimi
+personel.py       - /personel CRUD + evraklar + foto upload
+izinler.py        - /izinler CRUD + onay akışı
+permissions.py    - JWT decode, role guards (require_ik_editor vb.)
 static/
-  login.html     - JWT login formu
-  dashboard.html - Ana panel (sidebar + tüm sayfalar)
+  login.html      - JWT login formu (TC kimlik ile giriş)
+  dashboard.html  - Ana panel (sidebar + tüm sayfalar)
+  personel_detay.html - Personel detay sayfası (yeni pencerede açılır)
+  logo.png        - Muttaş logosu
+  izin-basvuru.html - Self-servis izin başvuru formu
+uploads/
+  personel/       - Personel evrakları
+  foto/           - Personel profil fotoğrafları
 ```
 
 ## Veritabanı Tabloları
 - `limanlar` — Marina/liman kayıtları
-- `kullanicilar` — Kullanıcılar (admin / görevli), password_hash
-- `tekneler` — Tekne kayıtları (ad, tip, uzunluk_m, genislik_m)
-- `baglamalar` — Bağlama başvuruları (ref_no, basvuru_sahibi, telefon, sigorta_bitis, odeme_linki)
-- `faturalar` — Fatura kayıtları (tutar, kdv, toplam_tutar, durum)
+- `kullanicilar` — Kullanıcılar (admin/ik_admin/liman_admin), password_hash
+- `personel` — Personel kayıtları (~964 kişi, Google Sheets'ten aktarıldı)
+  - foto_url alanı: profil fotoğrafı yolu
+- `personel_evraklari` — Personel belge/evrakları
+- `izinler` — İzin talepleri (onay akışı: beklemede → ik_onayladi → mudur_onayladi → onaylandi → tamamlandi)
+- `tekneler` — Tekne kayıtları
+- `baglamalar` — Bağlama başvuruları
 - `gunluk` — Liman günlük log girişleri
-- `belgeler` — Belge ekleri (gelecekte)
 
-## Özellikler
+## Rol Yapısı
+- `admin` — Tüm modüllere erişim (liman + İK)
+- `ik_admin` — Sadece İK modülleri (personel + izin)
+- `liman_admin` / `liman_viewer` — Sadece liman modülleri
 
-### Auth
-- JWT token, 12 saat geçerli
-- Admin: tüm limanlar görebilir + liman filtresi
-- Görevli: sadece kendi limanı
+## Kullanıcılar
+- UĞUR YAKA: TC 66292029624, rol: ik_admin
+- SEDAT BAYRAK: TC 50668716706, rol: admin
+- Şifre: Muttas2026!
 
-### Liman Günlüğü (/gunluk)
-- Tekne adına göre autocomplete (tekneler tablosu)
-- Tarih/zaman filtresi, sayfalama
-- CRUD (create/read/update/delete)
+## Personel Detay Sayfası
+- Drawer yerine ayrı pencerede açılır (personel_detay.html)
+- Profil fotoğrafı: yuvarlak avatar, yüklenebilir (/personel/{id}/foto)
+- Sekmeler: Kişisel Bilgiler, Görev Bilgileri, İletişim, Evraklar
+- Yerinde düzenleme: "Düzenle" butonu ile form moduna geçiş
+- Yazdırma desteği
+- Combobox alanları (bölüm, ünvan, maliyet merkezi, hizmet noktası, ilçe, meslek, çıkış kodu)
 
-### Bağlama Başvuruları (/basvurular)
-- 1025 gerçek üretim verisi aktarıldı (XLS'den)
-- ref_no, basvuru_sahibi, telefon, sigorta_bitis, odeme_linki alanları eklendi
-- Filtreler: durum, odeme_durumu, tarih, liman, arama (tekne/ref/sahip)
-- Durum sistemi: beklemede, islem_bekliyor, odeme_islemde, manuel_odeme, onaylandi, reddedildi, dosya_yuklenenler
-- CSV export: /export/muhasebe, /export/kayitlar
-- Sigorta uyarıları: /sigorta-uyarilari (30 gün içinde bitenler)
-- Sayfalama: 10/25/50 / sayfa
-- Kolaps sidebar sub-menu (10 alt kategori)
-- Yeni başvuru oluşturma + düzenleme (drawer panel)
-
-### Dashboard UI
-- Fixed 240px sidebar, scrollable main content
-- Collapsible sub-menu: ⚓ Bağlama Başvuruları altında 10 filtre kısayolu
-- Sütun görünürlük seçici (col picker)
-- Durum badge renkleri (7 renk)
-- Drawer (sağ panel) form: yeni/düzenle başvuru
-
-## Admin Bilgileri
-- Email: admin@liman.com
-- Şifre: admin123
+## Production (DigitalOcean)
+- IP: 209.38.219.210
+- Gunicorn port 8000, 4 workers, systemd service "muttas"
+- PostgreSQL local (sudo -u postgres psql -d muttas_db)
+- SSH: sshpass -p '5Ec9f39fd0*-E' ssh root@209.38.219.210
 
 ## Notlar
+- Login TC kimlik numarası ile yapılır (email alanı TC olarak kullanılır)
+- Bcrypt hash'leri SSH ile aktarırken $ karakteri sorun çıkarır — heredoc SQL dosyaları kullan
 - `baglamalar.notlar` formatı: "Referans: REFNO | Sahip: AD"
-- Mevcut veriler normalize edildi (aktif → onaylandi)
-- durum normalize: 526 onaylandi, 293 beklemede, 206 reddedildi
-
-### Self-Servis Belge Yükleme (/basvuru)
-- Herkese açık başvuru sayfası: `/basvuru`
-- Tekne ruhsatı, sigorta belgesi, kimlik yüklenebilir (PDF/JPG/PNG, max 10 MB)
-- Token tabanlı takip: `/basvuru/{uuid-token}`
-- Görevli: dashboard'da "Belge Linki" butonu → link oluştur → kopyala → gönder
-- Yüklenen belgeler drawer'da listelenir, indirilebilir
-- Yeni tablolar: `belgeler`, `baglamalar.basvuru_token`, `baglamalar.eposta`, `baglamalar.tc_kimlik`
-- Dosyalar `uploads/` klasöründe saklanır
-
-## Yapılacaklar
-- [ ] **Sanal POS entegrasyonu** — Muttaş ödeme yetkilileriyle görüşülecek, ardından faturalar modülüne banka/kart ödeme API'si bağlanacak

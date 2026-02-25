@@ -4363,7 +4363,7 @@ async function loadPersonel(page) {
 
     return `<tr>
       <td style="color:var(--text-3);font-size:11px">${(prsPage-1)*parseInt(perPage)+idx+1}</td>
-      <td><strong>${p.ad_soyad}</strong></td>
+      <td><strong style="cursor:pointer;color:var(--accent)" onclick="openPersonelDetay(${p.id})">${p.ad_soyad}</strong></td>
       <td style="font-size:12px">${p.bolum || '—'}</td>
       <td style="font-size:12px">${p.unvan || '—'}</td>
       <td style="font-size:12px">${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
@@ -4373,7 +4373,7 @@ async function loadPersonel(page) {
       <td>${aktifBadge}</td>
       <td>
         <div style="display:flex;gap:4px">
-          ${canEditIK ? `<button class="btn-icon" title="Düzenle" onclick="openPersonelDrawer(${p.id})">✏️</button>` : ''}
+          <button class="btn-icon" title="Detay" onclick="openPersonelDetay(${p.id})">👁</button>
           <button class="btn-icon" title="İzinleri" onclick="izinleriGor(${p.id},'${p.ad_soyad}')">📅</button>
           ${canEditIK ? `<button class="btn-icon del" title="Pasif Yap" onclick="personelPasif(${p.id})">🚫</button>` : ''}
         </div>
@@ -4385,6 +4385,10 @@ async function loadPersonel(page) {
   document.getElementById('prs-page-info').textContent = `Sayfa ${prsPage} / ${totalPages} (${data.toplam} kişi)`;
   document.getElementById('prs-prev').disabled = prsPage <= 1;
   document.getElementById('prs-next').disabled = prsPage >= totalPages;
+}
+
+function openPersonelDetay(id) {
+  window.open('/static/personel_detay.html?id=' + id + '&token=' + getToken(), '_blank');
 }
 
 function openPersonelDrawer(id) {

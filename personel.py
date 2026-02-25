@@ -331,6 +331,38 @@ async def indir_evrak(eid: int, token: Optional[str] = Query(None),
                         filename=row["dosya_adi"])
 
 
+@router.post("/{pid}/foto", status_code=200)
+async def upload_foto(
+    pid: int,
+    dosya: UploadFile = File(...),
+    token: dict = Depends(require_ik_editor),
+):
+    if not dosya.content_type or not dosya.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="Sadece resim dosyası yüklenebilir.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM personel WHERE id = $1", pid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+
+    dest_dir = Path("uploads/foto")
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    ext = Path(dosya.filename).suffix or ".jpg"
+    unique = f"{pid}_{uuid.uuid4().hex[:8]}{ext}"
+    dest = dest_dir / unique
+
+    with dest.open("wb") as f:
+        shutil.copyfileobj(dosya.file, f)
+
+    foto_url = f"/uploads/foto/{unique}"
+    async with pool.acquire() as conn:
+        await conn.execute("UPDATE personel SET foto_url = $1 WHERE id = $2", foto_url, pid)
+
+    return {"foto_url": foto_url}
+
+
 @router.delete("/evrak/{eid}")
 async def delete_evrak(eid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
