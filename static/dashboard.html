@@ -1265,6 +1265,97 @@ tr:hover td { background: var(--bg-soft); }
   .pd-form-grid .span2 { grid-column: span 1; }
   .pd-info-grid { grid-template-columns: 1fr 1fr; }
 }
+
+.iz-toolbar {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.iz-toolbar-left { display: flex; align-items: center; gap: 10px; flex: 1; flex-wrap: wrap; }
+.iz-search-wrap {
+  position: relative; flex: 0 1 240px; min-width: 180px;
+}
+.iz-search-icon { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; }
+.iz-search {
+  width: 100%; padding: 9px 12px 9px 36px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg);
+  transition: border-color .2s, box-shadow .2s;
+}
+.iz-search:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+.iz-filter {
+  padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+  font-size: 13px; font-family: inherit; color: var(--text); background: var(--bg);
+  cursor: pointer; transition: border-color .2s;
+  appearance: none; -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239b9b95' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; padding-right: 28px;
+}
+.iz-filter:focus { outline: none; border-color: var(--accent); }
+.iz-filter-sm { min-width: 90px; }
+.iz-add-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px; border: none;
+  background: var(--accent); color: #fff; font-size: 13px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: background .15s; white-space: nowrap;
+}
+.iz-add-btn:hover { background: var(--accent-hover); }
+.iz-table-card {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 12px;
+  box-shadow: var(--shadow-sm); overflow: hidden;
+}
+.iz-table-wrap { overflow-x: auto; }
+.iz-table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.iz-table thead { background: var(--bg-soft); }
+.iz-table th {
+  padding: 11px 14px; font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: .04em; text-align: left;
+  border-bottom: 1px solid var(--border); white-space: nowrap;
+}
+.iz-table td {
+  padding: 12px 14px; border-bottom: 1px solid var(--border); color: var(--text);
+  vertical-align: middle;
+}
+.iz-table tbody tr { transition: background .12s; }
+.iz-table tbody tr:hover { background: var(--bg-soft); }
+.iz-table tbody tr:last-child td { border-bottom: none; }
+.iz-durum-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap;
+}
+.iz-tur-badge {
+  display: inline-block; padding: 2px 8px; border-radius: 6px;
+  font-size: 11px; font-weight: 600; background: var(--bg-soft); color: var(--text-2);
+}
+.iz-action-btn {
+  width: 30px; height: 30px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); display: inline-flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 14px; transition: all .12s; color: var(--text-2);
+}
+.iz-action-btn:hover { background: var(--bg-soft); border-color: var(--border-dark); }
+.iz-action-btn.del:hover { background: #fee2e2; border-color: var(--danger); color: var(--danger); }
+.iz-action-btn.approve:hover { background: #dcfce7; border-color: var(--success); color: var(--success); }
+.iz-empty { padding: 48px 24px; text-align: center; color: var(--text-3); }
+.iz-empty svg { margin-bottom: 8px; opacity: .5; }
+.iz-empty p { font-size: 14px; font-weight: 500; margin: 0; }
+.iz-pagination {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  padding: 12px 16px; border-top: 1px solid var(--border);
+}
+.iz-pg-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 6px 14px; border: 1px solid var(--border); border-radius: 6px;
+  background: var(--bg); font-size: 13px; font-weight: 500; color: var(--text-2);
+  cursor: pointer; font-family: inherit; transition: all .12s;
+}
+.iz-pg-btn:hover:not(:disabled) { background: var(--bg-soft); border-color: var(--border-dark); }
+.iz-pg-btn:disabled { opacity: .4; cursor: default; }
+.iz-pg-info { font-size: 13px; color: var(--text-2); }
+@media (max-width: 768px) {
+  .iz-toolbar { flex-direction: column; align-items: stretch; }
+  .iz-toolbar-left { flex-direction: column; }
+  .iz-search-wrap { flex: 1; }
+  .iz-filter { width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -2216,28 +2307,14 @@ tr:hover td { background: var(--bg-soft); }
 
       <!-- ── İzin Yönetimi ── -->
       <div class="page" id="page-izinler">
-        <div class="stats-grid" style="margin-bottom:14px">
-          <div class="stat-card" id="iz-card-bekleyen">
-            <div class="stat-label">Bekleyen İzinler</div>
-            <div class="stat-value yellow" id="iz-stat-bekleyen">—</div>
-            <div class="stat-sub">Onay bekliyor</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Bu Yıl Onaylanan</div>
-            <div class="stat-value green" id="iz-stat-onaylanan">—</div>
-            <div class="stat-sub">Onaylananlar</div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-label">Bu Yıl Toplam Gün</div>
-            <div class="stat-value blue" id="iz-stat-gun">—</div>
-            <div class="stat-sub">Kullanılan izin günü</div>
-          </div>
-        </div>
 
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-body" style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
-            <input class="form-input" type="text" id="iz-q" placeholder="Personel adı..." style="width:200px" oninput="loadIzinler(1)">
-            <select class="form-input" id="iz-tur" style="width:150px" onchange="loadIzinler(1)">
+        <div class="iz-toolbar">
+          <div class="iz-toolbar-left">
+            <div class="iz-search-wrap">
+              <svg class="iz-search-icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7.5" cy="7.5" r="5.5"/><path d="M12 12l3.5 3.5"/></svg>
+              <input class="iz-search" type="text" id="iz-q" placeholder="Personel adı ara..." oninput="loadIzinler(1)">
+            </div>
+            <select class="iz-filter" id="iz-tur" onchange="loadIzinler(1)">
               <option value="">Tüm Türler</option>
               <option value="yillik">Yıllık İzin</option>
               <option value="ucretsiz">Ücretsiz İzin</option>
@@ -2247,7 +2324,7 @@ tr:hover td { background: var(--bg-soft); }
               <option value="olum">Ölüm İzni</option>
               <option value="diger">Diğer</option>
             </select>
-            <select class="form-input" id="iz-durum" style="width:160px" onchange="loadIzinler(1)">
+            <select class="iz-filter" id="iz-durum" onchange="loadIzinler(1)">
               <option value="">Tüm Durumlar</option>
               <option value="beklemede">Beklemede</option>
               <option value="ik_onayladi">İK Onayladı</option>
@@ -2256,40 +2333,47 @@ tr:hover td { background: var(--bg-soft); }
               <option value="reddedildi">Reddedildi</option>
               <option value="tamamlandi">Tamamlandı</option>
             </select>
-            <select class="form-input" id="iz-yil" style="width:100px" onchange="loadIzinler(1)">
+            <select class="iz-filter iz-filter-sm" id="iz-yil" onchange="loadIzinler(1)">
             </select>
-            <button id="btn-izin-ekle" class="btn btn-primary" style="margin-left:auto" onclick="openIzinDrawer(null)">+ İzin Talebi Ekle</button>
           </div>
+          <button id="btn-izin-ekle" class="iz-add-btn" onclick="openIzinDrawer(null)">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg>
+            İzin Talebi Ekle
+          </button>
         </div>
 
-        <div class="card">
-          <div class="card-body" style="padding:0">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th>Personel</th>
-                    <th>Bölüm / Ünvan</th>
-                    <th>İzin Türü</th>
-                    <th>Başlangıç</th>
-                    <th>Bitiş</th>
-                    <th>Gün</th>
-                    <th>Talep Tarihi</th>
-                    <th>Durum</th>
-                    <th>İşlem</th>
-                  </tr>
-                </thead>
-                <tbody id="izinler-tbody">
-                  <tr><td colspan="10"><div class="empty"><div class="empty-icon">📅</div><h3>Yükleniyor...</h3></div></td></tr>
-                </tbody>
-              </table>
-            </div>
+        <div class="iz-table-card">
+          <div class="iz-table-wrap">
+            <table class="iz-table">
+              <thead>
+                <tr>
+                  <th style="width:40px">#</th>
+                  <th>Personel</th>
+                  <th>Bölüm / Ünvan</th>
+                  <th>İzin Türü</th>
+                  <th>Başlangıç</th>
+                  <th>Bitiş</th>
+                  <th style="width:50px;text-align:center">Gün</th>
+                  <th>Talep Tarihi</th>
+                  <th>Durum</th>
+                  <th style="width:120px">İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="izinler-tbody">
+                <tr><td colspan="10"><div class="iz-empty"><svg width="40" height="40" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg><p>Yükleniyor...</p></div></td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="card-footer" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border)">
-            <button class="pg-btn" id="iz-prev" onclick="loadIzinler(izPage-1)">← Önceki</button>
-            <span id="iz-page-info" style="font-size:13px;color:var(--text-2)">—</span>
-            <button class="pg-btn" id="iz-next" onclick="loadIzinler(izPage+1)">Sonraki →</button>
+          <div class="iz-pagination">
+            <button class="iz-pg-btn" id="iz-prev" onclick="loadIzinler(izPage-1)">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11L5 7l4-4"/></svg>
+              Önceki
+            </button>
+            <span id="iz-page-info" class="iz-pg-info">—</span>
+            <button class="iz-pg-btn" id="iz-next" onclick="loadIzinler(izPage+1)">
+              Sonraki
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 3l4 4-4 4"/></svg>
+            </button>
           </div>
         </div>
       </div><!-- /page-izinler -->
@@ -5357,25 +5441,6 @@ let izPage   = 1;
 let izEditId = null;
 
 async function loadIzinSummary() {
-  const yil = document.getElementById('iz-yil')?.value || new Date().getFullYear();
-  const res = await fetch('/izinler/ozet?yil=' + yil, { headers: { Authorization: 'Bearer ' + getToken() } });
-  if (!res.ok) return;
-  const d = await res.json();
-
-  document.getElementById('iz-stat-bekleyen').textContent = d.bekleyen;
-  const izCard = document.getElementById('iz-card-bekleyen');
-  if (d.bekleyen > 0) izCard.classList.add('stat-card-alert');
-  else izCard.classList.remove('stat-card-alert');
-
-  let onaylanan = 0, toplamGun = 0;
-  d.turlere_gore.forEach(r => {
-    if (r.durum === 'onaylandi' || r.durum === 'tamamlandi') {
-      onaylanan += parseInt(r.adet);
-      toplamGun += parseInt(r.toplam_gun || 0);
-    }
-  });
-  document.getElementById('iz-stat-onaylanan').textContent = onaylanan;
-  document.getElementById('iz-stat-gun').textContent = toplamGun;
 }
 
 async function loadIzinler(page) {
@@ -5392,16 +5457,14 @@ async function loadIzinler(page) {
   if (yil)   params.set('yil', yil);
 
   const tbody = document.getElementById('izinler-tbody');
-  tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">⏳</div><h3>Yükleniyor...</h3></div></td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10"><div class="iz-empty"><svg width="32" height="32" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>Yükleniyor...</p></div></td></tr>';
 
   const res = await fetch('/izinler?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
   if (!res.ok) return;
   const data = await res.json();
 
-  loadIzinSummary();
-
   if (!data.veri.length) {
-    tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">📅</div><h3>İzin kaydı bulunamadı</h3></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10"><div class="iz-empty"><svg width="40" height="40" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg><p>İzin kaydı bulunamadı</p></div></td></tr>';
     document.getElementById('iz-page-info').textContent = '0 kayıt';
     document.getElementById('iz-prev').disabled = true;
     document.getElementById('iz-next').disabled = true;
@@ -5410,30 +5473,39 @@ async function loadIzinler(page) {
 
   const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
 
+  const DURUM_BG = {
+    beklemede: 'background:#fff7ed;color:#ea580c',
+    ik_onayladi: 'background:#dbeafe;color:#2563eb',
+    mudur_onayladi: 'background:#e0e7ff;color:#4338ca',
+    onaylandi: 'background:#dcfce7;color:#16a34a',
+    tamamlandi: 'background:#f0fdf4;color:#15803d',
+    reddedildi: 'background:#fee2e2;color:#dc2626',
+  };
+
   tbody.innerHTML = data.veri.map((iz, idx) => {
     const turLabel   = IZIN_TUR_LABEL[iz.izin_turu]    || iz.izin_turu;
     const durumLabel = IZIN_DURUM_LABEL[iz.durum]      || iz.durum;
-    const durumColor = IZIN_DURUM_COLOR[iz.durum]      || '#64748b';
+    const durumStyle = DURUM_BG[iz.durum] || 'background:var(--bg-soft);color:var(--text-2)';
 
     return `<tr>
       <td style="color:var(--text-3);font-size:11px">${(izPage-1)*25+idx+1}</td>
-      <td><strong>${iz.ad_soyad || '—'}</strong></td>
-      <td style="font-size:11px;color:var(--text-2)">${[iz.bolum, iz.unvan].filter(Boolean).join(' / ') || '—'}</td>
-      <td><span class="d-badge" style="font-size:11px">${turLabel}</span></td>
+      <td><strong style="font-weight:600">${iz.ad_soyad || '—'}</strong></td>
+      <td style="font-size:12px;color:var(--text-2)">${[iz.bolum, iz.unvan].filter(Boolean).join(' / ') || '—'}</td>
+      <td><span class="iz-tur-badge">${turLabel}</span></td>
       <td style="font-size:12px">${fmt(iz.baslangic)}</td>
       <td style="font-size:12px">${fmt(iz.bitis)}</td>
-      <td style="font-weight:600;text-align:center">${iz.gun_sayisi}</td>
-      <td style="font-size:12px">${fmt(iz.talep_tarihi)}</td>
-      <td><span style="font-size:11px;font-weight:600;color:${durumColor}">${durumLabel}</span></td>
+      <td style="font-weight:700;text-align:center">${iz.gun_sayisi}</td>
+      <td style="font-size:12px;color:var(--text-2)">${fmt(iz.talep_tarihi)}</td>
+      <td><span class="iz-durum-badge" style="${durumStyle}">${durumLabel}</span></td>
       <td>
         <div style="display:flex;gap:4px">
-          <button class="btn-icon" title="${canEditIK ? 'Düzenle' : 'Görüntüle'}" onclick="openIzinDrawer(${iz.id})">
-            ${canEditIK ? '✏️' : '👁️'}
+          <button class="iz-action-btn" title="${canEditIK ? 'Düzenle' : 'Görüntüle'}" onclick="openIzinDrawer(${iz.id})">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 1.5l1.5 1.5L5 10.5 2.5 11l.5-2.5z"/></svg>
           </button>
           ${canEditIK && (iz.durum === 'beklemede' || iz.durum === 'ik_onayladi' || iz.durum === 'mudur_onayladi')
-            ? `<button class="btn-icon" title="Onayla" onclick="izinHizliOnay(${iz.id})" style="color:#059669">✅</button>` : ''}
-          <button class="btn-icon" title="Yazdır" onclick="izinYazdir(${iz.id})" style="color:#6366f1"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V2h12v7"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></button>
-          ${canEditIK && iz.durum === 'beklemede' ? `<button class="btn-icon del" title="Sil" onclick="izinSil(${iz.id})">🗑</button>` : ''}
+            ? `<button class="iz-action-btn approve" title="Onayla" onclick="izinHizliOnay(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l3 3 5-6"/></svg></button>` : ''}
+          <button class="iz-action-btn" title="Yazdır" onclick="izinYazdir(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V2h4v5M5 12H4a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3a1 1 0 01-1 1H9M5 10h4v3H5z"/></svg></button>
+          ${canEditIK && iz.durum === 'beklemede' ? `<button class="iz-action-btn del" title="Sil" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
         </div>
       </td>
     </tr>`;
