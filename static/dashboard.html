@@ -857,6 +857,182 @@ tr:hover td { background: var(--bg-soft); }
 .th-sort.asc::after  { content: ' ↑'; opacity: 1; }
 .th-sort.desc::after { content: ' ↓'; opacity: 1; }
 
+.prs-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  padding: 14px 18px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+.prs-toolbar .prs-search {
+  flex: 0 0 220px;
+  padding: 9px 12px 9px 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text);
+  background: var(--bg);
+  outline: none;
+  transition: border-color .2s;
+}
+.prs-toolbar .prs-search:focus { border-color: var(--accent); }
+.prs-toolbar .prs-search-wrap { position: relative; }
+.prs-toolbar .prs-search-wrap svg {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  width: 15px; height: 15px; stroke: var(--text-3); fill: none; stroke-width: 2;
+  pointer-events: none;
+}
+.prs-toolbar .prs-filter {
+  padding: 9px 28px 9px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--text-2);
+  background: var(--bg) url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%239b9b95' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 10px center;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+.prs-toolbar .prs-filter:focus { border-color: var(--accent); }
+.prs-toolbar .prs-btn-add {
+  margin-left: auto;
+  padding: 9px 18px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background .15s;
+}
+.prs-toolbar .prs-btn-add:hover { background: #3651d4; }
+
+.prs-table-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.prs-table-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.prs-table-card thead th {
+  background: var(--sidebar-bg);
+  color: rgba(255,255,255,.85);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 12px 14px;
+  text-align: left;
+  border: none;
+  text-transform: none;
+  letter-spacing: .01em;
+  white-space: nowrap;
+}
+.prs-table-card thead th:first-child { padding-left: 18px; }
+.prs-table-card thead th.prs-sort { cursor: pointer; user-select: none; }
+.prs-table-card thead th.prs-sort:hover { background: rgba(255,255,255,.06); }
+.prs-table-card thead th.prs-sort::after { content: ' ⇅'; opacity: .4; font-size: 10px; }
+.prs-table-card thead th.prs-sort.asc::after  { content: ' ↑'; opacity: 1; }
+.prs-table-card thead th.prs-sort.desc::after { content: ' ↓'; opacity: 1; }
+
+.prs-table-card tbody td {
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-2);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.prs-table-card tbody td:first-child { padding-left: 18px; }
+.prs-table-card tbody tr:last-child td { border-bottom: none; }
+.prs-table-card tbody tr:hover td { background: #f8fafc; }
+
+.prs-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  flex-shrink: 0;
+}
+.prs-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.prs-name-link {
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: color .15s;
+}
+.prs-name-link:hover { color: var(--accent); }
+
+.prs-action-btn {
+  width: 30px; height: 30px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-3);
+  transition: all .15s;
+}
+.prs-action-btn:hover { border-color: var(--accent); color: var(--accent); }
+.prs-action-btn.del:hover { border-color: #dc2626; color: #dc2626; }
+
+.prs-status-badge {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.prs-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border);
+}
+.prs-footer .prs-pg-btn {
+  width: 32px; height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-2);
+  transition: all .15s;
+}
+.prs-footer .prs-pg-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); }
+.prs-footer .prs-pg-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+@media (max-width: 768px) {
+  .prs-toolbar { flex-direction: column; }
+  .prs-toolbar .prs-search { flex: 1; width: 100%; }
+  .prs-toolbar .prs-btn-add { margin-left: 0; width: 100%; justify-content: center; }
+}
+
 /* ─── CUSTOM COMBOBOX ────────────────────────── */
 .combo-wrap { position: relative; display: flex; }
 .combo-wrap input { flex: 1; border-radius: var(--radius) 0 0 var(--radius) !important; }
@@ -2159,131 +2335,138 @@ tr:hover td { background: var(--bg-soft); }
 
       <!-- ── Personel ── -->
       <div class="page" id="page-personel">
-        <div class="card" style="margin-bottom:14px">
-          <div class="card-body" style="padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px;align-items:center">
-            <input class="form-input" type="text" id="prs-q" placeholder="Ad, TC veya telefon..." style="width:200px" oninput="loadPersonel(1)">
-            <select class="form-input" id="prs-bolum" style="width:160px" onchange="loadPersonel(1)">
-              <option value="">Tüm Bölümler</option>
-              <option>TOPLU TAŞIMA</option>
-              <option>DENİZ KIYI</option>
-              <option>GÜVENLİK</option>
-              <option>MERKEZ BÜRO</option>
-              <option>PARKOMAT</option>
-              <option>MENTEŞE OTOPARK</option>
-              <option>OTOPARK</option>
-              <option>B.OTOPARK</option>
-              <option>BAKIM ONARIM</option>
-              <option>FETHİYE WC</option>
-              <option>BODRUM WC</option>
-              <option>GÖCEK OTOPARKI</option>
-              <option>BODRUM</option>
-              <option>FETHİYE BÜRO</option>
-              <option>MERKEZ BÜRO (A.)</option>
-            </select>
-            <select class="form-input" id="prs-unvan" style="width:160px" onchange="loadPersonel(1)">
-              <option value="">Tüm Ünvanlar</option>
-              <option>ŞOFÖR</option>
-              <option>GÜVENLİK GÖREVLİSİ</option>
-              <option>BÜRO MEMURU</option>
-              <option>OTOPARK GÖREVLİSİ</option>
-              <option>TEMİZLİK GÖREVLİSİ</option>
-              <option>PARKOMAT GÖREVLİSİ</option>
-              <option>BEDEN İŞÇİSİ (TEMİZLİK)</option>
-              <option>PALAMARCI</option>
-              <option>LOJİSTİK OPERASYON ELEMANI</option>
-              <option>MİSAFİR İLİŞKİLERİ GÖREVLİSİ</option>
-              <option>BİLET SATIŞ ELEMANI</option>
-              <option>BİLET SATIŞ SORUMLUSU</option>
-              <option>MEKANİK BAKIM ONARIMCISI</option>
-              <option>BAKIM ONARIM SORUMLUSU</option>
-              <option>TAMİR BAKIM ONARIMCISI</option>
-              <option>ELEKTRİK TEKNİSYENİ</option>
-              <option>ELEKTRİK TEKNİKERİ</option>
-              <option>ELEKTRİKÇİ</option>
-              <option>ELEKTRİKÇİ (GENEL)</option>
-              <option>OTOMOTİV ELEKTRİKÇİSİ</option>
-              <option>OTOMOTİV MEKANİKERİ</option>
-              <option>OTOMOTİV MEKANİKÇİSİ</option>
-              <option>OTOMOTİV KAPORTA USTASI</option>
-              <option>OTO KAPORTA VE BOYA USTASI</option>
-              <option>DİZEL OTOMOTİV MEKANİKERİ</option>
-              <option>KIZAKÇI (GEMİ)</option>
-              <option>DALGIÇ (BALIK ADAM)</option>
-              <option>KAYNAKÇI</option>
-              <option>SIHHİ TESİSATÇI</option>
-              <option>FORMEN</option>
-              <option>KOORDİNASYON SORUMLUSU</option>
-              <option>İLÇE ULAŞIM KOORDİNATÖRÜ</option>
-              <option>İLÇE KOORDİNATÖRÜ</option>
-              <option>LİMAN ŞEFİ</option>
-              <option>ÇEKEK YERİ SORUMLUSU</option>
-              <option>OTOPARK SAHA SORUMLUSU</option>
-              <option>TEKNİK İŞLER PERSONELİ</option>
-              <option>TEKNİK İŞLER SORUMLUSU</option>
-              <option>MUHASEBE MESLEK ELEMANI</option>
-              <option>FİNANS HİZMETLERİ ELEMANI</option>
-              <option>FİNANS SORUMLUSU</option>
-              <option>SATIN ALMA SORUMLUSU</option>
-              <option>MALİ MÜŞAVİR</option>
-              <option>KİMYAGER</option>
-              <option>İK/İDARİ İŞLER PERSONELİ</option>
-              <option>İK/İDARİ İŞLER SORUMLUSU</option>
-              <option>GENEL MÜDÜR</option>
-            </select>
-            <select class="form-input" id="prs-ilce" style="width:130px" onchange="loadPersonel(1)">
-              <option value="">Tüm İlçeler</option>
-              <option>Bodrum</option>
-              <option>Dalaman</option>
-              <option>Datça</option>
-              <option>Fethiye</option>
-              <option>Kavaklıdere</option>
-              <option>Köyceğiz</option>
-              <option>Marmaris</option>
-              <option>Menteşe</option>
-              <option>Milas</option>
-              <option>Ortaca</option>
-              <option>Seydikemer</option>
-              <option>Ula</option>
-              <option>Yatağan</option>
-            </select>
-            <select class="form-input" id="prs-aktif" style="width:120px" onchange="loadPersonel(1)">
-              <option value="true">Aktif</option>
-              <option value="false">Pasif</option>
-              <option value="">Tümü</option>
-            </select>
-            <button id="btn-personel-ekle" class="btn btn-primary" style="margin-left:auto" onclick="openPersonelDrawer(null)">+ Personel Ekle</button>
+
+        <div class="prs-toolbar">
+          <div class="prs-search-wrap">
+            <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            <input class="prs-search" type="text" id="prs-q" placeholder="Ad, TC veya telefon..." oninput="loadPersonel(1)">
           </div>
+          <select class="prs-filter" id="prs-bolum" onchange="loadPersonel(1)">
+            <option value="">Tüm Bölümler</option>
+            <option>TOPLU TAŞIMA</option>
+            <option>DENİZ KIYI</option>
+            <option>GÜVENLİK</option>
+            <option>MERKEZ BÜRO</option>
+            <option>PARKOMAT</option>
+            <option>MENTEŞE OTOPARK</option>
+            <option>OTOPARK</option>
+            <option>B.OTOPARK</option>
+            <option>BAKIM ONARIM</option>
+            <option>FETHİYE WC</option>
+            <option>BODRUM WC</option>
+            <option>GÖCEK OTOPARKI</option>
+            <option>BODRUM</option>
+            <option>FETHİYE BÜRO</option>
+            <option>MERKEZ BÜRO (A.)</option>
+          </select>
+          <select class="prs-filter" id="prs-unvan" onchange="loadPersonel(1)">
+            <option value="">Tüm Ünvanlar</option>
+            <option>ŞOFÖR</option>
+            <option>GÜVENLİK GÖREVLİSİ</option>
+            <option>BÜRO MEMURU</option>
+            <option>OTOPARK GÖREVLİSİ</option>
+            <option>TEMİZLİK GÖREVLİSİ</option>
+            <option>PARKOMAT GÖREVLİSİ</option>
+            <option>BEDEN İŞÇİSİ (TEMİZLİK)</option>
+            <option>PALAMARCI</option>
+            <option>LOJİSTİK OPERASYON ELEMANI</option>
+            <option>MİSAFİR İLİŞKİLERİ GÖREVLİSİ</option>
+            <option>BİLET SATIŞ ELEMANI</option>
+            <option>BİLET SATIŞ SORUMLUSU</option>
+            <option>MEKANİK BAKIM ONARIMCISI</option>
+            <option>BAKIM ONARIM SORUMLUSU</option>
+            <option>TAMİR BAKIM ONARIMCISI</option>
+            <option>ELEKTRİK TEKNİSYENİ</option>
+            <option>ELEKTRİK TEKNİKERİ</option>
+            <option>ELEKTRİKÇİ</option>
+            <option>ELEKTRİKÇİ (GENEL)</option>
+            <option>OTOMOTİV ELEKTRİKÇİSİ</option>
+            <option>OTOMOTİV MEKANİKERİ</option>
+            <option>OTOMOTİV MEKANİKÇİSİ</option>
+            <option>OTOMOTİV KAPORTA USTASI</option>
+            <option>OTO KAPORTA VE BOYA USTASI</option>
+            <option>DİZEL OTOMOTİV MEKANİKERİ</option>
+            <option>KIZAKÇI (GEMİ)</option>
+            <option>DALGIÇ (BALIK ADAM)</option>
+            <option>KAYNAKÇI</option>
+            <option>SIHHİ TESİSATÇI</option>
+            <option>FORMEN</option>
+            <option>KOORDİNASYON SORUMLUSU</option>
+            <option>İLÇE ULAŞIM KOORDİNATÖRÜ</option>
+            <option>İLÇE KOORDİNATÖRÜ</option>
+            <option>LİMAN ŞEFİ</option>
+            <option>ÇEKEK YERİ SORUMLUSU</option>
+            <option>OTOPARK SAHA SORUMLUSU</option>
+            <option>TEKNİK İŞLER PERSONELİ</option>
+            <option>TEKNİK İŞLER SORUMLUSU</option>
+            <option>MUHASEBE MESLEK ELEMANI</option>
+            <option>FİNANS HİZMETLERİ ELEMANI</option>
+            <option>FİNANS SORUMLUSU</option>
+            <option>SATIN ALMA SORUMLUSU</option>
+            <option>MALİ MÜŞAVİR</option>
+            <option>KİMYAGER</option>
+            <option>İK/İDARİ İŞLER PERSONELİ</option>
+            <option>İK/İDARİ İŞLER SORUMLUSU</option>
+            <option>GENEL MÜDÜR</option>
+          </select>
+          <select class="prs-filter" id="prs-ilce" onchange="loadPersonel(1)">
+            <option value="">Tüm İlçeler</option>
+            <option>Bodrum</option>
+            <option>Dalaman</option>
+            <option>Datça</option>
+            <option>Fethiye</option>
+            <option>Kavaklıdere</option>
+            <option>Köyceğiz</option>
+            <option>Marmaris</option>
+            <option>Menteşe</option>
+            <option>Milas</option>
+            <option>Ortaca</option>
+            <option>Seydikemer</option>
+            <option>Ula</option>
+            <option>Yatağan</option>
+          </select>
+          <select class="prs-filter" id="prs-aktif" onchange="loadPersonel(1)">
+            <option value="true">Aktif</option>
+            <option value="false">Pasif</option>
+            <option value="">Tümü</option>
+          </select>
+          <button id="btn-personel-ekle" class="prs-btn-add" onclick="openPersonelDrawer(null)">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 1v12M1 7h12"/></svg>
+            Personel Ekle
+          </button>
         </div>
 
-        <div class="card">
-          <div class="card-body" style="padding:0">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>#</th>
-                    <th class="th-sort" onclick="prsSortBy('ad_soyad')" id="prs-th-ad_soyad">Ad Soyad</th>
-                    <th class="th-sort" onclick="prsSortBy('bolum')"    id="prs-th-bolum">Bölüm</th>
-                    <th class="th-sort" onclick="prsSortBy('unvan')"    id="prs-th-unvan">Ünvan</th>
-                    <th class="th-sort" onclick="prsSortBy('ilce')"     id="prs-th-ilce">İlçe / Hizmet Noktası</th>
-                    <th class="th-sort" onclick="prsSortBy('ise_giris')" id="prs-th-ise_giris">İşe Giriş</th>
-                    <th class="th-sort" onclick="prsSortBy('guvenlik_belge_tarih')" id="prs-th-guvenlik_belge_tarih">Güv. Belgesi</th>
-                    <th class="th-sort" onclick="prsSortBy('telefon')"  id="prs-th-telefon">Telefon</th>
-                    <th>Durum</th>
-                    <th>İşlem</th>
-                  </tr>
-                </thead>
-                <tbody id="personel-tbody">
-                  <tr><td colspan="10"><div class="empty"><div class="empty-icon">👤</div><h3>Yükleniyor...</h3></div></td></tr>
-                </tbody>
-              </table>
-            </div>
+        <div class="prs-table-card">
+          <div style="overflow-x:auto">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th class="prs-sort" onclick="prsSortBy('ad_soyad')" id="prs-th-ad_soyad">Ad - Soyad</th>
+                  <th class="prs-sort" onclick="prsSortBy('bolum')"    id="prs-th-bolum">Bölüm</th>
+                  <th class="prs-sort" onclick="prsSortBy('unvan')"    id="prs-th-unvan">Ünvan</th>
+                  <th class="prs-sort" onclick="prsSortBy('ilce')"     id="prs-th-ilce">İlçe</th>
+                  <th class="prs-sort" onclick="prsSortBy('ise_giris')" id="prs-th-ise_giris">İşe Giriş</th>
+                  <th class="prs-sort" onclick="prsSortBy('guvenlik_belge_tarih')" id="prs-th-guvenlik_belge_tarih">Güv. Belgesi</th>
+                  <th class="prs-sort" onclick="prsSortBy('telefon')"  id="prs-th-telefon">Telefon</th>
+                  <th>Durum</th>
+                  <th>İşlem</th>
+                </tr>
+              </thead>
+              <tbody id="personel-tbody">
+                <tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-3)">Yükleniyor...</td></tr>
+              </tbody>
+            </table>
           </div>
-          <div class="card-footer" style="display:flex;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--border)">
-            <button class="pg-btn" id="prs-prev" onclick="loadPersonel(prsPage-1)">← Önceki</button>
+          <div class="prs-footer">
+            <button class="prs-pg-btn" id="prs-prev" onclick="loadPersonel(prsPage-1)" title="Önceki">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+            </button>
             <span id="prs-page-info" style="font-size:13px;color:var(--text-2)">—</span>
-            <button class="pg-btn" id="prs-next" onclick="loadPersonel(prsPage+1)">Sonraki →</button>
-            <select class="form-input" id="prs-per-page" style="width:80px;margin-left:auto" onchange="loadPersonel(1)">
+            <button class="prs-pg-btn" id="prs-next" onclick="loadPersonel(prsPage+1)" title="Sonraki">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 2l5 5-5 5"/></svg>
+            </button>
+            <select class="prs-filter" id="prs-per-page" style="width:80px;margin-left:auto" onchange="loadPersonel(1)">
               <option value="25">25</option>
               <option value="50">50</option>
               <option value="100">100</option>
@@ -4599,7 +4782,7 @@ function prsSortBy(col) {
     prsSort.col = col;
     prsSort.dir = 'asc';
   }
-  document.querySelectorAll('.th-sort').forEach(th => th.classList.remove('asc','desc'));
+  document.querySelectorAll('.prs-sort').forEach(th => th.classList.remove('asc','desc'));
   const th = document.getElementById('prs-th-' + col);
   if (th) th.classList.add(prsSort.dir);
   loadPersonel(1);
@@ -4652,19 +4835,19 @@ async function loadPersonel(page) {
   if (ilce)  params.set('ilce', ilce);
   if (aktif) params.set('aktif', aktif);
 
-  document.querySelectorAll('.th-sort').forEach(th => th.classList.remove('asc','desc'));
+  document.querySelectorAll('.prs-sort').forEach(th => th.classList.remove('asc','desc'));
   const activeTh = document.getElementById('prs-th-' + prsSort.col);
   if (activeTh) activeTh.classList.add(prsSort.dir);
 
   const tbody = document.getElementById('personel-tbody');
-  tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">⏳</div><h3>Yükleniyor...</h3></div></td></tr>';
+  tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-3)">Yükleniyor...</td></tr>';
 
   const res = await fetch('/personel?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
   if (!res.ok) return;
   const data = await res.json();
 
   if (!data.veri.length) {
-    tbody.innerHTML = '<tr><td colspan="10"><div class="empty"><div class="empty-icon">👤</div><h3>Personel bulunamadı</h3></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="10"><div style="text-align:center;padding:40px;color:var(--text-3)"><svg width="40" height="40" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><p style="margin-top:8px">Personel bulunamadı</p></div></td></tr>';
     document.getElementById('prs-page-info').textContent = '0 kayıt';
     document.getElementById('prs-prev').disabled = true;
     document.getElementById('prs-next').disabled = true;
@@ -4673,29 +4856,43 @@ async function loadPersonel(page) {
 
   const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
   const now  = new Date();
+  const PRS_AV_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#14b8a6','#e11d48','#6366f1'];
 
   tbody.innerHTML = data.veri.map((p, idx) => {
     const guvTar = p.guvenlik_belge_tarih ? new Date(p.guvenlik_belge_tarih) : null;
     const guvColor = guvTar && guvTar < now ? '#dc2626' : guvTar && (guvTar - now) < 90*86400000 ? '#d97706' : '';
     const aktifBadge = p.aktif
-      ? '<span class="d-badge" style="background:#dcfce7;color:#16a34a;font-size:10px">Aktif</span>'
-      : '<span class="d-badge" style="background:#fee2e2;color:#dc2626;font-size:10px">Pasif</span>';
+      ? '<span class="prs-status-badge" style="background:#dcfce7;color:#16a34a">Aktif</span>'
+      : '<span class="prs-status-badge" style="background:#fee2e2;color:#dc2626">Pasif</span>';
+    const initials = (p.ad_soyad || '').split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
+    const avColor = PRS_AV_COLORS[(p.id || idx) % PRS_AV_COLORS.length];
 
     return `<tr>
       <td style="color:var(--text-3);font-size:11px">${(prsPage-1)*parseInt(perPage)+idx+1}</td>
-      <td><strong style="cursor:pointer;color:var(--accent)" onclick="openPersonelDetay(${p.id})">${p.ad_soyad}</strong></td>
-      <td style="font-size:12px">${p.bolum || '—'}</td>
-      <td style="font-size:12px">${p.unvan || '—'}</td>
-      <td style="font-size:12px">${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
-      <td style="font-size:12px">${fmt(p.ise_giris)}</td>
-      <td style="font-size:12px;color:${guvColor}">${fmt(p.guvenlik_belge_tarih)}</td>
-      <td style="font-size:12px">${p.telefon || '—'}</td>
+      <td>
+        <div class="prs-name-cell">
+          <span class="prs-avatar" style="background:${avColor}">${initials}</span>
+          <span class="prs-name-link" onclick="openPersonelDetay(${p.id})">${p.ad_soyad}</span>
+        </div>
+      </td>
+      <td>${p.bolum || '—'}</td>
+      <td>${p.unvan || '—'}</td>
+      <td>${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
+      <td>${fmt(p.ise_giris)}</td>
+      <td style="${guvColor ? 'color:'+guvColor+';font-weight:600' : ''}">${fmt(p.guvenlik_belge_tarih)}</td>
+      <td>${p.telefon || '—'}</td>
       <td>${aktifBadge}</td>
       <td>
         <div style="display:flex;gap:4px">
-          <button class="btn-icon" title="Detay" onclick="openPersonelDetay(${p.id})">👁</button>
-          <button class="btn-icon" title="İzinleri" onclick="izinleriGor(${p.id},'${p.ad_soyad}')">📅</button>
-          ${canEditIK ? `<button class="btn-icon del" title="Pasif Yap" onclick="personelPasif(${p.id})">🚫</button>` : ''}
+          <button class="prs-action-btn" title="Detay" onclick="openPersonelDetay(${p.id})">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 7s2.5-5 6-5 6 5 6 5-2.5 5-6 5-6-5-6-5z"/><circle cx="7" cy="7" r="2"/></svg>
+          </button>
+          <button class="prs-action-btn" title="İzinleri" onclick="izinleriGor(${p.id},'${p.ad_soyad}')">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="10" height="10" rx="1"/><path d="M2 6h10M5 1v3M9 1v3"/></svg>
+          </button>
+          ${canEditIK ? `<button class="prs-action-btn del" title="Pasif Yap" onclick="personelPasif(${p.id})">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="M4.5 9.5l5-5"/></svg>
+          </button>` : ''}
         </div>
       </td>
     </tr>`;
