@@ -212,6 +212,39 @@ CREATE TABLE IF NOT EXISTS personel_evraklari (
     mime_type    VARCHAR(100),
     yuklendi_at  TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS ozgecmis_isyeri (
+    id           SERIAL PRIMARY KEY,
+    personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL,
+    isyeri_adi   VARCHAR(255) NOT NULL,
+    pozisyon     VARCHAR(255),
+    baslangic    DATE,
+    bitis        DATE,
+    aciklama     TEXT,
+    olusturuldu  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS ozgecmis_okul (
+    id           SERIAL PRIMARY KEY,
+    personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL,
+    okul_adi     VARCHAR(255) NOT NULL,
+    bolum        VARCHAR(255),
+    derece       VARCHAR(100),
+    mezuniyet_yili INT,
+    aciklama     TEXT,
+    olusturuldu  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS ozgecmis_sertifika (
+    id           SERIAL PRIMARY KEY,
+    personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL,
+    sertifika_adi VARCHAR(255) NOT NULL,
+    kurum        VARCHAR(255),
+    tarih        DATE,
+    gecerlilik   DATE,
+    aciklama     TEXT,
+    olusturuldu  TIMESTAMPTZ DEFAULT NOW()
+);
 """
 
 

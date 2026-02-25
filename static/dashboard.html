@@ -4997,6 +4997,7 @@ function pdRenderPage() {
       <button class="pd-tab-btn" onclick="pdSwitchTab('gorev', this)">Görev Bilgileri</button>
       <button class="pd-tab-btn" onclick="pdSwitchTab('iletisim', this)">İletişim</button>
       <button class="pd-tab-btn" onclick="pdSwitchTab('evraklar', this)">Evraklar</button>
+      <button class="pd-tab-btn" onclick="pdSwitchTab('ozgecmis', this)">Özgeçmiş</button>
     </div>
 
     <div class="pd-panel active" id="pd-panel-bilgiler">
@@ -5048,6 +5049,78 @@ function pdRenderPage() {
         <div id="pd-ev-list"><div class="pd-loading"><p>Yükleniyor...</p></div></div>
       </div>
     </div>
+
+    <div class="pd-panel" id="pd-panel-ozgecmis">
+      <div class="pd-card" style="margin-bottom:16px">
+        <div class="pd-card-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Önceki İşyerleri</span>
+          <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="pdOzgecmisForm('isyeri')">+ Ekle</button>
+        </div>
+        <div id="pd-oz-isyeri-form" style="display:none;margin-bottom:12px">
+          <div class="pd-form-grid">
+            <div class="pd-form-field"><label>İşyeri Adı *</label><input type="text" id="pd-oz-isyeri-adi"></div>
+            <div class="pd-form-field"><label>Pozisyon</label><input type="text" id="pd-oz-isyeri-poz"></div>
+            <div class="pd-form-field"><label>Başlangıç</label><input type="date" id="pd-oz-isyeri-bas"></div>
+            <div class="pd-form-field"><label>Bitiş</label><input type="date" id="pd-oz-isyeri-bit"></div>
+          </div>
+          <div class="pd-form-field" style="margin-top:6px"><label>Açıklama</label><input type="text" id="pd-oz-isyeri-acik" placeholder="Görev tanımı, notlar..."></div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="pdOzgecmisKaydet('isyeri')">Kaydet</button>
+            <button class="btn btn-outline" style="font-size:12px;padding:6px 14px" onclick="document.getElementById('pd-oz-isyeri-form').style.display='none'">İptal</button>
+          </div>
+        </div>
+        <div id="pd-oz-isyeri-list"></div>
+      </div>
+
+      <div class="pd-card" style="margin-bottom:16px">
+        <div class="pd-card-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Eğitim Bilgileri</span>
+          <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="pdOzgecmisForm('okul')">+ Ekle</button>
+        </div>
+        <div id="pd-oz-okul-form" style="display:none;margin-bottom:12px">
+          <div class="pd-form-grid">
+            <div class="pd-form-field"><label>Okul Adı *</label><input type="text" id="pd-oz-okul-adi"></div>
+            <div class="pd-form-field"><label>Bölüm</label><input type="text" id="pd-oz-okul-bolum"></div>
+            <div class="pd-form-field">
+              <label>Derece</label>
+              <select id="pd-oz-okul-derece">
+                <option value="">Seçiniz</option>
+                <option>İlkokul</option><option>Ortaokul</option><option>Lise</option>
+                <option>Ön Lisans</option><option>Lisans</option><option>Yüksek Lisans</option><option>Doktora</option>
+              </select>
+            </div>
+            <div class="pd-form-field"><label>Mezuniyet Yılı</label><input type="number" id="pd-oz-okul-yil" min="1960" max="2030"></div>
+          </div>
+          <div class="pd-form-field" style="margin-top:6px"><label>Açıklama</label><input type="text" id="pd-oz-okul-acik" placeholder="Not..."></div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="pdOzgecmisKaydet('okul')">Kaydet</button>
+            <button class="btn btn-outline" style="font-size:12px;padding:6px 14px" onclick="document.getElementById('pd-oz-okul-form').style.display='none'">İptal</button>
+          </div>
+        </div>
+        <div id="pd-oz-okul-list"></div>
+      </div>
+
+      <div class="pd-card">
+        <div class="pd-card-title" style="display:flex;align-items:center;justify-content:space-between">
+          <span>Sertifikalar</span>
+          <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="pdOzgecmisForm('sertifika')">+ Ekle</button>
+        </div>
+        <div id="pd-oz-sertifika-form" style="display:none;margin-bottom:12px">
+          <div class="pd-form-grid">
+            <div class="pd-form-field"><label>Sertifika Adı *</label><input type="text" id="pd-oz-sert-adi"></div>
+            <div class="pd-form-field"><label>Veren Kurum</label><input type="text" id="pd-oz-sert-kurum"></div>
+            <div class="pd-form-field"><label>Alınma Tarihi</label><input type="date" id="pd-oz-sert-tarih"></div>
+            <div class="pd-form-field"><label>Geçerlilik Tarihi</label><input type="date" id="pd-oz-sert-gecerlilik"></div>
+          </div>
+          <div class="pd-form-field" style="margin-top:6px"><label>Açıklama</label><input type="text" id="pd-oz-sert-acik" placeholder="Not..."></div>
+          <div style="display:flex;gap:6px;margin-top:8px">
+            <button class="btn btn-primary" style="font-size:12px;padding:6px 14px" onclick="pdOzgecmisKaydet('sertifika')">Kaydet</button>
+            <button class="btn btn-outline" style="font-size:12px;padding:6px 14px" onclick="document.getElementById('pd-oz-sertifika-form').style.display='none'">İptal</button>
+          </div>
+        </div>
+        <div id="pd-oz-sertifika-list"></div>
+      </div>
+    </div>
   `;
   pdRenderInfoView();
   pdLoadEvraklar();
@@ -5080,6 +5153,165 @@ function pdSwitchTab(tab, btn) {
   document.querySelectorAll('.pd-tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('pd-panel-' + tab).classList.add('active');
   btn.classList.add('active');
+  if (tab === 'ozgecmis') pdLoadOzgecmis();
+}
+
+let pdOzData = null;
+
+async function pdLoadOzgecmis() {
+  if (!pdCurrentId) return;
+  const token = getToken();
+  ['isyeri','okul','sertifika'].forEach(k => {
+    const el = document.getElementById('pd-oz-' + k + '-list');
+    if (el) el.innerHTML = '<div style="padding:12px;color:var(--text-3);font-size:13px">Yükleniyor...</div>';
+  });
+  try {
+    const res = await fetch('/personel/' + pdCurrentId + '/ozgecmis', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    pdOzData = await res.json();
+    pdRenderOzIsyerleri();
+    pdRenderOzOkullar();
+    pdRenderOzSertifikalar();
+  } catch(e) { console.error(e); }
+}
+
+function pdOzgecmisForm(type) {
+  const form = document.getElementById('pd-oz-' + type + '-form');
+  if (form) { form.style.display = form.style.display === 'none' ? 'block' : 'none'; }
+}
+
+async function pdOzgecmisKaydet(type) {
+  const token = getToken();
+  let url, body;
+  if (type === 'isyeri') {
+    const adi = document.getElementById('pd-oz-isyeri-adi').value.trim();
+    if (!adi) { showToast('İşyeri adı gerekli', 'error'); return; }
+    url = '/personel/' + pdCurrentId + '/isyeri';
+    body = {
+      isyeri_adi: adi,
+      pozisyon: document.getElementById('pd-oz-isyeri-poz').value.trim() || null,
+      baslangic: document.getElementById('pd-oz-isyeri-bas').value || null,
+      bitis: document.getElementById('pd-oz-isyeri-bit').value || null,
+      aciklama: document.getElementById('pd-oz-isyeri-acik').value.trim() || null,
+    };
+  } else if (type === 'okul') {
+    const adi = document.getElementById('pd-oz-okul-adi').value.trim();
+    if (!adi) { showToast('Okul adı gerekli', 'error'); return; }
+    url = '/personel/' + pdCurrentId + '/okul';
+    body = {
+      okul_adi: adi,
+      bolum: document.getElementById('pd-oz-okul-bolum').value.trim() || null,
+      derece: document.getElementById('pd-oz-okul-derece').value || null,
+      mezuniyet_yili: parseInt(document.getElementById('pd-oz-okul-yil').value) || null,
+      aciklama: document.getElementById('pd-oz-okul-acik').value.trim() || null,
+    };
+  } else if (type === 'sertifika') {
+    const adi = document.getElementById('pd-oz-sert-adi').value.trim();
+    if (!adi) { showToast('Sertifika adı gerekli', 'error'); return; }
+    url = '/personel/' + pdCurrentId + '/sertifika';
+    body = {
+      sertifika_adi: adi,
+      kurum: document.getElementById('pd-oz-sert-kurum').value.trim() || null,
+      tarih: document.getElementById('pd-oz-sert-tarih').value || null,
+      gecerlilik: document.getElementById('pd-oz-sert-gecerlilik').value || null,
+      aciklama: document.getElementById('pd-oz-sert-acik').value.trim() || null,
+    };
+  }
+  try {
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + token },
+      body: JSON.stringify(body)
+    });
+    if (!res.ok) { const d = await res.json(); showToast(d.detail || 'Hata', 'error'); return; }
+    showToast('Kayıt eklendi', 'success');
+    document.getElementById('pd-oz-' + type + '-form').style.display = 'none';
+    pdLoadOzgecmis();
+  } catch(e) { showToast('Sunucu hatası', 'error'); }
+}
+
+async function pdOzgecmisSil(type, id) {
+  if (!confirm('Bu kaydı silmek istediğinize emin misiniz?')) return;
+  const token = getToken();
+  try {
+    const res = await fetch('/personel/' + type + '/' + id, {
+      method: 'DELETE',
+      headers: { Authorization: 'Bearer ' + token }
+    });
+    if (res.ok) { showToast('Kayıt silindi', 'success'); pdLoadOzgecmis(); }
+    else { showToast('Silinemedi', 'error'); }
+  } catch(e) { showToast('Hata', 'error'); }
+}
+
+function pdRenderOzIsyerleri() {
+  const el = document.getElementById('pd-oz-isyeri-list');
+  const rows = pdOzData?.isyerleri || [];
+  if (!rows.length) { el.innerHTML = '<div style="padding:16px;color:var(--text-3);font-size:13px;text-align:center">Kayıt yok</div>'; return; }
+  el.innerHTML = rows.map(r => {
+    const bas = r.baslangic ? r.baslangic.split('T')[0].split('-').reverse().join('.') : '';
+    const bit = r.bitis ? r.bitis.split('T')[0].split('-').reverse().join('.') : 'Devam';
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="width:36px;height:36px;border-radius:8px;background:#eff6ff;display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+        '<svg width="16" height="16" fill="none" stroke="#4361ee" stroke-width="2" viewBox="0 0 24 24"><path d="M20 7H4a2 2 0 00-2 2v10a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>' +
+      '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-weight:600;font-size:13px;color:var(--text)">' + r.isyeri_adi + '</div>' +
+        (r.pozisyon ? '<div style="font-size:12px;color:var(--text-2);margin-top:2px">' + r.pozisyon + '</div>' : '') +
+        '<div style="font-size:11px;color:var(--text-3);margin-top:3px">' + (bas ? bas + ' — ' + bit : '') + '</div>' +
+        (r.aciklama ? '<div style="font-size:12px;color:var(--text-2);margin-top:4px">' + r.aciklama + '</div>' : '') +
+      '</div>' +
+      (canEditIK ? '<button class="prs-action-btn del" style="flex-shrink:0" title="Sil" onclick="pdOzgecmisSil(\'isyeri\',' + r.id + ')">' +
+        '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function pdRenderOzOkullar() {
+  const el = document.getElementById('pd-oz-okul-list');
+  const rows = pdOzData?.okullar || [];
+  if (!rows.length) { el.innerHTML = '<div style="padding:16px;color:var(--text-3);font-size:13px;text-align:center">Kayıt yok</div>'; return; }
+  el.innerHTML = rows.map(r => {
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="width:36px;height:36px;border-radius:8px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+        '<svg width="16" height="16" fill="none" stroke="#16a34a" stroke-width="2" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>' +
+      '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-weight:600;font-size:13px;color:var(--text)">' + r.okul_adi + '</div>' +
+        (r.bolum ? '<div style="font-size:12px;color:var(--text-2);margin-top:2px">' + r.bolum + '</div>' : '') +
+        '<div style="font-size:11px;color:var(--text-3);margin-top:3px">' +
+          (r.derece ? r.derece : '') + (r.mezuniyet_yili ? (r.derece ? ' — ' : '') + r.mezuniyet_yili : '') +
+        '</div>' +
+        (r.aciklama ? '<div style="font-size:12px;color:var(--text-2);margin-top:4px">' + r.aciklama + '</div>' : '') +
+      '</div>' +
+      (canEditIK ? '<button class="prs-action-btn del" style="flex-shrink:0" title="Sil" onclick="pdOzgecmisSil(\'okul\',' + r.id + ')">' +
+        '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>' : '') +
+    '</div>';
+  }).join('');
+}
+
+function pdRenderOzSertifikalar() {
+  const el = document.getElementById('pd-oz-sertifika-list');
+  const rows = pdOzData?.sertifikalar || [];
+  if (!rows.length) { el.innerHTML = '<div style="padding:16px;color:var(--text-3);font-size:13px;text-align:center">Kayıt yok</div>'; return; }
+  el.innerHTML = rows.map(r => {
+    const tarih = r.tarih ? r.tarih.split('T')[0].split('-').reverse().join('.') : '';
+    const gecerlilik = r.gecerlilik ? r.gecerlilik.split('T')[0].split('-').reverse().join('.') : '';
+    return '<div style="display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)">' +
+      '<div style="width:36px;height:36px;border-radius:8px;background:#fef3c7;display:flex;align-items:center;justify-content:center;flex-shrink:0">' +
+        '<svg width="16" height="16" fill="none" stroke="#d97706" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="8" r="6"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>' +
+      '</div>' +
+      '<div style="flex:1;min-width:0">' +
+        '<div style="font-weight:600;font-size:13px;color:var(--text)">' + r.sertifika_adi + '</div>' +
+        (r.kurum ? '<div style="font-size:12px;color:var(--text-2);margin-top:2px">' + r.kurum + '</div>' : '') +
+        '<div style="font-size:11px;color:var(--text-3);margin-top:3px">' +
+          (tarih ? 'Alınma: ' + tarih : '') + (gecerlilik ? ' — Geçerlilik: ' + gecerlilik : '') +
+        '</div>' +
+        (r.aciklama ? '<div style="font-size:12px;color:var(--text-2);margin-top:4px">' + r.aciklama + '</div>' : '') +
+      '</div>' +
+      (canEditIK ? '<button class="prs-action-btn del" style="flex-shrink:0" title="Sil" onclick="pdOzgecmisSil(\'sertifika\',' + r.id + ')">' +
+        '<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>' : '') +
+    '</div>';
+  }).join('');
 }
 
 function pdToggleEdit() {

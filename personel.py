@@ -378,3 +378,96 @@ async def delete_evrak(eid: int, token: dict = Depends(require_ik_editor)):
     if path.exists():
         path.unlink()
     return {"ok": True}
+
+
+class IsyeriModel(BaseModel):
+    isyeri_adi: str
+    pozisyon: Optional[str] = None
+    baslangic: Optional[date] = None
+    bitis: Optional[date] = None
+    aciklama: Optional[str] = None
+
+class OkulModel(BaseModel):
+    okul_adi: str
+    bolum: Optional[str] = None
+    derece: Optional[str] = None
+    mezuniyet_yili: Optional[int] = None
+    aciklama: Optional[str] = None
+
+class SertifikaModel(BaseModel):
+    sertifika_adi: str
+    kurum: Optional[str] = None
+    tarih: Optional[date] = None
+    gecerlilik: Optional[date] = None
+    aciklama: Optional[str] = None
+
+
+@router.get("/{pid}/ozgecmis")
+async def get_ozgecmis(pid: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        isyerleri = await conn.fetch(
+            "SELECT * FROM ozgecmis_isyeri WHERE personel_id=$1 ORDER BY baslangic DESC NULLS LAST", pid)
+        okullar = await conn.fetch(
+            "SELECT * FROM ozgecmis_okul WHERE personel_id=$1 ORDER BY mezuniyet_yili DESC NULLS LAST", pid)
+        sertifikalar = await conn.fetch(
+            "SELECT * FROM ozgecmis_sertifika WHERE personel_id=$1 ORDER BY tarih DESC NULLS LAST", pid)
+    return {
+        "isyerleri": [dict(r) for r in isyerleri],
+        "okullar": [dict(r) for r in okullar],
+        "sertifikalar": [dict(r) for r in sertifikalar],
+    }
+
+
+@router.post("/{pid}/isyeri")
+async def add_isyeri(pid: int, data: IsyeriModel, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "INSERT INTO ozgecmis_isyeri (personel_id, isyeri_adi, pozisyon, baslangic, bitis, aciklama) "
+            "VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
+            pid, data.isyeri_adi, data.pozisyon, data.baslangic, data.bitis, data.aciklama)
+    return dict(row)
+
+@router.delete("/isyeri/{rid}")
+async def delete_isyeri(rid: int, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute("DELETE FROM ozgecmis_isyeri WHERE id=$1", rid)
+    return {"ok": True}
+
+
+@router.post("/{pid}/okul")
+async def add_okul(pid: int, data: OkulModel, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "INSERT INTO ozgecmis_okul (personel_id, okul_adi, bolum, derece, mezuniyet_yili, aciklama) "
+            "VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
+            pid, data.okul_adi, data.bolum, data.derece, data.mezuniyet_yili, data.aciklama)
+    return dict(row)
+
+@router.delete("/okul/{rid}")
+async def delete_okul(rid: int, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute("DELETE FROM ozgecmis_okul WHERE id=$1", rid)
+    return {"ok": True}
+
+
+@router.post("/{pid}/sertifika")
+async def add_sertifika(pid: int, data: SertifikaModel, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "INSERT INTO ozgecmis_sertifika (personel_id, sertifika_adi, kurum, tarih, gecerlilik, aciklama) "
+            "VALUES ($1,$2,$3,$4,$5,$6) RETURNING *",
+            pid, data.sertifika_adi, data.kurum, data.tarih, data.gecerlilik, data.aciklama)
+    return dict(row)
+
+@router.delete("/sertifika/{rid}")
+async def delete_sertifika(rid: int, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute("DELETE FROM ozgecmis_sertifika WHERE id=$1", rid)
+    return {"ok": True}
