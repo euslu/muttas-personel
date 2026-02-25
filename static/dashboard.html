@@ -993,9 +993,29 @@ tr:hover td { background: var(--bg-soft); }
   justify-content: center;
   color: var(--text-3);
   transition: all .15s;
+  position: relative;
 }
 .prs-action-btn:hover { border-color: var(--accent); color: var(--accent); }
 .prs-action-btn.del:hover { border-color: #dc2626; color: #dc2626; }
+.prs-action-btn::after {
+  content: attr(title);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--sidebar-bg);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 4px 10px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+  z-index: 10;
+}
+.prs-action-btn:hover::after { opacity: 1; }
 
 .prs-status-badge {
   display: inline-block;
@@ -2442,16 +2462,16 @@ tr:hover td { background: var(--bg-soft); }
             <table>
               <thead>
                 <tr>
-                  <th>#</th>
-                  <th class="prs-sort" onclick="prsSortBy('ad_soyad')" id="prs-th-ad_soyad">Ad - Soyad</th>
-                  <th class="prs-sort" onclick="prsSortBy('bolum')"    id="prs-th-bolum">Bölüm</th>
-                  <th class="prs-sort" onclick="prsSortBy('unvan')"    id="prs-th-unvan">Ünvan</th>
-                  <th class="prs-sort" onclick="prsSortBy('ilce')"     id="prs-th-ilce">İlçe</th>
-                  <th class="prs-sort" onclick="prsSortBy('ise_giris')" id="prs-th-ise_giris">İşe Giriş</th>
-                  <th class="prs-sort" onclick="prsSortBy('guvenlik_belge_tarih')" id="prs-th-guvenlik_belge_tarih">Güv. Belgesi</th>
-                  <th class="prs-sort" onclick="prsSortBy('telefon')"  id="prs-th-telefon">Telefon</th>
-                  <th>Durum</th>
-                  <th>İşlem</th>
+                  <th title="Sıra numarası">#</th>
+                  <th class="prs-sort" onclick="prsSortBy('ad_soyad')" id="prs-th-ad_soyad" title="Personelin adı ve soyadı — sıralamak için tıklayın">Ad - Soyad</th>
+                  <th class="prs-sort" onclick="prsSortBy('bolum')"    id="prs-th-bolum" title="Çalıştığı bölüm — sıralamak için tıklayın">Bölüm</th>
+                  <th class="prs-sort" onclick="prsSortBy('unvan')"    id="prs-th-unvan" title="Görev ünvanı — sıralamak için tıklayın">Ünvan</th>
+                  <th class="prs-sort" onclick="prsSortBy('ilce')"     id="prs-th-ilce" title="Görev yaptığı ilçe ve hizmet noktası — sıralamak için tıklayın">İlçe</th>
+                  <th class="prs-sort" onclick="prsSortBy('ise_giris')" id="prs-th-ise_giris" title="İşe giriş tarihi — sıralamak için tıklayın">İşe Giriş</th>
+                  <th class="prs-sort" onclick="prsSortBy('guvenlik_belge_tarih')" id="prs-th-guvenlik_belge_tarih" title="Güvenlik belgesi geçerlilik tarihi — sıralamak için tıklayın">Güv. Belgesi</th>
+                  <th class="prs-sort" onclick="prsSortBy('telefon')"  id="prs-th-telefon" title="İletişim telefon numarası — sıralamak için tıklayın">Telefon</th>
+                  <th title="Personelin aktif veya pasif durumu">Durum</th>
+                  <th title="Detay görüntüle, izin geçmişi ve yönetim işlemleri">İşlem</th>
                 </tr>
               </thead>
               <tbody id="personel-tbody">
