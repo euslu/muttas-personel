@@ -1,9 +1,11 @@
+import time
+from collections import defaultdict
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from db import get_pool, close_pool
 from auth import router as auth_router
@@ -25,6 +27,66 @@ class CSPMiddleware(BaseHTTPMiddleware):
             "https://fonts.googleapis.com https://fonts.gstatic.com; "
             "img-src 'self' data:"
         )
+        return response
+
+
+class RateLimitMiddleware(BaseHTTPMiddleware):
+    def __init__(self, app):
+        super().__init__(app)
+        self.requests = defaultdict(list)
+        self.public_limits = {
+            "/public/": {"max": 10, "window": 60},
+            "/auth/login": {"max": 10, "window": 60},
+        }
+        self.global_limit = {"max": 120, "window": 60}
+
+    def _get_client_ip(self, request):
+        forwarded = request.headers.get("x-forwarded-for")
+        if forwarded:
+            return forwarded.split(",")[0].strip()
+        return request.client.host if request.client else "unknown"
+
+    def _clean_old(self, key, window):
+        now = time.time()
+        self.requests[key] = [t for t in self.requests[key] if now - t < window]
+
+    async def dispatch(self, request, call_next):
+        ip = self._get_client_ip(request)
+        path = request.url.path
+        now = time.time()
+
+        for prefix, limits in self.public_limits.items():
+            if path.startswith(prefix):
+                key = f"rl:{ip}:{prefix}"
+                self._clean_old(key, limits["window"])
+                if len(self.requests[key]) >= limits["max"]:
+                    return JSONResponse(
+                        status_code=429,
+                        content={"detail": "Çok fazla istek. Lütfen biraz bekleyin."},
+                        headers={"Retry-After": str(limits["window"])}
+                    )
+                self.requests[key].append(now)
+                break
+
+        global_key = f"rl:{ip}:global"
+        self._clean_old(global_key, self.global_limit["window"])
+        if len(self.requests[global_key]) >= self.global_limit["max"]:
+            return JSONResponse(
+                status_code=429,
+                content={"detail": "Çok fazla istek. Lütfen biraz bekleyin."},
+                headers={"Retry-After": str(self.global_limit["window"])}
+            )
+        self.requests[global_key].append(now)
+
+        if len(self.requests) > 50000:
+            cutoff = now - 120
+            self.requests = defaultdict(list, {
+                k: [t for t in v if t > cutoff]
+                for k, v in self.requests.items()
+                if any(t > cutoff for t in v)
+            })
+
+        response = await call_next(request)
         return response
 
 
@@ -261,6 +323,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(title="muttas-liman-api", lifespan=lifespan)
 
 app.add_middleware(CSPMiddleware)
+app.add_middleware(RateLimitMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

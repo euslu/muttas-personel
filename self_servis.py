@@ -305,6 +305,12 @@ async def public_izin_olustur(data: PublicIzinCreate):
     if data.izin_turu not in IZIN_TURLERI_PUBLIC:
         raise HTTPException(status_code=400, detail="Geçersiz izin türü.")
 
+    if data.gun_sayisi < 1 or data.gun_sayisi > 365:
+        raise HTTPException(status_code=400, detail="Gün sayısı 1-365 arasında olmalıdır.")
+
+    if data.bitis < data.baslangic:
+        raise HTTPException(status_code=400, detail="Bitiş tarihi başlangıçtan önce olamaz.")
+
     pool = await get_pool()
     async with pool.acquire() as conn:
         prs = await conn.fetchrow(
@@ -313,6 +319,13 @@ async def public_izin_olustur(data: PublicIzinCreate):
         )
         if not prs:
             raise HTTPException(status_code=403, detail="TC kimlik doğrulaması başarısız.")
+
+        duplicate = await conn.fetchval(
+            "SELECT id FROM izinler WHERE personel_id=$1 AND baslangic=$2 AND bitis=$3 AND izin_turu=$4",
+            data.personel_id, data.baslangic, data.bitis, data.izin_turu
+        )
+        if duplicate:
+            raise HTTPException(status_code=409, detail="Bu tarih aralığında aynı türde izin talebi zaten mevcut.")
 
         row = await conn.fetchrow("""
             INSERT INTO izinler
