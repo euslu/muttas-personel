@@ -5364,7 +5364,7 @@ function pdShowEditForm() {
       <div class="pd-form-field"><label>Cinsiyet *</label><select id="pd-f-cinsiyet"><option value="">Seçiniz</option><option value="ERKEK" ${p.cinsiyet==='ERKEK'?'selected':''}>Erkek</option><option value="KADIN" ${p.cinsiyet==='KADIN'?'selected':''}>Kadın</option></select></div>
       <div class="pd-form-field"><label>Medeni Hal</label><select id="pd-f-medeni"><option value="">Seçiniz</option><option value="EVLİ" ${p.medeni_hal==='EVLİ'?'selected':''}>Evli</option><option value="BEKAR" ${p.medeni_hal==='BEKAR'?'selected':''}>Bekar</option></select></div>
       <div class="pd-form-field"><label>Doğum Tarihi *</label><input type="date" id="pd-f-dogum-tarihi" value="${dtVal(p.dogum_tarihi)}"></div>
-      <div class="pd-form-field"><label>Doğum Yeri</label><input type="text" id="pd-f-dogum-yeri" value="${p.dogum_yeri || ''}"></div>
+      <div class="pd-form-field"><label>Doğum Yeri</label><div class="combo-wrap"><input type="text" id="pd-f-dogum-yeri" value="${p.dogum_yeri || ''}" placeholder="İl seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-dogum-yeri')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-dogum-yeri')">▾</button><div class="combo-drop" id="pd-f-dogum-yeri-drop"></div></div></div>
       <div class="pd-form-field"><label>Kan Grubu</label><select id="pd-f-kan"><option value="">Seçiniz</option>${['A Rh+','A Rh-','B Rh+','B Rh-','AB Rh+','AB Rh-','0 Rh+','0 Rh-'].map(k=>'<option'+(p.kan_grubu===k?' selected':'')+'>'+k+'</option>').join('')}</select></div>
       <div class="pd-form-field"><label>Çocuk Sayısı</label><input type="number" id="pd-f-cocuk" min="0" value="${p.cocuk_sayisi ?? 0}"></div>
       <div class="pd-form-field"><label>Öğrenim Durumu</label><select id="pd-f-ogrenim"><option value="">Seçiniz</option>${['İLKOKUL','ORTAOKUL','LİSE','ÖN LİSANS','LİSANS','YÜKSEK LİSANS'].map(o=>'<option value="'+o+'"'+(p.ogrenim===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
@@ -5373,16 +5373,15 @@ function pdShowEditForm() {
     </div>
     <div class="pd-card-title" style="margin-top:24px">Görev Bilgileri</div>
     <div class="pd-form-grid">
-      <div class="pd-form-field"><label>Bölüm *</label><input type="text" id="pd-f-bolum" value="${p.bolum || ''}"></div>
-      <div class="pd-form-field"><label>Ünvan *</label><input type="text" id="pd-f-unvan" value="${p.unvan || ''}"></div>
-      <div class="pd-form-field"><label>Maliyet Merkezi</label><input type="text" id="pd-f-maliyet" value="${p.maliyet_merkezi || ''}"></div>
-      <div class="pd-form-field"><label>Çalıştığı İlçe</label><input type="text" id="pd-f-ilce" value="${p.ilce || ''}"></div>
-      <div class="pd-form-field span2"><label>Hizmet Noktası</label><input type="text" id="pd-f-hizmet" value="${p.hizmet_noktasi || ''}"></div>
+      <div class="pd-form-field"><label>Bölüm *</label><div class="combo-wrap"><input type="text" id="pd-f-bolum" value="${p.bolum || ''}" placeholder="Bölüm seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-bolum')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-bolum')">▾</button><div class="combo-drop" id="pd-f-bolum-drop"></div></div></div>
+      <div class="pd-form-field"><label>Ünvan *</label><div class="combo-wrap"><input type="text" id="pd-f-unvan" value="${p.unvan || ''}" placeholder="Ünvan seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-unvan')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-unvan')">▾</button><div class="combo-drop" id="pd-f-unvan-drop"></div></div></div>
+      <div class="pd-form-field"><label>Maliyet Merkezi</label><div class="combo-wrap"><input type="text" id="pd-f-maliyet" value="${p.maliyet_merkezi || ''}" placeholder="Maliyet merkezi seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-maliyet')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-maliyet')">▾</button><div class="combo-drop" id="pd-f-maliyet-drop"></div></div></div>
+      <div class="pd-form-field"><label>Çalıştığı İlçe</label><div class="combo-wrap"><input type="text" id="pd-f-ilce" value="${p.ilce || ''}" placeholder="İlçe seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-ilce')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-ilce')">▾</button><div class="combo-drop" id="pd-f-ilce-drop"></div></div></div>
+      <div class="pd-form-field span2"><label>Hizmet Noktası</label><div class="combo-wrap"><input type="text" id="pd-f-hizmet" value="${p.hizmet_noktasi || ''}" placeholder="Hizmet noktası seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-hizmet')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-hizmet')">▾</button><div class="combo-drop" id="pd-f-hizmet-drop"></div></div></div>
       <div class="pd-form-field"><label>İşe Giriş Tarihi *</label><input type="date" id="pd-f-ise-giris" value="${dtVal(p.ise_giris)}"></div>
       <div class="pd-form-field"><label>İşten Çıkış Tarihi</label><input type="date" id="pd-f-isten-cikis" value="${dtVal(p.isten_cikis)}"></div>
-      <div class="pd-form-field span2"><label>Çıkış Kodu / Nedeni</label><input type="text" id="pd-f-cikis-kodu" value="${p.cikis_kodu || ''}"></div>
-      <div class="pd-form-field"><label>Meslek Kodu</label><input type="text" id="pd-f-meslek-kodu" value="${p.meslek_kodu || ''}"></div>
-      <div class="pd-form-field"><label>Meslek Adı</label><input type="text" id="pd-f-meslek-adi" value="${p.meslek_adi || ''}"></div>
+      <div class="pd-form-field span2"><label>Çıkış Kodu / Nedeni</label><div class="combo-wrap"><input type="text" id="pd-f-cikis-kodu" value="${p.cikis_kodu || ''}" placeholder="Kod seçin veya yazın" autocomplete="off" oninput="comboFilter('pd-f-cikis-kodu')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-cikis-kodu')">▾</button><div class="combo-drop" id="pd-f-cikis-kodu-drop"></div></div></div>
+      <div class="pd-form-field span2"><label>Meslek (Kod - Ad)</label><div class="combo-wrap"><input type="text" id="pd-f-meslek-adi" value="${p.meslek_kodu && p.meslek_adi ? p.meslek_adi : (p.meslek_adi || '')}" placeholder="Meslek adı veya kodu yazın..." autocomplete="off" oninput="comboFilter('pd-f-meslek-adi')"><button type="button" class="combo-btn" onclick="comboToggle('pd-f-meslek-adi')">▾</button><div class="combo-drop" id="pd-f-meslek-adi-drop"></div></div><input type="hidden" id="pd-f-meslek-kodu" value="${p.meslek_kodu || ''}"></div>
       <div class="pd-form-field"><label>Güvenlik Belgesi Geç. Tar.</label><input type="date" id="pd-f-guvenlik" value="${dtVal(p.guvenlik_belge_tarih)}"></div>
       <div class="pd-form-field"><label>Sigortacılık Başlama</label><input type="date" id="pd-f-sigorta-bas" value="${dtVal(p.sigortalilik_baslama)}"></div>
     </div>
@@ -6590,6 +6589,14 @@ const COMBO_OPTIONS = {
     'İK/İDARİ İŞLER SORUMLUSU','GENEL MÜDÜR',
   ],
 };
+COMBO_OPTIONS['pd-f-dogum-yeri'] = COMBO_OPTIONS['prs-form-dogum-yeri'];
+COMBO_OPTIONS['pd-f-bolum'] = COMBO_OPTIONS['prs-form-bolum'];
+COMBO_OPTIONS['pd-f-unvan'] = COMBO_OPTIONS['prs-form-unvan'];
+COMBO_OPTIONS['pd-f-maliyet'] = COMBO_OPTIONS['prs-form-maliyet'];
+COMBO_OPTIONS['pd-f-ilce'] = COMBO_OPTIONS['prs-form-ilce'];
+COMBO_OPTIONS['pd-f-hizmet'] = COMBO_OPTIONS['prs-form-hizmet'];
+COMBO_OPTIONS['pd-f-cikis-kodu'] = COMBO_OPTIONS['prs-form-cikis-kodu'];
+COMBO_OPTIONS['pd-f-meslek-adi'] = COMBO_OPTIONS['prs-form-meslek-adi'];
 
 function comboRender(id, q) {
   const drop = document.getElementById(id + '-drop');
@@ -6630,11 +6637,12 @@ function comboSelect(id, value) {
   if (input) input.value = value;
   const drop = document.getElementById(id + '-drop');
   if (drop) drop.classList.remove('open');
-  if (id === 'prs-form-meslek-adi') {
+  if (id === 'prs-form-meslek-adi' || id === 'pd-f-meslek-adi') {
     const parts = value.split(' - ');
     const kod = parts[0]?.trim() || '';
     const adi = parts.slice(1).join(' - ').trim() || value;
-    const kodEl = document.getElementById('prs-form-meslek-kodu');
+    const kodElId = id === 'pd-f-meslek-adi' ? 'pd-f-meslek-kodu' : 'prs-form-meslek-kodu';
+    const kodEl = document.getElementById(kodElId);
     if (kodEl) kodEl.value = kod;
     if (input) input.value = adi;
   }
