@@ -5021,6 +5021,20 @@ function pdFmt(d) {
   return d.split('T')[0].split('-').reverse().join('.');
 }
 
+function pdKidem(iseGiris) {
+  if (!iseGiris) return null;
+  const g = new Date(iseGiris.split('T')[0]);
+  const bugun = new Date();
+  let yil = bugun.getFullYear() - g.getFullYear();
+  let ay = bugun.getMonth() - g.getMonth();
+  if (ay < 0 || (ay === 0 && bugun.getDate() < g.getDate())) { yil--; ay += 12; }
+  if (bugun.getDate() < g.getDate()) ay--;
+  if (ay < 0) ay += 12;
+  if (yil < 0) return null;
+  if (yil === 0) return ay + ' ay';
+  return yil + ' yıl ' + ay + ' ay';
+}
+
 function pdGetInitials(name) {
   if (!name) return '?';
   return name.split(' ').map(w => w[0]).join('').substring(0, 2).toUpperCase();
@@ -5068,6 +5082,7 @@ function pdRenderPage() {
           ${p.tc_kimlik ? '<span>TC: ' + p.tc_kimlik + '</span>' : ''}
           ${p.telefon ? '<span>Tel: ' + p.telefon + '</span>' : ''}
           ${p.ise_giris ? '<span>İşe Giriş: ' + pdFmt(p.ise_giris) + '</span>' : ''}
+          ${p.ise_giris && pdKidem(p.ise_giris) ? '<span class="pd-badge pd-badge-info">Kıdem: ' + pdKidem(p.ise_giris) + '</span>' : ''}
         </div>
         <div class="pd-actions">
           <button class="btn btn-primary" onclick="pdToggleEdit()">
@@ -5229,7 +5244,7 @@ function pdRenderInfoView() {
   document.getElementById('pd-info-gorev').innerHTML = [
     ii('Bölüm', p.bolum), ii('Ünvan', p.unvan), ii('Maliyet Merkezi', p.maliyet_merkezi),
     ii('Çalıştığı İlçe', p.ilce), ii('Hizmet Noktası', p.hizmet_noktasi),
-    ii('İşe Giriş Tarihi', pdFmt(p.ise_giris)), ii('İşten Çıkış Tarihi', pdFmt(p.isten_cikis)),
+    ii('İşe Giriş Tarihi', pdFmt(p.ise_giris)), ii('Kıdem Süresi', pdKidem(p.ise_giris) || '—'), ii('İşten Çıkış Tarihi', pdFmt(p.isten_cikis)),
     ii('Çıkış Kodu', p.cikis_kodu), ii('Meslek Kodu', p.meslek_kodu), ii('Meslek Adı', p.meslek_adi),
     ii('Güvenlik Belgesi Geç. Tar.', pdFmt(p.guvenlik_belge_tarih)), ii('Sigortacılık Başlama', pdFmt(p.sigortalilik_baslama)),
   ].join('');
@@ -5640,6 +5655,7 @@ function pdPrint() {
     <tr><td>Hizmet Noktası</td><td>${p.hizmet_noktasi||'—'}</td></tr>
     <tr><td>İlçe</td><td>${p.ilce||'—'}</td></tr>
     <tr><td>İşe Giriş</td><td>${pdFmt(p.ise_giris)}</td></tr>
+    <tr><td>Kıdem Süresi</td><td>${pdKidem(p.ise_giris) || '—'}</td></tr>
     <tr><td>İşten Çıkış</td><td>${pdFmt(p.isten_cikis)}</td></tr>
     <tr><td>Meslek</td><td>${p.meslek_adi||'—'}</td></tr>
     <tr><td colspan="2" class="section">İletişim</td></tr>
