@@ -1490,6 +1490,13 @@ tbody tr:hover td { background: var(--bg-soft); }
 }
 .iz-filter:focus { outline: none; border-color: var(--accent); }
 .iz-filter-sm { min-width: 90px; }
+.iz-clear-btn {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 8px 14px; border-radius: 8px; border: 1px solid #e74c3c;
+  background: #fff5f5; color: #e74c3c; font-size: 12px; font-weight: 600;
+  font-family: inherit; cursor: pointer; transition: all .15s; white-space: nowrap;
+}
+.iz-clear-btn:hover { background: #e74c3c; color: #fff; }
 .iz-add-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 9px 18px; border-radius: 8px; border: none;
@@ -1555,6 +1562,7 @@ tbody tr:hover td { background: var(--bg-soft); }
   .iz-toolbar-left { flex-direction: column; }
   .iz-search-wrap { flex: 1; }
   .iz-filter { width: 100%; }
+  .iz-clear-btn { width: 100%; justify-content: center; }
 }
 </style>
 </head>
@@ -2593,6 +2601,10 @@ tbody tr:hover td { background: var(--bg-soft); }
             </select>
             <select class="iz-filter iz-filter-sm" id="iz-yil" onchange="loadIzinler(1)">
             </select>
+            <button class="iz-clear-btn" id="iz-clear-filters" onclick="izinFiltreTemizle()" title="Filtreleri Temizle" style="display:none">
+              <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l8 8M11 3l-8 8"/></svg>
+              Temizle
+            </button>
           </div>
           <button id="btn-izin-ekle" class="iz-add-btn" onclick="openIzinDrawer(null)">
             <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3v10M3 8h10"/></svg>
@@ -5939,12 +5951,33 @@ let izEditId = null;
 async function loadIzinSummary() {
 }
 
+function izinFiltreTemizle() {
+  document.getElementById('iz-q').value = '';
+  document.getElementById('iz-tur').value = '';
+  document.getElementById('iz-durum').value = '';
+  const yilSel = document.getElementById('iz-yil');
+  if (yilSel.options.length > 0) yilSel.selectedIndex = 0;
+  document.getElementById('iz-clear-filters').style.display = 'none';
+  loadIzinler(1);
+}
+
+function izinFiltreGuncelle() {
+  const q     = document.getElementById('iz-q')?.value     || '';
+  const tur   = document.getElementById('iz-tur')?.value   || '';
+  const durum = document.getElementById('iz-durum')?.value || '';
+  const yil   = document.getElementById('iz-yil')?.value   || '';
+  const btn   = document.getElementById('iz-clear-filters');
+  btn.style.display = (q || tur || durum || yil) ? 'inline-flex' : 'none';
+}
+
 async function loadIzinler(page) {
   izPage = page || 1;
   const q     = document.getElementById('iz-q')?.value     || '';
   const tur   = document.getElementById('iz-tur')?.value   || '';
   const durum = document.getElementById('iz-durum')?.value || '';
   const yil   = document.getElementById('iz-yil')?.value   || '';
+
+  izinFiltreGuncelle();
 
   const params = new URLSearchParams({ page: izPage, per_page: 25 });
   if (q)     params.set('q', q);
