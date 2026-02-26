@@ -23,7 +23,7 @@ static/
   dashboard.html  - Ana panel (sidebar + tüm sayfalar)
   personel_detay.html - Personel detay sayfası (standalone, artık dashboard içinde inline açılır)
   logo.png        - Muttaş logosu
-  izin-basvuru.html - Self-servis izin başvuru formu
+  izin-basvuru.html - Self-servis izin başvuru formu (5 adımlı: Kimlik → SMS Doğrulama → İzin Formu → İmza → Onay)
 uploads/
   personel/       - Personel evrakları
   foto/           - Personel profil fotoğrafları
@@ -63,6 +63,13 @@ uploads/
 - Gunicorn port 8000, 4 workers, systemd service "muttas"
 - PostgreSQL local (sudo -u postgres psql -d muttas_db)
 - SSH: sshpass -p '5Ec9f39fd0*-E' ssh root@209.38.219.210
+
+## SMS Doğrulama Sistemi
+- İzin başvuru formunda TC girişi sonrası SMS doğrulama adımı eklendi
+- Backend: `/public/sms-gonder` (kod gönderir), `/public/sms-dogrula` (kodu doğrular, sms_token döner)
+- sms_token izin başvurusu yapılırken `/public/izin` endpoint'ine gönderilir
+- SMS API henüz yapılandırılmadı (SMS_API_URL, SMS_API_KEY, SMS_API_SECRET env vars); API yokken kodlar sunucu loguna yazılır
+- Kod süresi: 5 dakika, max 5 deneme hakkı, 60 sn tekrar gönderim bekleme
 
 ## Notlar
 - Login TC kimlik numarası ile yapılır (email alanı TC olarak kullanılır)

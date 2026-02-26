@@ -354,18 +354,23 @@
     <div class="step-label">Kimlik</div>
   </div>
   <div class="step-line" id="line-1"></div>
-  <div class="step active" id="step-ind-2">
+  <div class="step" id="step-ind-2">
     <div class="step-circle">2</div>
-    <div class="step-label">İzin Formu</div>
+    <div class="step-label">SMS Doğrulama</div>
   </div>
   <div class="step-line" id="line-2"></div>
   <div class="step" id="step-ind-3">
     <div class="step-circle">3</div>
-    <div class="step-label">İmza</div>
+    <div class="step-label">İzin Formu</div>
   </div>
   <div class="step-line" id="line-3"></div>
   <div class="step" id="step-ind-4">
     <div class="step-circle">4</div>
+    <div class="step-label">İmza</div>
+  </div>
+  <div class="step-line" id="line-4"></div>
+  <div class="step" id="step-ind-5">
+    <div class="step-circle">5</div>
     <div class="step-label">Onay</div>
   </div>
 </div>
@@ -396,8 +401,43 @@
     </div>
   </div>
 
-  <!-- ── ADIM 2: İZİN FORMU ── -->
+  <!-- ── ADIM 2: SMS DOĞRULAMA ── -->
   <div class="step-panel" id="panel-2">
+    <div class="card-title">📱 SMS Doğrulama</div>
+    <div class="card-subtitle">Kayıtlı telefon numaranıza gönderilen 6 haneli doğrulama kodunu girin.</div>
+
+    <div class="personel-card" id="sms-prs-card">
+      <div class="personel-avatar" id="sms-prs-avatar">?</div>
+      <div>
+        <div class="personel-name" id="sms-prs-name">—</div>
+        <div class="personel-meta" id="sms-prs-phone">Telefon: ***</div>
+      </div>
+    </div>
+
+    <div id="sms-error" class="alert alert-error" style="display:none"></div>
+    <div id="sms-success" class="alert alert-info" style="display:none"></div>
+
+    <div class="form-field">
+      <label>Doğrulama Kodu *</label>
+      <div class="tc-row">
+        <input type="text" id="f-sms-kod" placeholder="123456" maxlength="6"
+               inputmode="numeric" pattern="[0-9]*" style="letter-spacing:8px;font-size:20px;font-weight:700;text-align:center"
+               oninput="this.value=this.value.replace(/\D/g,'')"
+               onkeydown="if(event.key==='Enter') smsDogrula()">
+        <button class="btn btn-primary" onclick="smsDogrula()" id="btn-sms-dogrula">Doğrula</button>
+      </div>
+    </div>
+
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+      <button class="btn btn-ghost" onclick="geriGit(1)">← Geri</button>
+      <button class="btn btn-ghost" id="btn-sms-tekrar" onclick="smsTekrarGonder()" disabled>Tekrar Gönder</button>
+    </div>
+
+    <div id="sms-timer" style="text-align:center;margin-top:10px;font-size:13px;color:var(--text-3)"></div>
+  </div>
+
+  <!-- ── ADIM 3: İZİN FORMU ── -->
+  <div class="step-panel" id="panel-3">
     <div class="card-title">📋 İzin Formu</div>
     <div class="card-subtitle">İzin bilgilerinizi doldurun.</div>
 
@@ -460,13 +500,13 @@
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-outline" onclick="geriGit(1)">← Geri</button>
+      <button class="btn btn-outline" onclick="geriGit(2)">← Geri</button>
       <button class="btn btn-primary" style="flex:1" onclick="formGecis()">İmza Adımı →</button>
     </div>
   </div>
 
-  <!-- ── ADIM 3: İMZA ── -->
-  <div class="step-panel" id="panel-3">
+  <!-- ── ADIM 4: İMZA ── -->
+  <div class="step-panel" id="panel-4">
     <div class="card-title">✍ Personel İmzası</div>
     <div class="card-subtitle">
       Başvuruyu onaylamak için aşağıdaki alana imzanızı atın.<br>
@@ -491,13 +531,13 @@
     </div>
 
     <div class="btn-row">
-      <button class="btn btn-outline" onclick="geriGit(2)">← Geri</button>
+      <button class="btn btn-outline" onclick="geriGit(3)">← Geri</button>
       <button class="btn btn-primary" style="flex:1" id="btn-gonder" onclick="basvuruGonder()">📨 Başvuruyu Gönder</button>
     </div>
   </div>
 
-  <!-- ── ADIM 4: BAŞARI ── -->
-  <div class="step-panel" id="panel-4">
+  <!-- ── ADIM 5: BAŞARI ── -->
+  <div class="step-panel" id="panel-5">
     <div class="success-screen">
       <div class="success-icon">✅</div>
       <div class="success-title">Başvurunuz Alındı!</div>
@@ -520,21 +560,23 @@
 let currentStep = 1;
 let personelId  = null;
 let personelTc  = '';
+let smsToken    = '';
 let sigDrawing  = false;
 let sigSigned   = false;
 let sigCtx      = null;
 let sigCanvas   = null;
+let smsTimerInterval = null;
 
 // ── STEP NAVIGATION ───────────────────────────────────────────
 function setStep(n) {
-  [1,2,3,4].forEach(i => {
+  [1,2,3,4,5].forEach(i => {
     document.getElementById('panel-' + i).classList.toggle('active', i === n);
     const ind = document.getElementById('step-ind-' + i);
     if (i < n)  { ind.className = 'step done'; ind.querySelector('.step-circle').textContent = '✓'; }
     if (i === n){ ind.className = 'step active'; ind.querySelector('.step-circle').textContent = i; }
     if (i > n)  { ind.className = 'step';       ind.querySelector('.step-circle').textContent = i; }
   });
-  [1,2,3].forEach(i => {
+  [1,2,3,4].forEach(i => {
     document.getElementById('line-' + i).className = 'step-line' + (i < n ? ' done' : '');
   });
   currentStep = n;
@@ -557,32 +599,36 @@ async function kimlikDogrula() {
 
   const btn = document.getElementById('btn-kimlik');
   btn.disabled = true;
-  btn.textContent = 'Aranıyor...';
+  btn.textContent = 'Doğrulanıyor...';
 
   try {
-    const res = await fetch('/public/personel/ara?tc=' + encodeURIComponent(tc));
+    const res = await fetch('/public/sms-gonder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tc_kimlik: tc }),
+    });
+
     if (!res.ok) {
       const e = await res.json().catch(() => ({}));
-      errEl.textContent = e.detail || 'Personel bulunamadı. TC kimlik numaranızı kontrol edin.';
+      errEl.textContent = e.detail || 'Personel bulunamadı.';
       errEl.style.display = 'flex';
       return;
     }
-    const prs = await res.json();
-    personelId = prs.id;
+
+    const data = await res.json();
     personelTc = tc;
 
-    const initials = prs.ad_soyad.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
-    document.getElementById('prs-avatar').textContent = initials;
-    document.getElementById('prs-name').textContent   = prs.ad_soyad;
-    document.getElementById('prs-meta').textContent   = [prs.bolum, prs.unvan, prs.ilce].filter(Boolean).join(' · ');
+    const initials = data.ad_soyad.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('sms-prs-avatar').textContent = initials;
+    document.getElementById('sms-prs-name').textContent = data.ad_soyad;
+    document.getElementById('sms-prs-phone').textContent = 'Telefon: ' + data.telefon;
 
-    const today = new Date().toISOString().split('T')[0];
-    document.getElementById('f-bas').value = '';
-    document.getElementById('f-bit').value = '';
-    document.getElementById('f-bas').min   = today;
-    document.getElementById('f-bit').min   = today;
-    document.getElementById('gun-badge-wrap').style.display = 'none';
+    document.getElementById('sms-success').textContent = 'Doğrulama kodu ' + data.telefon + ' numarasına gönderildi.';
+    document.getElementById('sms-success').style.display = 'flex';
+    document.getElementById('sms-error').style.display = 'none';
+    document.getElementById('f-sms-kod').value = '';
 
+    smsTimerBaslat();
     setStep(2);
   } catch(e) {
     errEl.textContent = 'Bağlantı hatası. Lütfen tekrar deneyin.';
@@ -590,6 +636,114 @@ async function kimlikDogrula() {
   } finally {
     btn.disabled = false;
     btn.textContent = 'Devam';
+  }
+}
+
+// ── ADIM 2: SMS DOĞRULAMA ────────────────────────────────────
+function smsTimerBaslat() {
+  const btnTekrar = document.getElementById('btn-sms-tekrar');
+  const timerEl = document.getElementById('sms-timer');
+  btnTekrar.disabled = true;
+  let saniye = 60;
+  timerEl.textContent = 'Tekrar gönderebilmek için ' + saniye + ' saniye bekleyin';
+  if (smsTimerInterval) clearInterval(smsTimerInterval);
+  smsTimerInterval = setInterval(() => {
+    saniye--;
+    if (saniye <= 0) {
+      clearInterval(smsTimerInterval);
+      timerEl.textContent = '';
+      btnTekrar.disabled = false;
+    } else {
+      timerEl.textContent = 'Tekrar gönderebilmek için ' + saniye + ' saniye bekleyin';
+    }
+  }, 1000);
+}
+
+async function smsTekrarGonder() {
+  const btn = document.getElementById('btn-sms-tekrar');
+  btn.disabled = true;
+  btn.textContent = 'Gönderiliyor...';
+  const errEl = document.getElementById('sms-error');
+  errEl.style.display = 'none';
+
+  try {
+    const res = await fetch('/public/sms-gonder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tc_kimlik: personelTc }),
+    });
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      errEl.textContent = e.detail || 'Kod gönderilemedi.';
+      errEl.style.display = 'flex';
+      return;
+    }
+    const data = await res.json();
+    document.getElementById('sms-success').textContent = 'Yeni doğrulama kodu gönderildi.';
+    document.getElementById('sms-success').style.display = 'flex';
+    document.getElementById('f-sms-kod').value = '';
+    smsTimerBaslat();
+  } catch(e) {
+    errEl.textContent = 'Bağlantı hatası.';
+    errEl.style.display = 'flex';
+  } finally {
+    btn.textContent = 'Tekrar Gönder';
+  }
+}
+
+async function smsDogrula() {
+  const kod = document.getElementById('f-sms-kod').value.trim();
+  const errEl = document.getElementById('sms-error');
+  errEl.style.display = 'none';
+
+  if (kod.length !== 6) {
+    errEl.textContent = 'Doğrulama kodu 6 haneli olmalıdır.';
+    errEl.style.display = 'flex';
+    return;
+  }
+
+  const btn = document.getElementById('btn-sms-dogrula');
+  btn.disabled = true;
+  btn.textContent = 'Doğrulanıyor...';
+
+  try {
+    const res = await fetch('/public/sms-dogrula', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tc_kimlik: personelTc, kod }),
+    });
+
+    if (!res.ok) {
+      const e = await res.json().catch(() => ({}));
+      errEl.textContent = e.detail || 'Doğrulama başarısız.';
+      errEl.style.display = 'flex';
+      return;
+    }
+
+    const data = await res.json();
+    smsToken = data.sms_token;
+    personelId = data.personel.id;
+
+    const initials = data.personel.ad_soyad.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('prs-avatar').textContent = initials;
+    document.getElementById('prs-name').textContent = data.personel.ad_soyad;
+    document.getElementById('prs-meta').textContent = [data.personel.bolum, data.personel.unvan, data.personel.ilce].filter(Boolean).join(' · ');
+
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('f-bas').value = '';
+    document.getElementById('f-bit').value = '';
+    document.getElementById('f-bas').min = today;
+    document.getElementById('f-bit').min = today;
+    document.getElementById('gun-badge-wrap').style.display = 'none';
+
+    if (smsTimerInterval) clearInterval(smsTimerInterval);
+    setStep(3);
+  } catch(e) {
+    errEl.textContent = 'Bağlantı hatası.';
+    errEl.style.display = 'flex';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Doğrula';
   }
 }
 
@@ -624,7 +778,7 @@ function formGecis() {
     errEl.style.display = 'flex';
     return;
   }
-  setStep(3);
+  setStep(4);
   sigInit();
 }
 
@@ -733,6 +887,7 @@ async function basvuruGonder() {
       izin_adresi:        document.getElementById('f-adres').value.trim() || null,
       notlar:             document.getElementById('f-notlar').value.trim() || null,
       imza,
+      sms_token: smsToken,
     };
 
     const res = await fetch('/public/izin', {
@@ -750,7 +905,7 @@ async function basvuruGonder() {
 
     const data = await res.json();
     document.getElementById('basvuru-ref').textContent = '#' + data.id;
-    setStep(4);
+    setStep(5);
   } catch(e) {
     errEl.textContent = 'Bağlantı hatası: ' + e.message;
     errEl.style.display = 'flex';
@@ -764,8 +919,10 @@ async function basvuruGonder() {
 function yeniBasvuru() {
   personelId = null;
   personelTc = '';
+  smsToken   = '';
   sigSigned  = false;
   sigInited  = false;
+  if (smsTimerInterval) clearInterval(smsTimerInterval);
   document.getElementById('f-tc').value = '';
   document.getElementById('kimlik-error').style.display = 'none';
   setStep(1);

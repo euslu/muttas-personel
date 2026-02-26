@@ -1,4 +1,4 @@
-import os, uuid, shutil
+import os, uuid, shutil, random, time, logging, re, httpx
 from datetime import date, datetime
 from typing import Optional
 
@@ -9,6 +9,8 @@ from pydantic import BaseModel
 from jose import jwt, JWTError
 
 from db import get_pool
+
+logger = logging.getLogger("sms")
 
 router = APIRouter(tags=["self-servis"])
 
@@ -254,6 +256,151 @@ async def public_belge_yukle(
         return {"mesaj": "Belge yüklendi.", "belge_id": belge["id"]}
 
 
+# ── SMS Doğrulama ──────────────────────────────────────────────────────────
+
+SMS_CODES: dict = {}
+SMS_CODE_EXPIRY = 300
+SMS_CODE_LENGTH = 6
+
+SMS_API_URL = os.environ.get("SMS_API_URL", "")
+SMS_API_KEY = os.environ.get("SMS_API_KEY", "")
+SMS_API_SECRET = os.environ.get("SMS_API_SECRET", "")
+SMS_SENDER = os.environ.get("SMS_SENDER", "MUTTAS")
+
+
+def _mask_phone(phone: str) -> str:
+    digits = re.sub(r'\D', '', phone)
+    if len(digits) >= 7:
+        return digits[:3] + '***' + digits[-2:]
+    return '***'
+
+
+async def _send_sms(phone: str, message: str) -> bool:
+    if not SMS_API_URL or not SMS_API_KEY:
+        logger.warning(f"SMS API yapılandırılmamış — mesaj gönderilmedi ({phone[:3]}***)")
+        return True
+
+    try:
+        async with httpx.AsyncClient(timeout=10) as client:
+            resp = await client.post(SMS_API_URL, json={
+                "api_key": SMS_API_KEY,
+                "api_secret": SMS_API_SECRET,
+                "sender": SMS_SENDER,
+                "phone": phone,
+                "message": message,
+            })
+            if resp.status_code == 200:
+                logger.info(f"SMS gönderildi: {_mask_phone(phone)}")
+                return True
+            else:
+                logger.error(f"SMS hata: {resp.status_code} {resp.text}")
+                return False
+    except Exception as e:
+        logger.error(f"SMS gönderim hatası: {e}")
+        return False
+
+
+class SmsKodGonder(BaseModel):
+    tc_kimlik: str
+
+
+class SmsKodDogrula(BaseModel):
+    tc_kimlik: str
+    kod: str
+
+
+@router.post("/public/sms-gonder")
+async def sms_kod_gonder(data: SmsKodGonder):
+    tc = data.tc_kimlik.strip()
+    if not tc or len(tc) != 11 or not tc.isdigit():
+        raise HTTPException(status_code=400, detail="Geçerli bir TC kimlik numarası giriniz.")
+
+    now = time.time()
+    existing = SMS_CODES.get(tc)
+    if existing and now - existing["created"] < 60:
+        raise HTTPException(status_code=429, detail="Lütfen 1 dakika bekleyip tekrar deneyin.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT id, ad_soyad, telefon, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
+            tc
+        )
+    if not row:
+        raise HTTPException(status_code=404, detail="Bu TC kimlik numarasıyla kayıtlı aktif personel bulunamadı.")
+
+    telefon = row["telefon"]
+    if not telefon:
+        raise HTTPException(status_code=400, detail="Personelin kayıtlı telefon numarası bulunamadı.")
+
+    kod = ''.join([str(random.randint(0, 9)) for _ in range(SMS_CODE_LENGTH)])
+
+    SMS_CODES[tc] = {
+        "kod": kod,
+        "created": now,
+        "attempts": 0,
+        "personel_id": row["id"],
+        "ad_soyad": row["ad_soyad"],
+        "bolum": row["bolum"],
+        "unvan": row["unvan"],
+        "ilce": row["ilce"],
+    }
+
+    sms_mesaj = f"MUTTAS IK izin basvuru dogrulama kodunuz: {kod}"
+    sent = await _send_sms(telefon, sms_mesaj)
+    if not sent and not SMS_API_URL:
+        logger.info(f"SMS API yapılandırılmamış — kod doğrulama bekliyor ({_mask_phone(telefon)})")
+
+    old_keys = [k for k, v in SMS_CODES.items() if now - v["created"] > SMS_CODE_EXPIRY * 2]
+    for k in old_keys:
+        del SMS_CODES[k]
+
+    return {
+        "mesaj": "Doğrulama kodu gönderildi.",
+        "telefon": _mask_phone(telefon),
+        "ad_soyad": row["ad_soyad"],
+    }
+
+
+@router.post("/public/sms-dogrula")
+async def sms_kod_dogrula(data: SmsKodDogrula):
+    tc = data.tc_kimlik.strip()
+    kod = data.kod.strip()
+
+    entry = SMS_CODES.get(tc)
+    if not entry:
+        raise HTTPException(status_code=400, detail="Önce doğrulama kodu talep edin.")
+
+    if time.time() - entry["created"] > SMS_CODE_EXPIRY:
+        del SMS_CODES[tc]
+        raise HTTPException(status_code=400, detail="Kodun süresi doldu. Lütfen yeni kod talep edin.")
+
+    entry["attempts"] += 1
+    if entry["attempts"] > 5:
+        del SMS_CODES[tc]
+        raise HTTPException(status_code=429, detail="Çok fazla hatalı deneme. Lütfen yeni kod talep edin.")
+
+    if kod != entry["kod"]:
+        kalan = 5 - entry["attempts"]
+        raise HTTPException(status_code=400, detail=f"Kod hatalı. {kalan} deneme hakkınız kaldı.")
+
+    sms_token = str(uuid.uuid4())
+    entry["verified"] = True
+    entry["sms_token"] = sms_token
+
+    return {
+        "mesaj": "Doğrulama başarılı.",
+        "sms_token": sms_token,
+        "personel": {
+            "id": entry["personel_id"],
+            "ad_soyad": entry["ad_soyad"],
+            "bolum": entry["bolum"],
+            "unvan": entry["unvan"],
+            "ilce": entry["ilce"],
+        }
+    }
+
+
 # ── Public İzin Başvuru Endpoint'leri ────────────────────────────────────────
 
 @router.get("/public/personel/ara")
@@ -286,6 +433,7 @@ async def public_personel_ara(tc: Optional[str] = None, q: Optional[str] = None)
 class PublicIzinCreate(BaseModel):
     personel_id:        int
     tc_kimlik:          str
+    sms_token:          Optional[str] = None
     izin_turu:          str
     baslangic:          date
     bitis:              date
@@ -310,6 +458,18 @@ async def public_izin_olustur(data: PublicIzinCreate):
 
     if data.bitis < data.baslangic:
         raise HTTPException(status_code=400, detail="Bitiş tarihi başlangıçtan önce olamaz.")
+
+    tc = data.tc_kimlik.strip()
+    entry = SMS_CODES.get(tc)
+    if not entry or not entry.get("verified") or entry.get("sms_token") != data.sms_token:
+        raise HTTPException(status_code=403, detail="SMS doğrulaması yapılmamış veya geçersiz.")
+
+    if time.time() - entry["created"] > SMS_CODE_EXPIRY * 2:
+        del SMS_CODES[tc]
+        raise HTTPException(status_code=403, detail="SMS doğrulama süresi doldu. Lütfen yeniden başvurun.")
+
+    if entry.get("personel_id") != data.personel_id:
+        raise HTTPException(status_code=403, detail="Personel kimlik doğrulaması başarısız.")
 
     pool = await get_pool()
     async with pool.acquire() as conn:
@@ -338,6 +498,9 @@ async def public_izin_olustur(data: PublicIzinCreate):
             data.gun_sayisi, data.kullanilabilir_gun, data.vekil_ad_soyad,
             data.izin_adresi, data.notlar, data.imza,
         )
+        if tc in SMS_CODES:
+            del SMS_CODES[tc]
+
         return {"id": row["id"], "mesaj": "İzin başvurunuz alındı."}
 
 
