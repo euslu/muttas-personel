@@ -73,6 +73,7 @@ async def list_personel(
     bolum:    Optional[str] = Query(None),
     unvan:    Optional[str] = Query(None),
     ilce:     Optional[str] = Query(None),
+    hizmet_noktasi: Optional[str] = Query(None),
     aktif:    Optional[bool] = Query(None),
     sort_by:  Optional[str] = Query("ad_soyad"),
     sort_dir: Optional[str] = Query("asc"),
@@ -100,6 +101,10 @@ async def list_personel(
         if ilce:
             params.append(ilce)
             wheres.append(f"p.ilce = ${len(params)}")
+
+        if hizmet_noktasi:
+            params.append(hizmet_noktasi)
+            wheres.append(f"p.hizmet_noktasi = ${len(params)}")
 
         if aktif is not None:
             params.append(aktif)

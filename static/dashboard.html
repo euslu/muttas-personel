@@ -2449,6 +2449,57 @@ tbody tr:hover td { background: var(--bg-soft); }
             <option>Ula</option>
             <option>Yatağan</option>
           </select>
+          <select class="prs-filter" id="prs-hizmet" onchange="loadPersonel(1)">
+            <option value="">Tüm Hizmet Noktaları</option>
+            <option>100. YIL EVİ</option>
+            <option>AKYAKA</option>
+            <option>BODRUM</option>
+            <option>BODRUM LİMAN</option>
+            <option>BODRUM OTOGAR OTOPARKI</option>
+            <option>BODRUM TT</option>
+            <option>BODRUM WC</option>
+            <option>DALAMAN</option>
+            <option>DALAMAN TT</option>
+            <option>DATÇA TT</option>
+            <option>DENİZ KIYI</option>
+            <option>FETHİYE</option>
+            <option>FETHİYE LİMAN</option>
+            <option>FETHİYE TT</option>
+            <option>FETHİYE WC</option>
+            <option>GÖCEK 1 NOLU OTOPARK</option>
+            <option>GÖCEK 2 NOLU OTOPARK</option>
+            <option>GÜLLÜK LİMAN</option>
+            <option>KADEME</option>
+            <option>KATLI OTOPARK</option>
+            <option>KENT KART 2NOLU</option>
+            <option>KENT KART BASIM</option>
+            <option>KENT MEYDANI</option>
+            <option>KÖYCEĞİZ TT</option>
+            <option>MARMARİS</option>
+            <option>MARMARİS LİMAN</option>
+            <option>MARMARİS TT</option>
+            <option>MENTEŞE</option>
+            <option>MENTEŞE D.K.</option>
+            <option>MENTEŞE OTOGAR</option>
+            <option>MENTEŞE OTOPARK</option>
+            <option>MENTEŞE TT</option>
+            <option>MERKEZ OFİS</option>
+            <option>MİLAS</option>
+            <option>MİLAS TT</option>
+            <option>MİLAS/GÜLLÜK ÇEKEK YERİ</option>
+            <option>ORTACA</option>
+            <option>ORTACA TT</option>
+            <option>OTOBÜS TOPLANMA</option>
+            <option>OTOBÜS ŞEFLİĞİ</option>
+            <option>OTOGAR</option>
+            <option>PAZARYERİ OTOPARK</option>
+            <option>TURGUTREİS YAŞAM MERKEZİ OTOPARKI</option>
+            <option>TÜRKAN SAYLAN</option>
+            <option>ULAŞIM DAİRE</option>
+            <option>UĞUR MUMCU OTOPARKI</option>
+            <option>YATAĞAN</option>
+            <option>YATAĞAN TT</option>
+          </select>
           <select class="prs-filter" id="prs-aktif" onchange="loadPersonel(1)">
             <option value="true">Aktif</option>
             <option value="false">Pasif</option>
@@ -4850,6 +4901,7 @@ async function loadPersonel(page) {
   const bolum  = document.getElementById('prs-bolum')?.value   || '';
   const unvan  = document.getElementById('prs-unvan')?.value   || '';
   const ilce   = document.getElementById('prs-ilce')?.value    || '';
+  const hizmet = document.getElementById('prs-hizmet')?.value  || '';
   const aktif  = document.getElementById('prs-aktif')?.value   || 'true';
   const perPage= document.getElementById('prs-per-page')?.value|| 25;
 
@@ -4857,8 +4909,9 @@ async function loadPersonel(page) {
   if (q)     params.set('q', q);
   if (bolum) params.set('bolum', bolum);
   if (unvan) params.set('unvan', unvan);
-  if (ilce)  params.set('ilce', ilce);
-  if (aktif) params.set('aktif', aktif);
+  if (ilce)   params.set('ilce', ilce);
+  if (hizmet) params.set('hizmet_noktasi', hizmet);
+  if (aktif)  params.set('aktif', aktif);
 
   document.querySelectorAll('.prs-sort').forEach(th => th.classList.remove('asc','desc'));
   const activeTh = document.getElementById('prs-th-' + prsSort.col);
