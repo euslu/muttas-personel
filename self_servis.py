@@ -440,7 +440,7 @@ class PublicIzinCreate(BaseModel):
     gun_sayisi:         int
     kullanilabilir_gun: Optional[int] = None
     vekil_ad_soyad:     Optional[str] = None
-    izin_adresi:        Optional[str] = None
+    izin_adresi:        str
     notlar:             Optional[str] = None
     imza:               Optional[str] = None
 

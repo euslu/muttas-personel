@@ -491,8 +491,8 @@
       <input type="text" id="f-vekil" placeholder="Ad Soyad">
     </div>
     <div class="form-field">
-      <label>İzinde Bulunulacak Adres / Telefon</label>
-      <textarea id="f-adres" placeholder="Adres ve iletişim bilgisi"></textarea>
+      <label>İzinde Bulunulacak Adres / Telefon *</label>
+      <textarea id="f-adres" placeholder="Adres ve iletişim bilgisi" required></textarea>
     </div>
     <div class="form-field">
       <label>Notlar / Açıklama</label>
@@ -778,6 +778,12 @@ function formGecis() {
     errEl.style.display = 'flex';
     return;
   }
+  const adres = document.getElementById('f-adres').value.trim();
+  if (!adres) {
+    errEl.textContent = 'İzinde bulunulacak adres zorunludur.';
+    errEl.style.display = 'flex';
+    return;
+  }
   setStep(4);
   sigInit();
 }
@@ -884,7 +890,7 @@ async function basvuruGonder() {
       gun_sayisi:         Math.max(gun, 1),
       kullanilabilir_gun: parseInt(document.getElementById('f-kullanilabilir').value) || null,
       vekil_ad_soyad:     document.getElementById('f-vekil').value.trim() || null,
-      izin_adresi:        document.getElementById('f-adres').value.trim() || null,
+      izin_adresi:        document.getElementById('f-adres').value.trim(),
       notlar:             document.getElementById('f-notlar').value.trim() || null,
       imza,
       sms_token: smsToken,
