@@ -5955,8 +5955,7 @@ function izinFiltreTemizle() {
   document.getElementById('iz-q').value = '';
   document.getElementById('iz-tur').value = '';
   document.getElementById('iz-durum').value = '';
-  const yilSel = document.getElementById('iz-yil');
-  if (yilSel.options.length > 0) yilSel.selectedIndex = 0;
+  document.getElementById('iz-yil').value = '';
   document.getElementById('iz-clear-filters').style.display = 'none';
   loadIzinler(1);
 }
@@ -6496,11 +6495,13 @@ async function izinSil(id) {
 (function initIzinYil() {
   const sel = document.getElementById('iz-yil');
   if (!sel) return;
+  const all = document.createElement('option');
+  all.value = ''; all.textContent = 'Tüm Yıllar';
+  sel.appendChild(all);
   const yil = new Date().getFullYear();
   for (let y = yil + 1; y >= yil - 3; y--) {
     const o = document.createElement('option');
     o.value = y; o.textContent = y;
-    if (y === yil) o.selected = true;
     sel.appendChild(o);
   }
 })();
