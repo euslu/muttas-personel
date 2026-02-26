@@ -4462,7 +4462,7 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>SGK Sicil</label>
-        <input type="text" id="prs-form-sgk" placeholder="SGK Sicil No">
+        <select id="prs-form-sgk"><option value="">Seçiniz</option><option value="VAR">VAR</option><option value="YOK">YOK</option></select>
       </div>
       <div class="form-field">
         <label>Cinsiyet *</label>
@@ -4601,7 +4601,7 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Sendika Üyeliği</label>
-        <input type="text" id="prs-form-sendika" placeholder="Üye / Yok / Kurum adı">
+        <select id="prs-form-sendika"><option value="">Seçiniz</option><option value="ÜYE">Üye</option><option value="ÜYE DEĞİL">Üye Değil</option></select>
       </div>
       <div class="form-field">
         <label>Engelli</label>
@@ -5360,7 +5360,7 @@ function pdShowEditForm() {
     <div class="pd-form-grid">
       <div class="pd-form-field span2"><label>Ad Soyad *</label><input type="text" id="pd-f-ad-soyad" value="${p.ad_soyad || ''}"></div>
       <div class="pd-form-field"><label>TC Kimlik No *</label><input type="text" id="pd-f-tc" maxlength="11" value="${p.tc_kimlik || ''}"></div>
-      <div class="pd-form-field"><label>SGK Sicil</label><input type="text" id="pd-f-sgk" value="${p.sgk_sicil || ''}"></div>
+      <div class="pd-form-field"><label>SGK Sicil</label><select id="pd-f-sgk"><option value="">Seçiniz</option><option value="VAR" ${p.sgk_sicil==='VAR'?'selected':''}>VAR</option><option value="YOK" ${p.sgk_sicil==='YOK'?'selected':''}>YOK</option></select></div>
       <div class="pd-form-field"><label>Cinsiyet *</label><select id="pd-f-cinsiyet"><option value="">Seçiniz</option><option value="ERKEK" ${p.cinsiyet==='ERKEK'?'selected':''}>Erkek</option><option value="KADIN" ${p.cinsiyet==='KADIN'?'selected':''}>Kadın</option></select></div>
       <div class="pd-form-field"><label>Medeni Hal</label><select id="pd-f-medeni"><option value="">Seçiniz</option><option value="EVLİ" ${p.medeni_hal==='EVLİ'?'selected':''}>Evli</option><option value="BEKAR" ${p.medeni_hal==='BEKAR'?'selected':''}>Bekar</option></select></div>
       <div class="pd-form-field"><label>Doğum Tarihi *</label><input type="date" id="pd-f-dogum-tarihi" value="${dtVal(p.dogum_tarihi)}"></div>
@@ -5368,7 +5368,7 @@ function pdShowEditForm() {
       <div class="pd-form-field"><label>Kan Grubu</label><select id="pd-f-kan"><option value="">Seçiniz</option>${['A Rh+','A Rh-','B Rh+','B Rh-','AB Rh+','AB Rh-','0 Rh+','0 Rh-'].map(k=>'<option'+(p.kan_grubu===k?' selected':'')+'>'+k+'</option>').join('')}</select></div>
       <div class="pd-form-field"><label>Çocuk Sayısı</label><input type="number" id="pd-f-cocuk" min="0" value="${p.cocuk_sayisi ?? 0}"></div>
       <div class="pd-form-field"><label>Öğrenim Durumu</label><select id="pd-f-ogrenim"><option value="">Seçiniz</option>${['İLKOKUL','ORTAOKUL','LİSE','ÖN LİSANS','LİSANS','YÜKSEK LİSANS'].map(o=>'<option value="'+o+'"'+(p.ogrenim===o?' selected':'')+'>'+o+'</option>').join('')}</select></div>
-      <div class="pd-form-field"><label>Sendika Üyeliği</label><input type="text" id="pd-f-sendika" value="${p.sendika_uyesi || ''}"></div>
+      <div class="pd-form-field"><label>Sendika Üyeliği</label><select id="pd-f-sendika"><option value="">Seçiniz</option><option value="ÜYE" ${p.sendika_uyesi==='ÜYE'?'selected':''}>Üye</option><option value="ÜYE DEĞİL" ${p.sendika_uyesi==='ÜYE DEĞİL'?'selected':''}>Üye Değil</option></select></div>
       <div class="pd-form-field"><label>Engelli</label><select id="pd-f-engelli"><option value="false" ${!p.engelli?'selected':''}>Hayır</option><option value="true" ${p.engelli?'selected':''}>Evet</option></select></div>
     </div>
     <div class="pd-card-title" style="margin-top:24px">Görev Bilgileri</div>
