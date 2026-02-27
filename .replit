@@ -47,6 +47,10 @@ DB_NAME = "heliumdb"
 DB_USER = "postgres"
 DB_PASSWORD = "password"
 JWT_SECRET = "muttas-liman-super-secret-key-change-in-prod"
+NETGSM_USERCODE = "5351068486"
+NETGSM_PASSWORD = "5443#37"
+NETGSM_MSGHEADER = "MUTTAS"
+SMS_API_URL = "https://api.netgsm.com.tr/sms/send/xml"
 
 [deployment]
 deploymentTarget = "autoscale"

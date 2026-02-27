@@ -262,10 +262,10 @@ SMS_CODES: dict = {}
 SMS_CODE_EXPIRY = 300
 SMS_CODE_LENGTH = 6
 
-SMS_API_URL = os.environ.get("SMS_API_URL", "")
-SMS_API_KEY = os.environ.get("SMS_API_KEY", "")
-SMS_API_SECRET = os.environ.get("SMS_API_SECRET", "")
-SMS_SENDER = os.environ.get("SMS_SENDER", "MUTTAS")
+SMS_API_URL = os.environ.get("SMS_API_URL", "https://api.netgsm.com.tr/sms/send/xml")
+NETGSM_USERCODE = os.environ.get("NETGSM_USERCODE", "")
+NETGSM_PASSWORD = os.environ.get("NETGSM_PASSWORD", "")
+NETGSM_MSGHEADER = os.environ.get("NETGSM_MSGHEADER", "MUTTAS")
 
 
 def _mask_phone(phone: str) -> str:
@@ -275,25 +275,54 @@ def _mask_phone(phone: str) -> str:
     return '***'
 
 
+def _format_phone_netgsm(phone: str) -> str:
+    digits = re.sub(r'\D', '', phone)
+    if digits.startswith('0') and len(digits) == 11:
+        digits = '9' + digits
+    elif len(digits) == 10:
+        digits = '90' + digits
+    elif not digits.startswith('90') and len(digits) == 10:
+        digits = '90' + digits
+    return digits
+
+
 async def _send_sms(phone: str, message: str) -> bool:
-    if not SMS_API_URL or not SMS_API_KEY:
-        logger.warning(f"SMS API yapılandırılmamış — mesaj gönderilmedi ({phone[:3]}***)")
+    if not NETGSM_USERCODE or not NETGSM_PASSWORD:
+        logger.warning(f"NetGSM yapılandırılmamış — mesaj gönderilmedi ({_mask_phone(phone)})")
         return True
 
+    formatted_phone = _format_phone_netgsm(phone)
+
+    xml_body = f"""<?xml version="1.0" encoding="UTF-8"?>
+<mainbody>
+    <header>
+        <company dil="TR">Netgsm</company>
+        <usercode>{NETGSM_USERCODE}</usercode>
+        <password>{NETGSM_PASSWORD}</password>
+        <type>1:n</type>
+        <msgheader>{NETGSM_MSGHEADER}</msgheader>
+    </header>
+    <body>
+        <msg><![CDATA[{message}]]></msg>
+        <no>{formatted_phone}</no>
+    </body>
+</mainbody>"""
+
     try:
-        async with httpx.AsyncClient(timeout=10) as client:
-            resp = await client.post(SMS_API_URL, json={
-                "api_key": SMS_API_KEY,
-                "api_secret": SMS_API_SECRET,
-                "sender": SMS_SENDER,
-                "phone": phone,
-                "message": message,
-            })
-            if resp.status_code == 200:
-                logger.info(f"SMS gönderildi: {_mask_phone(phone)}")
+        async with httpx.AsyncClient(timeout=15) as client:
+            resp = await client.post(
+                SMS_API_URL,
+                content=xml_body,
+                headers={"Content-Type": "text/xml; charset=utf-8"}
+            )
+            resp_text = resp.text.strip()
+            logger.info(f"NetGSM yanıt: {resp_text} (telefon: {_mask_phone(phone)})")
+
+            if resp_text.startswith("00") or resp_text.startswith("01") or resp_text.startswith("02"):
+                logger.info(f"SMS başarıyla gönderildi: {_mask_phone(phone)}")
                 return True
             else:
-                logger.error(f"SMS hata: {resp.status_code} {resp.text}")
+                logger.error(f"NetGSM SMS hata kodu: {resp_text}")
                 return False
     except Exception as e:
         logger.error(f"SMS gönderim hatası: {e}")
@@ -348,8 +377,9 @@ async def sms_kod_gonder(data: SmsKodGonder):
 
     sms_mesaj = f"MUTTAS IK izin basvuru dogrulama kodunuz: {kod}"
     sent = await _send_sms(telefon, sms_mesaj)
-    if not sent and not SMS_API_URL:
-        logger.info(f"SMS API yapılandırılmamış — kod doğrulama bekliyor ({_mask_phone(telefon)})")
+    if not sent:
+        del SMS_CODES[tc]
+        raise HTTPException(status_code=500, detail="SMS gönderilemedi. Lütfen daha sonra tekrar deneyin.")
 
     old_keys = [k for k, v in SMS_CODES.items() if now - v["created"] > SMS_CODE_EXPIRY * 2]
     for k in old_keys:
