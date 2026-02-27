@@ -293,27 +293,20 @@ async def _send_sms(phone: str, message: str) -> bool:
 
     formatted_phone = _format_phone_netgsm(phone)
 
-    xml_body = f"""<?xml version="1.0" encoding="UTF-8"?>
-<mainbody>
-    <header>
-        <company dil="TR">Netgsm</company>
-        <usercode>{NETGSM_USERCODE}</usercode>
-        <password>{NETGSM_PASSWORD}</password>
-        <type>1:n</type>
-        <msgheader>{NETGSM_MSGHEADER}</msgheader>
-    </header>
-    <body>
-        <msg><![CDATA[{message}]]></msg>
-        <no>{formatted_phone}</no>
-    </body>
-</mainbody>"""
+    params = {
+        "usercode": NETGSM_USERCODE,
+        "password": NETGSM_PASSWORD,
+        "gsmno": formatted_phone,
+        "message": message,
+        "msgheader": NETGSM_MSGHEADER,
+        "dil": "TR",
+    }
 
     try:
         async with httpx.AsyncClient(timeout=15) as client:
-            resp = await client.post(
-                SMS_API_URL,
-                content=xml_body,
-                headers={"Content-Type": "text/xml; charset=utf-8"}
+            resp = await client.get(
+                "https://api.netgsm.com.tr/sms/send/get/",
+                params=params,
             )
             resp_text = resp.text.strip()
             logger.info(f"NetGSM yanıt: {resp_text} (telefon: {_mask_phone(phone)})")
