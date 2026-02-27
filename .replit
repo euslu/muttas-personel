@@ -49,7 +49,7 @@ DB_PASSWORD = "password"
 JWT_SECRET = "muttas-liman-super-secret-key-change-in-prod"
 NETGSM_USERCODE = "8503073246"
 NETGSM_PASSWORD = "L3-31L95"
-NETGSM_MSGHEADER = "MUTTAS IK"
+NETGSM_MSGHEADER = "MUTTAS"
 SMS_API_URL = "https://api.netgsm.com.tr/sms/send/xml"
 
 [deployment]
