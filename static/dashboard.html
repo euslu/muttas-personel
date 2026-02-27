@@ -4793,9 +4793,10 @@ function ftExport() {
 
     <div class="drawer-section">Vekalet & Adres</div>
     <div class="form-grid-2" style="margin-bottom:12px">
-      <div class="form-field" style="grid-column:span 2">
+      <div class="form-field" style="grid-column:span 2;position:relative">
         <label>Vekalet Edecek Personel</label>
-        <input type="text" id="iz-form-vekil" placeholder="Ad Soyad">
+        <input type="text" id="iz-form-vekil" placeholder="Ad ile arayın..." autocomplete="off" oninput="izVekilAra(this.value)">
+        <div id="iz-vekil-list" class="autocomplete-list"></div>
       </div>
       <div class="form-field" style="grid-column:span 2">
         <label>İzinde Bulunulacak Adres / Telefon</label>
@@ -6073,6 +6074,7 @@ async function openIzinDrawer(id) {
   document.getElementById('iz-personel-bilgi').style.display = 'none';
 
   // Reset form
+  document.getElementById('iz-vekil-list').style.display = 'none';
   ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-notlar'].forEach(fid => {
     const el = document.getElementById(fid); if (el) el.value = '';
   });
@@ -6287,6 +6289,32 @@ function izPersonelSec(id, adSoyad, bolum, unvan) {
   const bilgi = document.getElementById('iz-personel-bilgi');
   bilgi.style.display = 'block';
   bilgi.textContent   = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}`;
+}
+
+async function izVekilAra(q) {
+  const list = document.getElementById('iz-vekil-list');
+  if (!q || q.length < 2) { list.style.display = 'none'; return; }
+
+  const res = await fetch('/personel?q=' + encodeURIComponent(q) + '&per_page=8&aktif=true', {
+    headers: { Authorization: 'Bearer ' + getToken() }
+  });
+  if (!res.ok) return;
+  const data = await res.json();
+
+  if (!data.veri.length) { list.style.display = 'none'; return; }
+
+  list.innerHTML = data.veri.map(p =>
+    `<div class="autocomplete-item" onclick="izVekilSec('${p.ad_soyad.replace(/'/g,"\\'")}')">
+      <strong>${p.ad_soyad}</strong>
+      <span style="font-size:11px;color:var(--text-3);margin-left:8px">${[p.bolum,p.unvan].filter(Boolean).join(' / ')}</span>
+    </div>`
+  ).join('');
+  list.style.display = 'block';
+}
+
+function izVekilSec(adSoyad) {
+  document.getElementById('iz-form-vekil').value = adSoyad;
+  document.getElementById('iz-vekil-list').style.display = 'none';
 }
 
 async function saveIzin() {
