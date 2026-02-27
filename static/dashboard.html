@@ -4786,8 +4786,8 @@ function ftExport() {
         <input type="number" id="iz-form-gun" min="1" placeholder="Otomatik hesaplanır">
       </div>
       <div class="form-field">
-        <label>Kullanılabilir Gün</label>
-        <input type="number" id="iz-form-kullanilabilir" min="0" placeholder="Hak edilen gün">
+        <label>Kalan İzin (Gün)</label>
+        <input type="number" id="iz-form-kullanilabilir" min="0" placeholder="Kalan izin günü" readonly>
       </div>
     </div>
 
@@ -5084,6 +5084,7 @@ function pdRenderPage() {
           ${p.telefon ? '<span>Tel: ' + p.telefon + '</span>' : ''}
           ${p.ise_giris ? '<span>İşe Giriş: ' + pdFmt(p.ise_giris) + '</span>' : ''}
           ${p.ise_giris && pdKidem(p.ise_giris) ? '<span class="pd-badge pd-badge-info">Kıdem: ' + pdKidem(p.ise_giris) + '</span>' : ''}
+          ${p.kalan_izin != null ? '<span class="pd-badge pd-badge-info">Kalan İzin: ' + (p.kalan_izin||0) + ' / ' + (p.toplam_izin_hak||0) + ' gün</span>' : ''}
         </div>
         <div class="pd-actions">
           <button class="btn btn-primary" onclick="pdToggleEdit()">
@@ -5248,6 +5249,7 @@ function pdRenderInfoView() {
     ii('İşe Giriş Tarihi', pdFmt(p.ise_giris)), ii('Kıdem Süresi', pdKidem(p.ise_giris) || '—'), ii('İşten Çıkış Tarihi', pdFmt(p.isten_cikis)),
     ii('Çıkış Kodu', p.cikis_kodu), ii('Meslek Kodu', p.meslek_kodu), ii('Meslek Adı', p.meslek_adi),
     ii('Güvenlik Belgesi Geç. Tar.', pdFmt(p.guvenlik_belge_tarih)), ii('Sigortacılık Başlama', pdFmt(p.sigortalilik_baslama)),
+    ii('Kalan İzin', (p.kalan_izin||0) + ' gün'), ii('Toplam İzin Hakkı', (p.toplam_izin_hak||0) + ' gün'),
   ].join('');
   document.getElementById('pd-info-iletisim').innerHTML = [
     ii('Telefon', p.telefon), ii('Adres', p.adres), ii('Notlar', p.notlar),
@@ -6274,21 +6276,24 @@ async function izPersonelAra(q) {
   if (!data.veri.length) { list.style.display = 'none'; return; }
 
   list.innerHTML = data.veri.map(p =>
-    `<div class="autocomplete-item" onclick="izPersonelSec(${p.id},'${p.ad_soyad.replace(/'/g,"\\'")}','${(p.bolum||'').replace(/'/g,"\\'")}','${(p.unvan||'').replace(/'/g,"\\'")}')">
+    `<div class="autocomplete-item" onclick="izPersonelSec(${p.id},'${p.ad_soyad.replace(/'/g,"\\'")}','${(p.bolum||'').replace(/'/g,"\\'")}','${(p.unvan||'').replace(/'/g,"\\'")}',${p.kalan_izin||0},${p.toplam_izin_hak||0})">
       <strong>${p.ad_soyad}</strong>
       <span style="font-size:11px;color:var(--text-3);margin-left:8px">${[p.bolum,p.unvan].filter(Boolean).join(' / ')}</span>
+      <span style="font-size:11px;color:var(--primary);margin-left:8px">Kalan: ${p.kalan_izin||0} gün</span>
     </div>`
   ).join('');
   list.style.display = 'block';
 }
 
-function izPersonelSec(id, adSoyad, bolum, unvan) {
+function izPersonelSec(id, adSoyad, bolum, unvan, kalanIzin, toplamHak) {
   document.getElementById('iz-form-personel-id').value = id;
   document.getElementById('iz-form-personel-q').value  = adSoyad;
   document.getElementById('iz-personel-list').style.display = 'none';
+  document.getElementById('iz-form-kullanilabilir').value = kalanIzin || '';
   const bilgi = document.getElementById('iz-personel-bilgi');
   bilgi.style.display = 'block';
-  bilgi.textContent   = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}`;
+  bilgi.innerHTML = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}` +
+    `<span style="float:right;color:var(--primary);font-weight:600">Kalan İzin: ${kalanIzin||0} / ${toplamHak||0} gün</span>`;
 }
 
 async function izVekilAra(q) {

@@ -127,7 +127,8 @@ async def list_personel(
                    p.ilce, p.hizmet_noktasi, p.ise_giris, p.isten_cikis,
                    p.telefon, p.cinsiyet, p.aktif, p.brut_ucret,
                    p.guvenlik_belge_tarih, p.medeni_hal, p.cocuk_sayisi,
-                   p.sendika_uyesi, p.maliyet_merkezi, p.olusturuldu
+                   p.sendika_uyesi, p.maliyet_merkezi, p.olusturuldu,
+                   p.kalan_izin, p.toplam_izin_hak
             FROM personel p
             {where_sql}
             {order_sql}
@@ -161,6 +162,8 @@ async def list_personel(
                     "cocuk_sayisi":         r["cocuk_sayisi"],
                     "sendika_uyesi":        r["sendika_uyesi"],
                     "maliyet_merkezi":      r["maliyet_merkezi"],
+                    "kalan_izin":           r["kalan_izin"] or 0,
+                    "toplam_izin_hak":      r["toplam_izin_hak"] or 0,
                 }
                 for r in rows
             ],
