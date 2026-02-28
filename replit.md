@@ -37,6 +37,7 @@ uploads/
 - `personel_evraklari` — Personel belge/evrakları
 - `izinler` — İzin talepleri (onay akışı: beklemede → ik_onayladi → mudur_onayladi → onaylandi → tamamlandi)
 - `izin_gecmisi` — Excel'den aktarılan geçmiş izin kayıtları (7824 kayıt, personel_id, baslangic, bitis, gun_sayisi, kalan_izin, toplam_hak)
+- `sms_kodlari` — SMS doğrulama kodları (DB'de saklanır, Gunicorn multi-worker uyumlu)
 - `tekneler` — Tekne kayıtları
 - `baglamalar` — Bağlama başvuruları
 - `gunluk` — Liman günlük log girişleri

@@ -264,6 +264,22 @@ ALTER TABLE baglamalar ADD COLUMN IF NOT EXISTS tc_kimlik     VARCHAR(20);
 
 ALTER TABLE izinler ADD COLUMN IF NOT EXISTS imza TEXT;
 
+CREATE TABLE IF NOT EXISTS sms_kodlari (
+    id SERIAL PRIMARY KEY,
+    tc_kimlik VARCHAR(11) NOT NULL,
+    kod VARCHAR(10) NOT NULL,
+    personel_id INT NOT NULL,
+    ad_soyad VARCHAR(200),
+    bolum VARCHAR(200),
+    unvan VARCHAR(200),
+    ilce VARCHAR(200),
+    attempts INT DEFAULT 0,
+    verified BOOLEAN DEFAULT FALSE,
+    sms_token VARCHAR(36),
+    created_at TIMESTAMPTZ DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_sms_kodlari_tc ON sms_kodlari(tc_kimlik);
+
 CREATE TABLE IF NOT EXISTS personel_evraklari (
     id           SERIAL PRIMARY KEY,
     personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL,

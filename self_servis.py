@@ -258,7 +258,6 @@ async def public_belge_yukle(
 
 # ── SMS Doğrulama ──────────────────────────────────────────────────────────
 
-SMS_CODES: dict = {}
 SMS_CODE_EXPIRY = 300
 SMS_CODE_LENGTH = 6
 
@@ -337,46 +336,43 @@ async def sms_kod_gonder(data: SmsKodGonder):
     if not tc or len(tc) != 11 or not tc.isdigit():
         raise HTTPException(status_code=400, detail="Geçerli bir TC kimlik numarası giriniz.")
 
-    now = time.time()
-    existing = SMS_CODES.get(tc)
-    if existing and now - existing["created"] < 60:
-        raise HTTPException(status_code=429, detail="Lütfen 1 dakika bekleyip tekrar deneyin.")
-
     pool = await get_pool()
     async with pool.acquire() as conn:
-        row = await conn.fetchrow(
-            "SELECT id, ad_soyad, telefon, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
-            tc
+        async with conn.transaction():
+            existing = await conn.fetchrow(
+                "SELECT created_at FROM sms_kodlari WHERE tc_kimlik=$1 ORDER BY created_at DESC LIMIT 1 FOR UPDATE", tc
+            )
+            if existing and (datetime.now(existing["created_at"].tzinfo) - existing["created_at"]).total_seconds() < 60:
+                raise HTTPException(status_code=429, detail="Lütfen 1 dakika bekleyip tekrar deneyin.")
+
+            row = await conn.fetchrow(
+                "SELECT id, ad_soyad, telefon, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
+                tc
+            )
+            if not row:
+                raise HTTPException(status_code=404, detail="Bu TC kimlik numarasıyla kayıtlı aktif personel bulunamadı.")
+
+            telefon = row["telefon"]
+            if not telefon:
+                raise HTTPException(status_code=400, detail="Personelin kayıtlı telefon numarası bulunamadı.")
+
+            kod = ''.join([str(random.randint(0, 9)) for _ in range(SMS_CODE_LENGTH)])
+
+            await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
+            await conn.execute("""
+                INSERT INTO sms_kodlari (tc_kimlik, kod, personel_id, ad_soyad, bolum, unvan, ilce)
+                VALUES ($1, $2, $3, $4, $5, $6, $7)
+            """, tc, kod, row["id"], row["ad_soyad"], row["bolum"], row["unvan"], row["ilce"])
+
+        sms_mesaj = f"MUTTAS IK izin basvuru dogrulama kodunuz: {kod}"
+        sent = await _send_sms(telefon, sms_mesaj)
+        if not sent:
+            await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
+            raise HTTPException(status_code=500, detail="SMS gönderilemedi. Lütfen daha sonra tekrar deneyin.")
+
+        await conn.execute(
+            "DELETE FROM sms_kodlari WHERE created_at < NOW() - INTERVAL '10 minutes' AND tc_kimlik != $1", tc
         )
-    if not row:
-        raise HTTPException(status_code=404, detail="Bu TC kimlik numarasıyla kayıtlı aktif personel bulunamadı.")
-
-    telefon = row["telefon"]
-    if not telefon:
-        raise HTTPException(status_code=400, detail="Personelin kayıtlı telefon numarası bulunamadı.")
-
-    kod = ''.join([str(random.randint(0, 9)) for _ in range(SMS_CODE_LENGTH)])
-
-    SMS_CODES[tc] = {
-        "kod": kod,
-        "created": now,
-        "attempts": 0,
-        "personel_id": row["id"],
-        "ad_soyad": row["ad_soyad"],
-        "bolum": row["bolum"],
-        "unvan": row["unvan"],
-        "ilce": row["ilce"],
-    }
-
-    sms_mesaj = f"MUTTAS IK izin basvuru dogrulama kodunuz: {kod}"
-    sent = await _send_sms(telefon, sms_mesaj)
-    if not sent:
-        del SMS_CODES[tc]
-        raise HTTPException(status_code=500, detail="SMS gönderilemedi. Lütfen daha sonra tekrar deneyin.")
-
-    old_keys = [k for k, v in SMS_CODES.items() if now - v["created"] > SMS_CODE_EXPIRY * 2]
-    for k in old_keys:
-        del SMS_CODES[k]
 
     return {
         "mesaj": "Doğrulama kodu gönderildi.",
@@ -390,26 +386,38 @@ async def sms_kod_dogrula(data: SmsKodDogrula):
     tc = data.tc_kimlik.strip()
     kod = data.kod.strip()
 
-    entry = SMS_CODES.get(tc)
-    if not entry:
-        raise HTTPException(status_code=400, detail="Önce doğrulama kodu talep edin.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        async with conn.transaction():
+            entry = await conn.fetchrow(
+                "SELECT * FROM sms_kodlari WHERE tc_kimlik=$1 ORDER BY created_at DESC LIMIT 1 FOR UPDATE", tc
+            )
+            if not entry:
+                raise HTTPException(status_code=400, detail="Önce doğrulama kodu talep edin.")
 
-    if time.time() - entry["created"] > SMS_CODE_EXPIRY:
-        del SMS_CODES[tc]
-        raise HTTPException(status_code=400, detail="Kodun süresi doldu. Lütfen yeni kod talep edin.")
+            elapsed = (datetime.now(entry["created_at"].tzinfo) - entry["created_at"]).total_seconds()
+            if elapsed > SMS_CODE_EXPIRY:
+                await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
+                raise HTTPException(status_code=400, detail="Kodun süresi doldu. Lütfen yeni kod talep edin.")
 
-    entry["attempts"] += 1
-    if entry["attempts"] > 5:
-        del SMS_CODES[tc]
-        raise HTTPException(status_code=429, detail="Çok fazla hatalı deneme. Lütfen yeni kod talep edin.")
+            updated = await conn.fetchrow(
+                "UPDATE sms_kodlari SET attempts=attempts+1 WHERE id=$1 RETURNING attempts", entry["id"]
+            )
+            new_attempts = updated["attempts"]
 
-    if kod != entry["kod"]:
-        kalan = 5 - entry["attempts"]
-        raise HTTPException(status_code=400, detail=f"Kod hatalı. {kalan} deneme hakkınız kaldı.")
+            if new_attempts > 5:
+                await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
+                raise HTTPException(status_code=429, detail="Çok fazla hatalı deneme. Lütfen yeni kod talep edin.")
 
-    sms_token = str(uuid.uuid4())
-    entry["verified"] = True
-    entry["sms_token"] = sms_token
+            if kod != entry["kod"]:
+                kalan = 5 - new_attempts
+                raise HTTPException(status_code=400, detail=f"Kod hatalı. {kalan} deneme hakkınız kaldı.")
+
+            sms_token = str(uuid.uuid4())
+            await conn.execute(
+                "UPDATE sms_kodlari SET verified=TRUE, sms_token=$1 WHERE id=$2",
+                sms_token, entry["id"]
+            )
 
     return {
         "mesaj": "Doğrulama başarılı.",
@@ -483,19 +491,24 @@ async def public_izin_olustur(data: PublicIzinCreate):
         raise HTTPException(status_code=400, detail="Bitiş tarihi başlangıçtan önce olamaz.")
 
     tc = data.tc_kimlik.strip()
-    entry = SMS_CODES.get(tc)
-    if not entry or not entry.get("verified") or entry.get("sms_token") != data.sms_token:
-        raise HTTPException(status_code=403, detail="SMS doğrulaması yapılmamış veya geçersiz.")
-
-    if time.time() - entry["created"] > SMS_CODE_EXPIRY * 2:
-        del SMS_CODES[tc]
-        raise HTTPException(status_code=403, detail="SMS doğrulama süresi doldu. Lütfen yeniden başvurun.")
-
-    if entry.get("personel_id") != data.personel_id:
-        raise HTTPException(status_code=403, detail="Personel kimlik doğrulaması başarısız.")
 
     pool = await get_pool()
     async with pool.acquire() as conn:
+        entry = await conn.fetchrow(
+            "SELECT * FROM sms_kodlari WHERE tc_kimlik=$1 AND verified=TRUE AND sms_token=$2 ORDER BY created_at DESC LIMIT 1",
+            tc, data.sms_token
+        )
+        if not entry:
+            raise HTTPException(status_code=403, detail="SMS doğrulaması yapılmamış veya geçersiz.")
+
+        elapsed = (datetime.now(entry["created_at"].tzinfo) - entry["created_at"]).total_seconds()
+        if elapsed > SMS_CODE_EXPIRY * 2:
+            await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
+            raise HTTPException(status_code=403, detail="SMS doğrulama süresi doldu. Lütfen yeniden başvurun.")
+
+        if entry["personel_id"] != data.personel_id:
+            raise HTTPException(status_code=403, detail="Personel kimlik doğrulaması başarısız.")
+
         prs = await conn.fetchrow(
             "SELECT id FROM personel WHERE id=$1 AND tc_kimlik=$2 AND aktif=TRUE",
             data.personel_id, data.tc_kimlik
@@ -521,8 +534,7 @@ async def public_izin_olustur(data: PublicIzinCreate):
             data.gun_sayisi, data.kullanilabilir_gun, data.vekil_ad_soyad,
             data.izin_adresi, data.notlar, data.imza,
         )
-        if tc in SMS_CODES:
-            del SMS_CODES[tc]
+        await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
 
         return {"id": row["id"], "mesaj": "İzin başvurunuz alındı."}
 
