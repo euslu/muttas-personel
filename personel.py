@@ -69,9 +69,31 @@ SORT_COLS = {
     "telefon":              "p.telefon",
 }
 
+@router.get("/harf-sayilari")
+async def personel_harf_sayilari(
+    aktif: Optional[bool] = Query(None),
+    token: dict = Depends(decode_token),
+):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        aktif_filter = "WHERE aktif = TRUE" if aktif is None or aktif else ("WHERE aktif = FALSE" if aktif is False else "")
+        if aktif is None:
+            aktif_filter = "WHERE aktif = TRUE"
+        rows = await conn.fetch(f"""
+            SELECT UPPER(LEFT(ad_soyad, 1)) AS harf, COUNT(*) AS sayi
+            FROM personel
+            {aktif_filter}
+            GROUP BY harf
+            ORDER BY harf
+        """)
+        toplam = sum(r["sayi"] for r in rows)
+        return {"harfler": {r["harf"]: r["sayi"] for r in rows}, "toplam": toplam}
+
+
 @router.get("")
 async def list_personel(
     q:        Optional[str] = Query(None),
+    harf:     Optional[str] = Query(None),
     bolum:    Optional[str] = Query(None),
     unvan:    Optional[str] = Query(None),
     ilce:     Optional[str] = Query(None),
@@ -91,6 +113,10 @@ async def list_personel(
         if q:
             params.append(f"%{q}%")
             wheres.append(f"(p.ad_soyad ILIKE ${len(params)} OR p.tc_kimlik ILIKE ${len(params)} OR p.telefon ILIKE ${len(params)})")
+
+        if harf and len(harf) == 1 and harf.isalpha():
+            params.append(f"{harf.upper()}%")
+            wheres.append(f"p.ad_soyad ILIKE ${len(params)}")
 
         if bolum:
             params.append(bolum)

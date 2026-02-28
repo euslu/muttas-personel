@@ -942,6 +942,76 @@ tbody tr:hover td { background: var(--bg-soft); }
 }
 .prs-toolbar .prs-btn-add:hover { background: #3651d4; }
 
+.prs-alfa-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(62px, 1fr));
+  gap: 10px;
+  margin-bottom: 20px;
+}
+.prs-alfa-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px 6px;
+  text-align: center;
+  cursor: pointer;
+  transition: all .25s;
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  user-select: none;
+}
+.prs-alfa-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 14px 14px 0 0;
+  opacity: 0;
+  transition: opacity .2s;
+}
+.prs-alfa-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+  border-color: var(--accent);
+}
+.prs-alfa-card:hover::before { opacity: 1; }
+.prs-alfa-card.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(67,97,238,0.25);
+}
+.prs-alfa-card.active::before { opacity: 0; }
+.prs-alfa-card.active .prs-alfa-letter { color: #fff; }
+.prs-alfa-card.active .prs-alfa-count { color: rgba(255,255,255,0.8); }
+.prs-alfa-card.empty {
+  opacity: 0.4;
+  cursor: default;
+  pointer-events: none;
+}
+.prs-alfa-letter {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.prs-alfa-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-3);
+  line-height: 1;
+}
+.prs-alfa-card.all-card {
+  grid-column: span 2;
+}
+.prs-alfa-card.all-card .prs-alfa-letter {
+  font-size: 14px;
+  font-weight: 700;
+}
+
 .prs-table-card {
   background: var(--bg);
   border: 1px solid var(--border);
@@ -2615,7 +2685,7 @@ tbody tr:hover td { background: var(--bg-soft); }
             <option>YATAĞAN</option>
             <option>YATAĞAN TT</option>
           </select>
-          <select class="prs-filter" id="prs-aktif" onchange="loadPersonel(1)">
+          <select class="prs-filter" id="prs-aktif" onchange="prsSelectedHarf='';loadAlfaGrid();loadPersonel(1)">
             <option value="true">Aktif</option>
             <option value="false">Pasif</option>
             <option value="">Tümü</option>
@@ -2625,6 +2695,8 @@ tbody tr:hover td { background: var(--bg-soft); }
             Personel Ekle
           </button>
         </div>
+
+        <div class="prs-alfa-grid" id="prs-alfa-grid"></div>
 
         <div class="prs-table-card">
           <div style="overflow-x:auto">
@@ -3052,7 +3124,7 @@ function navigate(page, el) {
   if (page === 'baglama') initBasvurular();
   if (page === 'tekneler') initTekneler();
   if (page === 'faturalar') initFaturalar();
-  if (page === 'personel')     { loadPersonelMeta(); loadPersonel(1); }
+  if (page === 'personel')     { loadPersonelMeta(); loadAlfaGrid(); loadPersonel(1); }
   if (page === 'izinler')      loadIzinler(1);
   if (page === 'kullanicilar') loadKullanicilar();
 }
@@ -5015,6 +5087,42 @@ const IZIN_DURUM_COLOR = {
 
 function loadPersonelMeta() { /* bölüm / ünvan / ilçe artık hardcoded */ }
 
+let prsSelectedHarf = '';
+const PRS_HARFLER = 'ABCDEFGHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
+
+async function loadAlfaGrid() {
+  const aktif = document.getElementById('prs-aktif')?.value || 'true';
+  const params = new URLSearchParams();
+  if (aktif) params.set('aktif', aktif);
+  const res = await fetch('/personel/harf-sayilari?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
+  if (!res.ok) return;
+  const data = await res.json();
+  const grid = document.getElementById('prs-alfa-grid');
+
+  let html = `<div class="prs-alfa-card all-card ${!prsSelectedHarf ? 'active' : ''}" onclick="selectHarf('', this)">
+    <div class="prs-alfa-letter">Tümü</div>
+    <div class="prs-alfa-count">${data.toplam} kişi</div>
+  </div>`;
+
+  PRS_HARFLER.forEach(h => {
+    const cnt = data.harfler[h] || 0;
+    const isEmpty = cnt === 0;
+    const isActive = prsSelectedHarf === h;
+    html += `<div class="prs-alfa-card ${isActive ? 'active' : ''} ${isEmpty ? 'empty' : ''}" onclick="selectHarf('${h}', this)">
+      <div class="prs-alfa-letter">${h}</div>
+      <div class="prs-alfa-count">${cnt}</div>
+    </div>`;
+  });
+  grid.innerHTML = html;
+}
+
+function selectHarf(h, el) {
+  prsSelectedHarf = h;
+  document.querySelectorAll('.prs-alfa-card').forEach(c => c.classList.remove('active'));
+  if (el) el.classList.add('active');
+  loadPersonel(1);
+}
+
 async function loadPersonel(page) {
   prsPage = page || 1;
   const q      = document.getElementById('prs-q')?.value       || '';
@@ -5027,6 +5135,7 @@ async function loadPersonel(page) {
 
   const params = new URLSearchParams({ page: prsPage, per_page: perPage, sort_by: prsSort.col, sort_dir: prsSort.dir });
   if (q)     params.set('q', q);
+  if (prsSelectedHarf) params.set('harf', prsSelectedHarf);
   if (bolum) params.set('bolum', bolum);
   if (unvan) params.set('unvan', unvan);
   if (ilce)   params.set('ilce', ilce);
