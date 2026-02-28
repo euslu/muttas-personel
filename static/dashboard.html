@@ -2530,7 +2530,7 @@ tbody tr:hover td { background: var(--bg-soft); }
                   <th class="prs-sort" onclick="prsSortBy('unvan')"    id="prs-th-unvan" title="Görev ünvanı — sıralamak için tıklayın">Ünvan</th>
                   <th class="prs-sort" onclick="prsSortBy('ilce')"     id="prs-th-ilce" title="Görev yaptığı ilçe ve hizmet noktası — sıralamak için tıklayın">İlçe</th>
                   <th class="prs-sort" onclick="prsSortBy('ise_giris')" id="prs-th-ise_giris" title="İşe giriş tarihi — sıralamak için tıklayın">İşe Giriş</th>
-                  <th class="prs-sort" onclick="prsSortBy('guvenlik_belge_tarih')" id="prs-th-guvenlik_belge_tarih" title="Güvenlik belgesi geçerlilik tarihi — sıralamak için tıklayın">Güv. Belgesi</th>
+                  <th class="prs-sort" onclick="prsSortBy('kalan_izin')" id="prs-th-kalan_izin" title="Kalan yıllık izin günü — sıralamak için tıklayın">Kalan İzin</th>
                   <th class="prs-sort" onclick="prsSortBy('telefon')"  id="prs-th-telefon" title="İletişim telefon numarası — sıralamak için tıklayın">Telefon</th>
                   <th title="Personelin aktif veya pasif durumu">Durum</th>
                   <th title="Detay görüntüle, izin geçmişi ve yönetim işlemleri">İşlem</th>
@@ -4950,8 +4950,6 @@ async function loadPersonel(page) {
   const PRS_AV_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#14b8a6','#e11d48','#6366f1'];
 
   tbody.innerHTML = data.veri.map((p, idx) => {
-    const guvTar = p.guvenlik_belge_tarih ? new Date(p.guvenlik_belge_tarih) : null;
-    const guvColor = guvTar && guvTar < now ? '#dc2626' : guvTar && (guvTar - now) < 90*86400000 ? '#d97706' : '';
     const aktifBadge = p.aktif
       ? '<span class="prs-status-badge" style="background:#dcfce7;color:#16a34a">Aktif</span>'
       : '<span class="prs-status-badge" style="background:#fee2e2;color:#dc2626">Pasif</span>';
@@ -4970,7 +4968,7 @@ async function loadPersonel(page) {
       <td>${p.unvan || '—'}</td>
       <td>${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
       <td>${fmt(p.ise_giris)}</td>
-      <td style="${guvColor ? 'color:'+guvColor+';font-weight:600' : ''}">${fmt(p.guvenlik_belge_tarih)}</td>
+      <td><span style="font-weight:600;color:${(p.kalan_izin||0) <= 5 ? '#dc2626' : (p.kalan_izin||0) <= 14 ? '#d97706' : '#16a34a'}">${p.kalan_izin||0}</span> <span style="font-size:11px;color:var(--text-3)">/ ${p.toplam_izin_hak||0}</span></td>
       <td>${p.telefon || '—'}</td>
       <td>${aktifBadge}</td>
       <td>

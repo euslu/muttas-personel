@@ -64,6 +64,8 @@ SORT_COLS = {
     "ilce":                 "p.ilce",
     "ise_giris":            "p.ise_giris",
     "guvenlik_belge_tarih": "p.guvenlik_belge_tarih",
+    "kalan_izin":           "p.kalan_izin",
+    "toplam_izin_hak":      "p.toplam_izin_hak",
     "telefon":              "p.telefon",
 }
 
