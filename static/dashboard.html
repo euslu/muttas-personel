@@ -1698,7 +1698,8 @@ tbody tr:hover td { background: var(--bg-soft); }
   vertical-align: middle;
 }
 .iz-table tbody tr { transition: all .15s ease; }
-.iz-table tbody tr:hover { background: linear-gradient(90deg, rgba(67,97,238,.03), rgba(99,102,241,.02)); }
+.iz-table tbody tr:nth-child(even) td { background: #f8fafc; }
+.iz-table tbody tr:hover td { background: linear-gradient(90deg, rgba(67,97,238,.05), rgba(99,102,241,.03)); }
 .iz-table tbody tr:last-child td { border-bottom: none; }
 .iz-durum-badge {
   display: inline-flex; align-items: center; gap: 5px;
