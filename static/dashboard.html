@@ -5182,28 +5182,28 @@ function pdRenderPage() {
         <div class="pd-stat-icon" style="background:#eff6ff;color:#3b82f6">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="16" height="16" rx="2"/><path d="M3 9h16M8 2v4M14 2v4"/></svg>
         </div>
-        <div class="pd-stat-val" id="pd-stat-kalan">—</div>
+        <div class="pd-stat-val">${p.kalan_izin || 0}</div>
         <div class="pd-stat-label">Kalan İzin (Gün)</div>
       </div>
       <div class="pd-stat-card">
         <div class="pd-stat-icon" style="background:#f0fdf4;color:#22c55e">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="9"/><path d="M11 7v4l3 3"/></svg>
         </div>
-        <div class="pd-stat-val" id="pd-stat-kidem">—</div>
+        <div class="pd-stat-val" style="${(pdKidem(p.ise_giris)||'').length > 6 ? 'font-size:18px' : ''}">${pdKidem(p.ise_giris) || '—'}</div>
         <div class="pd-stat-label">Kıdem Süresi</div>
       </div>
       <div class="pd-stat-card">
         <div class="pd-stat-icon" style="background:#fffbeb;color:#f59e0b">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
         </div>
-        <div class="pd-stat-val" id="pd-stat-toplam">—</div>
+        <div class="pd-stat-val">${p.toplam_izin_hak || 0}</div>
         <div class="pd-stat-label">Toplam İzin Hakkı</div>
       </div>
       <div class="pd-stat-card">
         <div class="pd-stat-icon" style="background:#fdf2f8;color:#ec4899">
           <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
         </div>
-        <div class="pd-stat-val" id="pd-stat-kullanilan">—</div>
+        <div class="pd-stat-val">${(p.toplam_izin_hak || 0) - (p.kalan_izin || 0)}</div>
         <div class="pd-stat-label">Kullanılan İzin</div>
       </div>
     </div>
@@ -5716,19 +5716,6 @@ function pdShowEditForm() {
     </div>
   `;
   document.querySelectorAll('.pd-tab-btn')[0].click();
-
-  const kalanEl = document.getElementById('pd-stat-kalan');
-  const toplamEl = document.getElementById('pd-stat-toplam');
-  const kullanilanEl = document.getElementById('pd-stat-kullanilan');
-  const kidemEl = document.getElementById('pd-stat-kidem');
-  if (kalanEl) kalanEl.textContent = p.kalan_izin || 0;
-  if (toplamEl) toplamEl.textContent = p.toplam_izin_hak || 0;
-  if (kullanilanEl) kullanilanEl.textContent = (p.toplam_izin_hak || 0) - (p.kalan_izin || 0);
-  if (kidemEl) {
-    const k = pdKidem(p.ise_giris);
-    kidemEl.textContent = k || '—';
-    kidemEl.style.fontSize = k && k.length > 6 ? '18px' : '26px';
-  }
 }
 
 function pdCancelEdit() {
