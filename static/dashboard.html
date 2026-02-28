@@ -5088,7 +5088,7 @@ const IZIN_DURUM_COLOR = {
 function loadPersonelMeta() { /* bölüm / ünvan / ilçe artık hardcoded */ }
 
 let prsSelectedHarf = '';
-const PRS_HARFLER = 'ABCDEFGHIİJKLMNOÖPRSŞTUÜVYZ'.split('');
+const PRS_HARFLER = ['A','B','C','Ç','D','E','F','G','Ğ','H','I','İ','J','K','L','M','N','O','Ö','P','R','S','Ş','T','U','Ü','V','Y','Z'];
 
 async function loadAlfaGrid() {
   const aktif = document.getElementById('prs-aktif')?.value || 'true';
