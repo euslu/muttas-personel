@@ -31,6 +31,7 @@ class IzinOnay(BaseModel):
     durum:     str
     onaylayan: Optional[str] = None
     notlar:    Optional[str] = None
+    imza:      Optional[str] = None
 
 
 def fmt(d):
@@ -218,14 +219,14 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(require_ik_e
         extra_vals = []
 
         if body.durum == "ik_onayladi":
-            extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5"
-            extra_vals = [today, body.onaylayan]
+            extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"
+            extra_vals = [today, body.onaylayan, body.imza]
         elif body.durum == "mudur_onayladi":
-            extra_sets = ", mudur_onay_tarihi = $4"
-            extra_vals = [today]
+            extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5"
+            extra_vals = [today, body.imza]
         elif body.durum == "onaylandi":
-            extra_sets = ", yk_onay_tarihi = $4"
-            extra_vals = [today]
+            extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5"
+            extra_vals = [today, body.imza]
         elif body.durum == "tamamlandi":
             extra_sets = ", gorev_baslama = $4"
             extra_vals = [today]

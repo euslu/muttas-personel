@@ -1736,6 +1736,13 @@ tbody tr:hover td { background: var(--bg-soft); }
   .iz-filter { width: 100%; }
   .iz-clear-btn { width: 100%; justify-content: center; }
 }
+.modal-overlay { position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:9999; }
+.modal-box { background:#fff;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.2);overflow:hidden;width:90%;animation:modalIn .2s ease; }
+.modal-header { display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--border); }
+.modal-header h3 { margin:0;font-size:16px;font-weight:600; }
+.modal-close { background:none;border:none;font-size:22px;cursor:pointer;color:var(--text-2);padding:0 4px; }
+.modal-close:hover { color:var(--text-1); }
+@keyframes modalIn { from { opacity:0;transform:scale(.95) } to { opacity:1;transform:scale(1) } }
 </style>
 </head>
 <body>
@@ -5030,6 +5037,35 @@ function ftExport() {
   </div>
 </div>
 
+<div class="modal-overlay" id="onay-imza-modal" style="display:none">
+  <div class="modal-box" style="max-width:460px">
+    <div class="modal-header">
+      <h3 id="onay-imza-title">Onay İmzası</h3>
+      <button class="modal-close" onclick="closeOnayImzaModal()">&times;</button>
+    </div>
+    <div class="modal-body" style="padding:20px">
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:12px" id="onay-imza-desc">Onayınızı kaydetmek için imzanızı atın.</p>
+      <div class="sig-wrap" id="onay-sig-wrap" style="height:160px;border:2px dashed var(--border);border-radius:12px;position:relative;background:#fafbfc">
+        <canvas id="onay-sig-canvas" style="width:100%;height:100%;cursor:crosshair"></canvas>
+        <div class="sig-placeholder" id="onay-sig-placeholder" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);color:var(--text-3);font-size:13px;pointer-events:none">
+          ✍ İmzanızı buraya atın
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+        <div style="display:flex;align-items:center;gap:6px">
+          <div class="sig-dot" id="onay-sig-dot" style="width:8px;height:8px;border-radius:50%;background:#d1d5db"></div>
+          <span id="onay-sig-label" style="font-size:11px;color:var(--text-3)">İmza bekleniyor</span>
+        </div>
+        <button type="button" class="btn btn-outline" style="font-size:11px;padding:4px 12px" onclick="onayImzaTemizle()">Temizle</button>
+      </div>
+    </div>
+    <div class="modal-footer" style="display:flex;gap:8px;justify-content:flex-end;padding:16px 20px;border-top:1px solid var(--border)">
+      <button class="btn btn-outline" onclick="closeOnayImzaModal()">İptal</button>
+      <button class="btn btn-primary" id="onay-imza-btn" onclick="onayImzaOnayla()">Onayla ve İmzala</button>
+    </div>
+  </div>
+</div>
+
 <script>
 // ══════════════════════════════════════════════
 //  PERSONEL MODÜLü
@@ -6736,20 +6772,44 @@ async function izOnayKaydet() {
   if (!izEditId) return;
   const durum    = document.getElementById('iz-form-durum-onay').value;
   const onaylayan= document.getElementById('iz-form-onaylayan').value || null;
+  const imzaGereken = ['ik_onayladi','mudur_onayladi','onaylandi'];
 
-  const res = await fetch('/izinler/' + izEditId + '/onay', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
-    body: JSON.stringify({ durum, onaylayan }),
-  });
-
-  if (res.ok) {
-    showToast('Onay kaydedildi', 'success');
-    closeIzinDrawer();
-    loadIzinler(izPage);
+  if (imzaGereken.includes(durum)) {
+    const titleMap = { ik_onayladi: 'İK Onay İmzası', mudur_onayladi: 'Müdür Onay İmzası', onaylandi: 'YK Onay İmzası' };
+    openOnayImzaModal(
+      titleMap[durum] || 'Onay İmzası',
+      'Onayınızı kaydetmek için imzanızı atın.',
+      'Onayla ve İmzala',
+      async (imzaData) => {
+        const res = await fetch('/izinler/' + izEditId + '/onay', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+          body: JSON.stringify({ durum, onaylayan, imza: imzaData }),
+        });
+        if (res.ok) {
+          showToast('Onay kaydedildi', 'success');
+          closeIzinDrawer();
+          loadIzinler(izPage);
+        } else {
+          const err = await res.json().catch(() => ({}));
+          showToast(err.detail || 'İşlem başarısız', 'error');
+        }
+      }
+    );
   } else {
-    const err = await res.json().catch(() => ({}));
-    showToast(err.detail || 'İşlem başarısız', 'error');
+    const res = await fetch('/izinler/' + izEditId + '/onay', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+      body: JSON.stringify({ durum, onaylayan }),
+    });
+    if (res.ok) {
+      showToast('Onay kaydedildi', 'success');
+      closeIzinDrawer();
+      loadIzinler(izPage);
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast(err.detail || 'İşlem başarısız', 'error');
+    }
   }
 }
 
@@ -6773,21 +6833,28 @@ async function izinHizliOnay(id) {
   if (!yeniDurum) { showToast('Bu izin zaten onaylanmış', 'info'); return; }
 
   const onaylayan = currentUser ? (currentUser.ad + ' ' + currentUser.soyad) : '';
-  if (!confirm(`${ONAY_MESAJ[yeniDurum]} olarak işaretlenecek. Onaylıyor musunuz?`)) return;
+  const titleMap = { ik_onayladi: 'İK Onay İmzası', mudur_onayladi: 'Müdür Onay İmzası', onaylandi: 'YK Onay İmzası' };
+  const descMap  = { ik_onayladi: 'İK onayını imzanızla tamamlayın.', mudur_onayladi: 'Müdür onayını imzanızla tamamlayın.', onaylandi: 'Yönetim kurulu onayını imzanızla tamamlayın.' };
 
-  const res = await fetch('/izinler/' + id + '/onay', {
-    method: 'PUT',
-    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
-    body: JSON.stringify({ durum: yeniDurum, onaylayan, notlar: null }),
-  });
-
-  if (res.ok) {
-    showToast(ONAY_MESAJ[yeniDurum], 'success');
-    loadIzinler(izPage);
-  } else {
-    const err = await res.json().catch(() => ({}));
-    showToast(err.detail || 'Onay başarısız', 'error');
-  }
+  openOnayImzaModal(
+    titleMap[yeniDurum] || 'Onay İmzası',
+    descMap[yeniDurum] || 'Onayınızı kaydetmek için imzanızı atın.',
+    ONAY_MESAJ[yeniDurum] || 'Onayla',
+    async (imzaData) => {
+      const res = await fetch('/izinler/' + id + '/onay', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+        body: JSON.stringify({ durum: yeniDurum, onaylayan, notlar: null, imza: imzaData }),
+      });
+      if (res.ok) {
+        showToast(ONAY_MESAJ[yeniDurum], 'success');
+        loadIzinler(izPage);
+      } else {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.detail || 'Onay başarısız', 'error');
+      }
+    }
+  );
 }
 
 async function izinYazdir(id) {
@@ -6883,12 +6950,17 @@ async function izinYazdir(id) {
     </div>
     <div class="sig-box">
       <div class="label">İK Onayı</div>
-      <div class="line"></div>
+      <div class="line">${iz.ik_imza ? `<img src="${iz.ik_imza}" alt="İK İmza">` : ''}</div>
       <div class="name">${iz.ik_onaylayan || ''}</div>
     </div>
     <div class="sig-box">
       <div class="label">Müdür Onayı</div>
-      <div class="line"></div>
+      <div class="line">${iz.mudur_imza ? `<img src="${iz.mudur_imza}" alt="Müdür İmza">` : ''}</div>
+      <div class="name"></div>
+    </div>
+    <div class="sig-box">
+      <div class="label">YK Onayı</div>
+      <div class="line">${iz.yk_imza ? `<img src="${iz.yk_imza}" alt="YK İmza">` : ''}</div>
       <div class="name"></div>
     </div>
   </div>
@@ -7275,6 +7347,69 @@ async function saveKullanici() {
     errEl.textContent = e.detail || 'Kullanıcı eklenemedi.';
     errEl.style.display = '';
   }
+}
+
+let onaySigCanvas, onaySigCtx, onaySigDrawing = false, onaySigHasData = false;
+let onayImzaCallback = null;
+
+function initOnaySignature() {
+  onaySigCanvas = document.getElementById('onay-sig-canvas');
+  if (!onaySigCanvas) return;
+  const wrap = document.getElementById('onay-sig-wrap');
+  onaySigCanvas.width = wrap.offsetWidth;
+  onaySigCanvas.height = wrap.offsetHeight;
+  onaySigCtx = onaySigCanvas.getContext('2d');
+  onaySigCtx.strokeStyle = '#1a1a1a';
+  onaySigCtx.lineWidth = 2;
+  onaySigCtx.lineCap = 'round';
+  onaySigCtx.lineJoin = 'round';
+  onaySigHasData = false;
+  document.getElementById('onay-sig-placeholder').style.display = '';
+  document.getElementById('onay-sig-dot').style.background = '#d1d5db';
+  document.getElementById('onay-sig-label').textContent = 'İmza bekleniyor';
+
+  const getPos = (e) => {
+    const r = onaySigCanvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return { x: t.clientX - r.left, y: t.clientY - r.top };
+  };
+  const onDown = (e) => { e.preventDefault(); onaySigDrawing = true; const p = getPos(e); onaySigCtx.beginPath(); onaySigCtx.moveTo(p.x, p.y); };
+  const onMove = (e) => { if (!onaySigDrawing) return; e.preventDefault(); const p = getPos(e); onaySigCtx.lineTo(p.x, p.y); onaySigCtx.stroke();
+    if (!onaySigHasData) { onaySigHasData = true; document.getElementById('onay-sig-placeholder').style.display = 'none'; document.getElementById('onay-sig-dot').style.background = '#22c55e'; document.getElementById('onay-sig-label').textContent = 'İmza alındı'; }
+  };
+  const onUp = () => { onaySigDrawing = false; };
+  onaySigCanvas.onmousedown = onDown; onaySigCanvas.onmousemove = onMove; onaySigCanvas.onmouseup = onUp; onaySigCanvas.onmouseleave = onUp;
+  onaySigCanvas.ontouchstart = onDown; onaySigCanvas.ontouchmove = onMove; onaySigCanvas.ontouchend = onUp;
+}
+
+function onayImzaTemizle() {
+  if (!onaySigCtx) return;
+  onaySigCtx.clearRect(0, 0, onaySigCanvas.width, onaySigCanvas.height);
+  onaySigHasData = false;
+  document.getElementById('onay-sig-placeholder').style.display = '';
+  document.getElementById('onay-sig-dot').style.background = '#d1d5db';
+  document.getElementById('onay-sig-label').textContent = 'İmza bekleniyor';
+}
+
+function openOnayImzaModal(title, desc, btnText, callback) {
+  document.getElementById('onay-imza-title').textContent = title;
+  document.getElementById('onay-imza-desc').textContent = desc;
+  document.getElementById('onay-imza-btn').textContent = btnText;
+  onayImzaCallback = callback;
+  document.getElementById('onay-imza-modal').style.display = 'flex';
+  setTimeout(() => initOnaySignature(), 50);
+}
+
+function closeOnayImzaModal() {
+  document.getElementById('onay-imza-modal').style.display = 'none';
+  onayImzaCallback = null;
+}
+
+function onayImzaOnayla() {
+  if (!onaySigHasData) { showToast('Lütfen imzanızı atın', 'error'); return; }
+  const imzaData = onaySigCanvas.toDataURL('image/png');
+  closeOnayImzaModal();
+  if (onayImzaCallback) onayImzaCallback(imzaData);
 }
 </script>
 
