@@ -1399,38 +1399,116 @@ tbody tr:hover td { background: var(--bg-soft); }
 @media (max-width: 700px) { .dash-grid { grid-template-columns: 1fr; } }
 
 .pd-container { max-width: 1100px; margin: 0 auto; }
-.pd-back { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border: 1px solid var(--border); border-radius: var(--radius); background: var(--bg); color: var(--text-2); font-size: 13px; font-weight: 500; cursor: pointer; margin-bottom: 16px; transition: all .15s; }
-.pd-back:hover { background: var(--bg-soft); border-color: var(--border-dark); }
-.pd-profile-header { display: flex; gap: 24px; align-items: flex-start; background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 28px; margin-bottom: 20px; box-shadow: var(--shadow-sm); }
-.pd-photo-area { position: relative; flex-shrink: 0; }
-.pd-photo { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border); background: var(--accent-bg); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; color: var(--accent); overflow: hidden; }
+.pd-back { display: inline-flex; align-items: center; gap: 6px; padding: 8px 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg); color: var(--text-2); font-size: 13px; font-weight: 600; cursor: pointer; margin-bottom: 20px; transition: all .2s; box-shadow: var(--shadow-sm); }
+.pd-back:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateX(-3px); }
+@keyframes pdFadeIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes pdSlideRight { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes pdPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.25); } 50% { box-shadow: 0 0 0 10px rgba(37,99,235,0); } }
+@keyframes pdStatCount { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
+.pd-profile-header {
+  display: flex; gap: 28px; align-items: flex-start;
+  background: linear-gradient(135deg, var(--sb-bg) 0%, #2a3f6e 50%, #1a5276 100%);
+  border: none; border-radius: 18px; padding: 32px 36px; margin-bottom: 24px;
+  box-shadow: 0 8px 32px rgba(30,42,74,0.18), 0 2px 8px rgba(0,0,0,0.06);
+  color: #fff; position: relative; overflow: hidden;
+  animation: pdFadeIn .5s ease-out;
+}
+.pd-profile-header::before {
+  content: ''; position: absolute; top: -60px; right: -60px; width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.pd-profile-header::after {
+  content: ''; position: absolute; bottom: -40px; left: 30%; width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 70%);
+  border-radius: 50%;
+}
+.pd-photo-area { position: relative; flex-shrink: 0; z-index: 1; }
+.pd-photo {
+  width: 110px; height: 110px; border-radius: 50%; object-fit: cover;
+  border: 4px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 38px; font-weight: 700; color: #fff; overflow: hidden;
+  backdrop-filter: blur(8px); transition: transform .3s, box-shadow .3s;
+  animation: pdPulse 3s ease-in-out infinite;
+}
+.pd-photo:hover { transform: scale(1.06); box-shadow: 0 6px 24px rgba(0,0,0,0.25); }
 .pd-photo img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
-.pd-photo-upload { position: absolute; bottom: 2px; right: 2px; width: 32px; height: 32px; border-radius: 50%; background: var(--accent); color: #fff; border: 2px solid var(--bg); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: background .15s; }
-.pd-photo-upload:hover { background: var(--accent-hover); }
+.pd-photo-upload { position: absolute; bottom: 4px; right: 4px; width: 34px; height: 34px; border-radius: 50%; background: #22c55e; color: #fff; border: 3px solid rgba(255,255,255,0.9); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 14px; transition: all .2s; z-index: 2; }
+.pd-photo-upload:hover { background: #16a34a; transform: scale(1.15); }
 .pd-photo-upload input { display: none; }
-.pd-info { flex: 1; min-width: 0; }
-.pd-name { font-size: 22px; font-weight: 700; margin-bottom: 4px; }
-.pd-title { font-size: 14px; color: var(--text-2); margin-bottom: 8px; }
-.pd-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
-.pd-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
-.pd-badge-aktif { background: #dcfce7; color: #16a34a; }
-.pd-badge-pasif { background: #fee2e2; color: #dc2626; }
-.pd-badge-info { background: var(--accent-bg); color: var(--accent); }
-.pd-meta { display: flex; gap: 20px; flex-wrap: wrap; font-size: 13px; color: var(--text-2); }
-.pd-meta span { display: flex; align-items: center; gap: 4px; }
-.pd-actions { display: flex; gap: 8px; margin-top: 12px; }
-.pd-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 20px; background: var(--bg); border-radius: 12px 12px 0 0; padding: 0 8px; box-shadow: var(--shadow-sm); }
-.pd-tab-btn { padding: 12px 20px; font-size: 13px; font-weight: 600; color: var(--text-3); background: none; border: none; border-bottom: 2px solid transparent; cursor: pointer; transition: all .15s; margin-bottom: -2px; }
-.pd-tab-btn:hover { color: var(--text); }
-.pd-tab-btn.active { color: var(--accent); border-bottom-color: var(--accent); }
-.pd-panel { display: none; }
+.pd-info { flex: 1; min-width: 0; z-index: 1; animation: pdSlideRight .5s ease-out; }
+.pd-name { font-size: 24px; font-weight: 800; margin-bottom: 4px; color: #fff; letter-spacing: 0.3px; text-shadow: 0 2px 8px rgba(0,0,0,0.15); }
+.pd-title { font-size: 14px; color: rgba(255,255,255,0.75); margin-bottom: 10px; font-weight: 500; }
+.pd-badges { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+.pd-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; transition: transform .15s, box-shadow .15s; cursor: default; }
+.pd-badge:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.15); }
+.pd-badge-aktif { background: rgba(34,197,94,0.2); color: #86efac; border: 1px solid rgba(34,197,94,0.3); }
+.pd-badge-pasif { background: rgba(220,38,38,0.2); color: #fca5a5; border: 1px solid rgba(220,38,38,0.3); }
+.pd-badge-info { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.9); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(4px); }
+.pd-meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: rgba(255,255,255,0.75); }
+.pd-meta span { display: flex; align-items: center; gap: 5px; padding: 3px 0; transition: color .15s; }
+.pd-meta span:hover { color: #fff; }
+.pd-actions { display: flex; gap: 10px; margin-top: 14px; }
+.pd-actions .btn { border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(4px); }
+.pd-actions .btn-primary { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.3); color: #fff; }
+.pd-actions .btn-primary:hover { background: rgba(255,255,255,0.3); }
+.pd-actions .btn-ghost { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.08); }
+.pd-actions .btn-ghost:hover { background: rgba(255,255,255,0.18); color: #fff; }
+.pd-stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; animation: pdFadeIn .6s ease-out .1s both; }
+.pd-stat-card {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
+  padding: 18px 20px; text-align: center; position: relative; overflow: hidden;
+  box-shadow: var(--shadow-sm); transition: all .25s; cursor: default;
+}
+.pd-stat-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+.pd-stat-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 14px 14px 0 0;
+}
+.pd-stat-card:nth-child(2)::before { background: linear-gradient(90deg, #22c55e, #06b6d4); }
+.pd-stat-card:nth-child(3)::before { background: linear-gradient(90deg, #f59e0b, #f97316); }
+.pd-stat-card:nth-child(4)::before { background: linear-gradient(90deg, #ec4899, #8b5cf6); }
+.pd-stat-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 20px; }
+.pd-stat-val { font-size: 26px; font-weight: 800; color: var(--text); margin-bottom: 2px; animation: pdStatCount .6s ease-out; }
+.pd-stat-label { font-size: 12px; color: var(--text-3); font-weight: 500; }
+.pd-tabs {
+  display: flex; gap: 0; border-bottom: none; margin-bottom: 24px;
+  background: var(--bg); border-radius: 14px; padding: 6px;
+  box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+  animation: pdFadeIn .6s ease-out .2s both;
+}
+.pd-tab-btn {
+  padding: 10px 20px; font-size: 13px; font-weight: 600; color: var(--text-3);
+  background: none; border: none; border-radius: 10px; border-bottom: none;
+  cursor: pointer; transition: all .2s; margin-bottom: 0; flex: 1; text-align: center;
+}
+.pd-tab-btn:hover { color: var(--text); background: var(--bg-soft); }
+.pd-tab-btn.active { color: #fff; background: var(--accent); box-shadow: 0 2px 8px rgba(37,99,235,0.3); }
+.pd-panel { display: none; animation: pdFadeIn .4s ease-out; }
 .pd-panel.active { display: block; }
-.pd-card { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
-.pd-card-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
-.pd-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-.pd-info-item label { display: block; font-size: 11px; font-weight: 600; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-.pd-info-item .val { font-size: 14px; color: var(--text); font-weight: 500; }
-.pd-info-item .val.empty { color: var(--text-3); font-style: italic; }
+.pd-card {
+  background: var(--bg); border: 1px solid var(--border); border-radius: 16px;
+  padding: 28px; margin-bottom: 20px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.02);
+  transition: box-shadow .25s;
+}
+.pd-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+.pd-card-title {
+  font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 20px;
+  padding-bottom: 12px; border-bottom: 2px solid var(--border);
+  display: flex; align-items: center; gap: 8px;
+}
+.pd-info-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+.pd-info-item {
+  padding: 12px 14px; border-radius: 10px; background: var(--bg-soft);
+  border: 1px solid transparent; transition: all .2s;
+}
+.pd-info-item:hover { border-color: var(--accent); background: var(--accent-bg); transform: translateY(-1px); }
+.pd-info-item label { display: block; font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 6px; }
+.pd-info-item .val { font-size: 14px; color: var(--text); font-weight: 600; }
+.pd-info-item .val.empty { color: var(--text-3); font-style: italic; font-weight: 400; }
 .pd-form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .pd-form-grid .span2 { grid-column: span 2; }
 .pd-form-field { display: flex; flex-direction: column; gap: 4px; }
@@ -1458,12 +1536,15 @@ tbody tr:hover td { background: var(--bg-soft); }
 .loading-spinner { display: inline-block; width: 32px; height: 32px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .6s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 768px) {
-  .pd-profile-header { flex-direction: column; align-items: center; text-align: center; }
+  .pd-profile-header { flex-direction: column; align-items: center; text-align: center; padding: 24px 20px; }
   .pd-meta { justify-content: center; }
   .pd-actions { justify-content: center; }
+  .pd-stat-cards { grid-template-columns: 1fr 1fr; }
   .pd-form-grid { grid-template-columns: 1fr; }
   .pd-form-grid .span2 { grid-column: span 1; }
   .pd-info-grid { grid-template-columns: 1fr 1fr; }
+  .pd-tabs { overflow-x: auto; }
+  .pd-tab-btn { flex: none; white-space: nowrap; }
 }
 
 .iz-toolbar {
@@ -5082,7 +5163,6 @@ function pdRenderPage() {
           ${p.telefon ? '<span>Tel: ' + p.telefon + '</span>' : ''}
           ${p.ise_giris ? '<span>İşe Giriş: ' + pdFmt(p.ise_giris) + '</span>' : ''}
           ${p.ise_giris && pdKidem(p.ise_giris) ? '<span class="pd-badge pd-badge-info">Kıdem: ' + pdKidem(p.ise_giris) + '</span>' : ''}
-          ${p.kalan_izin != null ? '<span class="pd-badge pd-badge-info">Kalan İzin: ' + (p.kalan_izin||0) + ' / ' + (p.toplam_izin_hak||0) + ' gün</span>' : ''}
         </div>
         <div class="pd-actions">
           <button class="btn btn-primary" onclick="pdToggleEdit()">
@@ -5094,6 +5174,37 @@ function pdRenderPage() {
             Yazdır
           </button>
         </div>
+      </div>
+    </div>
+
+    <div class="pd-stat-cards" id="pd-stat-cards">
+      <div class="pd-stat-card">
+        <div class="pd-stat-icon" style="background:#eff6ff;color:#3b82f6">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="16" height="16" rx="2"/><path d="M3 9h16M8 2v4M14 2v4"/></svg>
+        </div>
+        <div class="pd-stat-val" id="pd-stat-kalan">—</div>
+        <div class="pd-stat-label">Kalan İzin (Gün)</div>
+      </div>
+      <div class="pd-stat-card">
+        <div class="pd-stat-icon" style="background:#f0fdf4;color:#22c55e">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="9"/><path d="M11 7v4l3 3"/></svg>
+        </div>
+        <div class="pd-stat-val" id="pd-stat-kidem">—</div>
+        <div class="pd-stat-label">Kıdem Süresi</div>
+      </div>
+      <div class="pd-stat-card">
+        <div class="pd-stat-icon" style="background:#fffbeb;color:#f59e0b">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        </div>
+        <div class="pd-stat-val" id="pd-stat-toplam">—</div>
+        <div class="pd-stat-label">Toplam İzin Hakkı</div>
+      </div>
+      <div class="pd-stat-card">
+        <div class="pd-stat-icon" style="background:#fdf2f8;color:#ec4899">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+        </div>
+        <div class="pd-stat-val" id="pd-stat-kullanilan">—</div>
+        <div class="pd-stat-label">Kullanılan İzin</div>
       </div>
     </div>
 
@@ -5605,6 +5716,19 @@ function pdShowEditForm() {
     </div>
   `;
   document.querySelectorAll('.pd-tab-btn')[0].click();
+
+  const kalanEl = document.getElementById('pd-stat-kalan');
+  const toplamEl = document.getElementById('pd-stat-toplam');
+  const kullanilanEl = document.getElementById('pd-stat-kullanilan');
+  const kidemEl = document.getElementById('pd-stat-kidem');
+  if (kalanEl) kalanEl.textContent = p.kalan_izin || 0;
+  if (toplamEl) toplamEl.textContent = p.toplam_izin_hak || 0;
+  if (kullanilanEl) kullanilanEl.textContent = (p.toplam_izin_hak || 0) - (p.kalan_izin || 0);
+  if (kidemEl) {
+    const k = pdKidem(p.ise_giris);
+    kidemEl.textContent = k || '—';
+    kidemEl.style.fontSize = k && k.length > 6 ? '18px' : '26px';
+  }
 }
 
 function pdCancelEdit() {

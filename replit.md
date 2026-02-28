@@ -36,6 +36,7 @@ uploads/
   - foto_url alanı: profil fotoğrafı yolu
 - `personel_evraklari` — Personel belge/evrakları
 - `izinler` — İzin talepleri (onay akışı: beklemede → ik_onayladi → mudur_onayladi → onaylandi → tamamlandi)
+- `izin_gecmisi` — Excel'den aktarılan geçmiş izin kayıtları (7824 kayıt, personel_id, baslangic, bitis, gun_sayisi, kalan_izin, toplam_hak)
 - `tekneler` — Tekne kayıtları
 - `baglamalar` — Bağlama başvuruları
 - `gunluk` — Liman günlük log girişleri
@@ -52,11 +53,14 @@ uploads/
 
 ## Personel Detay Sayfası
 - Drawer yerine ayrı pencerede açılır (personel_detay.html)
-- Profil fotoğrafı: yuvarlak avatar, yüklenebilir (/personel/{id}/foto)
-- Sekmeler: Kişisel Bilgiler, Görev Bilgileri, İletişim, Evraklar
+- Profil header: gradient arka plan (navy), animasyonlu avatar, pulse efekt
+- 4 stat kartı: Kalan İzin, Kıdem Süresi, Toplam İzin Hakkı, Kullanılan İzin
+- Sekmeler: Kişisel Bilgiler, Görev Bilgileri, İletişim, İzinler, Evraklar, Özgeçmiş
+- İzinler sekmesi: Excel geçmiş + sistem kayıtları birlikte, filtrelenebilir (Tümü/Sistem/Geçmiş)
 - Yerinde düzenleme: "Düzenle" butonu ile form moduna geçiş
 - Yazdırma desteği
 - Combobox alanları (bölüm, ünvan, maliyet merkezi, hizmet noktası, ilçe, meslek, çıkış kodu)
+- Personel tablosunda kalan_izin ve toplam_izin_hak sütunları (Excel'den aktarıldı, 772 eşleşme)
 
 ## Production (DigitalOcean)
 - IP: 209.38.219.210
