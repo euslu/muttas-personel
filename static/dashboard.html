@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MUTTAŞ İK</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -26,11 +27,14 @@
   --radius:      10px;
   --shadow-sm:   0 1px 3px rgba(0,0,0,0.06);
   --shadow:      0 4px 16px rgba(0,0,0,0.08);
-  --sb-bg:       #1e2a4a;
-  --sb-hover:    #283760;
-  --sb-active:   #3b5bdb;
-  --sb-text:     rgba(255,255,255,0.7);
-  --sb-text-active: #ffffff;
+  --sb-bg:       #f8f9fb;
+  --sb-hover:    #eef1f6;
+  --sb-active:   #e8eeff;
+  --sb-text:     #64748b;
+  --sb-text-active: #4361ee;
+  --sb-border:   #e9ecf2;
+  --sb-section:  #94a3b8;
+  --sb-dark:     #1e2a4a;
 }
 
 html, body {
@@ -58,27 +62,29 @@ html, body {
   overflow: hidden;
   position: relative;
   z-index: 10;
+  border-right: 1px solid var(--sb-border);
 }
 
 /* Logo */
 .sb-logo {
-  padding: 20px 16px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 22px 18px 18px;
+  border-bottom: 1px solid var(--sb-border);
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
 }
 
 .sb-logo-mark {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   overflow: hidden;
-  background: rgba(255,255,255,0.12);
+  background: #e8eeff;
+  box-shadow: 0 2px 8px rgba(67,97,238,0.10);
 }
 
 .sb-logo-mark img {
@@ -90,13 +96,13 @@ html, body {
 .sb-logo-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .sb-logo-text .brand {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  color: var(--sb-text-active);
+  color: #1e293b;
   line-height: 1;
 }
 
@@ -108,14 +114,14 @@ html, body {
 
 /* User info */
 .sb-user {
-  padding: 14px 16px;
-  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--sb-border);
 }
 
 .sb-user-name {
   font-size: 13px;
   font-weight: 600;
-  color: var(--sb-text-active);
+  color: #1e293b;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,15 +145,15 @@ html, body {
 .badge {
   display: inline-flex;
   align-items: center;
-  padding: 1px 7px;
+  padding: 2px 8px;
   border-radius: 10px;
   font-size: 10px;
   font-weight: 600;
   flex-shrink: 0;
 }
 
-.badge-admin  { background: rgba(251,191,36,0.2); color: #fbbf24; }
-.badge-user   { background: rgba(67,97,238,0.2); color: #818cf8; }
+.badge-admin  { background: #fef3c7; color: #d97706; }
+.badge-user   { background: #e8eeff; color: #4361ee; }
 
 /* Toast */
 #toast-container {
@@ -185,42 +191,42 @@ html, body {
 /* Nav */
 .sb-nav {
   flex: 1;
-  padding: 10px 8px;
+  padding: 12px 10px;
   overflow-y: auto;
 }
 
 .sb-section-label {
   font-size: 9px;
   font-weight: 700;
-  color: rgba(255,255,255,0.35);
+  color: var(--sb-section);
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 14px 10px 6px;
+  letter-spacing: 0.12em;
+  padding: 16px 12px 8px;
 }
 
 .nav-item {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  font-size: 13px;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--sb-text);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: all 0.2s ease;
   user-select: none;
   text-decoration: none;
   border: none;
   background: none;
   width: 100%;
   text-align: left;
-  margin-bottom: 1px;
+  margin-bottom: 2px;
 }
 
 .nav-item:hover {
   background: var(--sb-hover);
-  color: var(--sb-text-active);
+  color: #334155;
 }
 
 .nav-item.active {
@@ -230,43 +236,60 @@ html, body {
 }
 
 .nav-item .icon {
-  font-size: 15px;
-  width: 20px;
+  font-size: 22px;
+  width: 24px;
   text-align: center;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item .icon .material-symbols-outlined {
+  font-size: 22px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
+.nav-item.active .icon .material-symbols-outlined {
+  font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24;
 }
 
 .nav-sep {
   height: 1px;
-  background: rgba(255,255,255,0.08);
-  margin: 8px 0;
+  background: var(--sb-border);
+  margin: 8px 12px;
 }
 
 /* Logout */
 .sb-footer {
-  padding: 12px 8px;
-  border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 12px 10px;
+  border-top: 1px solid var(--sb-border);
 }
 
 .btn-logout {
   display: flex;
   align-items: center;
-  gap: 9px;
+  gap: 12px;
   width: 100%;
-  padding: 9px 12px;
-  border-radius: 8px;
+  padding: 11px 14px;
+  border-radius: 12px;
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--sb-text);
   cursor: pointer;
-  transition: background 0.12s, color 0.12s;
+  transition: all 0.2s ease;
   background: none;
   border: none;
 }
 
+.btn-logout .icon .material-symbols-outlined {
+  font-size: 22px;
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+}
+
 .btn-logout:hover {
-  background: rgba(239,68,68,0.15);
+  background: #fef2f2;
   color: #fca5a5;
 }
 
@@ -927,7 +950,7 @@ tbody tr:hover td { background: var(--bg-soft); }
 }
 .prs-table-card table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .prs-table-card thead th {
-  background: var(--sb-bg);
+  background: var(--sb-dark);
   color: rgba(255,255,255,.85);
   font-size: 12px;
   font-weight: 600;
@@ -940,7 +963,7 @@ tbody tr:hover td { background: var(--bg-soft); }
 }
 .prs-table-card thead th:first-child { padding-left: 18px; }
 .prs-table-card thead tr:hover th,
-.prs-table-card thead th:hover { background: var(--sb-bg) !important; color: rgba(255,255,255,.85) !important; }
+.prs-table-card thead th:hover { background: var(--sb-dark) !important; color: rgba(255,255,255,.85) !important; }
 .prs-table-card thead th.prs-sort { cursor: pointer; user-select: none; }
 .prs-table-card thead th.prs-sort:hover { background: #263357 !important; }
 .prs-table-card thead th.prs-sort::after { content: ' ⇅'; opacity: .4; font-size: 10px; }
@@ -1005,7 +1028,7 @@ tbody tr:hover td { background: var(--bg-soft); }
   bottom: calc(100% + 6px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--sb-bg);
+  background: var(--sb-dark);
   color: #fff;
   font-size: 11px;
   font-weight: 500;
@@ -1099,43 +1122,46 @@ tbody tr:hover td { background: var(--bg-soft); }
 .nav-group-toggle {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  border-radius: 8px;
-  font-size: 13px;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 12px;
+  font-size: 13.5px;
   font-weight: 500;
   color: var(--sb-text);
   cursor: pointer;
-  transition: background 0.15s, color 0.15s;
+  transition: all 0.2s ease;
   background: none;
   border: none;
   width: 100%;
   text-align: left;
+  margin-bottom: 2px;
 }
-.nav-group-toggle:hover { background: var(--sb-hover); color: var(--sb-text-active); }
-.nav-group-toggle .icon { font-size: 15px; width: 20px; text-align: center; flex-shrink: 0; }
-.nav-group-toggle .nav-arrow { margin-left: auto; font-size: 10px; transition: transform 0.2s; color: rgba(255,255,255,0.3); }
+.nav-group-toggle:hover { background: var(--sb-hover); color: #334155; }
+.nav-group-toggle .icon { font-size: 22px; width: 24px; text-align: center; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+.nav-group-toggle .icon .material-symbols-outlined { font-size: 22px; font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+.nav-group-toggle .nav-arrow { margin-left: auto; font-size: 10px; transition: transform 0.2s; color: var(--sb-section); }
 .nav-group-toggle.open .nav-arrow { transform: rotate(90deg); }
 .nav-group-toggle.active { background: var(--sb-active); color: var(--sb-text-active); font-weight: 600; }
+.nav-group-toggle.active .icon .material-symbols-outlined { font-variation-settings: 'FILL' 1, 'wght' 500, 'GRAD' 0, 'opsz' 24; }
 
-.nav-sub { display: none; padding-left: 32px; }
+.nav-sub { display: none; padding-left: 36px; }
 .nav-sub.open { display: block; }
 
 .nav-sub-item {
   display: block;
   width: 100%;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 12px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 500;
-  color: rgba(255,255,255,0.5);
+  color: var(--sb-text);
   cursor: pointer;
   text-align: left;
   background: none;
   border: none;
   transition: background 0.1s, color 0.1s;
 }
-.nav-sub-item:hover { background: var(--sb-hover); color: var(--sb-text-active); }
+.nav-sub-item:hover { background: var(--sb-hover); color: #334155; }
 .nav-sub-item.active { color: var(--sb-text-active); font-weight: 600; }
 
 /* ─── DURUM BADGES ───────────────────────────── */
@@ -1407,7 +1433,7 @@ tbody tr:hover td { background: var(--bg-soft); }
 @keyframes pdStatCount { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
 .pd-profile-header {
   display: flex; gap: 28px; align-items: flex-start;
-  background: linear-gradient(135deg, var(--sb-bg) 0%, #2a3f6e 50%, #1a5276 100%);
+  background: linear-gradient(135deg, var(--sb-dark) 0%, #2a3f6e 50%, #1a5276 100%);
   border: none; border-radius: 18px; padding: 32px 36px; margin-bottom: 24px;
   box-shadow: 0 8px 32px rgba(30,42,74,0.18), 0 2px 8px rgba(0,0,0,0.06);
   color: #fff; position: relative; overflow: hidden;
@@ -1680,16 +1706,16 @@ tbody tr:hover td { background: var(--bg-soft); }
       <div class="sb-section-label">Genel</div>
 
       <button class="nav-item active" onclick="navigate('dashboard', this)">
-        <span class="icon">📊</span> Dashboard
+        <span class="icon"><span class="material-symbols-outlined">dashboard</span></span> Ana Sayfa
       </button>
 
       <button class="nav-item nav-liman" onclick="navigate('gunluk', this)">
-        <span class="icon">📋</span> Liman Günlüğü
+        <span class="icon"><span class="material-symbols-outlined">assignment</span></span> Liman Günlüğü
       </button>
 
       <!-- Bağlama Başvuruları (collapsible) -->
       <button class="nav-group-toggle nav-liman" id="baglama-toggle" onclick="toggleBaglamaMenu(this)">
-        <span class="icon">⚓</span> Bağlama Başvuruları
+        <span class="icon"><span class="material-symbols-outlined">anchor</span></span> Bağlama Başvuruları
         <span class="nav-arrow">▸</span>
       </button>
       <div class="nav-sub nav-liman" id="baglama-sub">
@@ -1706,20 +1732,20 @@ tbody tr:hover td { background: var(--bg-soft); }
       </div>
 
       <button class="nav-item nav-liman" onclick="navigate('tekneler', this)">
-        <span class="icon">🚢</span> Tekneler
+        <span class="icon"><span class="material-symbols-outlined">directions_boat</span></span> Tekneler
       </button>
 
       <button class="nav-item nav-liman" onclick="navigate('faturalar', this)">
-        <span class="icon">🧾</span> Faturalar
+        <span class="icon"><span class="material-symbols-outlined">receipt_long</span></span> Faturalar
       </button>
 
       <div class="nav-sep nav-ik"></div>
       <div class="sb-section-label nav-ik">İnsan Kaynakları</div>
       <button class="nav-item nav-ik" onclick="navigate('personel', this)">
-        <span class="icon">👤</span> Personel Listesi
+        <span class="icon"><span class="material-symbols-outlined">groups</span></span> Personel Listesi
       </button>
       <button class="nav-item nav-ik" onclick="navigate('izinler', this)">
-        <span class="icon">📅</span> İzin Yönetimi
+        <span class="icon"><span class="material-symbols-outlined">flight_takeoff</span></span> İzin Yönetimi
       </button>
 
       <!-- Sadece admin -->
@@ -1727,7 +1753,7 @@ tbody tr:hover td { background: var(--bg-soft); }
         <div class="nav-sep"></div>
         <div class="sb-section-label">Yönetim</div>
         <button class="nav-item" onclick="navigate('kullanicilar', this)">
-          <span class="icon">👥</span> Kullanıcılar
+          <span class="icon"><span class="material-symbols-outlined">manage_accounts</span></span> Kullanıcılar
         </button>
       </div>
 
@@ -1736,7 +1762,7 @@ tbody tr:hover td { background: var(--bg-soft); }
     <!-- Çıkış -->
     <div class="sb-footer">
       <button class="btn-logout" onclick="logout()">
-        <span class="icon">🚪</span> Çıkış Yap
+        <span class="icon"><span class="material-symbols-outlined">logout</span></span> Çıkış Yap
       </button>
     </div>
 
