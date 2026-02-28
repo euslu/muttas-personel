@@ -249,3 +249,61 @@ async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
             raise HTTPException(status_code=400, detail="Sadece beklemede olan izinler silinebilir.")
         await conn.execute("DELETE FROM izinler WHERE id = $1", iid)
         return {"ok": True}
+
+
+@router.get("/personel-izin-gecmisi/{pid}")
+async def personel_izin_gecmisi(pid: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM personel WHERE id = $1", pid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+
+        gecmis = await conn.fetch("""
+            SELECT id, baslangic, bitis, gun_sayisi, kalan_izin, toplam_hak, 'gecmis' as tip
+            FROM izin_gecmisi
+            WHERE personel_id = $1
+            ORDER BY baslangic DESC
+        """, pid)
+
+        aktif = await conn.fetch("""
+            SELECT id, baslangic, bitis, gun_sayisi, izin_turu, durum,
+                   kullanilabilir_gun, vekil_ad_soyad, izin_adresi, notlar, 'sistem' as tip
+            FROM izinler
+            WHERE personel_id = $1
+            ORDER BY baslangic DESC
+        """, pid)
+
+        def fmt(d):
+            return d.isoformat() if d else None
+
+        return {
+            "gecmis": [
+                {
+                    "id": r["id"],
+                    "baslangic": fmt(r["baslangic"]),
+                    "bitis": fmt(r["bitis"]),
+                    "gun_sayisi": r["gun_sayisi"],
+                    "kalan_izin": r["kalan_izin"],
+                    "toplam_hak": r["toplam_hak"],
+                    "tip": "gecmis",
+                }
+                for r in gecmis
+            ],
+            "aktif": [
+                {
+                    "id": r["id"],
+                    "baslangic": fmt(r["baslangic"]),
+                    "bitis": fmt(r["bitis"]),
+                    "gun_sayisi": r["gun_sayisi"],
+                    "izin_turu": r["izin_turu"],
+                    "durum": r["durum"],
+                    "kullanilabilir_gun": r["kullanilabilir_gun"],
+                    "vekil_ad_soyad": r["vekil_ad_soyad"],
+                    "izin_adresi": r["izin_adresi"],
+                    "notlar": r["notlar"],
+                    "tip": "sistem",
+                }
+                for r in aktif
+            ],
+        }

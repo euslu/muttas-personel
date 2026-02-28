@@ -5101,6 +5101,7 @@ function pdRenderPage() {
       <button class="pd-tab-btn active" onclick="pdSwitchTab('bilgiler', this)">Kişisel Bilgiler</button>
       <button class="pd-tab-btn" onclick="pdSwitchTab('gorev', this)">Görev Bilgileri</button>
       <button class="pd-tab-btn" onclick="pdSwitchTab('iletisim', this)">İletişim</button>
+      <button class="pd-tab-btn" onclick="pdSwitchTab('izinler', this)">İzinler</button>
       <button class="pd-tab-btn" onclick="pdSwitchTab('evraklar', this)">Evraklar</button>
       <button class="pd-tab-btn" onclick="pdSwitchTab('ozgecmis', this)">Özgeçmiş</button>
     </div>
@@ -5121,6 +5122,37 @@ function pdRenderPage() {
       <div class="pd-card" id="pd-card-iletisim">
         <div class="pd-card-title">İletişim Bilgileri</div>
         <div class="pd-info-grid" id="pd-info-iletisim"></div>
+      </div>
+    </div>
+    <div class="pd-panel" id="pd-panel-izinler">
+      <div class="pd-card">
+        <div class="pd-card-title" style="display:flex;justify-content:space-between;align-items:center">
+          İzin Kayıtları
+          <span id="pd-izin-ozet" style="font-size:13px;font-weight:400;color:var(--text-3)"></span>
+        </div>
+        <div id="pd-izin-tabs" style="display:flex;gap:8px;margin-bottom:16px">
+          <button class="btn btn-sm" style="font-size:12px" onclick="pdIzinFiltre('tumu')" id="pd-izin-f-tumu">Tümü</button>
+          <button class="btn btn-sm btn-ghost" style="font-size:12px" onclick="pdIzinFiltre('sistem')" id="pd-izin-f-sistem">Sistem Kayıtları</button>
+          <button class="btn btn-sm btn-ghost" style="font-size:12px" onclick="pdIzinFiltre('gecmis')" id="pd-izin-f-gecmis">Geçmiş (Excel)</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="prs-table" style="min-width:600px">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Başlangıç</th>
+                <th>Bitiş</th>
+                <th>Gün</th>
+                <th>Tür / Durum</th>
+                <th>Kalan</th>
+                <th>Kaynak</th>
+              </tr>
+            </thead>
+            <tbody id="pd-izin-tbody">
+              <tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-3)">Yükleniyor...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
     <div class="pd-panel" id="pd-panel-evraklar">
@@ -5260,6 +5292,105 @@ function pdSwitchTab(tab, btn) {
   document.getElementById('pd-panel-' + tab).classList.add('active');
   btn.classList.add('active');
   if (tab === 'ozgecmis') pdLoadOzgecmis();
+  if (tab === 'izinler') pdLoadIzinler();
+}
+
+let pdIzinData = { gecmis: [], aktif: [] };
+let pdIzinFiltreDurum = 'tumu';
+
+async function pdLoadIzinler() {
+  if (!pdCurrentId) return;
+  const tbody = document.getElementById('pd-izin-tbody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-3)">Yükleniyor...</td></tr>';
+
+  const res = await fetch('/izinler/personel-izin-gecmisi/' + pdCurrentId, {
+    headers: { Authorization: 'Bearer ' + getToken() }
+  });
+  if (!res.ok) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-3)">Veriler yüklenemedi.</td></tr>';
+    return;
+  }
+  pdIzinData = await res.json();
+
+  const toplamGecmis = pdIzinData.gecmis.length;
+  const toplamSistem = pdIzinData.aktif.length;
+  document.getElementById('pd-izin-ozet').textContent =
+    `Toplam: ${toplamGecmis + toplamSistem} kayıt (${toplamSistem} sistem, ${toplamGecmis} geçmiş)`;
+
+  pdIzinRender();
+}
+
+function pdIzinFiltre(tip) {
+  pdIzinFiltreDurum = tip;
+  ['tumu','sistem','gecmis'].forEach(t => {
+    const btn = document.getElementById('pd-izin-f-' + t);
+    btn.className = t === tip ? 'btn btn-sm' : 'btn btn-sm btn-ghost';
+  });
+  pdIzinRender();
+}
+
+const IZIN_TURU_MAP = {
+  yillik: 'Yıllık İzin', ucretsiz: 'Ücretsiz İzin', mazeret: 'Mazeret İzni',
+  hastalik: 'Hastalık İzni', dogum: 'Doğum İzni', olum: 'Ölüm İzni', diger: 'Diğer'
+};
+const IZIN_DURUM_MAP = {
+  beklemede: ['Beklemede','#f59e0b'], ik_onayladi: ['İK Onayladı','#3b82f6'],
+  mudur_onayladi: ['Md. Onayladı','#8b5cf6'], onaylandi: ['Onaylandı','#16a34a'],
+  reddedildi: ['Reddedildi','#dc2626'], tamamlandi: ['Tamamlandı','#059669']
+};
+
+function pdIzinRender() {
+  const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
+  let rows = [];
+
+  if (pdIzinFiltreDurum === 'tumu' || pdIzinFiltreDurum === 'sistem') {
+    pdIzinData.aktif.forEach(iz => {
+      const durInfo = IZIN_DURUM_MAP[iz.durum] || [iz.durum, '#888'];
+      rows.push({
+        baslangic: iz.baslangic,
+        html: `<tr>
+          <td style="font-size:11px;color:var(--text-3)">${rows.length+1}</td>
+          <td>${fmt(iz.baslangic)}</td>
+          <td>${fmt(iz.bitis)}</td>
+          <td style="font-weight:600">${iz.gun_sayisi}</td>
+          <td><span style="font-size:12px">${IZIN_TURU_MAP[iz.izin_turu]||iz.izin_turu}</span><br>
+            <span class="prs-status-badge" style="background:${durInfo[1]}20;color:${durInfo[1]};font-size:10px">${durInfo[0]}</span></td>
+          <td>${iz.kullanilabilir_gun != null ? iz.kullanilabilir_gun : '—'}</td>
+          <td><span class="prs-status-badge" style="background:#3b82f620;color:#3b82f6;font-size:10px">Sistem</span></td>
+        </tr>`
+      });
+    });
+  }
+
+  if (pdIzinFiltreDurum === 'tumu' || pdIzinFiltreDurum === 'gecmis') {
+    pdIzinData.gecmis.forEach(iz => {
+      rows.push({
+        baslangic: iz.baslangic,
+        html: `<tr>
+          <td style="font-size:11px;color:var(--text-3)">${rows.length+1}</td>
+          <td>${fmt(iz.baslangic)}</td>
+          <td>${fmt(iz.bitis)}</td>
+          <td style="font-weight:600">${iz.gun_sayisi}</td>
+          <td><span style="font-size:12px">Yıllık İzin</span></td>
+          <td>${iz.kalan_izin != null ? iz.kalan_izin : '—'}</td>
+          <td><span class="prs-status-badge" style="background:#f59e0b20;color:#f59e0b;font-size:10px">Excel</span></td>
+        </tr>`
+      });
+    });
+  }
+
+  rows.sort((a, b) => (b.baslangic || '').localeCompare(a.baslangic || ''));
+
+  let counter = 0;
+  const tbody = document.getElementById('pd-izin-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--text-3)">İzin kaydı bulunamadı.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    counter++;
+    return r.html.replace(/(<td style="font-size:11px;color:var\(--text-3\)">)\d+(<\/td>)/, `$1${counter}$2`);
+  }).join('');
 }
 
 let pdOzData = null;
