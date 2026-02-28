@@ -986,11 +986,6 @@ tbody tr:hover td { background: var(--bg-soft); }
 .prs-alfa-card.active::before { opacity: 0; }
 .prs-alfa-card.active .prs-alfa-letter { color: #fff; }
 .prs-alfa-card.active .prs-alfa-count { color: rgba(255,255,255,0.8); }
-.prs-alfa-card.empty {
-  opacity: 0.4;
-  cursor: default;
-  pointer-events: none;
-}
 .prs-alfa-letter {
   font-size: 20px;
   font-weight: 800;
@@ -5088,7 +5083,7 @@ const IZIN_DURUM_COLOR = {
 function loadPersonelMeta() { /* bölüm / ünvan / ilçe artık hardcoded */ }
 
 let prsSelectedHarf = '';
-const PRS_HARFLER = ['A','B','C','Ç','D','E','F','G','Ğ','H','I','İ','J','K','L','M','N','O','Ö','P','R','S','Ş','T','U','Ü','V','Y','Z'];
+const PRS_HARFLER = ['A','B','C','Ç','D','E','F','G','H','I','İ','J','K','L','M','N','O','Ö','P','R','S','Ş','T','U','Ü','V','Y','Z'];
 
 async function loadAlfaGrid() {
   const aktif = document.getElementById('prs-aktif')?.value || 'true';
@@ -5106,9 +5101,9 @@ async function loadAlfaGrid() {
 
   PRS_HARFLER.forEach(h => {
     const cnt = data.harfler[h] || 0;
-    const isEmpty = cnt === 0;
+    if (cnt === 0) return;
     const isActive = prsSelectedHarf === h;
-    html += `<div class="prs-alfa-card ${isActive ? 'active' : ''} ${isEmpty ? 'empty' : ''}" onclick="selectHarf('${h}', this)">
+    html += `<div class="prs-alfa-card ${isActive ? 'active' : ''}" onclick="selectHarf('${h}', this)">
       <div class="prs-alfa-letter">${h}</div>
       <div class="prs-alfa-count">${cnt}</div>
     </div>`;
