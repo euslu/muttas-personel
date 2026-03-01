@@ -7098,17 +7098,18 @@ async function izinYazdir(id) {
   const adresStr  = iz.izin_adresi || '—';
 
   const sigPersonel = iz.imza
-    ? `<img src="${iz.imza}" style="max-height:50px;display:block;margin:0 auto 2px">`
+    ? '<img src="' + iz.imza + '" style="max-height:50px;display:block;margin:0 auto 2px">'
     : '';
   const sigIK = iz.ik_imza
-    ? `<img src="${iz.ik_imza}" style="max-height:50px;display:block;margin:0 auto 2px"><div style="font-size:9px;color:#16a34a;font-style:italic">Dijital olarak imzalandı</div>`
+    ? '<img src="' + iz.ik_imza + '" style="max-height:50px;display:block;margin:0 auto 2px">'
     : '';
   const sigMudur = iz.mudur_imza
-    ? `<img src="${iz.mudur_imza}" style="max-height:50px;display:block;margin:0 auto 2px"><div style="font-size:9px;color:#16a34a;font-style:italic">Dijital olarak imzalandı</div>`
+    ? '<img src="' + iz.mudur_imza + '" style="max-height:50px;display:block;margin:0 auto 2px">'
     : '';
   const sigYK = iz.yk_imza
-    ? `<img src="${iz.yk_imza}" style="max-height:50px;display:block;margin:0 auto 2px"><div style="font-size:9px;color:#16a34a;font-style:italic">Dijital olarak imzalandı</div>`
+    ? '<img src="' + iz.yk_imza + '" style="max-height:50px;display:block;margin:0 auto 2px">'
     : '';
+  const dijitalNot = '<div style="font-size:9px;color:#16a34a;font-style:italic;margin-top:2px">Dijital olarak imzalandı</div>';
 
   const gorevBaslamaStr = iz.gorev_baslama ? fmt(iz.gorev_baslama) : '';
 
@@ -7217,33 +7218,25 @@ async function izinYazdir(id) {
     </tr>
   </table>` : ''}
 
-  <!-- İmza Alanları (Yatay) -->
+  <!-- İmza Alanları (Yatay - 3 sütun) -->
   <table style="margin-top:6px">
     <tr>
-      <td style="width:25%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">PERSONEL</td>
-      <td style="width:25%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">İK / İDARİ İŞLER</td>
-      <td style="width:25%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">GENEL MÜDÜR</td>
-      <td style="width:25%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">YÖNETİM KURULU</td>
+      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">İK / İDARİ İŞLER</td>
+      <td style="width:34%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">GENEL MÜDÜR</td>
+      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">YÖNETİM KURULU</td>
     </tr>
     <tr>
       <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
-        ${sigPersonel}
+        ${sigIK}${iz.ik_imza ? dijitalNot : ''}
       </td>
       <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
-        ${sigIK}
+        ${sigMudur}${iz.mudur_imza ? dijitalNot : ''}
       </td>
       <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
-        ${sigMudur}
-      </td>
-      <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
-        ${sigYK}
+        ${sigYK}${iz.yk_imza ? dijitalNot : ''}
       </td>
     </tr>
     <tr>
-      <td style="text-align:center;padding:4px 4px 2px;border-top:none">
-        <div class="sig-name">${iz.ad_soyad || ''}</div>
-        <div style="font-size:9px;color:#888">${fmt(iz.talep_tarihi)}</div>
-      </td>
       <td style="text-align:center;padding:4px 4px 2px;border-top:none">
         <div class="sig-name">${iz.ik_onaylayan || ''}</div>
         <div class="sig-title">İK/İdari İşler Sorumlusu</div>
