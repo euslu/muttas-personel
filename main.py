@@ -18,6 +18,7 @@ from faturalar import router as faturalar_router
 from self_servis import router as self_servis_router
 from personel import router as personel_router
 from izinler import router as izinler_router
+from vekalet import router as vekalet_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -372,6 +373,7 @@ app.include_router(faturalar_router)
 app.include_router(self_servis_router)
 app.include_router(personel_router)
 app.include_router(izinler_router)
+app.include_router(vekalet_router)
 
 
 @app.get("/")

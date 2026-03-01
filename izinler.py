@@ -6,6 +6,7 @@ from pydantic import BaseModel
 
 from db import get_pool
 from permissions import decode_token, require_ik_editor, IK_EDITORS, GM_EDITORS, YK_EDITORS
+from vekalet import get_vekalet_rolleri
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
 
@@ -218,8 +219,16 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
         raise HTTPException(status_code=400, detail=f"Geçersiz durum. Kabul edilenler: {DURUMLAR}")
 
     rol = token.get("rol", "")
+    kullanici_id = int(token.get("sub", 0))
     yetkili_roller = ONAY_YETKI.get(body.durum, set())
-    if rol not in yetkili_roller:
+
+    yetki_var = rol in yetkili_roller
+    vekalet_rolleri = set()
+    if not yetki_var and kullanici_id:
+        vekalet_rolleri = await get_vekalet_rolleri(kullanici_id)
+        yetki_var = bool(vekalet_rolleri & yetkili_roller)
+
+    if not yetki_var:
         durum_label = {
             "ik_onayladi": "İK onayını sadece İK yöneticisi verebilir.",
             "mudur_onayladi": "Genel Müdür onayını sadece Genel Müdür verebilir.",
@@ -260,7 +269,8 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
 
         now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
-        onaylayan_ad = (token.get("ad", "") + " " + token.get("soyad", "")).strip() or body.onaylayan or ""
+        ad_soyad = (token.get("ad", "") + " " + token.get("soyad", "")).strip() or body.onaylayan or ""
+        onaylayan_ad = ad_soyad + " (V)" if vekalet_rolleri & yetkili_roller and rol not in yetkili_roller else ad_soyad
 
         if body.durum == "ik_onayladi":
             extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"

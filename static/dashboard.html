@@ -1849,6 +1849,9 @@ tbody tr:hover td { background: var(--bg-soft); }
         <button class="nav-item" onclick="navigate('kullanicilar', this)">
           <span class="icon"><span class="material-symbols-outlined">manage_accounts</span></span> Kullanıcılar
         </button>
+        <button class="nav-item" onclick="navigate('vekaletler', this)">
+          <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
+        </button>
       </div>
 
     </nav>
@@ -2525,6 +2528,70 @@ tbody tr:hover td { background: var(--bg-soft); }
         </div>
       </div>
 
+      <!-- ── Vekalet Yönetimi ── -->
+      <div class="page" id="page-vekaletler">
+        <div class="card">
+          <div class="card-header">
+            <h2>Vekalet Yönetimi</h2>
+            <button class="btn btn-primary" onclick="openVekaletDrawer()">+ Yeni Vekalet</button>
+          </div>
+          <div class="card-body">
+            <p style="font-size:12px;color:var(--text-3);margin-bottom:12px">Bir kullanıcı izne çıktığında, onay yetkisini geçici olarak başka bir kullanıcıya devredebilirsiniz. Vekil, belirlenen tarih aralığında vekalet verenin onay yetkilerini kullanabilir.</p>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Vekalet Veren</th>
+                    <th>Vekil (Alan)</th>
+                    <th>Başlangıç</th>
+                    <th>Bitiş</th>
+                    <th>Durum</th>
+                    <th>İşlem</th>
+                  </tr>
+                </thead>
+                <tbody id="vekaletler-body">
+                  <tr><td colspan="6" style="text-align:center;color:var(--text-3)">Yükleniyor…</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vekalet Drawer -->
+      <div class="drawer-overlay" id="vk-drawer-overlay" onclick="closeVekaletDrawer()"></div>
+      <div class="drawer" id="vk-drawer">
+        <div class="drawer-header">
+          <h3>Yeni Vekalet Tanımla</h3>
+          <button class="drawer-close" onclick="closeVekaletDrawer()">✕</button>
+        </div>
+        <div class="drawer-body">
+          <div class="form-group">
+            <label class="form-label">Vekalet Veren (Yetkiyi devreden) <span style="color:var(--danger)">*</span></label>
+            <select class="form-input" id="vk-veren"></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Vekil (Yetkiyi alan) <span style="color:var(--danger)">*</span></label>
+            <select class="form-input" id="vk-alan"></select>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Başlangıç <span style="color:var(--danger)">*</span></label>
+              <input class="form-input" id="vk-bas" type="date">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Bitiş <span style="color:var(--danger)">*</span></label>
+              <input class="form-input" id="vk-bit" type="date">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Not</label>
+            <textarea class="form-input" id="vk-not" rows="2" placeholder="Opsiyonel açıklama"></textarea>
+          </div>
+          <button class="btn btn-primary" style="width:100%;margin-top:12px" onclick="vekaletKaydet()">Kaydet</button>
+        </div>
+      </div>
+
       <!-- Kullanıcı Drawer -->
       <div class="drawer-overlay" id="ku-drawer-overlay" onclick="closeKullaniciDrawer()"></div>
       <div class="drawer" id="ku-drawer">
@@ -2913,6 +2980,7 @@ const PAGE_TITLES = {
   tekneler:     'Tekneler',
   faturalar:    'Faturalar',
   kullanicilar: 'Kullanıcılar',
+  vekaletler:   'Vekalet Yönetimi',
   personel:     'Personel Listesi',
   izinler:      'İzin Yönetimi',
   hesabim:      'Hesabım',
@@ -3351,6 +3419,7 @@ function navigate(page, el) {
   if (page === 'personel')     { loadPersonelMeta(); loadAlfaGrid(); loadPersonel(1); }
   if (page === 'izinler')      loadIzinler(1);
   if (page === 'kullanicilar') loadKullanicilar();
+  if (page === 'vekaletler')   loadVekaletler();
   if (page === 'hesabim')      loadHesabim();
 }
 
@@ -7632,6 +7701,117 @@ async function saveKullanici() {
 }
 
 const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi'};
+
+let vekaletKullanicilar = [];
+
+async function loadVekaletler() {
+  const [resV, resK] = await Promise.all([
+    fetch('/vekaletler', { headers: authHeaders() }),
+    fetch('/auth/kullanicilar', { headers: authHeaders() })
+  ]);
+  if (resK.ok) vekaletKullanicilar = await resK.json();
+  if (!resV.ok) return;
+  const rows = await resV.json();
+  const tbody = document.getElementById('vekaletler-body');
+  const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
+  const today = new Date().toISOString().split('T')[0];
+
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="6"><div style="text-align:center;padding:24px;color:var(--text-3)"><span class="material-symbols-outlined" style="font-size:36px;display:block;margin-bottom:8px">swap_horiz</span>Henüz tanımlanmış vekalet yok</div></td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = rows.map(v => {
+    const isActive = v.aktif && v.baslangic <= today && v.bitis >= today;
+    const isExpired = v.bitis < today;
+    const isFuture = v.baslangic > today;
+    let statusBadge;
+    if (!v.aktif) statusBadge = '<span style="background:#fee2e2;color:#dc2626;padding:2px 8px;border-radius:10px;font-size:11px">Pasif</span>';
+    else if (isExpired) statusBadge = '<span style="background:#f3f4f6;color:#6b7280;padding:2px 8px;border-radius:10px;font-size:11px">Süresi Doldu</span>';
+    else if (isFuture) statusBadge = '<span style="background:#fff7ed;color:#ea580c;padding:2px 8px;border-radius:10px;font-size:11px">Bekliyor</span>';
+    else statusBadge = '<span style="background:#dcfce7;color:#16a34a;padding:2px 8px;border-radius:10px;font-size:11px">Aktif</span>';
+
+    const verenRol = ROL_ETIKETLERI_TR[v.veren_rol] || v.veren_rol;
+
+    return `<tr>
+      <td><strong>${v.veren_ad} ${v.veren_soyad}</strong><br><span style="font-size:11px;color:var(--text-3)">${verenRol}</span></td>
+      <td><strong>${v.alan_ad} ${v.alan_soyad}</strong><br><span style="font-size:11px;color:var(--text-3)">${ROL_ETIKETLERI_TR[v.alan_rol] || v.alan_rol}</span></td>
+      <td style="font-size:12px">${fmt(v.baslangic)}</td>
+      <td style="font-size:12px">${fmt(v.bitis)}</td>
+      <td>${statusBadge}</td>
+      <td>
+        ${v.aktif ? `<button class="btn-icon" title="Pasife Al" style="color:#dc2626" onclick="vekaletPasif(${v.id})">🚫</button>` : ''}
+        <button class="btn-icon del" title="Sil" onclick="vekaletSil(${v.id})">🗑️</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function openVekaletDrawer() {
+  const rolOpt = (u) => `<option value="${u.id}">${u.ad} ${u.soyad} (${ROL_ETIKETLERI_TR[u.rol] || u.rol})</option>`;
+  const opts = vekaletKullanicilar.filter(u => u.aktif !== false).map(rolOpt).join('');
+  document.getElementById('vk-veren').innerHTML = '<option value="">Seçiniz</option>' + opts;
+  document.getElementById('vk-alan').innerHTML = '<option value="">Seçiniz</option>' + opts;
+  document.getElementById('vk-bas').value = '';
+  document.getElementById('vk-bit').value = '';
+  document.getElementById('vk-not').value = '';
+  document.getElementById('vk-drawer-overlay').classList.add('open');
+  document.getElementById('vk-drawer').classList.add('open');
+}
+
+function closeVekaletDrawer() {
+  document.getElementById('vk-drawer-overlay').classList.remove('open');
+  document.getElementById('vk-drawer').classList.remove('open');
+}
+
+async function vekaletKaydet() {
+  const veren = document.getElementById('vk-veren').value;
+  const alan = document.getElementById('vk-alan').value;
+  const bas = document.getElementById('vk-bas').value;
+  const bit = document.getElementById('vk-bit').value;
+  const not_ = document.getElementById('vk-not').value.trim();
+
+  if (!veren || !alan || !bas || !bit) { showToast('Tüm zorunlu alanları doldurun.', 'error'); return; }
+  if (veren === alan) { showToast('Kullanıcı kendisine vekalet veremez.', 'error'); return; }
+
+  const res = await fetch('/vekaletler', {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      veren_kullanici_id: parseInt(veren),
+      alan_kullanici_id: parseInt(alan),
+      baslangic: bas,
+      bitis: bit,
+      notlar: not_ || null,
+    }),
+  });
+  if (res.ok) {
+    closeVekaletDrawer();
+    showToast('Vekalet tanımlandı.', 'ok');
+    loadVekaletler();
+  } else {
+    const e = await res.json().catch(() => ({}));
+    showToast(e.detail || 'Vekalet eklenemedi.', 'error');
+  }
+}
+
+async function vekaletPasif(vid) {
+  if (!confirm('Bu vekaleti pasife almak istediğinize emin misiniz?')) return;
+  const res = await fetch(`/vekaletler/${vid}`, {
+    method: 'PUT',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ aktif: false }),
+  });
+  if (res.ok) { showToast('Vekalet pasife alındı.', 'ok'); loadVekaletler(); }
+  else { const e = await res.json().catch(() => ({})); showToast(e.detail || 'İşlem başarısız.', 'error'); }
+}
+
+async function vekaletSil(vid) {
+  if (!confirm('Bu vekaleti silmek istediğinize emin misiniz?')) return;
+  const res = await fetch(`/vekaletler/${vid}`, { method: 'DELETE', headers: authHeaders() });
+  if (res.ok) { showToast('Vekalet silindi.', 'ok'); loadVekaletler(); }
+  else { const e = await res.json().catch(() => ({})); showToast(e.detail || 'Silinemedi.', 'error'); }
+}
 function loadHesabim() {
   const u = currentUser;
   if (!u) return;
