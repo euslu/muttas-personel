@@ -7091,106 +7091,184 @@ async function izinYazdir(id) {
   const turLabel   = IZIN_TUR_LABEL[iz.izin_turu] || iz.izin_turu;
   const durumLabel = IZIN_DURUM_LABEL[iz.durum]    || iz.durum;
 
-  const w = window.open('', '_blank', 'width=800,height=900');
+  const gunSayisi = iz.gun_sayisi || '—';
+  const kalanGun  = iz.kullanilabilir_gun ?? '—';
+  const birimStr  = [iz.ilce, iz.hizmet_noktasi].filter(Boolean).join(' / ') || iz.bolum || '—';
+  const telStr    = iz.telefon || '—';
+  const adresStr  = iz.izin_adresi || '—';
+
+  const sigPersonel = iz.imza
+    ? `<img src="${iz.imza}" style="max-height:50px;display:block;margin:0 auto 2px">`
+    : '';
+  const sigIK = iz.ik_imza
+    ? `<img src="${iz.ik_imza}" style="max-height:50px;display:block;margin:0 auto 2px"><div style="font-size:9px;color:#16a34a;font-style:italic">Dijital olarak imzalandı</div>`
+    : '';
+  const sigMudur = iz.mudur_imza
+    ? `<img src="${iz.mudur_imza}" style="max-height:50px;display:block;margin:0 auto 2px"><div style="font-size:9px;color:#16a34a;font-style:italic">Dijital olarak imzalandı</div>`
+    : '';
+  const sigYK = iz.yk_imza
+    ? `<img src="${iz.yk_imza}" style="max-height:50px;display:block;margin:0 auto 2px"><div style="font-size:9px;color:#16a34a;font-style:italic">Dijital olarak imzalandı</div>`
+    : '';
+
+  const gorevBaslamaStr = iz.gorev_baslama ? fmt(iz.gorev_baslama) : '';
+  const gorevBaslamaBlock = gorevBaslamaStr
+    ? `<tr><td colspan="2" style="padding:14px 10px;font-size:12px">
+        Adı geçen <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanarak <b>(${gorevBaslamaStr})</b> tarihinde görevine başlamıştır.
+      </td></tr>
+      <tr>
+        <td style="height:60px;text-align:center;vertical-align:bottom;padding-bottom:8px">
+          ${sigYK}
+        </td>
+        <td style="text-align:center;vertical-align:bottom;padding-bottom:8px;font-size:11px;font-weight:600">
+          ${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}
+        </td>
+      </tr>`
+    : '';
+
+  const w = window.open('', '_blank', 'width=800,height=1050');
   w.document.write(`<!DOCTYPE html>
 <html><head><meta charset="utf-8"><title>İzin Formu - ${iz.ad_soyad}</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family: 'Segoe UI', Arial, sans-serif; padding: 40px; color: #1a1a1a; font-size: 13px; }
-  .header { text-align:center; margin-bottom:24px; border-bottom:3px double #1a1a1a; padding-bottom:16px; }
-  .header h1 { font-size:18px; letter-spacing:2px; margin-bottom:2px; }
-  .header h2 { font-size:14px; font-weight:400; color:#555; }
-  .form-no { text-align:right; font-size:11px; color:#888; margin-bottom:8px; }
-  table { width:100%; border-collapse:collapse; margin-bottom:16px; }
-  td, th { border:1px solid #999; padding:8px 10px; text-align:left; vertical-align:top; }
-  th { background:#f0f0f0; font-weight:600; width:35%; font-size:12px; }
-  td { font-size:13px; }
-  .section-title { background:#1a1a1a; color:#fff; text-align:center; font-weight:700; font-size:12px; letter-spacing:1px; padding:6px; }
-  .sig-area { display:flex; gap:20px; margin-top:24px; }
-  .sig-box { flex:1; text-align:center; }
-  .sig-box .label { font-size:11px; color:#666; margin-bottom:4px; }
-  .sig-box .line { border-bottom:1px solid #333; height:60px; margin-bottom:4px; }
-  .sig-box .name { font-size:12px; font-weight:600; }
-  .sig-box img { max-height:56px; display:block; margin:0 auto; }
-  .onay-table td { height:32px; }
-  .footer { margin-top:24px; font-size:10px; color:#aaa; text-align:center; }
-  @media print { body { padding:20px; } }
+  body { font-family: 'Times New Roman', 'Segoe UI', serif; padding: 36px 44px; color: #000; font-size: 12px; line-height:1.5; }
+  .header { text-align:center; margin-bottom:18px; }
+  .company { font-size:10px; line-height:1.4; margin-bottom:6px; color:#333; }
+  .logo-text { font-size:22px; font-weight:700; letter-spacing:3px; margin-bottom:2px; }
+  .form-title { font-size:14px; font-weight:700; letter-spacing:1px; border:2px solid #000; display:inline-block; padding:4px 24px; margin-top:4px; }
+  table { width:100%; border-collapse:collapse; margin-bottom:0; }
+  td { border:1px solid #666; padding:6px 10px; vertical-align:top; font-size:12px; }
+  .no-border td { border:none; padding:4px 10px; }
+  .section-sep { height:6px; }
+  .lbl { font-weight:700; font-size:11px; color:#333; }
+  .val { font-size:12px; }
+  .sig-cell { height:70px; text-align:center; vertical-align:bottom; padding-bottom:6px; }
+  .sig-name { font-size:11px; font-weight:700; text-align:center; }
+  .sig-title { font-size:10px; color:#555; text-align:center; }
+  .footer-note { margin-top:16px; font-size:9px; color:#999; text-align:center; }
+  @media print { body { padding:20px 30px; } }
 </style></head><body>
+
   <div class="header">
-    <h1>MUTTAŞ A.Ş.</h1>
-    <h2>İZİN TALEBİ FORMU</h2>
-  </div>
-  <div class="form-no">Form No: IZN-${String(iz.id).padStart(4,'0')} &nbsp;|&nbsp; Talep: ${fmt(iz.talep_tarihi)}</div>
-
-  <table>
-    <tr class="section-title"><td colspan="4">PERSONEL BİLGİLERİ</td></tr>
-    <tr>
-      <th>Ad Soyad</th><td>${iz.ad_soyad || '—'}</td>
-      <th>Bölüm / Ünvan</th><td>${[iz.bolum, iz.unvan].filter(Boolean).join(' / ') || '—'}</td>
-    </tr>
-    <tr>
-      <th>TC Kimlik No</th><td>${iz.tc_kimlik || '—'}</td>
-      <th>Çalıştığı Yer</th><td>${[iz.ilce, iz.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
-    </tr>
-  </table>
-
-  <table>
-    <tr class="section-title"><td colspan="4">İZİN BİLGİLERİ</td></tr>
-    <tr>
-      <th>İzin Türü</th><td>${turLabel}</td>
-      <th>Durum</th><td style="font-weight:600">${durumLabel}</td>
-    </tr>
-    <tr>
-      <th>Başlangıç</th><td>${fmt(iz.baslangic)}</td>
-      <th>Bitiş</th><td>${fmt(iz.bitis)}</td>
-    </tr>
-    <tr>
-      <th>Gün Sayısı</th><td>${iz.gun_sayisi || '—'}</td>
-      <th>Kalan İzin (Gün)</th><td>${iz.kullanilabilir_gun ?? '—'}</td>
-    </tr>
-    <tr>
-      <th>Vekil Ad Soyad</th><td>${iz.vekil_ad_soyad || '—'}</td>
-      <th>İzin Adresi</th><td>${iz.izin_adresi || '—'}</td>
-    </tr>
-    ${iz.notlar ? `<tr><th>Notlar</th><td colspan="3">${iz.notlar}</td></tr>` : ''}
-  </table>
-
-  <table class="onay-table">
-    <tr class="section-title"><td colspan="4">ONAY BİLGİLERİ</td></tr>
-    <tr>
-      <th>İK Onayı</th><td>${fmt(iz.ik_onay_tarihi)} ${iz.ik_onaylayan ? '— ' + iz.ik_onaylayan : ''}</td>
-      <th>Müdür Onayı</th><td>${fmt(iz.mudur_onay_tarihi)}</td>
-    </tr>
-    <tr>
-      <th>YK Onayı</th><td>${fmt(iz.yk_onay_tarihi)}</td>
-      <th>Göreve Başlama</th><td>${fmt(iz.gorev_baslama)}</td>
-    </tr>
-  </table>
-
-  <div class="sig-area">
-    <div class="sig-box">
-      <div class="label">Personel İmzası</div>
-      <div class="line">${iz.imza ? `<img src="${iz.imza}" alt="İmza">` : ''}</div>
-      <div class="name">${iz.ad_soyad || ''}</div>
-    </div>
-    <div class="sig-box">
-      <div class="label">İK Onayı</div>
-      <div class="line">${iz.ik_imza ? `<img src="${iz.ik_imza}" alt="İK İmza">` : ''}</div>
-      <div class="name">${iz.ik_onaylayan || ''}</div>
-    </div>
-    <div class="sig-box">
-      <div class="label">Müdür Onayı</div>
-      <div class="line">${iz.mudur_imza ? `<img src="${iz.mudur_imza}" alt="Müdür İmza">` : ''}</div>
-      <div class="name"></div>
-    </div>
-    <div class="sig-box">
-      <div class="label">YK Onayı</div>
-      <div class="line">${iz.yk_imza ? `<img src="${iz.yk_imza}" alt="YK İmza">` : ''}</div>
-      <div class="name"></div>
-    </div>
+    <div class="company">MUĞLA KENT HİZMETLERİ TAŞIMACILIK EĞİTİM DANIŞMANLIK<br>İNŞ. TUR. TİC. İŞL. İLT. SAN. VE TİC. AŞ.</div>
+    <div class="logo-text">MUTTAŞ</div>
+    <div class="form-title">İZİN TALEP VE ONAY FORMU</div>
   </div>
 
-  <div class="footer">Bu belge MUTTAŞ A.Ş. İnsan Kaynakları Birimi tarafından düzenlenmiştir.</div>
+  <!-- Talep Cümlesi -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td colspan="2" style="font-size:12px;line-height:1.6;padding:10px">
+        <b>${fmt(iz.baslangic)}</b> tarihinden <b>${fmt(iz.bitis)}</b> tarihine kadar geçerli olmak üzere <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanmak istiyorum gereğini müsaadelerinize arz ederim. <span style="float:right"><b>${fmt(iz.talep_tarihi)}</b></span>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Personel Bilgileri + İmza -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td style="width:60%;border:none;padding:4px 10px">
+        <table class="no-border" style="width:100%">
+          <tr><td><span class="lbl">Adı Soyadı</span> : ${iz.ad_soyad || '—'}</td></tr>
+          <tr><td><span class="lbl">Unvanı</span> : ${iz.unvan || '—'}</td></tr>
+          <tr><td><span class="lbl">Birimi</span> : ${birimStr}</td></tr>
+          <tr><td><span class="lbl">İmza</span> :</td></tr>
+        </table>
+      </td>
+      <td style="width:40%;border:none;text-align:center;vertical-align:middle">
+        ${sigPersonel}
+      </td>
+    </tr>
+  </table>
+
+  <!-- İzinde Bulunacağı Adres -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td style="padding:8px 10px">
+        <div class="lbl" style="margin-bottom:4px">İZİNDE BULUNACAĞIM ADRES:</div>
+        <div class="val">${adresStr}</div>
+        <div class="val" style="margin-top:4px">${telStr}</div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- Kullanılan İzin Türü / Kullanabileceği Süre / Vekalet -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td style="width:33%;text-align:center;padding:8px">
+        <div class="lbl" style="margin-bottom:6px">KULLANILAN İZİN TÜRÜ</div>
+        <div class="val">${turLabel}</div>
+      </td>
+      <td style="width:34%;text-align:center;padding:8px">
+        <div class="lbl" style="margin-bottom:6px">KULLANABİLECEĞİ İZİN SÜRESİ</div>
+        <div class="val">Kullanabileceği izin süresi <b>${kalanGun}</b> gündür.</div>
+      </td>
+      <td style="width:33%;text-align:center;padding:8px">
+        <div class="lbl" style="margin-bottom:6px">VEKALET DURUMU</div>
+        <div style="font-size:10px;color:#666;font-style:italic;margin-bottom:4px">*Vekaleti Gerektiren Görevlerde</div>
+        <div class="val">Vekalet Edecek Personelin</div>
+        <div class="val"><span class="lbl">Adı Soyadı</span> : ${iz.vekil_ad_soyad || '—'}</div>
+      </td>
+    </tr>
+  </table>
+
+  <!-- İK Onayı -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td colspan="2" style="font-size:11px;padding:8px 10px;line-height:1.5">
+        Kayıtlarımıza uygun olup, izin takip kartına işlenmek üzere İnsan Kaynakları birimine gönderilmiştir.
+      </td>
+    </tr>
+    <tr>
+      <td style="width:50%;text-align:center;padding:4px;font-size:11px">${iz.ik_onay_tarihi ? fmt(iz.ik_onay_tarihi) : ''}</td>
+      <td style="width:50%" rowspan="2" class="sig-cell">
+        ${sigIK}
+        <div class="sig-name">${iz.ik_onaylayan || ''}</div>
+        <div class="sig-title">İK/İdari İşler Sorumlusu</div>
+      </td>
+    </tr>
+    <tr><td style="border:none"></td></tr>
+  </table>
+
+  <!-- Müdür Onayı -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td colspan="2" style="font-size:11px;padding:8px 10px">
+        İzne ayrılmasında sakınca yoktur.
+      </td>
+    </tr>
+    <tr>
+      <td style="width:50%;text-align:center;padding:4px;font-size:11px">${iz.mudur_onay_tarihi ? fmt(iz.mudur_onay_tarihi) : ''}</td>
+      <td style="width:50%" rowspan="2" class="sig-cell">
+        ${sigMudur}
+        <div class="sig-name"></div>
+        <div class="sig-title">Genel Müdür</div>
+      </td>
+    </tr>
+    <tr><td style="border:none"></td></tr>
+  </table>
+
+  <!-- YK Onayı -->
+  <table style="margin-bottom:10px">
+    <tr>
+      <td colspan="2" style="font-size:11px;padding:8px 10px;font-weight:700">
+        UYGUNDUR
+      </td>
+    </tr>
+    <tr>
+      <td style="width:50%;text-align:center;padding:4px;font-size:11px">${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}</td>
+      <td style="width:50%" rowspan="2" class="sig-cell">
+        ${sigYK}
+        <div class="sig-name"></div>
+        <div class="sig-title">Yönetim Kurulu Başkan Yardımcısı</div>
+      </td>
+    </tr>
+    <tr><td style="border:none"></td></tr>
+  </table>
+
+  <!-- Göreve Başlama -->
+  ${gorevBaslamaBlock ? `<table style="margin-bottom:10px">${gorevBaslamaBlock}</table>` : ''}
+
+  <div class="footer-note">Form No: IZN-${String(iz.id).padStart(4,'0')} &nbsp;|&nbsp; Bu belge MUTTAŞ A.Ş. İnsan Kaynakları Birimi tarafından düzenlenmiştir.</div>
 
   <scr` + `ipt>window.onload = function() { window.print(); }<\/scr` + `ipt>
 </body></html>`);
