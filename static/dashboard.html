@@ -2800,7 +2800,7 @@ tbody tr:hover td { background: var(--bg-soft); }
               <option value="">Tüm Durumlar</option>
               <option value="beklemede">Beklemede</option>
               <option value="ik_onayladi">İK Onayladı</option>
-              <option value="mudur_onayladi">Müdür Onayladı</option>
+              <option value="mudur_onayladi">Genel Müdür Onayladı</option>
               <option value="onaylandi">YK Onaylandı</option>
               <option value="reddedildi">Reddedildi</option>
               <option value="tamamlandi">Tamamlandı</option>
@@ -5208,7 +5208,7 @@ function ftExport() {
           <label>Onay Adımı</label>
           <select id="iz-form-durum-onay">
             <option value="ik_onayladi">İK Onayladı</option>
-            <option value="mudur_onayladi">Müdür Onayladı</option>
+            <option value="mudur_onayladi">Genel Müdür Onayladı</option>
             <option value="onaylandi">YK Onayladı (UYGUNDUR)</option>
             <option value="tamamlandi">Tamamlandı (Göreve Başladı)</option>
             <option value="reddedildi">Reddedildi</option>
@@ -5316,7 +5316,7 @@ const IZIN_TUR_LABEL = {
 const IZIN_DURUM_LABEL = {
   beklemede:     '⏳ Beklemede',
   ik_onayladi:   '✅ İK Onayladı',
-  mudur_onayladi:'✅ Müdür Onayladı',
+  mudur_onayladi:'✅ G.Müdür Onayladı',
   onaylandi:     '✅ YK Onayladı',
   reddedildi:    '❌ Reddedildi',
   tamamlandi:    '🏁 Tamamlandı',
@@ -5837,7 +5837,7 @@ const IZIN_TURU_MAP = {
 };
 const IZIN_DURUM_MAP = {
   beklemede: ['Beklemede','#f59e0b'], ik_onayladi: ['İK Onayladı','#3b82f6'],
-  mudur_onayladi: ['Md. Onayladı','#8b5cf6'], onaylandi: ['Onaylandı','#16a34a'],
+  mudur_onayladi: ['G.Md. Onayladı','#8b5cf6'], onaylandi: ['Onaylandı','#16a34a'],
   reddedildi: ['Reddedildi','#dc2626'], tamamlandi: ['Tamamlandı','#059669']
 };
 
@@ -6763,7 +6763,7 @@ async function openIzinDrawer(id) {
 function renderIzinTimeline(iz) {
   const steps = [
     { key: 'ik_onayladi',    label: 'İK Onayı',     tarih: iz.ik_onay_tarihi,    kisi: iz.ik_onaylayan },
-    { key: 'mudur_onayladi', label: 'Müdür Onayı',  tarih: iz.mudur_onay_tarihi },
+    { key: 'mudur_onayladi', label: 'G.Müdür Onayı', tarih: iz.mudur_onay_tarihi },
     { key: 'onaylandi',      label: 'YK Onayı',      tarih: iz.yk_onay_tarihi },
     { key: 'tamamlandi',     label: 'Göreve Başlama',tarih: iz.gorev_baslama },
   ];
@@ -7000,7 +7000,7 @@ async function izOnayKaydet() {
 
   const onayDurumlari = ['ik_onayladi','mudur_onayladi','onaylandi'];
   if (onayDurumlari.includes(durum)) {
-    const mesajMap = { ik_onayladi: 'İK onayı verilecek.', mudur_onayladi: 'Müdür onayı verilecek.', onaylandi: 'YK onayı verilecek.' };
+    const mesajMap = { ik_onayladi: 'İK onayı verilecek.', mudur_onayladi: 'Genel Müdür onayı verilecek.', onaylandi: 'YK onayı verilecek.' };
     if (!confirm(mesajMap[durum] + ' Onaylamak istediğinize emin misiniz?')) return;
   }
 
@@ -7026,7 +7026,7 @@ const ONAY_SIRALAMA = {
 };
 const ONAY_MESAJ = {
   ik_onayladi:     'İK onayı verildi',
-  mudur_onayladi:  'Müdür onayı verildi',
+  mudur_onayladi:  'Genel Müdür onayı verildi',
   onaylandi:       'İzin onaylandı',
 };
 
@@ -7039,7 +7039,7 @@ async function izinHizliOnay(id) {
   if (!yeniDurum) { showToast('Bu izin zaten onaylanmış', 'info'); return; }
 
   const onaylayan = currentUser ? (currentUser.ad + ' ' + currentUser.soyad) : '';
-  const mesajMap = { ik_onayladi: 'İK onayı verilecek.', mudur_onayladi: 'Müdür onayı verilecek.', onaylandi: 'YK onayı verilecek.' };
+  const mesajMap = { ik_onayladi: 'İK onayı verilecek.', mudur_onayladi: 'Genel Müdür onayı verilecek.', onaylandi: 'YK onayı verilecek.' };
   if (!confirm((mesajMap[yeniDurum] || 'Onay verilecek.') + ' Onaylamak istediğinize emin misiniz?')) return;
 
   const res = await fetch('/izinler/' + id + '/onay', {
