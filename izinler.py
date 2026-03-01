@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends
 from pydantic import BaseModel
 
 from db import get_pool
-from permissions import decode_token, require_ik_editor
+from permissions import decode_token, require_ik_editor, IK_EDITORS, GM_EDITORS, YK_EDITORS
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
 
@@ -203,10 +203,30 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_
         return {"ok": True}
 
 
+ONAY_YETKI = {
+    "ik_onayladi":     IK_EDITORS,
+    "mudur_onayladi":  GM_EDITORS,
+    "onaylandi":       YK_EDITORS,
+    "reddedildi":      IK_EDITORS | GM_EDITORS | YK_EDITORS,
+    "tamamlandi":      IK_EDITORS,
+}
+
+
 @router.put("/{iid}/onay")
-async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(require_ik_editor)):
+async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token)):
     if body.durum not in DURUMLAR:
         raise HTTPException(status_code=400, detail=f"Geçersiz durum. Kabul edilenler: {DURUMLAR}")
+
+    rol = token.get("rol", "")
+    yetkili_roller = ONAY_YETKI.get(body.durum, set())
+    if rol not in yetkili_roller:
+        durum_label = {
+            "ik_onayladi": "İK onayını sadece İK yöneticisi verebilir.",
+            "mudur_onayladi": "Genel Müdür onayını sadece Genel Müdür verebilir.",
+            "onaylandi": "YK onayını sadece Yönetim Kurulu üyesi verebilir.",
+            "tamamlandi": "Tamamlama işlemini sadece İK yöneticisi yapabilir.",
+        }
+        raise HTTPException(status_code=403, detail=durum_label.get(body.durum, "Bu onay için yetkiniz yok."))
 
     pool = await get_pool()
     async with pool.acquire() as conn:

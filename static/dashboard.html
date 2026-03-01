@@ -2558,6 +2558,8 @@ tbody tr:hover td { background: var(--bg-soft); }
               <option value="liman_admin">Liman — Yönetici</option>
               <option value="ik_viewer">İK — Görüntüleyici</option>
               <option value="ik_admin">İK — Yönetici</option>
+              <option value="genel_mudur">Genel Müdür</option>
+              <option value="yk_uyesi">YK Üyesi</option>
               <option value="admin">Admin (Tam Yetki)</option>
             </select>
           </div>
@@ -2942,6 +2944,8 @@ function showToast(mesaj, tip = 'info', sure = 3500) {
 function applyRoleUI(rol) {
   const isAdmin = rol === 'admin';
   const isIK    = rol === 'ik_admin' || rol === 'ik_viewer';
+  const isGM    = rol === 'genel_mudur';
+  const isYK    = rol === 'yk_uyesi';
   const isLimanAdmin = rol === 'admin';
   const isLiman = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
 
@@ -2952,13 +2956,13 @@ function applyRoleUI(rol) {
     el.style.display = isLiman ? '' : 'none';
   });
   document.querySelectorAll('.nav-ik').forEach(el => {
-    el.style.display = isIK || isLimanAdmin ? '' : 'none';
+    el.style.display = isIK || isLimanAdmin || isGM || isYK ? '' : 'none';
   });
   document.querySelectorAll('.dash-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
   });
   document.querySelectorAll('.dash-ik').forEach(el => {
-    el.style.display = isIK || isLimanAdmin ? '' : 'none';
+    el.style.display = isIK || isLimanAdmin || isGM || isYK ? '' : 'none';
   });
 
   const subtitle = document.getElementById('sb-subtitle');
@@ -6619,6 +6623,16 @@ function izinFiltreGuncelle() {
   btn.style.display = (q || tur || durum || yil) ? 'inline-flex' : 'none';
 }
 
+function canApprove(durum) {
+  if (!currentUser) return false;
+  const r = currentUser.rol || '';
+  if (r === 'admin') return durum === 'beklemede' || durum === 'ik_onayladi' || durum === 'mudur_onayladi';
+  if (r === 'ik_admin') return durum === 'beklemede';
+  if (r === 'genel_mudur') return durum === 'ik_onayladi';
+  if (r === 'yk_uyesi') return durum === 'mudur_onayladi';
+  return false;
+}
+
 async function loadIzinler(page) {
   izPage = page || 1;
   const q     = document.getElementById('iz-q')?.value     || '';
@@ -6680,7 +6694,7 @@ async function loadIzinler(page) {
           <button class="iz-action-btn" title="${canEditIK ? 'Düzenle' : 'Görüntüle'}" onclick="openIzinDrawer(${iz.id})">
             <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 1.5l1.5 1.5L5 10.5 2.5 11l.5-2.5z"/></svg>
           </button>
-          ${canEditIK && (iz.durum === 'beklemede' || iz.durum === 'ik_onayladi' || iz.durum === 'mudur_onayladi')
+          ${canApprove(iz.durum)
             ? `<button class="iz-action-btn approve" title="Onayla" onclick="izinHizliOnay(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l3 3 5-6"/></svg></button>` : ''}
           <button class="iz-action-btn" title="Yazdır" onclick="izinYazdir(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V2h4v5M5 12H4a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3a1 1 0 01-1 1H9M5 10h4v3H5z"/></svg></button>
           ${canEditIK && iz.durum === 'beklemede' ? `<button class="iz-action-btn del" title="Sil" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
@@ -7502,6 +7516,8 @@ const ROL_ETIKETI = {
   ik_viewer:    'İK Görüntüleyici',
   liman_admin:  'Liman Yöneticisi',
   liman_viewer: 'Liman Görüntüleyici',
+  genel_mudur:  'Genel Müdür',
+  yk_uyesi:     'YK Üyesi',
 };
 
 async function loadKullanicilar() {
@@ -7611,7 +7627,7 @@ async function saveKullanici() {
   }
 }
 
-const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',mudur:'Müdür',genel_mudur:'Genel Müdür'};
+const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi'};
 function loadHesabim() {
   const u = currentUser;
   if (!u) return;

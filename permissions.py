@@ -9,6 +9,8 @@ security      = HTTPBearer()
 
 IK_EDITORS    = {"admin", "ik_admin"}
 LIMAN_EDITORS = {"admin", "liman_admin"}
+GM_EDITORS    = {"admin", "genel_mudur"}
+YK_EDITORS    = {"admin", "yk_uyesi"}
 
 
 def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:

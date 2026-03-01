@@ -16,7 +16,7 @@ JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 60 * 24
 
-IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer"}
+IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer", "genel_mudur", "yk_uyesi"}
 
 
 def hash_password(password: str) -> str:
@@ -115,7 +115,7 @@ async def list_kullanicilar(token: dict = Depends(require_admin)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         rows = await conn.fetch(
-            "SELECT id, ad, soyad, email, rol, aktif, created_at FROM kullanicilar ORDER BY created_at DESC"
+            "SELECT id, ad, soyad, email, rol, aktif FROM kullanicilar ORDER BY id DESC"
         )
     return [dict(r) for r in rows]
 
