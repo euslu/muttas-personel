@@ -3018,8 +3018,10 @@ function applyRoleUI(rol) {
   badge.textContent  = badgeLabels[rol] || 'Görevli';
   badge.className    = 'badge ' + (isAdmin ? 'badge-admin' : 'badge-user');
 
-  if (isAdmin) {
+  if (isAdmin || isGM) {
     document.getElementById('admin-section').style.display = 'block';
+  }
+  if (isAdmin) {
     document.getElementById('liman-filter').classList.add('visible');
   }
 

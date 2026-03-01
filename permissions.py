@@ -32,7 +32,10 @@ def require_liman_editor(token: dict = Depends(decode_token)) -> dict:
     return token
 
 
+ADMIN_ROLLER = {"admin", "genel_mudur"}
+
+
 def require_admin(token: dict = Depends(decode_token)) -> dict:
-    if token.get("rol") != "admin":
-        raise HTTPException(status_code=403, detail="Bu işlem için admin yetkisi gereklidir.")
+    if token.get("rol") not in ADMIN_ROLLER:
+        raise HTTPException(status_code=403, detail="Bu işlem için yönetici yetkisi gereklidir.")
     return token
