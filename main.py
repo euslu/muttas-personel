@@ -347,6 +347,8 @@ app.add_middleware(CSPMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
 ALLOWED_ORIGINS = [
+    "https://ik.muttas.com.tr",
+    "http://ik.muttas.com.tr",
     "https://muttas-ik.replit.app",
     "http://209.38.219.210",
     "http://209.38.219.210:8000",
