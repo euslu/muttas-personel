@@ -8,7 +8,7 @@ import bcrypt
 from jose import jwt
 
 from db import get_pool
-from permissions import decode_token
+from permissions import decode_token, require_admin
 
 router = APIRouter(prefix="/auth", tags=["auth"])
 
@@ -59,11 +59,6 @@ def create_token(user_id: int, email: str, rol: str) -> str:
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
-
-def require_admin(token: dict = Depends(decode_token)) -> dict:
-    if token.get("rol") != "admin":
-        raise HTTPException(status_code=403, detail="Bu işlem için admin yetkisi gereklidir.")
-    return token
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)
