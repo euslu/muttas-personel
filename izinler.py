@@ -1,5 +1,5 @@
 from typing import Optional
-from datetime import date
+from datetime import date, datetime
 
 from fastapi import APIRouter, HTTPException, Query, Depends
 from pydantic import BaseModel
@@ -218,15 +218,17 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(require_ik_e
         extra_sets = ""
         extra_vals = []
 
+        now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+
         if body.durum == "ik_onayladi":
             extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"
-            extra_vals = [today, body.onaylayan, body.imza]
+            extra_vals = [today, body.onaylayan, now_str]
         elif body.durum == "mudur_onayladi":
             extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5"
-            extra_vals = [today, body.imza]
+            extra_vals = [today, now_str]
         elif body.durum == "onaylandi":
             extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5"
-            extra_vals = [today, body.imza]
+            extra_vals = [today, now_str]
         elif body.durum == "tamamlandi":
             extra_sets = ", gorev_baslama = $4"
             extra_vals = [today]
