@@ -1855,6 +1855,9 @@ tbody tr:hover td { background: var(--bg-soft); }
 
     <!-- Çıkış -->
     <div class="sb-footer">
+      <button class="nav-item" onclick="navigate('hesabim', this)" style="width:100%;margin-bottom:6px">
+        <span class="icon"><span class="material-symbols-outlined">account_circle</span></span> Hesabım
+      </button>
       <button class="btn-logout" onclick="logout()">
         <span class="icon"><span class="material-symbols-outlined">logout</span></span> Çıkış Yap
       </button>
@@ -2851,6 +2854,51 @@ tbody tr:hover td { background: var(--bg-soft); }
         </div>
       </div><!-- /page-izinler -->
 
+      <div class="page" id="page-hesabim">
+        <div style="max-width:520px;margin:0 auto">
+          <div class="card" style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
+            <div style="background:linear-gradient(135deg,var(--accent),#6366f1);padding:32px 28px;color:#fff;position:relative">
+              <div style="display:flex;align-items:center;gap:16px">
+                <div style="width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center">
+                  <span class="material-symbols-outlined" style="font-size:28px;color:#fff">person</span>
+                </div>
+                <div>
+                  <div style="font-size:20px;font-weight:700" id="hesap-ad">—</div>
+                  <div style="font-size:13px;opacity:.8" id="hesap-rol">—</div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body" style="padding:28px">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--border)">
+                <span class="material-symbols-outlined" style="font-size:20px;color:var(--text-3)">mail</span>
+                <div>
+                  <div style="font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:.04em">TC Kimlik / Giriş</div>
+                  <div style="font-size:14px;font-weight:500;color:var(--text)" id="hesap-email">—</div>
+                </div>
+              </div>
+              <h3 style="font-size:15px;font-weight:700;margin:0 0 16px;color:var(--text)">Şifre Değiştir</h3>
+              <div class="form-group" style="margin-bottom:14px">
+                <label class="form-label" style="font-size:13px;font-weight:600;margin-bottom:4px">Mevcut Şifre</label>
+                <input class="form-input" id="hesap-mevcut-sifre" type="password" placeholder="Mevcut şifrenizi girin" style="border-radius:10px">
+              </div>
+              <div class="form-group" style="margin-bottom:14px">
+                <label class="form-label" style="font-size:13px;font-weight:600;margin-bottom:4px">Yeni Şifre</label>
+                <input class="form-input" id="hesap-yeni-sifre" type="password" placeholder="En az 6 karakter" style="border-radius:10px">
+              </div>
+              <div class="form-group" style="margin-bottom:20px">
+                <label class="form-label" style="font-size:13px;font-weight:600;margin-bottom:4px">Yeni Şifre (Tekrar)</label>
+                <input class="form-input" id="hesap-yeni-sifre2" type="password" placeholder="Yeni şifrenizi tekrar girin" style="border-radius:10px">
+              </div>
+              <div id="hesap-hata" style="display:none;color:var(--danger);font-size:13px;margin-bottom:12px;padding:8px 12px;background:#fef2f2;border-radius:8px"></div>
+              <div id="hesap-basari" style="display:none;color:#16a34a;font-size:13px;margin-bottom:12px;padding:8px 12px;background:#f0fdf4;border-radius:8px"></div>
+              <button class="btn btn-primary" onclick="sifreDegistir()" style="width:100%;border-radius:10px;padding:11px;font-size:14px;font-weight:600;background:linear-gradient(135deg,var(--accent),#6366f1)">
+                <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle;margin-right:4px">lock_reset</span> Şifreyi Güncelle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
@@ -2865,6 +2913,7 @@ const PAGE_TITLES = {
   kullanicilar: 'Kullanıcılar',
   personel:     'Personel Listesi',
   izinler:      'İzin Yönetimi',
+  hesabim:      'Hesabım',
 };
 
 let currentUser  = null;
@@ -3294,6 +3343,7 @@ function navigate(page, el) {
   if (page === 'personel')     { loadPersonelMeta(); loadAlfaGrid(); loadPersonel(1); }
   if (page === 'izinler')      loadIzinler(1);
   if (page === 'kullanicilar') loadKullanicilar();
+  if (page === 'hesabim')      loadHesabim();
 }
 
 function updateTopbar(page) {
@@ -7522,6 +7572,64 @@ async function saveKullanici() {
     errEl.textContent = e.detail || 'Kullanıcı eklenemedi.';
     errEl.style.display = '';
   }
+}
+
+const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',mudur:'Müdür',genel_mudur:'Genel Müdür'};
+function loadHesabim() {
+  const u = currentUser;
+  if (!u) return;
+  document.getElementById('hesap-ad').textContent = (u.ad || '') + ' ' + (u.soyad || '');
+  document.getElementById('hesap-rol').textContent = ROL_ETIKETLERI_TR[u.rol] || u.rol;
+  document.getElementById('hesap-email').textContent = u.email || '—';
+  document.getElementById('hesap-mevcut-sifre').value = '';
+  document.getElementById('hesap-yeni-sifre').value = '';
+  document.getElementById('hesap-yeni-sifre2').value = '';
+  document.getElementById('hesap-hata').style.display = 'none';
+  document.getElementById('hesap-basari').style.display = 'none';
+}
+
+async function sifreDegistir() {
+  const hataEl = document.getElementById('hesap-hata');
+  const basariEl = document.getElementById('hesap-basari');
+  hataEl.style.display = 'none';
+  basariEl.style.display = 'none';
+
+  const mevcut = document.getElementById('hesap-mevcut-sifre').value;
+  const yeni = document.getElementById('hesap-yeni-sifre').value;
+  const yeni2 = document.getElementById('hesap-yeni-sifre2').value;
+
+  if (!mevcut || !yeni || !yeni2) {
+    hataEl.textContent = 'Tüm alanları doldurun.';
+    hataEl.style.display = '';
+    return;
+  }
+  if (yeni.length < 6) {
+    hataEl.textContent = 'Yeni şifre en az 6 karakter olmalıdır.';
+    hataEl.style.display = '';
+    return;
+  }
+  if (yeni !== yeni2) {
+    hataEl.textContent = 'Yeni şifreler eşleşmiyor.';
+    hataEl.style.display = '';
+    return;
+  }
+
+  const res = await fetch('/auth/sifre-degistir', {
+    method: 'PUT',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mevcut_sifre: mevcut, yeni_sifre: yeni }),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) {
+    hataEl.textContent = data.detail || 'Şifre değiştirilemedi.';
+    hataEl.style.display = '';
+    return;
+  }
+  basariEl.textContent = data.mesaj || 'Şifreniz başarıyla değiştirildi.';
+  basariEl.style.display = '';
+  document.getElementById('hesap-mevcut-sifre').value = '';
+  document.getElementById('hesap-yeni-sifre').value = '';
+  document.getElementById('hesap-yeni-sifre2').value = '';
 }
 
 let onaySigCanvas, onaySigCtx, onaySigDrawing = false, onaySigHasData = false;

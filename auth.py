@@ -44,6 +44,11 @@ class RolGuncelle(BaseModel):
     rol: str
 
 
+class SifreDegistir(BaseModel):
+    mevcut_sifre: str
+    yeni_sifre: str
+
+
 def create_token(user_id: int, email: str, rol: str) -> str:
     expire = datetime.utcnow() + timedelta(minutes=JWT_EXPIRE_MINUTES)
     payload = {
@@ -170,3 +175,30 @@ async def login(body: LoginRequest):
             "rol": row["rol"],
         },
     }
+
+
+@router.put("/sifre-degistir")
+async def sifre_degistir(body: SifreDegistir, token: dict = Depends(decode_token)):
+    if len(body.yeni_sifre) < 6:
+        raise HTTPException(status_code=400, detail="Yeni şifre en az 6 karakter olmalıdır.")
+
+    user_id = int(token["sub"])
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT password_hash FROM kullanicilar WHERE id = $1 AND aktif = TRUE",
+            user_id,
+        )
+        if not row:
+            raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
+
+        if not verify_password(body.mevcut_sifre, row["password_hash"]):
+            raise HTTPException(status_code=400, detail="Mevcut şifreniz hatalı.")
+
+        new_hash = hash_password(body.yeni_sifre)
+        await conn.execute(
+            "UPDATE kullanicilar SET password_hash = $1 WHERE id = $2",
+            new_hash, user_id,
+        )
+
+    return {"mesaj": "Şifreniz başarıyla değiştirildi."}
