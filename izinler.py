@@ -260,15 +260,17 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
 
         now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
 
+        onaylayan_ad = (token.get("ad", "") + " " + token.get("soyad", "")).strip() or body.onaylayan or ""
+
         if body.durum == "ik_onayladi":
             extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"
-            extra_vals = [today, body.onaylayan, now_str]
+            extra_vals = [today, onaylayan_ad, now_str]
         elif body.durum == "mudur_onayladi":
-            extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5"
-            extra_vals = [today, now_str]
+            extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5, mudur_onaylayan = $6"
+            extra_vals = [today, now_str, onaylayan_ad]
         elif body.durum == "onaylandi":
-            extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5"
-            extra_vals = [today, now_str]
+            extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5, yk_onaylayan = $6"
+            extra_vals = [today, now_str, onaylayan_ad]
         elif body.durum == "tamamlandi":
             extra_sets = ", gorev_baslama = $4"
             extra_vals = [today]

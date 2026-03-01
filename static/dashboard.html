@@ -7233,12 +7233,12 @@ async function izinYazdir(id) {
         <div style="font-size:9px;color:#888">${iz.ik_onay_tarihi ? fmt(iz.ik_onay_tarihi) : ''}</div>
       </td>
       <td style="text-align:center;padding:4px 4px 2px;border-top:none">
-        <div class="sig-name"></div>
+        <div class="sig-name">${iz.mudur_onaylayan || ''}</div>
         <div class="sig-title">Genel Müdür</div>
         <div style="font-size:9px;color:#888">${iz.mudur_onay_tarihi ? fmt(iz.mudur_onay_tarihi) : ''}</div>
       </td>
       <td style="text-align:center;padding:4px 4px 2px;border-top:none">
-        <div class="sig-name"></div>
+        <div class="sig-name">${iz.yk_onaylayan || ''}</div>
         <div class="sig-title">YK Başkan Yrd.</div>
         <div style="font-size:9px;color:#888">${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}</div>
       </td>

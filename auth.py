@@ -49,12 +49,14 @@ class SifreDegistir(BaseModel):
     yeni_sifre: str
 
 
-def create_token(user_id: int, email: str, rol: str) -> str:
+def create_token(user_id: int, email: str, rol: str, ad: str = "", soyad: str = "") -> str:
     expire = datetime.utcnow() + timedelta(minutes=JWT_EXPIRE_MINUTES)
     payload = {
         "sub": str(user_id),
         "email": email,
         "rol": rol,
+        "ad": ad,
+        "soyad": soyad,
         "exp": expire,
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
@@ -159,7 +161,7 @@ async def login(body: LoginRequest):
             detail="E-posta veya şifre hatalı.",
         )
 
-    token = create_token(row["id"], row["email"], row["rol"])
+    token = create_token(row["id"], row["email"], row["rol"], row["ad"], row["soyad"])
     return {
         "token": token,
         "kullanici": {
