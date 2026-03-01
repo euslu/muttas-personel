@@ -28,3 +28,9 @@ def require_liman_editor(token: dict = Depends(decode_token)) -> dict:
     if token.get("rol") not in LIMAN_EDITORS:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     return token
+
+
+def require_admin(token: dict = Depends(decode_token)) -> dict:
+    if token.get("rol") != "admin":
+        raise HTTPException(status_code=403, detail="Bu işlem için admin yetkisi gereklidir.")
+    return token

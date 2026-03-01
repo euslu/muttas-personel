@@ -1,13 +1,14 @@
 import time
 from collections import defaultdict
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, JSONResponse
 from starlette.middleware.base import BaseHTTPMiddleware
 from db import get_pool, close_pool
+from permissions import require_admin
 from auth import router as auth_router
 from gunluk import router as gunluk_router
 from basvurular import router as basvurular_router
@@ -344,12 +345,20 @@ app = FastAPI(title="muttas-ik-api", lifespan=lifespan)
 app.add_middleware(CSPMiddleware)
 app.add_middleware(RateLimitMiddleware)
 
+ALLOWED_ORIGINS = [
+    "https://muttas-ik.replit.app",
+    "http://209.38.219.210",
+    "http://209.38.219.210:8000",
+    "http://localhost:5000",
+    "http://localhost:8000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -391,7 +400,7 @@ async def health():
 
 
 @app.api_route("/setup-db", methods=["GET", "POST"])
-async def setup_db():
+async def setup_db(token: dict = Depends(require_admin)):
     try:
         pool = await get_pool()
         async with pool.acquire() as conn:

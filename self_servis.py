@@ -435,21 +435,28 @@ async def sms_kod_dogrula(data: SmsKodDogrula):
 # ── Public İzin Başvuru Endpoint'leri ────────────────────────────────────────
 
 @router.get("/public/personel/ara")
-async def public_personel_ara(tc: Optional[str] = None, q: Optional[str] = None):
-    if not tc and not q:
-        raise HTTPException(status_code=400, detail="TC kimlik veya isim giriniz.")
+async def public_personel_ara(tc: Optional[str] = None, sms_token: Optional[str] = None):
+    if not tc:
+        raise HTTPException(status_code=400, detail="TC kimlik numarası gereklidir.")
+
+    tc = tc.strip()
+    if not tc or len(tc) != 11 or not tc.isdigit():
+        raise HTTPException(status_code=400, detail="Geçerli bir TC kimlik numarası giriniz.")
+
     pool = await get_pool()
     async with pool.acquire() as conn:
-        if tc:
-            row = await conn.fetchrow(
-                "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
-                tc.strip()
+        if sms_token:
+            entry = await conn.fetchrow(
+                "SELECT personel_id FROM sms_kodlari WHERE tc_kimlik=$1 AND verified=TRUE AND sms_token=$2",
+                tc, sms_token
             )
-        else:
-            row = await conn.fetchrow(
-                "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE ad_soyad ILIKE $1 AND aktif=TRUE ORDER BY ad_soyad LIMIT 1",
-                f"%{q.strip()}%"
-            )
+            if not entry:
+                raise HTTPException(status_code=403, detail="SMS doğrulaması gereklidir.")
+
+        row = await conn.fetchrow(
+            "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
+            tc
+        )
         if not row:
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
         return {
