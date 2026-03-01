@@ -228,11 +228,31 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
         }
         raise HTTPException(status_code=403, detail=durum_label.get(body.durum, "Bu onay için yetkiniz yok."))
 
+    ONAY_SIRASI = {
+        "ik_onayladi":     {"beklemede"},
+        "mudur_onayladi":  {"ik_onayladi"},
+        "onaylandi":       {"mudur_onayladi"},
+        "tamamlandi":      {"onaylandi"},
+        "reddedildi":      {"beklemede", "ik_onayladi", "mudur_onayladi"},
+    }
+
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow("SELECT durum FROM izinler WHERE id = $1", iid)
         if not row:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+
+        mevcut_durum = row["durum"]
+        gereken = ONAY_SIRASI.get(body.durum)
+        if gereken and mevcut_durum not in gereken:
+            sira_mesaj = {
+                "ik_onayladi":    "İK onayı yalnızca 'Beklemede' durumundaki izinlere verilebilir.",
+                "mudur_onayladi": "Genel Müdür onayı için önce İK onayı gereklidir.",
+                "onaylandi":      "YK onayı için önce Genel Müdür onayı gereklidir.",
+                "tamamlandi":     "Tamamlama için önce YK onayı gereklidir.",
+                "reddedildi":     "Bu durumdaki izin reddedilemez.",
+            }
+            raise HTTPException(status_code=400, detail=sira_mesaj.get(body.durum, "Onay sırası uygun değil."))
 
         today = date.today()
         extra_sets = ""

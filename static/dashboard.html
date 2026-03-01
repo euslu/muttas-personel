@@ -2949,7 +2949,7 @@ function applyRoleUI(rol) {
   const isLimanAdmin = rol === 'admin';
   const isLiman = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
 
-  canEditIK    = isLimanAdmin || rol === 'ik_admin';
+  canEditIK    = isLimanAdmin || rol === 'ik_admin' || isGM;
   canEditLiman = isLimanAdmin || rol === 'liman_admin';
 
   document.querySelectorAll('.nav-liman').forEach(el => {
@@ -3003,6 +3003,8 @@ function applyRoleUI(rol) {
   const rol     = currentUser.rol || 'kullanici';
   const isAdmin = rol === 'admin';
   const isIK    = rol === 'ik_admin' || rol === 'ik';
+  const isGM    = rol === 'genel_mudur';
+  const isYK    = rol === 'yk_uyesi';
   const isLiman = !isIK;
 
   applyRoleUI(rol);
@@ -3011,12 +3013,12 @@ function applyRoleUI(rol) {
     currentUser.ad + ' ' + currentUser.soyad;
 
   document.getElementById('sb-liman').textContent =
-    isAdmin ? 'Tüm Modüller' : isIK ? 'İnsan Kaynakları' : (currentLiman || 'Liman atanmamış');
+    isAdmin ? 'Tüm Modüller' : isGM ? 'Genel Müdür' : isYK ? 'Yönetim Kurulu' : isIK ? 'İnsan Kaynakları' : (currentLiman || 'Liman atanmamış');
 
   const badge = document.getElementById('sb-badge');
-  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', kullanici: 'Görevli' };
+  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', genel_mudur: 'Genel Müdür', yk_uyesi: 'YK Üyesi', kullanici: 'Görevli' };
   badge.textContent  = badgeLabels[rol] || 'Görevli';
-  badge.className    = 'badge ' + (isAdmin ? 'badge-admin' : 'badge-user');
+  badge.className    = 'badge ' + (isAdmin || isGM ? 'badge-admin' : 'badge-user');
 
   if (isAdmin || isGM) {
     document.getElementById('admin-section').style.display = 'block';
