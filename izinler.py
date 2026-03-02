@@ -10,7 +10,7 @@ from vekalet import get_vekalet_rolleri
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
 
-IZIN_TURLERI = ["yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "diger"]
+IZIN_TURLERI = ["yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"]
 DURUMLAR     = ["beklemede", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
 
 
@@ -24,6 +24,7 @@ class IzinCreate(BaseModel):
     kullanilabilir_gun: Optional[int] = None
     vekil_ad_soyad:   Optional[str] = None
     izin_adresi:      Optional[str] = None
+    aciklama:         Optional[str] = None
     notlar:           Optional[str] = None
     imza:             Optional[str] = None
 
@@ -169,13 +170,13 @@ async def create_izin(body: IzinCreate, token: dict = Depends(require_ik_editor)
         row = await conn.fetchrow("""
             INSERT INTO izinler (
                 personel_id, talep_tarihi, izin_turu, baslangic, bitis,
-                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, notlar, imza
-            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
             RETURNING id
         """,
             body.personel_id, talep, body.izin_turu, body.baslangic, body.bitis,
             body.gun_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad,
-            body.izin_adresi, body.notlar, body.imza,
+            body.izin_adresi, body.aciklama, body.notlar, body.imza,
         )
         return {"id": row["id"]}
 
@@ -194,12 +195,12 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_
             UPDATE izinler SET
                 izin_turu = $2, baslangic = $3, bitis = $4, gun_sayisi = $5,
                 kullanilabilir_gun = $6, vekil_ad_soyad = $7, izin_adresi = $8,
-                notlar = $9, talep_tarihi = $10, imza = COALESCE($11, imza)
+                aciklama = $9, notlar = $10, talep_tarihi = $11, imza = COALESCE($12, imza)
             WHERE id = $1
         """,
             iid, body.izin_turu, body.baslangic, body.bitis, body.gun_sayisi,
             body.kullanilabilir_gun, body.vekil_ad_soyad, body.izin_adresi,
-            body.notlar, body.talep_tarihi or date.today(), body.imza,
+            body.aciklama, body.notlar, body.talep_tarihi or date.today(), body.imza,
         )
         return {"ok": True}
 

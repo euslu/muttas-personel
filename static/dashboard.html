@@ -2880,6 +2880,7 @@ tbody tr:hover td { background: var(--bg-soft); }
               <option value="hastalik">Hastalık İzni</option>
               <option value="dogum">Doğum İzni</option>
               <option value="olum">Ölüm İzni</option>
+              <option value="saatlik">Saatlik İzin</option>
               <option value="diger">Diğer</option>
             </select>
             <select class="iz-filter" id="iz-durum" onchange="loadIzinler(1)">
@@ -5249,13 +5250,14 @@ function ftExport() {
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field">
         <label>İzin Türü *</label>
-        <select id="iz-form-tur">
+        <select id="iz-form-tur" onchange="izTurDegisti()">
           <option value="yillik">Yıllık İzin</option>
           <option value="ucretsiz">Ücretsiz İzin</option>
           <option value="mazeret">Mazeret İzni</option>
           <option value="hastalik">Hastalık İzni</option>
           <option value="dogum">Doğum İzni</option>
           <option value="olum">Ölüm İzni</option>
+          <option value="saatlik">Saatlik İzin</option>
           <option value="diger">Diğer</option>
         </select>
       </div>
@@ -5279,6 +5281,11 @@ function ftExport() {
         <label>Kalan İzin (Gün)</label>
         <input type="number" id="iz-form-kullanilabilir" min="0" placeholder="Kalan izin günü" readonly>
       </div>
+    </div>
+
+    <div class="drawer-section">İzin Açıklaması</div>
+    <div class="form-field" style="margin-bottom:12px">
+      <textarea id="iz-form-aciklama" rows="2" placeholder="İzin gerekçesi / açıklama yazınız..."></textarea>
     </div>
 
     <div class="drawer-section">Vekalet & Adres</div>
@@ -5404,6 +5411,7 @@ const IZIN_TUR_LABEL = {
   hastalik: 'Hastalık İzni',
   dogum:    'Doğum İzni',
   olum:     'Ölüm İzni',
+  saatlik:  'Saatlik İzin',
   diger:    'Diğer',
 };
 
@@ -5432,6 +5440,7 @@ const TUR_BADGE_STYLE = {
   hastalik: 'background:linear-gradient(135deg,#fef2f2,#fecaca);color:#991b1b;border:1px solid rgba(153,27,27,.08)',
   dogum:    'background:linear-gradient(135deg,#fdf4ff,#f5d0fe);color:#86198f;border:1px solid rgba(134,25,143,.08)',
   olum:     'background:linear-gradient(135deg,#f8fafc,#e2e8f0);color:#334155;border:1px solid rgba(51,65,85,.1)',
+  saatlik:  'background:linear-gradient(135deg,#ecfdf5,#d1fae5);color:#065f46;border:1px solid rgba(6,95,70,.1)',
   diger:    'background:linear-gradient(135deg,#f5f3ff,#e0e7ff);color:#4338ca;border:1px solid rgba(67,56,202,.08)',
 };
 
@@ -5927,7 +5936,7 @@ function pdIzinFiltre(tip) {
 
 const IZIN_TURU_MAP = {
   yillik: 'Yıllık İzin', ucretsiz: 'Ücretsiz İzin', mazeret: 'Mazeret İzni',
-  hastalik: 'Hastalık İzni', dogum: 'Doğum İzni', olum: 'Ölüm İzni', diger: 'Diğer'
+  hastalik: 'Hastalık İzni', dogum: 'Doğum İzni', olum: 'Ölüm İzni', saatlik: 'Saatlik İzin', diger: 'Diğer'
 };
 const IZIN_DURUM_MAP = {
   beklemede: ['Beklemede','#f59e0b'], ik_onayladi: ['İK Onayladı','#3b82f6'],
@@ -6813,7 +6822,7 @@ async function openIzinDrawer(id) {
 
   // Reset form
   document.getElementById('iz-vekil-list').style.display = 'none';
-  ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-notlar'].forEach(fid => {
+  ['iz-form-personel-q','iz-form-vekil','iz-form-adres','iz-form-aciklama','iz-form-notlar'].forEach(fid => {
     const el = document.getElementById(fid); if (el) el.value = '';
   });
   document.getElementById('iz-form-onaylayan').value =
@@ -6842,7 +6851,9 @@ async function openIzinDrawer(id) {
     document.getElementById('iz-form-kullanilabilir').value  = iz.kullanilabilir_gun || '';
     document.getElementById('iz-form-vekil').value           = iz.vekil_ad_soyad || '';
     document.getElementById('iz-form-adres').value           = iz.izin_adresi || '';
+    document.getElementById('iz-form-aciklama').value        = iz.aciklama || '';
     document.getElementById('iz-form-notlar').value          = iz.notlar || '';
+    izTurDegisti();
     if (iz.imza) izImzaYukle(iz.imza);
 
     const bilgi = document.getElementById('iz-personel-bilgi');
@@ -6989,9 +7000,33 @@ function izImzaAl() {
   return izSigCanvas.toDataURL('image/png');
 }
 
+function izTurDegisti() {
+  const tur = document.getElementById('iz-form-tur').value;
+  const bitEl = document.getElementById('iz-form-bit');
+  const gunEl = document.getElementById('iz-form-gun');
+  if (tur === 'saatlik') {
+    const bas = document.getElementById('iz-form-bas').value;
+    if (bas) bitEl.value = bas;
+    bitEl.readOnly = true;
+    gunEl.value = 1;
+    gunEl.readOnly = true;
+  } else {
+    bitEl.readOnly = false;
+    gunEl.readOnly = false;
+  }
+}
+
 function izGunHesapla() {
-  const bas = document.getElementById('iz-form-bas').value;
-  const bit = document.getElementById('iz-form-bit').value;
+  const tur = document.getElementById('iz-form-tur').value;
+  const basEl = document.getElementById('iz-form-bas');
+  const bitEl = document.getElementById('iz-form-bit');
+  if (tur === 'saatlik') {
+    bitEl.value = basEl.value;
+    document.getElementById('iz-form-gun').value = 1;
+    return;
+  }
+  const bas = basEl.value;
+  const bit = bitEl.value;
   if (bas && bit) {
     const d1 = new Date(bas), d2 = new Date(bit);
     const gun = Math.round((d2 - d1) / 86400000) + 1;
@@ -7076,6 +7111,7 @@ async function saveIzin() {
     kullanilabilir_gun: parseInt(document.getElementById('iz-form-kullanilabilir').value) || null,
     vekil_ad_soyad:     document.getElementById('iz-form-vekil').value || null,
     izin_adresi:        document.getElementById('iz-form-adres').value || null,
+    aciklama:           document.getElementById('iz-form-aciklama').value || null,
     notlar:             document.getElementById('iz-form-notlar').value || null,
     imza:               null,
   };
@@ -7170,11 +7206,13 @@ async function izinYazdir(id) {
   const turLabel   = IZIN_TUR_LABEL[iz.izin_turu] || iz.izin_turu;
   const durumLabel = IZIN_DURUM_LABEL[iz.durum]    || iz.durum;
 
-  const gunSayisi = iz.gun_sayisi || '—';
+  const isSaatlik = iz.izin_turu === 'saatlik';
+  const gunSayisi = isSaatlik ? 'Saatlik' : (iz.gun_sayisi || '—');
   const kalanGun  = iz.kullanilabilir_gun ?? '—';
   const birimStr  = [iz.ilce, iz.hizmet_noktasi].filter(Boolean).join(' / ') || iz.bolum || '—';
   const telStr    = iz.telefon || '—';
   const adresStr  = iz.izin_adresi || '—';
+  const aciklamaStr = iz.aciklama || '';
 
   const sigPersonel = iz.imza
     ? '<img src="' + iz.imza + '" style="max-height:50px;display:block;margin:0 auto 2px">'
@@ -7224,7 +7262,11 @@ async function izinYazdir(id) {
   <table style="margin-bottom:10px">
     <tr>
       <td colspan="2" style="font-size:12px;line-height:1.6;padding:10px">
-        <b>${fmt(iz.baslangic)}</b> tarihinden <b>${fmt(iz.bitis)}</b> tarihine kadar geçerli olmak üzere <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanmak istiyorum gereğini müsaadelerinize arz ederim. <span style="float:right"><b>${fmt(iz.talep_tarihi)}</b></span>
+        ${isSaatlik
+          ? `<b>${fmt(iz.baslangic)}</b> tarihinde <b>${turLabel}</b> kullanmak istiyorum gereğini müsaadelerinize arz ederim.`
+          : `<b>${fmt(iz.baslangic)}</b> tarihinden <b>${fmt(iz.bitis)}</b> tarihine kadar geçerli olmak üzere <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanmak istiyorum gereğini müsaadelerinize arz ederim.`}
+        ${aciklamaStr ? `<br><br><span class="lbl">İzin Açıklaması:</span> ${aciklamaStr}` : ''}
+        <span style="float:right"><b>${fmt(iz.talep_tarihi)}</b></span>
       </td>
     </tr>
   </table>
