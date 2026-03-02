@@ -454,13 +454,14 @@
     <div class="section-title">İzin Bilgileri</div>
     <div class="form-field">
       <label>İzin Türü *</label>
-      <select id="f-izin-tur">
+      <select id="f-izin-tur" onchange="izinTuruDegisti()">
         <option value="yillik">Yıllık İzin</option>
         <option value="ucretsiz">Ücretsiz İzin</option>
         <option value="mazeret">Mazeret İzni</option>
         <option value="hastalik">Hastalık İzni</option>
         <option value="dogum">Doğum İzni</option>
         <option value="olum">Ölüm İzni</option>
+        <option value="saatlik">Saatlik İzin</option>
         <option value="diger">Diğer</option>
       </select>
     </div>
@@ -483,6 +484,11 @@
     <div class="form-field">
       <label>Kullanılabilir İzin Günü</label>
       <input type="number" id="f-kullanilabilir" min="0" placeholder="Bilmiyorsanız boş bırakın">
+    </div>
+
+    <div class="form-field">
+      <label>İzin Açıklaması</label>
+      <textarea id="f-aciklama" placeholder="İzin gerekçesi / açıklama yazınız..."></textarea>
     </div>
 
     <div class="section-title">Vekalet & İletişim</div>
@@ -748,10 +754,32 @@ async function smsDogrula() {
 }
 
 // ── ADIM 2: FORM HESAPLAMA ─────────────────────────────────────
+function izinTuruDegisti() {
+  const tur = document.getElementById('f-izin-tur').value;
+  const bitEl = document.getElementById('f-bit');
+  if (tur === 'saatlik') {
+    const bas = document.getElementById('f-bas').value;
+    if (bas) bitEl.value = bas;
+    bitEl.readOnly = true;
+    document.getElementById('gun-badge-text').textContent = 'Saatlik İzin';
+    document.getElementById('gun-badge-wrap').style.display = 'block';
+  } else {
+    bitEl.readOnly = false;
+    gunHesapla();
+  }
+}
+
 function gunHesapla() {
+  const tur = document.getElementById('f-izin-tur').value;
   const bas = document.getElementById('f-bas').value;
   const bit = document.getElementById('f-bit').value;
   const wrap = document.getElementById('gun-badge-wrap');
+  if (tur === 'saatlik') {
+    document.getElementById('f-bit').value = bas;
+    document.getElementById('gun-badge-text').textContent = 'Saatlik İzin';
+    wrap.style.display = bas ? 'block' : 'none';
+    return;
+  }
   if (!bas || !bit || bit < bas) { wrap.style.display = 'none'; return; }
   const d1 = new Date(bas), d2 = new Date(bit);
   let gun = 0;
@@ -891,6 +919,7 @@ async function basvuruGonder() {
       kullanilabilir_gun: parseInt(document.getElementById('f-kullanilabilir').value) || null,
       vekil_ad_soyad:     document.getElementById('f-vekil').value.trim() || null,
       izin_adresi:        document.getElementById('f-adres').value.trim(),
+      aciklama:           document.getElementById('f-aciklama').value.trim() || null,
       notlar:             document.getElementById('f-notlar').value.trim() || null,
       imza,
       sms_token: smsToken,

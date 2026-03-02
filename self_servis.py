@@ -479,11 +479,12 @@ class PublicIzinCreate(BaseModel):
     kullanilabilir_gun: Optional[int] = None
     vekil_ad_soyad:     Optional[str] = None
     izin_adresi:        str
+    aciklama:           Optional[str] = None
     notlar:             Optional[str] = None
     imza:               Optional[str] = None
 
 
-IZIN_TURLERI_PUBLIC = {"yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "diger"}
+IZIN_TURLERI_PUBLIC = {"yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"}
 
 
 @router.post("/public/izin", status_code=201)
@@ -533,13 +534,13 @@ async def public_izin_olustur(data: PublicIzinCreate):
         row = await conn.fetchrow("""
             INSERT INTO izinler
                 (personel_id, talep_tarihi, izin_turu, baslangic, bitis,
-                 gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, notlar, imza)
-            VALUES ($1, CURRENT_DATE, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+                 gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza)
+            VALUES ($1, CURRENT_DATE, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING id
         """,
             data.personel_id, data.izin_turu, data.baslangic, data.bitis,
             data.gun_sayisi, data.kullanilabilir_gun, data.vekil_ad_soyad,
-            data.izin_adresi, data.notlar, data.imza,
+            data.izin_adresi, data.aciklama, data.notlar, data.imza,
         )
         await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
 
