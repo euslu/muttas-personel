@@ -499,7 +499,7 @@
     </div>
     <div class="form-field">
       <label>İzinde Bulunulacak Adres / Telefon *</label>
-      <textarea id="f-adres" placeholder="Adres ve iletişim bilgisi" required></textarea>
+      <textarea id="f-adres" placeholder="Adres ve iletişim bilgisi"></textarea>
     </div>
     </div>
     <div class="form-field">
@@ -811,8 +811,9 @@ function formGecis() {
     errEl.style.display = 'flex';
     return;
   }
+  const tur = document.getElementById('f-izin-tur').value;
   const adres = document.getElementById('f-adres').value.trim();
-  if (!adres) {
+  if (tur !== 'saatlik' && !adres) {
     errEl.textContent = 'İzinde bulunulacak adres zorunludur.';
     errEl.style.display = 'flex';
     return;
