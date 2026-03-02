@@ -491,6 +491,7 @@
       <textarea id="f-aciklama" placeholder="İzin gerekçesi / açıklama yazınız..."></textarea>
     </div>
 
+    <div id="f-vekalet-section">
     <div class="section-title">Vekalet & İletişim</div>
     <div class="form-field">
       <label>Vekalet Edecek Personel</label>
@@ -499,6 +500,7 @@
     <div class="form-field">
       <label>İzinde Bulunulacak Adres / Telefon *</label>
       <textarea id="f-adres" placeholder="Adres ve iletişim bilgisi" required></textarea>
+    </div>
     </div>
     <div class="form-field">
       <label>Notlar / Açıklama</label>
@@ -757,14 +759,17 @@ async function smsDogrula() {
 function izinTuruDegisti() {
   const tur = document.getElementById('f-izin-tur').value;
   const bitEl = document.getElementById('f-bit');
+  const vekaletSec = document.getElementById('f-vekalet-section');
   if (tur === 'saatlik') {
     const bas = document.getElementById('f-bas').value;
     if (bas) bitEl.value = bas;
     bitEl.readOnly = true;
     document.getElementById('gun-badge-text').textContent = 'Saatlik İzin';
     document.getElementById('gun-badge-wrap').style.display = 'block';
+    if (vekaletSec) vekaletSec.style.display = 'none';
   } else {
     bitEl.readOnly = false;
+    if (vekaletSec) vekaletSec.style.display = '';
     gunHesapla();
   }
 }

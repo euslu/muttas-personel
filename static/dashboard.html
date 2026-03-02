@@ -5288,6 +5288,7 @@ function ftExport() {
       <textarea id="iz-form-aciklama" rows="2" placeholder="İzin gerekçesi / açıklama yazınız..."></textarea>
     </div>
 
+    <div id="iz-vekalet-section">
     <div class="drawer-section">Vekalet & Adres</div>
     <div class="form-grid-2" style="margin-bottom:12px">
       <div class="form-field" style="grid-column:span 2;position:relative">
@@ -5299,6 +5300,7 @@ function ftExport() {
         <label>İzinde Bulunulacak Adres / Telefon</label>
         <textarea id="iz-form-adres" rows="2" placeholder="Adres ve iletişim bilgisi"></textarea>
       </div>
+    </div>
     </div>
 
     <div id="iz-onay-section" style="display:none">
@@ -7004,15 +7006,18 @@ function izTurDegisti() {
   const tur = document.getElementById('iz-form-tur').value;
   const bitEl = document.getElementById('iz-form-bit');
   const gunEl = document.getElementById('iz-form-gun');
+  const vekaletSec = document.getElementById('iz-vekalet-section');
   if (tur === 'saatlik') {
     const bas = document.getElementById('iz-form-bas').value;
     if (bas) bitEl.value = bas;
     bitEl.readOnly = true;
     gunEl.value = 1;
     gunEl.readOnly = true;
+    if (vekaletSec) vekaletSec.style.display = 'none';
   } else {
     bitEl.readOnly = false;
     gunEl.readOnly = false;
+    if (vekaletSec) vekaletSec.style.display = '';
   }
 }
 
