@@ -6708,6 +6708,7 @@ function canApprove(durum) {
 
 async function loadIzinler(page) {
   izPage = page || 1;
+  const isAdmin = currentUser && currentUser.rol === 'admin';
   const q     = document.getElementById('iz-q')?.value     || '';
   const tur   = document.getElementById('iz-tur')?.value   || '';
   const durum = document.getElementById('iz-durum')?.value || '';
@@ -6770,7 +6771,7 @@ async function loadIzinler(page) {
           ${canApprove(iz.durum)
             ? `<button class="iz-action-btn approve" title="Onayla" onclick="izinHizliOnay(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l3 3 5-6"/></svg></button>` : ''}
           <button class="iz-action-btn" title="Yazdır" onclick="izinYazdir(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V2h4v5M5 12H4a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3a1 1 0 01-1 1H9M5 10h4v3H5z"/></svg></button>
-          ${canEditIK && iz.durum === 'beklemede' ? `<button class="iz-action-btn del" title="Sil" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
+          ${isAdmin || (canEditIK && iz.durum === 'beklemede') ? `<button class="iz-action-btn del" title="Sil" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
         </div>
       </td>
     </tr>`;

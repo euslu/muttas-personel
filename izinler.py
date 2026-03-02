@@ -296,12 +296,18 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
 @router.delete("/{iid}")
 async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
+    rol = token.get("rol", "")
     async with pool.acquire() as conn:
-        exists = await conn.fetchval(
-            "SELECT id FROM izinler WHERE id = $1 AND durum = 'beklemede'", iid
-        )
-        if not exists:
-            raise HTTPException(status_code=400, detail="Sadece beklemede olan izinler silinebilir.")
+        if rol == "admin":
+            exists = await conn.fetchval("SELECT id FROM izinler WHERE id = $1", iid)
+            if not exists:
+                raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+        else:
+            exists = await conn.fetchval(
+                "SELECT id FROM izinler WHERE id = $1 AND durum = 'beklemede'", iid
+            )
+            if not exists:
+                raise HTTPException(status_code=400, detail="Sadece beklemede olan izinler silinebilir.")
         await conn.execute("DELETE FROM izinler WHERE id = $1", iid)
         return {"ok": True}
 
