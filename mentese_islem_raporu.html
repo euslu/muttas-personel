@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Menteşe Belediyesi İK Sistemi – İşlem Raporu</title>
+<style>
+@media print { body { margin: 20mm; } .no-print { display: none; } }
+body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px; color: #1a1a1a; line-height: 1.7; background: #fff; }
+h1 { text-align: center; color: #1e3a5f; border-bottom: 3px solid #2563eb; padding-bottom: 12px; font-size: 22px; }
+h2 { color: #2563eb; margin-top: 36px; border-left: 4px solid #2563eb; padding-left: 12px; font-size: 17px; }
+h3 { color: #374151; margin-top: 20px; font-size: 15px; }
+.meta { text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px 0; font-size: 13px; }
+th { background: #2563eb; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; }
+td { padding: 7px 10px; border: 1px solid #e5e7eb; }
+tr:nth-child(even) td { background: #f9fafb; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.badge-done { background: #dcfce7; color: #166534; }
+.badge-info { background: #dbeafe; color: #1e40af; }
+.badge-warn { background: #fef3c7; color: #92400e; }
+code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 12px; font-family: 'Consolas', monospace; }
+.section-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+ul { padding-left: 20px; }
+li { margin-bottom: 6px; }
+.footer { margin-top: 40px; padding-top: 16px; border-top: 2px solid #e5e7eb; text-align: center; color: #9ca3af; font-size: 12px; }
+.btn-print { position: fixed; top: 20px; right: 20px; background: #2563eb; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.btn-print:hover { background: #1d4ed8; }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.stat-card { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; text-align: center; }
+.stat-card .num { font-size: 28px; font-weight: 700; color: #0369a1; }
+.stat-card .lbl { font-size: 12px; color: #6b7280; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<button class="btn-print no-print" onclick="window.print()">🖨️ Yazdır / PDF</button>
+
+<h1>MENTEŞE BELEDİYESİ İK SİSTEMİ<br>İŞLEM VE GELİŞTİRME RAPORU</h1>
+<div class="meta">
+Hazırlanma Tarihi: 4 Mart 2026 &nbsp;|&nbsp; Proje: İK Menteşe &nbsp;|&nbsp; Platform: Python FastAPI + PostgreSQL
+</div>
+
+<!-- ============================== -->
+<h2>1. PROJE GENEL BİLGİLERİ</h2>
+<div class="section-box">
+<table>
+<tr><td style="width:200px;font-weight:600">Proje Adı</td><td>İK Menteşe – Menteşe Belediyesi Personel ve İzin Yönetim Sistemi</td></tr>
+<tr><td style="font-weight:600">Sunucu</td><td>209.38.219.210 (DigitalOcean) – Port 8002</td></tr>
+<tr><td style="font-weight:600">Veritabanı</td><td>PostgreSQL – <code>mentese_db</code></td></tr>
+<tr><td style="font-weight:600">Uygulama Dizini</td><td><code>/opt/mentese/</code></td></tr>
+<tr><td style="font-weight:600">Servis</td><td><code>mentese.service</code> (Gunicorn + Uvicorn, 4 worker)</td></tr>
+<tr><td style="font-weight:600">Admin Giriş</td><td>E-posta: 00000000000 / Şifre: Mentese2026!</td></tr>
+<tr><td style="font-weight:600">Başkan</td><td>Gonca KÖKSAL ARAS</td></tr>
+</table>
+</div>
+
+<!-- ============================== -->
+<h2>2. YAPILAN GELİŞTİRMELER – ÖZET</h2>
+
+<div class="stat-grid">
+<div class="stat-card"><div class="num">12+</div><div class="lbl">Geliştirme Maddesi</div></div>
+<div class="stat-card"><div class="num">673</div><div class="lbl">E-posta Aktarıldı</div></div>
+<div class="stat-card"><div class="num">671</div><div class="lbl">IBAN Aktarıldı</div></div>
+<div class="stat-card"><div class="num">837</div><div class="lbl">Aktif Personel</div></div>
+</div>
+
+<table>
+<tr><th>#</th><th>Geliştirme</th><th>Durum</th><th>Tarih</th></tr>
+<tr><td>1</td><td>İzin onay zinciri (Memur / MEBEP-İşçi / Müdür / Başkan akışları)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>Şubat 2026</td></tr>
+<tr><td>2</td><td>İzin audit log tablosu ve İzin İşlem Geçmişi sayfası</td><td><span class="badge badge-done">Tamamlandı</span></td><td>Şubat 2026</td></tr>
+<tr><td>3</td><td>Personel modülüne yeni alanlar: email, boy, kilo, ayakkabı no, beden</td><td><span class="badge badge-done">Tamamlandı</span></td><td>Mart 2026</td></tr>
+<tr><td>4</td><td>IBAN alanı eklenmesi (DB + backend + frontend)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>5</td><td>Cinsiyet ve Kan Grubu filtreleri (personel listesi)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>6</td><td>Personel Türü filtresi (Memur / MEBEP / İşçi)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>7</td><td>Excel (CSV) export özelliği – filtreli dışa aktarma</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>8</td><td>Personel Bilgi Formu'ndan toplu veri aktarımı (e-posta, IBAN, kan grubu)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>9</td><td>Fiziksel Bilgiler bölümü (boy, kilo, ayakkabı no, beden) – form + detay + yazdırma</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>10</td><td>Personel detay yazdırma sayfasına yeni alanlar eklenmesi</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>11</td><td>Cinsiyet filtresi – karma veri formatı desteği (E/ERKEK/Erkek)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+<tr><td>12</td><td>Kan grubu format standardizasyonu (ARh(+) → A Rh+)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>4 Mart 2026</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2>3. İZİN ONAY ZİNCİRİ</h2>
+<div class="section-box">
+<h3>3.1 MEBEP / İşçi Personel</h3>
+<p><code>beklemede</code> → <code>mudur_onayladi</code> → <code>onaylandi</code></p>
+
+<h3>3.2 Memur</h3>
+<p><code>beklemede</code> → <code>ik_onayladi</code> → <code>mudur_onayladi</code> → <code>onaylandi</code></p>
+
+<h3>3.3 Müdür</h3>
+<p><code>beklemede</code> → <code>ik_onayladi</code> → <code>baskan_yrd_onayladi</code> → <code>baskan_onayladi</code> → <code>onaylandi</code></p>
+</div>
+
+<!-- ============================== -->
+<h2>4. İZİN AUDIT LOG</h2>
+<div class="section-box">
+<p>Her izin oluşturma, onaylama ve reddetme işlemi <code>izin_log</code> tablosuna kaydedilir.</p>
+<table>
+<tr><th>Sütun</th><th>Açıklama</th></tr>
+<tr><td><code>id</code></td><td>Otomatik artan birincil anahtar</td></tr>
+<tr><td><code>izin_id</code></td><td>İlgili izin kaydının ID'si</td></tr>
+<tr><td><code>islem</code></td><td>İşlem türü (olusturuldu, onaylandi, reddedildi vb.)</td></tr>
+<tr><td><code>yapan_id</code></td><td>İşlemi yapan kullanıcının ID'si</td></tr>
+<tr><td><code>yapan_ad</code></td><td>İşlemi yapan kullanıcının adı</td></tr>
+<tr><td><code>eski_durum / yeni_durum</code></td><td>Durum değişikliği</td></tr>
+<tr><td><code>tarih</code></td><td>İşlem tarihi/saati</td></tr>
+<tr><td><code>aciklama</code></td><td>Red nedeni veya ek açıklama</td></tr>
+</table>
+<p>Dashboard'da <strong>İzin İşlem Geçmişi</strong> sayfası ile filtreleme, sayfalama ve CSV dışa aktarma desteklenir.</p>
+</div>
+
+<!-- ============================== -->
+<h2>5. PERSONEL MODÜLÜ GELİŞTİRMELERİ</h2>
+
+<h3>5.1 Yeni Veritabanı Alanları</h3>
+<table>
+<tr><th>Alan</th><th>Tip</th><th>Açıklama</th><th>Doluluk (837 aktif)</th></tr>
+<tr><td><code>email</code></td><td>VARCHAR</td><td>E-posta adresi</td><td>671 (%80)</td></tr>
+<tr><td><code>iban</code></td><td>VARCHAR(30)</td><td>Banka hesap numarası</td><td>671 (%80)</td></tr>
+<tr><td><code>boy</code></td><td>INTEGER</td><td>Boy (cm)</td><td>0 – Manuel giriş bekleniyor</td></tr>
+<tr><td><code>kilo</code></td><td>INTEGER</td><td>Kilo (kg)</td><td>0 – Manuel giriş bekleniyor</td></tr>
+<tr><td><code>ayakkabi_no</code></td><td>INTEGER</td><td>Ayakkabı numarası</td><td>0 – Manuel giriş bekleniyor</td></tr>
+<tr><td><code>beden</code></td><td>VARCHAR</td><td>Beden (XS–3XL)</td><td>0 – Manuel giriş bekleniyor</td></tr>
+<tr><td><code>kan_grubu</code></td><td>VARCHAR</td><td>Kan grubu</td><td>370 (%44)</td></tr>
+</table>
+
+<h3>5.2 Filtreler</h3>
+<div class="section-box">
+<p>Personel listesine eklenen filtre seçenekleri:</p>
+<ul>
+<li><strong>Cinsiyet</strong> – Erkek / Kadın (DB'deki E/ERKEK/K/KADIN formatlarını otomatik eşleştirir)</li>
+<li><strong>Kan Grubu</strong> – A Rh+, A Rh-, B Rh+, B Rh-, AB Rh+, AB Rh-, 0 Rh+, 0 Rh-</li>
+<li><strong>Personel Türü</strong> – Memur / MEBEP / İşçi</li>
+<li><em>Mevcut filtreler:</em> Birim, Ünvan, Aktif/Pasif, Alfabe, Arama</li>
+</ul>
+</div>
+
+<h3>5.3 Excel (CSV) Export</h3>
+<div class="section-box">
+<p>Personel listesinde yeşil <strong>"Excel"</strong> butonu ile aktif filtrelere göre CSV dosyası indirilir.</p>
+<p>Endpoint: <code>GET /personel/excel/export</code></p>
+<p>32 sütun içerir: TC Kimlik, SGK Sicil, Ad Soyad, Cinsiyet, Personel Türü, Müdürlük, Ünvan, İlçe, Hizmet Noktası, İşe Giriş, İşten Çıkış, Doğum Tarihi, Doğum Yeri, Kan Grubu, Medeni Hal, Çocuk Sayısı, Öğrenim, Mezun Bölüm, Telefon, E-posta, Adres, Boy, Kilo, Ayakkabı No, Beden, IBAN, Meslek Kodu, Meslek Adı, Sendika Üyesi, Kalan İzin, Toplam İzin Hak, Brüt Ücret</p>
+</div>
+
+<h3>5.4 Personel Detay / Düzenleme Formu</h3>
+<div class="section-box">
+<p>Personel detay sayfasında eklenen bölümler:</p>
+<ul>
+<li><strong>İletişim:</strong> Telefon, E-posta, IBAN, Adres</li>
+<li><strong>Fiziksel Bilgiler:</strong> Boy (cm), Kilo (kg), Ayakkabı No, Beden (XS–3XL)</li>
+</ul>
+<p>Bu alanlar hem düzenleme formunda, hem salt-okunur detay görünümünde, hem de yazdırma sayfasında gösterilir.</p>
+</div>
+
+<!-- ============================== -->
+<h2>6. VERİ AKTARIMI – PERSONEL BİLGİ FORMU</h2>
+<div class="section-box">
+<p>Kaynak dosya: <strong>PERSONEL_BİLGİ_FORMU.xlsm</strong></p>
+<p>TC Kimlik eşleştirmesi ile 684 kayıttan veritabanına aktarılan bilgiler:</p>
+<table>
+<tr><th>Alan</th><th>Aktarılan</th><th>Bulunamayan TC</th><th>Not</th></tr>
+<tr><td>E-posta</td><td>673</td><td>11</td><td>Boş olan kayıtlara yazıldı</td></tr>
+<tr><td>IBAN</td><td>673</td><td>11</td><td>Boş olan kayıtlara yazıldı</td></tr>
+<tr><td>Kan Grubu</td><td>0 (ek)</td><td>—</td><td>370 kayıtta zaten doluydu; format dönüştürüldü (ARh(+) → A Rh+)</td></tr>
+</table>
+<p><span class="badge badge-info">Not</span> Boy, kilo, ayakkabı no ve beden bilgileri kaynak dosyada bulunmuyordu.</p>
+</div>
+
+<!-- ============================== -->
+<h2>7. TEKNİK DETAYLAR</h2>
+
+<h3>7.1 Değiştirilen Dosyalar</h3>
+<table>
+<tr><th>Dosya</th><th>Yapılan Değişiklik</th></tr>
+<tr><td><code>/opt/mentese/personel.py</code></td><td>Yeni alanlar (email, boy, kilo, ayakkabi_no, beden, iban), cinsiyet/kan grubu filtreleri, Excel export endpoint, karma cinsiyet formatı desteği</td></tr>
+<tr><td><code>/opt/mentese/static/dashboard.html</code></td><td>Filtre dropdown'ları (cinsiyet, kan grubu, personel türü), Excel buton, İletişim ve Fiziksel Bilgiler form bölümleri, IBAN alanı, detay/yazdırma güncelleme</td></tr>
+<tr><td><code>/opt/mentese/izinler.py</code></td><td>İzin audit log yazma, onay zinciri</td></tr>
+</table>
+
+<h3>7.2 Veritabanı Değişiklikleri</h3>
+<table>
+<tr><th>Tablo</th><th>İşlem</th></tr>
+<tr><td><code>personel</code></td><td><code>ALTER TABLE ADD COLUMN</code>: email, boy, kilo, ayakkabi_no, beden, iban</td></tr>
+<tr><td><code>izin_log</code></td><td>Yeni tablo oluşturuldu (id, izin_id, islem, yapan_id, yapan_ad, eski_durum, yeni_durum, tarih, aciklama)</td></tr>
+</table>
+
+<h3>7.3 API Endpoint'leri</h3>
+<table>
+<tr><th>Endpoint</th><th>Metod</th><th>Açıklama</th></tr>
+<tr><td><code>/personel</code></td><td>GET</td><td>Personel listesi (cinsiyet, kan_grubu, personel_turu filtreleri eklendi)</td></tr>
+<tr><td><code>/personel/excel/export</code></td><td>GET</td><td>Filtreli CSV dışa aktarma (32 sütun, Bearer veya query token desteği)</td></tr>
+<tr><td><code>/personel</code></td><td>POST</td><td>Personel ekleme (iban alanı eklendi)</td></tr>
+<tr><td><code>/personel/{id}</code></td><td>PUT</td><td>Personel güncelleme (yeni alanlar desteklenir)</td></tr>
+<tr><td><code>/personel/{id}</code></td><td>GET</td><td>Personel detay (SELECT * – tüm alanlar otomatik döner)</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2>8. BEKLEYEN GELİŞTİRMELER (TODO)</h2>
+<table>
+<tr><th>#</th><th>Konu</th><th>Durum</th></tr>
+<tr><td>1</td><td>Meslek kodu tablosu yönetimi</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>2</td><td>Engelli rapor takibi</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>3</td><td>Belge süre takibi (ehliyet, sertifika vb.)</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>4</td><td>İcra cetveli modülü</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>5</td><td>Boy, kilo, ayakkabı no, beden bilgilerinin toplu girişi</td><td><span class="badge badge-warn">Veri bekleniyor</span></td></tr>
+</table>
+
+<!-- ============================== -->
+<div class="footer">
+Bu rapor İK Menteşe projesi kapsamında otomatik olarak oluşturulmuştur.<br>
+Menteşe Belediyesi – İnsan Kaynakları ve Eğitim Müdürlüğü – 2026
+</div>
+
+</body>
+</html>
