@@ -1,0 +1,199 @@
+================================================================
+  PDKS ENTEGRASYON DÖKÜMANI
+  Menteşe Belediyesi - Personel Devam Kontrol Sistemi
+  Tarih: 6 Mart 2026
+================================================================
+
+1. GENEL BAKIŞ
+================================================================
+Menteşe Belediyesi bünyesindeki Perkotek PDKS cihazlarından
+giriş/çıkış verilerinin İK sistemine aktarılması.
+
+Mevcut Sistem : Perkotek Bilgi Aktar v8.2.2
+Cihaz Modeli  : MP 20656 / Arextek TR3800
+Veritabanı    : Access (Perkotek yerel)
+Sunucu        : 209.38.219.210:8002 (Menteşe İK)
+API Endpoint  : POST /pdks/yukle
+API Anahtarı  : MentesePDKS2026!
+
+
+2. CİHAZ LİSTESİ (18 Adet)
+================================================================
+No   Cihaz Adı              IP Adresi          Erişim
+---  ---------------------  -----------------  ----------
+1    TEMİZLİK ŞANTİYE      78.186.138.118     Kapalı
+2    BAŞKANLIK              192.168.0.21       Yerel Ağ
+3    İMAR-YAPI              10.10.6.50         Yerel Ağ
+4    KONAKALTII             192.168.8.200      Yerel Ağ
+5    TAMİRHANE              78.189.239.70      Kapalı
+6    EL ELE BUTİK           88.247.200.71      Kapalı
+7    EK BİNA                192.168.9.5        Yerel Ağ
+8    PARKBAHÇE              78.186.0.17        Ping OK / Port Kapalı
+9    FEN İŞLERİ             192.168.0.29       Yerel Ağ
+10   FEN İŞLERİ ŞANTİYE    88.247.238.54      Kapalı
+11   ZABITA                 10.10.0.45         Yerel Ağ
+12   KÜLTÜR EVİ             78.189.20.40       Kapalı
+13   BİLGİ İŞLEM           192.168.48.31      Yerel Ağ
+14   BİLİM PARKI            85.104.58.187      Açık (port 5005)
+15   AŞEVİ                  88.250.185.112     Kapalı
+16   MEGEM                   78.189.160.78      Kapalı
+17   KENT LOKANTA MERKEZ    81.215.226.49      Kapalı
+18   Bİ BALIK               88.248.165.227     Kapalı
+
+NOT: 192.168.x.x ve 10.x.x.x adresleri yerel ağ, dışarıdan erişilemez.
+     Sadece BİLİM PARKI cihazı port 5005 üzerinden dışarıdan erişilebilir.
+     Ancak Perkotek PERSDK3 protokolü kapalı kaynak olduğundan
+     doğrudan cihaz bağlantısı yapılamadı.
+
+
+3. VERİ AKTARIM YÖNTEMİ
+================================================================
+Perkotek yazılımı cihazlardan veriyi çekip tr500.txt dosyasına
+yazar. Bu dosya Windows bilgisayardaki agent scripti tarafından
+HTTP POST ile sunucuya gönderilir.
+
+  [Cihazlar] → [Perkotek Bilgi Aktar] → [tr500.txt]
+                                              ↓
+                                     [pdks_agent.py]
+                                              ↓
+                                 [HTTP POST /pdks/yukle]
+                                              ↓
+                                   [PostgreSQL DB]
+                                              ↓
+                                    [Dashboard PDKS]
+
+
+4. tr500.txt DOSYA FORMATI
+================================================================
+Örnek satır:
+  001,00359,0  2026/02/25 11:28:04 000
+
+Format açılımı:
+  001       → Cihaz No (3 hane)
+  00359     → Personel No (5-6 hane)
+  0         → Giriş/Çıkış (0=Giriş, 1=Çıkış)
+  2026/02/25 → Tarih (YYYY/AA/GG)
+  11:28:04  → Saat (SS:DD:NN)
+  000       → Ek veri (kullanılmıyor)
+
+Dosya konumu:
+  C:\Program Files (x86)\Perkotek\Bilgi Aktar v8.2.2\tr500.txt
+
+
+5. VERİTABANI TABLOLARI (PostgreSQL - mentese_db)
+================================================================
+
+Tablo: pdks_cihazlar
+  id          SERIAL PRIMARY KEY
+  cihaz_no    INTEGER UNIQUE NOT NULL
+  cihaz_adi   VARCHAR(100) NOT NULL
+  ip_adresi   VARCHAR(50)
+  aktif       BOOLEAN DEFAULT TRUE
+
+Tablo: pdks_hareketler
+  id            SERIAL PRIMARY KEY
+  cihaz_no      INTEGER NOT NULL
+  personel_no   VARCHAR(20) NOT NULL
+  giris_cikis   SMALLINT NOT NULL (0=Giriş, 1=Çıkış)
+  zaman         TIMESTAMP NOT NULL
+  ham_veri      TEXT
+  yukleme_zamani TIMESTAMP DEFAULT NOW()
+  UNIQUE(cihaz_no, personel_no, zaman)
+
+Indeksler:
+  idx_pdks_personel_no  → personel_no
+  idx_pdks_zaman        → zaman
+  idx_pdks_cihaz        → cihaz_no
+
+
+6. API ENDPOINTLERI
+================================================================
+
+POST /pdks/yukle
+  Yetki: x-api-key header (MentesePDKS2026!)
+  Body: multipart/form-data, alan adı: dosya
+  Yanıt: {"durum":"ok","toplam":5,"eklenen":5,"atlanan":0}
+
+GET /pdks/hareketler?tarih=2026-03-06&cihaz_no=14&personel_no=359
+  Yetki: Bearer token
+  Yanıt: [{id, cihaz_no, cihaz_adi, personel_no, ad_soyad, giris_cikis, zaman}]
+
+GET /pdks/ozet?tarih=2026-03-06
+  Yetki: Bearer token
+  Yanıt: {tarih, toplam, giris, cikis, son_yukleme, cihaz_dagilim}
+
+GET /pdks/cihazlar
+  Yetki: Bearer token
+  Yanıt: [{id, cihaz_no, cihaz_adi, ip_adresi, aktif}]
+
+GET /pdks/personel/{personel_no}?tarih_baslangic=2026-03-01&tarih_bitis=2026-03-06
+  Yetki: Bearer token
+  Yanıt: [{id, cihaz_no, cihaz_adi, giris_cikis, zaman}]
+
+
+7. WINDOWS AGENT KURULUMU
+================================================================
+
+Gereksinimler:
+  - Python 3.x (python.org)
+  - Ek kütüphane gerekmez (sadece standart kütüphane)
+
+Dosyalar:
+  - pdks_agent.py   : Ana program
+  - pdks_kur.bat    : Otomatik kurulum betiği
+
+Kurulum adımları:
+  1. Her iki dosyayı bilgisayara indirin
+  2. pdks_kur.bat'a çift tıklayın
+  3. Otomatik olarak:
+     - C:\Perkotek\ klasörünü oluşturur
+     - Agent dosyasını kopyalar
+     - Test gönderimi yapar
+     - İsterseniz Windows başlangıcına ekler
+
+Komut satırı kullanımı:
+  python pdks_agent.py               → Tek seferlik gönderim
+  python pdks_agent.py --zamanlayici  → Arka plan zamanlayıcı
+  python pdks_agent.py --servis-kur   → Windows başlangıcına ekle
+  python pdks_agent.py --servis-sil   → Başlangıçtan kaldır
+  python pdks_agent.py --durum        → Durum bilgisi göster
+
+Gönderim saatleri (varsayılan):
+  02:00, 06:00, 08:30, 12:00, 13:30, 17:30, 22:00
+
+Log dosyaları : C:\Perkotek\pdks_logs\
+Arşiv dosyalar: C:\Perkotek\pdks_arsiv\
+
+
+8. DASHBOARD PDKS SAYFASI
+================================================================
+Sol menüde "PDKS" butonu (parmak izi ikonu)
+
+İçerik:
+  - 4 özet kart: Toplam hareket, Giriş, Çıkış, Son yükleme
+  - Filtreler: Tarih, Cihaz (dropdown), Personel No
+  - Cihaz bazlı hareket dağılımı (bar grafik)
+  - Hareketler tablosu: Tarih/saat, cihaz, sicil no, ad soyad, giriş/çıkış
+
+Personel eşleştirme:
+  pdks_hareketler.personel_no ↔ personel.sicil_no
+  Eşleşen personelin adı soyadı tabloda otomatik görünür.
+
+
+9. SUNUCU DOSYALARI
+================================================================
+/opt/mentese/pdks.py                  → FastAPI router
+/opt/mentese/static/dashboard.html    → PDKS sayfası dahil
+/opt/mentese/main.py                  → pdks_router import
+
+
+10. NOTLAR VE YAPILACAKLAR
+================================================================
+- Perkotek PERSDK3 protokolü kapalı kaynak, doğrudan cihaz
+  bağlantısı yapılamadı. txt dosya aktarımı en güvenilir yöntem.
+- Personel sicil numaraları ile PDKS personel numaralarının
+  eşleştirilmesi gerekebilir (farklı numaralandırma varsa).
+- Perkotek Access veritabanından doğrudan okuma alternatif olarak
+  değerlendirilebilir (mdbtools ile Linux'tan okunabilir).
+- İleride VPN kurulursa tüm cihazlara doğrudan erişim mümkün.
+================================================================
