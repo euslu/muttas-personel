@@ -35,307 +35,261 @@ li { margin-bottom: 6px; }
 </head>
 <body>
 
-<button class="btn-print no-print" onclick="window.print()">&#128424; Yazdir / PDF</button>
+<button class="btn-print no-print" onclick="window.print()">&#128424; Yazd&#305;r / PDF</button>
 
-<h1>MENTESE BELEDIYESI IK SISTEMI<br>ISLEM VE GELISTIRME RAPORU</h1>
+<h1>MENTE&#350;E BELED&#304;YES&#304; &#304;K S&#304;STEM&#304;<br>&#304;&#350;LEM VE GEL&#304;&#350;T&#304;RME RAPORU</h1>
 <div class="meta">
-Guncelleme Tarihi: 6 Mart 2026 &nbsp;|&nbsp; Proje: IK Mentese &nbsp;|&nbsp; Platform: Python FastAPI + PostgreSQL
+G&#252;ncelleme Tarihi: 6 Mart 2026 &nbsp;|&nbsp; Proje: &#304;K Mente&#351;e &nbsp;|&nbsp; Platform: Python FastAPI + PostgreSQL
 </div>
 
 <!-- ============================== -->
-<h2>1. PROJE GENEL BILGILERI</h2>
+<h2>1. PROJE GENEL B&#304;LG&#304;LER&#304;</h2>
 <div class="section-box">
 <table>
-<tr><td style="width:200px;font-weight:600">Proje Adi</td><td>IK Mentese - Mentese Belediyesi Personel ve Izin Yonetim Sistemi</td></tr>
-<tr><td style="font-weight:600">Sunucu</td><td>209.38.219.210 (DigitalOcean) - Port 8002</td></tr>
-<tr><td style="font-weight:600">Veritabani</td><td>PostgreSQL - <code>mentese_db</code></td></tr>
+<tr><td style="width:200px;font-weight:600">Proje Ad&#305;</td><td>&#304;K Mente&#351;e &#8211; Mente&#351;e Belediyesi Personel ve &#304;zin Y&#246;netim Sistemi</td></tr>
+<tr><td style="font-weight:600">Sunucu</td><td>209.38.219.210 (DigitalOcean) &#8211; Port 8002</td></tr>
+<tr><td style="font-weight:600">Veritaban&#305;</td><td>PostgreSQL &#8211; <code>mentese_db</code></td></tr>
 <tr><td style="font-weight:600">Uygulama Dizini</td><td><code>/opt/mentese/</code></td></tr>
 <tr><td style="font-weight:600">Servis</td><td><code>mentese.service</code> (Gunicorn + Uvicorn, 4 worker)</td></tr>
-<tr><td style="font-weight:600">Admin Giris</td><td>E-posta: 00000000000 / Sifre: Mentese2026!</td></tr>
-<tr><td style="font-weight:600">Baskan</td><td>Gonca KOKSAL ARAS</td></tr>
+<tr><td style="font-weight:600">Admin Giri&#351;</td><td>E-posta: 00000000000 / &#350;ifre: Mentese2026!</td></tr>
+<tr><td style="font-weight:600">Ba&#351;kan</td><td>Gonca K&#214;KSAL ARAS</td></tr>
 </table>
 </div>
 
 <!-- ============================== -->
-<h2>2. YAPILAN GELISTIRMELER - OZET</h2>
+<h2>2. YAPILAN GEL&#304;&#350;T&#304;RMELER &#8211; &#214;ZET</h2>
 
 <div class="stat-grid">
-<div class="stat-card"><div class="num">17+</div><div class="lbl">Gelistirme Maddesi</div></div>
-<div class="stat-card"><div class="num">673</div><div class="lbl">E-posta Aktarildi</div></div>
-<div class="stat-card"><div class="num">671</div><div class="lbl">IBAN Aktarildi</div></div>
-<div class="stat-card"><div class="num">467</div><div class="lbl">Meslek Kodu Yuklendi</div></div>
+<div class="stat-card"><div class="num">14</div><div class="lbl">Geli&#351;tirme Maddesi</div></div>
+<div class="stat-card"><div class="num">673</div><div class="lbl">E-posta Aktar&#305;ld&#305;</div></div>
+<div class="stat-card"><div class="num">671</div><div class="lbl">IBAN Aktar&#305;ld&#305;</div></div>
+<div class="stat-card"><div class="num">467</div><div class="lbl">Meslek Kodu Y&#252;klendi</div></div>
 </div>
 
 <table>
-<tr><th>#</th><th>Gelistirme</th><th>Durum</th><th>Tarih</th></tr>
-<tr><td>1</td><td>Izin onay zinciri (Memur / MEBEP-Isci / Mudur / Baskan akislari)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>Subat 2026</td></tr>
-<tr><td>2</td><td>Izin audit log tablosu ve Izin Islem Gecmisi sayfasi</td><td><span class="badge badge-done">Tamamlandi</span></td><td>Subat 2026</td></tr>
-<tr><td>3</td><td>Personel modulune yeni alanlar: email, boy, kilo, ayakkabi no, beden</td><td><span class="badge badge-done">Tamamlandi</span></td><td>Mart 2026</td></tr>
-<tr><td>4</td><td>IBAN alani eklenmesi (DB + backend + frontend)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>5</td><td>Cinsiyet ve Kan Grubu filtreleri (personel listesi)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>6</td><td>Personel Turu filtresi (Memur / MEBEP / Isci)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>7</td><td>Excel (CSV) export ozelligi - filtreli disa aktarma</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>8</td><td>Personel Bilgi Formu'ndan toplu veri aktarimi (e-posta, IBAN, kan grubu)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>9</td><td>Fiziksel Bilgiler bolumu (boy, kilo, ayakkabi no, beden) - form + detay + yazdirma</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>10</td><td>Personel detay yazdirma sayfasina yeni alanlar eklenmesi</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>11</td><td>Cinsiyet filtresi - karma veri formati destegi (E/ERKEK/Erkek)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr><td>12</td><td>Kan grubu format standardizasyonu (ARh(+) &rarr; A Rh+)</td><td><span class="badge badge-done">Tamamlandi</span></td><td>4 Mart 2026</td></tr>
-<tr style="background:#f0fdf4"><td>13</td><td><strong>Meslek Kodu Tablosu ve API tabanli asenkron arama</strong></td><td><span class="badge badge-new">Yeni - Tamamlandi</span></td><td>6 Mart 2026</td></tr>
-<tr style="background:#f0fdf4"><td>14</td><td><strong>Engelli Rapor Takibi modulu (DB + CRUD + Dashboard + Ozet sayfasi)</strong></td><td><span class="badge badge-new">Yeni - Tamamlandi</span></td><td>6 Mart 2026</td></tr>
-<tr style="background:#f0fdf4"><td>15</td><td><strong>MUTTAS: Izin formunda YK Baskan Vekili imza sureci (6 kisi ozel)</strong></td><td><span class="badge badge-new">Yeni - Tamamlandi</span></td><td>6 Mart 2026</td></tr>
-<tr style="background:#f0fdf4"><td>16</td><td><strong>MUTTAS: Ucretsiz izinlerin kalan izin gunundan dusurulmemesi</strong></td><td><span class="badge badge-new">Yeni - Tamamlandi</span></td><td>6 Mart 2026</td></tr>
+<tr><th>#</th><th>Geli&#351;tirme</th><th>Durum</th><th>Tarih</th></tr>
+<tr><td>1</td><td>&#304;zin onay zinciri (Memur / MEBEP-&#304;&#351;&#231;i / M&#252;d&#252;r / Ba&#351;kan ak&#305;&#351;lar&#305;)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>&#350;ubat 2026</td></tr>
+<tr><td>2</td><td>&#304;zin audit log tablosu ve &#304;zin &#304;&#351;lem Ge&#231;mi&#351;i sayfas&#305;</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>&#350;ubat 2026</td></tr>
+<tr><td>3</td><td>Personel mod&#252;l&#252;ne yeni alanlar: email, boy, kilo, ayakkab&#305; no, beden</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>Mart 2026</td></tr>
+<tr><td>4</td><td>IBAN alan&#305; eklenmesi (DB + backend + frontend)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>5</td><td>Cinsiyet ve Kan Grubu filtreleri (personel listesi)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>6</td><td>Personel T&#252;r&#252; filtresi (Memur / MEBEP / &#304;&#351;&#231;i)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>7</td><td>Excel (CSV) export &#246;zelli&#287;i &#8211; filtreli d&#305;&#351;a aktarma</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>8</td><td>Personel Bilgi Formu&#8217;ndan toplu veri aktar&#305;m&#305; (e-posta, IBAN, kan grubu)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>9</td><td>Fiziksel Bilgiler b&#246;l&#252;m&#252; (boy, kilo, ayakkab&#305; no, beden) &#8211; form + detay + yazd&#305;rma</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>10</td><td>Personel detay yazd&#305;rma sayfas&#305;na yeni alanlar eklenmesi</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>11</td><td>Cinsiyet filtresi &#8211; karma veri format&#305; deste&#287;i (E/ERKEK/Erkek)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr><td>12</td><td>Kan grubu format standardizasyonu (ARh(+) &rarr; A Rh+)</td><td><span class="badge badge-done">Tamamland&#305;</span></td><td>4 Mart 2026</td></tr>
+<tr style="background:#f0fdf4"><td>13</td><td><strong>Meslek Kodu Tablosu ve API tabanl&#305; asenkron arama</strong></td><td><span class="badge badge-new">Yeni &#8211; Tamamland&#305;</span></td><td>6 Mart 2026</td></tr>
+<tr style="background:#f0fdf4"><td>14</td><td><strong>Engelli Rapor Takibi mod&#252;l&#252; (DB + CRUD + Dashboard + &#214;zet sayfas&#305;)</strong></td><td><span class="badge badge-new">Yeni &#8211; Tamamland&#305;</span></td><td>6 Mart 2026</td></tr>
 </table>
 
 <!-- ============================== -->
-<h2>3. IZIN ONAY ZINCIRI</h2>
+<h2>3. &#304;Z&#304;N ONAY Z&#304;NC&#304;R&#304;</h2>
 <div class="section-box">
-<h3>3.1 MEBEP / Isci Personel</h3>
+<h3>3.1 MEBEP / &#304;&#351;&#231;i Personel</h3>
 <p><code>beklemede</code> &rarr; <code>mudur_onayladi</code> &rarr; <code>onaylandi</code></p>
 
 <h3>3.2 Memur</h3>
 <p><code>beklemede</code> &rarr; <code>ik_onayladi</code> &rarr; <code>mudur_onayladi</code> &rarr; <code>onaylandi</code></p>
 
-<h3>3.3 Mudur</h3>
+<h3>3.3 M&#252;d&#252;r</h3>
 <p><code>beklemede</code> &rarr; <code>ik_onayladi</code> &rarr; <code>baskan_yrd_onayladi</code> &rarr; <code>baskan_onayladi</code> &rarr; <code>onaylandi</code></p>
 </div>
 
 <!-- ============================== -->
-<h2>4. IZIN AUDIT LOG</h2>
+<h2>4. &#304;Z&#304;N AUDIT LOG</h2>
 <div class="section-box">
-<p>Her izin olusturma, onaylama ve reddetme islemi <code>izin_log</code> tablosuna kaydedilir.</p>
+<p>Her izin olu&#351;turma, onaylama ve reddetme i&#351;lemi <code>izin_log</code> tablosuna kaydedilir.</p>
 <table>
-<tr><th>Sutun</th><th>Aciklama</th></tr>
+<tr><th>S&#252;tun</th><th>A&#231;&#305;klama</th></tr>
 <tr><td><code>id</code></td><td>Otomatik artan birincil anahtar</td></tr>
-<tr><td><code>izin_id</code></td><td>Ilgili izin kaydinin ID'si</td></tr>
-<tr><td><code>islem</code></td><td>Islem turu (olusturuldu, onaylandi, reddedildi vb.)</td></tr>
-<tr><td><code>yapan_id</code></td><td>Islemi yapan kullanicinin ID'si</td></tr>
-<tr><td><code>yapan_ad</code></td><td>Islemi yapan kullanicinin adi</td></tr>
-<tr><td><code>eski_durum / yeni_durum</code></td><td>Durum degisikligi</td></tr>
-<tr><td><code>tarih</code></td><td>Islem tarihi/saati</td></tr>
-<tr><td><code>aciklama</code></td><td>Red nedeni veya ek aciklama</td></tr>
+<tr><td><code>izin_id</code></td><td>&#304;lgili izin kayd&#305;n&#305;n ID&#8217;si</td></tr>
+<tr><td><code>islem</code></td><td>&#304;&#351;lem t&#252;r&#252; (olusturuldu, onaylandi, reddedildi vb.)</td></tr>
+<tr><td><code>yapan_id</code></td><td>&#304;&#351;lemi yapan kullan&#305;c&#305;n&#305;n ID&#8217;si</td></tr>
+<tr><td><code>yapan_ad</code></td><td>&#304;&#351;lemi yapan kullan&#305;c&#305;n&#305;n ad&#305;</td></tr>
+<tr><td><code>eski_durum / yeni_durum</code></td><td>Durum de&#287;i&#351;ikli&#287;i</td></tr>
+<tr><td><code>tarih</code></td><td>&#304;&#351;lem tarihi/saati</td></tr>
+<tr><td><code>aciklama</code></td><td>Red nedeni veya ek a&#231;&#305;klama</td></tr>
 </table>
-<p>Dashboard'da <strong>Izin Islem Gecmisi</strong> sayfasi ile filtreleme, sayfalama ve CSV disa aktarma desteklenir.</p>
+<p>Dashboard&#8217;da <strong>&#304;zin &#304;&#351;lem Ge&#231;mi&#351;i</strong> sayfas&#305; ile filtreleme, sayfalama ve CSV d&#305;&#351;a aktarma desteklenir.</p>
 </div>
 
 <!-- ============================== -->
-<h2>5. PERSONEL MODULU GELISTIRMELERI</h2>
+<h2>5. PERSONEL MOD&#220;L&#220; GEL&#304;&#350;T&#304;RMELER&#304;</h2>
 
-<h3>5.1 Yeni Veritabani Alanlari</h3>
+<h3>5.1 Yeni Veritaban&#305; Alanlar&#305;</h3>
 <table>
-<tr><th>Alan</th><th>Tip</th><th>Aciklama</th><th>Doluluk (837 aktif)</th></tr>
+<tr><th>Alan</th><th>Tip</th><th>A&#231;&#305;klama</th><th>Doluluk (837 aktif)</th></tr>
 <tr><td><code>email</code></td><td>VARCHAR</td><td>E-posta adresi</td><td>671 (%80)</td></tr>
-<tr><td><code>iban</code></td><td>VARCHAR(30)</td><td>Banka hesap numarasi</td><td>671 (%80)</td></tr>
-<tr><td><code>boy</code></td><td>INTEGER</td><td>Boy (cm)</td><td>0 - Manuel giris bekleniyor</td></tr>
-<tr><td><code>kilo</code></td><td>INTEGER</td><td>Kilo (kg)</td><td>0 - Manuel giris bekleniyor</td></tr>
-<tr><td><code>ayakkabi_no</code></td><td>INTEGER</td><td>Ayakkabi numarasi</td><td>0 - Manuel giris bekleniyor</td></tr>
-<tr><td><code>beden</code></td><td>VARCHAR</td><td>Beden (XS-3XL)</td><td>0 - Manuel giris bekleniyor</td></tr>
+<tr><td><code>iban</code></td><td>VARCHAR(30)</td><td>Banka hesap numaras&#305;</td><td>671 (%80)</td></tr>
+<tr><td><code>boy</code></td><td>INTEGER</td><td>Boy (cm)</td><td>0 &#8211; Manuel giri&#351; bekleniyor</td></tr>
+<tr><td><code>kilo</code></td><td>INTEGER</td><td>Kilo (kg)</td><td>0 &#8211; Manuel giri&#351; bekleniyor</td></tr>
+<tr><td><code>ayakkabi_no</code></td><td>INTEGER</td><td>Ayakkab&#305; numaras&#305;</td><td>0 &#8211; Manuel giri&#351; bekleniyor</td></tr>
+<tr><td><code>beden</code></td><td>VARCHAR</td><td>Beden (XS&#8211;3XL)</td><td>0 &#8211; Manuel giri&#351; bekleniyor</td></tr>
 <tr><td><code>kan_grubu</code></td><td>VARCHAR</td><td>Kan grubu</td><td>370 (%44)</td></tr>
 </table>
 
 <h3>5.2 Filtreler</h3>
 <div class="section-box">
-<p>Personel listesine eklenen filtre secenekleri:</p>
+<p>Personel listesine eklenen filtre se&#231;enekleri:</p>
 <ul>
-<li><strong>Cinsiyet</strong> - Erkek / Kadin (DB'deki E/ERKEK/K/KADIN formatlarini otomatik eslestirir)</li>
-<li><strong>Kan Grubu</strong> - A Rh+, A Rh-, B Rh+, B Rh-, AB Rh+, AB Rh-, 0 Rh+, 0 Rh-</li>
-<li><strong>Personel Turu</strong> - Memur / MEBEP / Isci</li>
-<li><em>Mevcut filtreler:</em> Birim, Unvan, Aktif/Pasif, Alfabe, Arama</li>
+<li><strong>Cinsiyet</strong> &#8211; Erkek / Kad&#305;n (DB&#8217;deki E/ERKEK/K/KADIN formatlar&#305;n&#305; otomatik e&#351;le&#351;tirir)</li>
+<li><strong>Kan Grubu</strong> &#8211; A Rh+, A Rh-, B Rh+, B Rh-, AB Rh+, AB Rh-, 0 Rh+, 0 Rh-</li>
+<li><strong>Personel T&#252;r&#252;</strong> &#8211; Memur / MEBEP / &#304;&#351;&#231;i</li>
+<li><em>Mevcut filtreler:</em> Birim, &#220;nvan, Aktif/Pasif, Alfabe, Arama</li>
 </ul>
 </div>
 
 <h3>5.3 Excel (CSV) Export</h3>
 <div class="section-box">
-<p>Personel listesinde yesil <strong>"Excel"</strong> butonu ile aktif filtrelere gore CSV dosyasi indirilir.</p>
+<p>Personel listesinde ye&#351;il <strong>&#8220;Excel&#8221;</strong> butonu ile aktif filtrelere g&#246;re CSV dosyas&#305; indirilir.</p>
 <p>Endpoint: <code>GET /personel/excel/export</code></p>
-<p>32 sutun icerir: TC Kimlik, SGK Sicil, Ad Soyad, Cinsiyet, Personel Turu, Mudurluk, Unvan, Ilce, Hizmet Noktasi, Ise Giris, Isten Cikis, Dogum Tarihi, Dogum Yeri, Kan Grubu, Medeni Hal, Cocuk Sayisi, Ogrenim, Mezun Bolum, Telefon, E-posta, Adres, Boy, Kilo, Ayakkabi No, Beden, IBAN, Meslek Kodu, Meslek Adi, Sendika Uyesi, Kalan Izin, Toplam Izin Hak, Brut Ucret</p>
+<p>32 s&#252;tun i&#231;erir: TC Kimlik, SGK Sicil, Ad Soyad, Cinsiyet, Personel T&#252;r&#252;, M&#252;d&#252;rl&#252;k, &#220;nvan, &#304;l&#231;e, Hizmet Noktas&#305;, &#304;&#351;e Giri&#351;, &#304;&#351;ten &#199;&#305;k&#305;&#351;, Do&#287;um Tarihi, Do&#287;um Yeri, Kan Grubu, Medeni Hal, &#199;ocuk Say&#305;s&#305;, &#214;&#287;renim, Mezun B&#246;l&#252;m, Telefon, E-posta, Adres, Boy, Kilo, Ayakkab&#305; No, Beden, IBAN, Meslek Kodu, Meslek Ad&#305;, Sendika &#220;yesi, Kalan &#304;zin, Toplam &#304;zin Hak, Br&#252;t &#220;cret</p>
 </div>
 
-<h3>5.4 Personel Detay / Duzenleme Formu</h3>
+<h3>5.4 Personel Detay / D&#252;zenleme Formu</h3>
 <div class="section-box">
-<p>Personel detay sayfasinda eklenen bolumler:</p>
+<p>Personel detay sayfas&#305;nda eklenen b&#246;l&#252;mler:</p>
 <ul>
-<li><strong>Iletisim:</strong> Telefon, E-posta, IBAN, Adres</li>
-<li><strong>Fiziksel Bilgiler:</strong> Boy (cm), Kilo (kg), Ayakkabi No, Beden (XS-3XL)</li>
+<li><strong>&#304;leti&#351;im:</strong> Telefon, E-posta, IBAN, Adres</li>
+<li><strong>Fiziksel Bilgiler:</strong> Boy (cm), Kilo (kg), Ayakkab&#305; No, Beden (XS&#8211;3XL)</li>
 </ul>
-<p>Bu alanlar hem duzenleme formunda, hem salt-okunur detay gorunumunde, hem de yazdirma sayfasinda gosterilir.</p>
+<p>Bu alanlar hem d&#252;zenleme formunda, hem salt-okunur detay g&#246;r&#252;n&#252;m&#252;nde, hem de yazd&#305;rma sayfas&#305;nda g&#246;sterilir.</p>
 </div>
 
 <!-- ============================== -->
-<h2>6. VERI AKTARIMI - PERSONEL BILGI FORMU</h2>
+<h2>6. VER&#304; AKTARIMI &#8211; PERSONEL B&#304;LG&#304; FORMU</h2>
 <div class="section-box">
-<p>Kaynak dosya: <strong>PERSONEL_BILGI_FORMU.xlsm</strong></p>
-<p>TC Kimlik eslestirmesi ile 684 kayittan veritabanina aktarilan bilgiler:</p>
+<p>Kaynak dosya: <strong>PERSONEL_B&#304;LG&#304;_FORMU.xlsm</strong></p>
+<p>TC Kimlik e&#351;le&#351;tirmesi ile 684 kay&#305;ttan veritaban&#305;na aktar&#305;lan bilgiler:</p>
 <table>
-<tr><th>Alan</th><th>Aktarilan</th><th>Bulunamayan TC</th><th>Not</th></tr>
-<tr><td>E-posta</td><td>673</td><td>11</td><td>Bos olan kayitlara yazildi</td></tr>
-<tr><td>IBAN</td><td>673</td><td>11</td><td>Bos olan kayitlara yazildi</td></tr>
-<tr><td>Kan Grubu</td><td>0 (ek)</td><td>-</td><td>370 kayitta zaten doluydu; format donusturuldu (ARh(+) &rarr; A Rh+)</td></tr>
+<tr><th>Alan</th><th>Aktar&#305;lan</th><th>Bulunamayan TC</th><th>Not</th></tr>
+<tr><td>E-posta</td><td>673</td><td>11</td><td>Bo&#351; olan kay&#305;tlara yaz&#305;ld&#305;</td></tr>
+<tr><td>IBAN</td><td>673</td><td>11</td><td>Bo&#351; olan kay&#305;tlara yaz&#305;ld&#305;</td></tr>
+<tr><td>Kan Grubu</td><td>0 (ek)</td><td>&#8211;</td><td>370 kay&#305;tta zaten doluydu; format d&#246;n&#252;&#351;t&#252;r&#252;ld&#252; (ARh(+) &rarr; A Rh+)</td></tr>
 </table>
-<p><span class="badge badge-info">Not</span> Boy, kilo, ayakkabi no ve beden bilgileri kaynak dosyada bulunmuyordu.</p>
+<p><span class="badge badge-info">Not</span> Boy, kilo, ayakkab&#305; no ve beden bilgileri kaynak dosyada bulunmuyordu.</p>
 </div>
 
 <!-- ============================== -->
-<h2>7. MESLEK KODU TABLOSU VE API TABANLI ARAMA</h2>
+<h2>7. MESLEK KODU TABLOSU VE AP&#304; TABANLI ARAMA</h2>
 <div class="new-section">
 <p><span class="badge badge-new">6 Mart 2026</span></p>
-<h3>7.1 Veritabani</h3>
+<h3>7.1 Veritaban&#305;</h3>
 <table>
-<tr><th>Tablo</th><th>Sutunlar</th><th>Kayit Sayisi</th></tr>
-<tr><td><code>meslek_kodlari</code></td><td>id, kod (VARCHAR UNIQUE), ad (VARCHAR), aktif, olusturuldu</td><td><strong>467</strong> SGK/ISKUR meslek kodu</td></tr>
+<tr><th>Tablo</th><th>S&#252;tunlar</th><th>Kay&#305;t Say&#305;s&#305;</th></tr>
+<tr><td><code>meslek_kodlari</code></td><td>id, kod (VARCHAR UNIQUE), ad (VARCHAR), aktif, olusturuldu</td><td><strong>467</strong> SGK/&#304;&#350;KUR meslek kodu</td></tr>
 </table>
 
-<h3>7.2 API Endpoint'leri</h3>
+<h3>7.2 API Endpoint&#8217;leri</h3>
 <table>
-<tr><th>Endpoint</th><th>Metod</th><th>Aciklama</th></tr>
-<tr><td><code>/personel/meslek-kodlari</code></td><td>GET</td><td>Tum meslek kodlarini listeler, <code>?q=</code> parametresi ile arama (kod veya ad)</td></tr>
+<tr><th>Endpoint</th><th>Metod</th><th>A&#231;&#305;klama</th></tr>
+<tr><td><code>/personel/meslek-kodlari</code></td><td>GET</td><td>T&#252;m meslek kodlar&#305;n&#305; listeler, <code>?q=</code> parametresi ile arama (kod veya ad)</td></tr>
 <tr><td><code>/personel/meslek-kodlari</code></td><td>POST</td><td>Yeni meslek kodu ekler</td></tr>
-<tr><td><code>/personel/meslek-kodlari/{id}</code></td><td>PUT</td><td>Meslek kodu gunceller</td></tr>
+<tr><td><code>/personel/meslek-kodlari/{id}</code></td><td>PUT</td><td>Meslek kodu g&#252;nceller</td></tr>
 <tr><td><code>/personel/meslek-kodlari/{id}</code></td><td>DELETE</td><td>Meslek kodu siler</td></tr>
 </table>
 
 <h3>7.3 Dashboard Entegrasyonu</h3>
 <ul>
-<li>Personel formundaki meslek kodu alani artik <strong>API tabanli asenkron arama</strong> kullaniyor</li>
-<li>52 satirlik hardcoded meslek listesi kaldirildi, yerine 467 kayitlik veritabani tablosundan anlık arama eklendi</li>
-<li>250ms debounce ile performansli arama (en az 1 karakter yazdiktan sonra)</li>
-<li>Hem personel ekleme hem duzenleme formlarinda calisiyor (<code>prs-form-meslek-adi</code> ve <code>pd-f-meslek-adi</code>)</li>
-<li><strong>Route sirasi duzeltildi:</strong> <code>/meslek-kodlari</code> endpoint'leri <code>/{pid}</code> endpoint'inin onune tasinarak FastAPI route cakismasi giderildi</li>
+<li>Personel formundaki meslek kodu alan&#305; art&#305;k <strong>API tabanl&#305; asenkron arama</strong> kullan&#305;yor</li>
+<li>52 sat&#305;rl&#305;k hardcoded meslek listesi kald&#305;r&#305;ld&#305;, yerine 467 kay&#305;tl&#305;k veritaban&#305; tablosundan anl&#305;k arama eklendi</li>
+<li>250ms debounce ile performansl&#305; arama (en az 1 karakter yazd&#305;ktan sonra)</li>
+<li>Hem personel ekleme hem d&#252;zenleme formlar&#305;nda &#231;al&#305;&#351;&#305;yor</li>
+<li><strong>Route s&#305;ras&#305; d&#252;zeltildi:</strong> <code>/meslek-kodlari</code> endpoint&#8217;leri <code>/{pid}</code> endpoint&#8217;inin &#246;n&#252;ne ta&#351;&#305;narak FastAPI route &#231;ak&#305;&#351;mas&#305; giderildi</li>
 </ul>
 </div>
 
 <!-- ============================== -->
-<h2>8. ENGELLI RAPOR TAKIBI MODULU</h2>
+<h2>8. ENGELL&#304; RAPOR TAK&#304;B&#304; MOD&#220;L&#220;</h2>
 <div class="new-section">
 <p><span class="badge badge-new">6 Mart 2026</span></p>
 
-<h3>8.1 Veritabani</h3>
+<h3>8.1 Veritaban&#305;</h3>
 <table>
-<tr><th>Tablo</th><th>Sutunlar</th></tr>
-<tr><td><code>engelli_rapor</code></td><td>id, personel_id (FK), rapor_no, engel_turu, engel_orani, rapor_baslangic, rapor_bitis, veren_kurum, sure_durumu (sureli/suresiz), notlar, aktif, olusturuldu</td></tr>
+<tr><th>Tablo</th><th>S&#252;tunlar</th></tr>
+<tr><td><code>engelli_rapor</code></td><td>id, personel_id (FK), rapor_no, engel_turu, engel_orani, rapor_baslangic, rapor_bitis, veren_kurum, sure_durumu (s&#252;reli/s&#252;resiz), notlar, aktif, olusturuldu</td></tr>
 </table>
 
-<h3>8.2 API Endpoint'leri</h3>
+<h3>8.2 API Endpoint&#8217;leri</h3>
 <table>
-<tr><th>Endpoint</th><th>Metod</th><th>Aciklama</th></tr>
-<tr><td><code>/personel/{pid}/engelli-rapor</code></td><td>GET</td><td>Personelin tum engelli raporlarini listeler</td></tr>
+<tr><th>Endpoint</th><th>Metod</th><th>A&#231;&#305;klama</th></tr>
+<tr><td><code>/personel/{pid}/engelli-rapor</code></td><td>GET</td><td>Personelin t&#252;m engelli raporlar&#305;n&#305; listeler</td></tr>
 <tr><td><code>/personel/{pid}/engelli-rapor</code></td><td>POST</td><td>Yeni engelli raporu ekler</td></tr>
-<tr><td><code>/personel/{pid}/engelli-rapor/{rid}</code></td><td>PUT</td><td>Rapor gunceller</td></tr>
+<tr><td><code>/personel/{pid}/engelli-rapor/{rid}</code></td><td>PUT</td><td>Rapor g&#252;nceller</td></tr>
 <tr><td><code>/personel/{pid}/engelli-rapor/{rid}</code></td><td>DELETE</td><td>Rapor siler</td></tr>
-<tr><td><code>/personel/engelli-rapor-ozet</code></td><td>GET</td><td>Tum engelli personel rapor ozeti (kalan gun + durum hesaplamasi)</td></tr>
+<tr><td><code>/personel/engelli-rapor-ozet</code></td><td>GET</td><td>T&#252;m engelli personel rapor &#246;zeti (kalan g&#252;n + durum hesaplamas&#305;)</td></tr>
 </table>
 
-<h3>8.3 Dashboard - Sol Menu: Engelli Rapor Takibi Sayfasi</h3>
+<h3>8.3 Dashboard &#8211; Sol Men&#252;: Engelli Rapor Takibi Sayfas&#305;</h3>
 <ul>
-<li>Tum engelli personelin raporlarini gosteren <strong>ozet tablosu</strong></li>
-<li><strong>Durum filtreleri:</strong> Tumu / Suresi Dolmus / 30 Gun Icinde Dolacak / Gecerli / Suresiz</li>
-<li>Isim veya TC ile anlık arama</li>
-<li>Renkli durum badge'leri: <span style="background:#fecaca;color:#991b1b;padding:1px 6px;border-radius:3px;font-size:11px">Dolmus</span> <span style="background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:3px;font-size:11px">Yakin</span> <span style="background:#d1fae5;color:#065f46;padding:1px 6px;border-radius:3px;font-size:11px">Gecerli</span> <span style="background:#dbeafe;color:#1e40af;padding:1px 6px;border-radius:3px;font-size:11px">Suresiz</span></li>
-<li>Ozet istatistik badge'leri (toplam, dolmus, yakin, gecerli, suresiz sayilari)</li>
-<li>Satira tiklaninca personel detayina yonlendirme</li>
+<li>T&#252;m engelli personelin raporlar&#305;n&#305; g&#246;steren <strong>&#246;zet tablosu</strong></li>
+<li><strong>Durum filtreleri:</strong> T&#252;m&#252; / S&#252;resi Dolmu&#351; / 30 G&#252;n &#304;&#231;inde Dolacak / Ge&#231;erli / S&#252;resiz</li>
+<li>&#304;sim veya TC ile anl&#305;k arama</li>
+<li>Renkli durum badge&#8217;leri: <span style="background:#fecaca;color:#991b1b;padding:1px 6px;border-radius:3px;font-size:11px">Dolmu&#351;</span> <span style="background:#fef3c7;color:#92400e;padding:1px 6px;border-radius:3px;font-size:11px">Yak&#305;n</span> <span style="background:#d1fae5;color:#065f46;padding:1px 6px;border-radius:3px;font-size:11px">Ge&#231;erli</span> <span style="background:#dbeafe;color:#1e40af;padding:1px 6px;border-radius:3px;font-size:11px">S&#252;resiz</span></li>
+<li>&#214;zet istatistik badge&#8217;leri (toplam, dolmu&#351;, yak&#305;n, ge&#231;erli, s&#252;resiz say&#305;lar&#305;)</li>
+<li>Sat&#305;ra t&#305;klan&#305;nca personel detay&#305;na y&#246;nlendirme</li>
 </ul>
 
-<h3>8.4 Dashboard - Personel Detay: Engelli Rapor Sekmesi</h3>
+<h3>8.4 Dashboard &#8211; Personel Detay: Engelli Rapor Sekmesi</h3>
 <ul>
-<li>Personel detay sayfasinda yeni <strong>"Engelli Rapor"</strong> sekmesi eklendi</li>
-<li>Rapor ekleme/duzenleme/silme formu</li>
-<li>Alanlar: Rapor No, Engel Turu, Engel Orani (%), Sure Durumu (Sureli/Suresiz), Baslangic/Bitis Tarihi, Veren Kurum, Notlar</li>
-<li>Her rapor icin kalan gun hesaplamasi ve renkli durum gostergesi</li>
-</ul>
-</div>
-
-<!-- ============================== -->
-<h2>9. MUTTAS IZIN FORMU - YK BASKAN VEKILI SURECI</h2>
-<div class="new-section">
-<p><span class="badge badge-new">6 Mart 2026</span></p>
-<p>Asagidaki 6 personelin izin formlarinda 3. onay kutusu ve izin donusu imza alani <strong>"Genel Mudur"</strong> yerine <strong>"Suleyman Ozdemir / Yonetim Kurulu Baskan Vekili"</strong> olarak gosterilmektedir:</p>
-<table>
-<tr><th>#</th><th>Personel</th><th>ID</th></tr>
-<tr><td>1</td><td>Sedat Bayrak</td><td>222</td></tr>
-<tr><td>2</td><td>Ugur Yaka</td><td>3</td></tr>
-<tr><td>3</td><td>Seniye Gokyuz</td><td>285</td></tr>
-<tr><td>4</td><td>Ali Top</td><td>112</td></tr>
-<tr><td>5</td><td>Orhan Yavuz Yunak</td><td>434</td></tr>
-<tr><td>6</td><td>Burcu Kutukcu</td><td>25</td></tr>
-</table>
-<p><strong>Degisiklikler:</strong></p>
-<ul>
-<li>Izin formu yazdirma: 3. kutu basligi "GENEL MUDUR" &rarr; <strong>"YONETIM KURULU BASKAN VEKILI"</strong></li>
-<li>3. kutu imza alani: Onaylayan isim otomatik "Suleyman Ozdemir", unvan "Yonetim Kurulu Baskan Vekili"</li>
-<li>Alt kisim (izin donusu) imza alani: Ayni sekilde YK Baskan Vekili olarak gosterilir</li>
-<li>Diger personelin izin formlari eskisi gibi "Genel Mudur" olarak devam eder</li>
+<li>Personel detay sayfas&#305;nda yeni <strong>&#8220;Engelli Rapor&#8221;</strong> sekmesi eklendi</li>
+<li>Rapor ekleme/d&#252;zenleme/silme formu</li>
+<li>Alanlar: Rapor No, Engel T&#252;r&#252;, Engel Oran&#305; (%), S&#252;re Durumu (S&#252;reli/S&#252;resiz), Ba&#351;lang&#305;&#231;/Biti&#351; Tarihi, Veren Kurum, Notlar</li>
+<li>Her rapor i&#231;in kalan g&#252;n hesaplamas&#305; ve renkli durum g&#246;stergesi</li>
 </ul>
 </div>
 
 <!-- ============================== -->
-<h2>10. MUTTAS IZIN SISTEMI - UCRETSIZ IZIN DUSURME KURALI</h2>
-<div class="new-section">
-<p><span class="badge badge-new">6 Mart 2026</span></p>
-<p>Izin onay surecinde <code>personel.kalan_izin</code> alaninin guncellenmesi icin yeni kurallar eklendi:</p>
-<table>
-<tr><th>Izin Turu</th><th>Kalan Izinden Dusurulur mu?</th></tr>
-<tr><td>Yillik Izin</td><td><span class="badge badge-done">Evet</span> - Genel Mudur onayinda dusurulur</td></tr>
-<tr><td>Mazeret Izni</td><td><span class="badge badge-done">Evet</span> - Genel Mudur onayinda dusurulur</td></tr>
-<tr><td><strong>Ucretsiz Izin</strong></td><td><strong><span style="color:#dc2626">Hayir</span></strong> - Kalan izinden dusurulmez</td></tr>
-<tr><td>Hastalik Izni</td><td><span style="color:#dc2626">Hayir</span></td></tr>
-<tr><td>Dogum Izni</td><td><span style="color:#dc2626">Hayir</span></td></tr>
-<tr><td>Olum Izni</td><td><span style="color:#dc2626">Hayir</span></td></tr>
-<tr><td>Saatlik Izin</td><td><span style="color:#dc2626">Hayir</span></td></tr>
-</table>
-<p><strong>Ek ozellik:</strong> Onaylanmis bir izin sonradan reddedilirse, daha once dusurulmus gun sayisi personelin kalan iznine geri eklenir.</p>
-</div>
+<h2>9. TEKN&#304;K DETAYLAR</h2>
 
-<!-- ============================== -->
-<h2>11. TEKNIK DETAYLAR</h2>
-
-<h3>11.1 Degistirilen Dosyalar</h3>
+<h3>9.1 De&#287;i&#351;tirilen Dosyalar</h3>
 <table>
-<tr><th>Dosya</th><th>Yapilan Degisiklik</th></tr>
-<tr><td><code>/opt/mentese/personel.py</code></td><td>Yeni alanlar, cinsiyet/kan grubu filtreleri, Excel export, meslek kodu CRUD endpoint'leri, engelli rapor CRUD endpoint'leri, engelli rapor ozet endpoint'i, route sirasi duzeltmesi</td></tr>
-<tr><td><code>/opt/mentese/static/dashboard.html</code></td><td>Filtre dropdown'lari, Excel buton, Fiziksel Bilgiler, IBAN, meslek kodu API tabanli arama, Engelli Rapor Takibi sayfasi (sol menu), Personel detay Engelli Rapor sekmesi</td></tr>
-<tr><td><code>/opt/mentese/izinler.py</code></td><td>Izin audit log yazma, onay zinciri</td></tr>
-<tr><td><code>/opt/muttas/static/dashboard.html</code></td><td>YK Baskan Vekili izin formu sureci (6 kisi ozel), izinYazdir fonksiyonu guncellendi</td></tr>
-<tr><td><code>/opt/muttas/izinler.py</code></td><td>Ucretsiz izin kalan_izin dusurme kurali, onay surecinde kalan izin guncelleme mantigi</td></tr>
+<tr><th>Dosya</th><th>Yap&#305;lan De&#287;i&#351;iklik</th></tr>
+<tr><td><code>/opt/mentese/personel.py</code></td><td>Yeni alanlar (email, boy, kilo, ayakkabi_no, beden, iban), cinsiyet/kan grubu filtreleri, Excel export, meslek kodu CRUD endpoint&#8217;leri, engelli rapor CRUD endpoint&#8217;leri, engelli rapor &#246;zet endpoint&#8217;i, route s&#305;ras&#305; d&#252;zeltmesi</td></tr>
+<tr><td><code>/opt/mentese/static/dashboard.html</code></td><td>Filtre dropdown&#8217;lar&#305;, Excel buton, Fiziksel Bilgiler, IBAN, meslek kodu API tabanl&#305; arama, Engelli Rapor Takibi sayfas&#305; (sol men&#252;), Personel detay Engelli Rapor sekmesi</td></tr>
+<tr><td><code>/opt/mentese/izinler.py</code></td><td>&#304;zin audit log yazma, onay zinciri</td></tr>
 </table>
 
-<h3>11.2 Veritabani Degisiklikleri</h3>
+<h3>9.2 Veritaban&#305; De&#287;i&#351;iklikleri</h3>
 <table>
-<tr><th>Tablo</th><th>Islem</th><th>Veritabani</th></tr>
-<tr><td><code>personel</code></td><td><code>ALTER TABLE ADD COLUMN</code>: email, boy, kilo, ayakkabi_no, beden, iban</td><td>mentese_db</td></tr>
-<tr><td><code>izin_log</code></td><td>Yeni tablo (id, izin_id, islem, yapan_id, yapan_ad, eski_durum, yeni_durum, tarih, aciklama)</td><td>mentese_db</td></tr>
-<tr><td><code>meslek_kodlari</code></td><td>Yeni tablo (id, kod, ad, aktif, olusturuldu) - 467 kayit yuklendi</td><td>mentese_db</td></tr>
-<tr><td><code>engelli_rapor</code></td><td>Yeni tablo (id, personel_id FK, rapor_no, engel_turu, engel_orani, rapor_baslangic, rapor_bitis, veren_kurum, sure_durumu, notlar, aktif, olusturuldu)</td><td>mentese_db</td></tr>
+<tr><th>Tablo</th><th>&#304;&#351;lem</th></tr>
+<tr><td><code>personel</code></td><td><code>ALTER TABLE ADD COLUMN</code>: email, boy, kilo, ayakkabi_no, beden, iban</td></tr>
+<tr><td><code>izin_log</code></td><td>Yeni tablo (id, izin_id, islem, yapan_id, yapan_ad, eski_durum, yeni_durum, tarih, aciklama)</td></tr>
+<tr><td><code>meslek_kodlari</code></td><td>Yeni tablo (id, kod, ad, aktif, olusturuldu) &#8211; 467 kay&#305;t y&#252;klendi</td></tr>
+<tr><td><code>engelli_rapor</code></td><td>Yeni tablo (id, personel_id FK, rapor_no, engel_turu, engel_orani, rapor_baslangic, rapor_bitis, veren_kurum, sure_durumu, notlar, aktif, olusturuldu)</td></tr>
 </table>
 
-<h3>11.3 Tum API Endpoint'leri</h3>
+<h3>9.3 T&#252;m API Endpoint&#8217;leri</h3>
 <table>
-<tr><th>Endpoint</th><th>Metod</th><th>Aciklama</th></tr>
+<tr><th>Endpoint</th><th>Metod</th><th>A&#231;&#305;klama</th></tr>
 <tr><td><code>/personel</code></td><td>GET</td><td>Personel listesi (cinsiyet, kan_grubu, personel_turu filtreleri)</td></tr>
-<tr><td><code>/personel/excel/export</code></td><td>GET</td><td>Filtreli CSV disa aktarma (32 sutun)</td></tr>
+<tr><td><code>/personel/excel/export</code></td><td>GET</td><td>Filtreli CSV d&#305;&#351;a aktarma (32 s&#252;tun)</td></tr>
 <tr><td><code>/personel/meslek-kodlari</code></td><td>GET</td><td>Meslek kodu listesi/arama (?q= parametresi)</td></tr>
 <tr><td><code>/personel/meslek-kodlari</code></td><td>POST</td><td>Meslek kodu ekleme</td></tr>
-<tr><td><code>/personel/meslek-kodlari/{id}</code></td><td>PUT/DELETE</td><td>Meslek kodu guncelleme/silme</td></tr>
-<tr><td><code>/personel/engelli-rapor-ozet</code></td><td>GET</td><td>Tum engelli rapor ozeti (kalan gun + durum)</td></tr>
+<tr><td><code>/personel/meslek-kodlari/{id}</code></td><td>PUT/DELETE</td><td>Meslek kodu g&#252;ncelleme/silme</td></tr>
+<tr><td><code>/personel/engelli-rapor-ozet</code></td><td>GET</td><td>T&#252;m engelli rapor &#246;zeti (kalan g&#252;n + durum)</td></tr>
 <tr><td><code>/personel/{pid}/engelli-rapor</code></td><td>GET/POST</td><td>Personel engelli rapor listele/ekle</td></tr>
-<tr><td><code>/personel/{pid}/engelli-rapor/{rid}</code></td><td>PUT/DELETE</td><td>Engelli rapor guncelle/sil</td></tr>
+<tr><td><code>/personel/{pid}/engelli-rapor/{rid}</code></td><td>PUT/DELETE</td><td>Engelli rapor g&#252;ncelle/sil</td></tr>
 <tr><td><code>/personel</code></td><td>POST</td><td>Personel ekleme</td></tr>
-<tr><td><code>/personel/{id}</code></td><td>GET/PUT/DELETE</td><td>Personel detay/guncelleme/silme</td></tr>
+<tr><td><code>/personel/{id}</code></td><td>GET/PUT/DELETE</td><td>Personel detay/g&#252;ncelleme/silme</td></tr>
 </table>
 
 <!-- ============================== -->
-<h2>12. BEKLEYEN GELISTIRMELER (TODO)</h2>
+<h2>10. BEKLEYEN GEL&#304;&#350;T&#304;RMELER (TODO)</h2>
 <table>
 <tr><th>#</th><th>Konu</th><th>Durum</th></tr>
-<tr><td>1</td><td>Belge sure takibi (ehliyet, sertifika vb.)</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
-<tr><td>2</td><td>Icra cetveli modulu</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
-<tr><td>3</td><td>Boy, kilo, ayakkabi no, beden bilgilerinin toplu girisi</td><td><span class="badge badge-warn">Veri bekleniyor</span></td></tr>
-<tr><td>4</td><td>Yeni sunucu (185.123.103.61) DNS yapilandirmasi ve SSL</td><td><span class="badge badge-warn">Port acilisi bekleniyor</span></td></tr>
+<tr><td>1</td><td>Belge s&#252;re takibi (ehliyet, sertifika vb.)</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>2</td><td>&#304;cra cetveli mod&#252;l&#252;</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>3</td><td>Boy, kilo, ayakkab&#305; no, beden bilgilerinin toplu giri&#351;i</td><td><span class="badge badge-warn">Veri bekleniyor</span></td></tr>
 </table>
 
 <!-- ============================== -->
 <div class="footer">
-Bu rapor IK Mentese projesi kapsaminda olusturulmustur.<br>
-Mentese Belediyesi - Insan Kaynaklari ve Egitim Mudurlugu - 2026<br>
-Son guncelleme: 6 Mart 2026
+Bu rapor &#304;K Mente&#351;e projesi kapsam&#305;nda haz&#305;rlanm&#305;&#351;t&#305;r.<br>
+Mente&#351;e Belediyesi &#8211; &#304;nsan Kaynaklar&#305; ve E&#287;itim M&#252;d&#252;rl&#252;&#287;&#252; &#8211; 2026<br>
+Son g&#252;ncelleme: 6 Mart 2026
 </div>
 
 </body>
