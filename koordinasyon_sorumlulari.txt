@@ -1,0 +1,27 @@
+MUTTAŞ A.Ş. - KOORDİNASYON SORUMLUSU KULLANICI LİSTESİ
+========================================================
+Tarih: 6 Mart 2026
+Giriş Adresi: ik.muttas.com.tr
+
+#    Ad Soyad                TC Kimlik (Giriş)    Şifre
+---  --------------------    -----------------    --------
+1    Abdullah Yaman          60778213408          Ks2026*
+2    Adem Yiğit              36680006100          Ks2026*
+3    Cem İbil                58780274494          Ks2026*
+4    Deniz Komi              54028434538          Ks2026*
+5    Ecem Elmacı             44290269938          Ks2026*
+6    Eda Narin               34142095402          Ks2026*
+7    Engin Dural             39835906294          Ks2026*
+8    Ferdi Uçar              41515842976          Ks2026*
+9    Kadir Konyalı           49744577232          Ks2026*
+10   Mustafa Sağır           66676007064          Ks2026*
+11   Mustafa Ünal            62977139374          Ks2026*
+12   Safiye Gür              56794335934          Ks2026*
+13   Selim Gevişen           28799273658          Ks2026*
+14   Veli Erdaş              53200707262          Ks2026*
+15   İbrahim Onur Yavuz      66346022144          Ks2026*
+16   Şevket Tulup            53320449370          Ks2026*
+
+Toplam: 16 kullanıcı
+Rol: Koordinasyon Sorumlusu
+Not: İlk girişten sonra Hesabım sayfasından şifre değiştirilmelidir.
