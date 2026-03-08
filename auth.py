@@ -161,6 +161,12 @@ async def login(body: LoginRequest):
             detail="E-posta veya şifre hatalı.",
         )
 
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "UPDATE vekaletler SET aktif = false WHERE veren_kullanici_id = $1 AND aktif = true",
+            row["id"]
+        )
+
     token = create_token(row["id"], row["email"], row["rol"], row["ad"], row["soyad"])
     return {
         "token": token,

@@ -1867,6 +1867,15 @@ tbody tr:hover td { background: var(--bg-soft); }
         </button>
       </div>
 
+      <!-- Koordinasyon Sorumlusu -->
+      <div id="ks-section" style="display:none">
+        <div class="nav-sep"></div>
+        <div class="sb-section-label">Vekalet</div>
+        <button class="nav-item" onclick="navigate('vekaletler', this)">
+          <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
+        </button>
+      </div>
+
     </nav>
 
     <!-- Çıkış -->
@@ -3108,6 +3117,9 @@ function applyRoleUI(rol) {
 
   if (isAdmin || isGM) {
     document.getElementById('admin-section').style.display = 'block';
+  }
+  if (rol === 'koordinasyon_sorumlusu') {
+    document.getElementById('ks-section').style.display = 'block';
   }
   if (isAdmin) {
     document.getElementById('liman-filter').classList.add('visible');
@@ -7765,14 +7777,14 @@ async function saveKullanici() {
   }
 }
 
-const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi'};
+const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi',koordinasyon_sorumlusu:'Koordinasyon Sorumlusu'};
 
 let vekaletKullanicilar = [];
 
 async function loadVekaletler() {
   const [resV, resK] = await Promise.all([
     fetch('/vekaletler', { headers: authHeaders() }),
-    fetch('/auth/kullanicilar', { headers: authHeaders() })
+    fetch('/vekaletler/kullanicilar', { headers: authHeaders() })
   ]);
   if (resK.ok) vekaletKullanicilar = await resK.json();
   if (!resV.ok) return;
@@ -7815,8 +7827,17 @@ async function loadVekaletler() {
 function openVekaletDrawer() {
   const rolOpt = (u) => `<option value="${u.id}">${u.ad} ${u.soyad} (${ROL_ETIKETLERI_TR[u.rol] || u.rol})</option>`;
   const opts = vekaletKullanicilar.filter(u => u.aktif !== false).map(rolOpt).join('');
-  document.getElementById('vk-veren').innerHTML = '<option value="">Seçiniz</option>' + opts;
-  document.getElementById('vk-alan').innerHTML = '<option value="">Seçiniz</option>' + opts;
+  const isKS = currentUser && currentUser.rol === 'koordinasyon_sorumlusu';
+  const verenEl = document.getElementById('vk-veren');
+  if (isKS) {
+    verenEl.innerHTML = `<option value="${currentUser.id}">${currentUser.ad} ${currentUser.soyad}</option>`;
+    verenEl.disabled = true;
+  } else {
+    verenEl.innerHTML = '<option value="">Seçiniz</option>' + opts;
+    verenEl.disabled = false;
+  }
+  const alanOpts = vekaletKullanicilar.filter(u => u.aktif !== false && u.id !== (currentUser ? currentUser.id : null)).map(rolOpt).join('');
+  document.getElementById('vk-alan').innerHTML = '<option value="">Seçiniz</option>' + alanOpts;
   document.getElementById('vk-bas').value = '';
   document.getElementById('vk-bit').value = '';
   document.getElementById('vk-not').value = '';
