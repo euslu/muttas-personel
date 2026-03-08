@@ -291,6 +291,24 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
             f"UPDATE izinler SET durum = $2, notlar = COALESCE($3, notlar){extra_sets} WHERE id = $1",
             *base_params, *extra_vals,
         )
+
+        if body.durum == "tamamlandi":
+            personel_row = await conn.fetchrow(
+                "SELECT p.ad_soyad FROM izinler i JOIN personel p ON p.id = i.personel_id WHERE i.id = $1",
+                iid
+            )
+            if personel_row:
+                ad_soyad_personel = personel_row["ad_soyad"].strip()
+                kullanici = await conn.fetchrow(
+                    "SELECT id FROM kullanicilar WHERE TRIM(CONCAT(ad, ' ', soyad)) = $1 AND aktif = true",
+                    ad_soyad_personel
+                )
+                if kullanici:
+                    await conn.execute(
+                        "UPDATE vekaletler SET aktif = false WHERE veren_kullanici_id = $1 AND aktif = true",
+                        kullanici["id"]
+                    )
+
         return {"ok": True}
 
 
