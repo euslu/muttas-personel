@@ -7374,6 +7374,10 @@ async function izinHizliOnay(id) {
   }
 }
 
+const YK_BASKAN_VEKILI_PERSONEL = [112, 25, 434, 222, 285, 3];
+const YK_BASKAN_VEKILI_AD    = 'Süleyman Özdemir';
+const YK_BASKAN_VEKILI_UNVAN = 'Yönetim Kurulu Başkan Vekili';
+
 async function izinYazdir(id) {
   const res = await fetch('/izinler/' + id, { headers: { Authorization: 'Bearer ' + getToken() } });
   if (!res.ok) { showToast('İzin bilgisi alınamadı', 'error'); return; }
@@ -7382,6 +7386,11 @@ async function izinYazdir(id) {
   const fmt = d => d ? d.split('T')[0].split('-').reverse().join('.') : '—';
   const turLabel   = IZIN_TUR_LABEL[iz.izin_turu] || iz.izin_turu;
   const durumLabel = IZIN_DURUM_LABEL[iz.durum]    || iz.durum;
+
+  const isYkVekili  = YK_BASKAN_VEKILI_PERSONEL.includes(iz.personel_id);
+  const kutu3Baslik = isYkVekili ? 'YÖNETİM KURULU BAŞKAN VEKİLİ' : 'GENEL MÜDÜR';
+  const kutu3Unvan  = isYkVekili ? YK_BASKAN_VEKILI_UNVAN : 'Genel Müdür';
+  const donusUnvan  = isYkVekili ? YK_BASKAN_VEKILI_UNVAN : 'Genel Müdür';
 
   const isSaatlik = iz.izin_turu === 'saatlik';
   const gunSayisi = isSaatlik ? 'Saatlik' : (iz.gun_sayisi || '—');
@@ -7506,47 +7515,60 @@ async function izinYazdir(id) {
     </tr>
   </table>
 
-  ${gorevBaslamaStr ? `<table style="margin-bottom:4px">
-    <tr>
-      <td style="font-size:11px;padding:8px 10px">
-        Adı geçen <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanarak <b>(${gorevBaslamaStr})</b> tarihinde görevine başlamıştır.
-      </td>
-    </tr>
-  </table>` : ''}
-
   <!-- İmza Alanları (Yatay - 3 sütun) -->
   <table style="margin-top:6px">
     <tr>
-      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">İK / İDARİ İŞLER</td>
-      <td style="width:34%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">GENEL MÜDÜR</td>
-      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">YÖNETİM KURULU</td>
+      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">BİRİM SORUMLUSU</td>
+      <td style="width:34%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">İK / İDARİ İŞLER</td>
+      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">${kutu3Baslik}</td>
     </tr>
     <tr>
-      <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
+      <td style="height:70px;text-align:center;vertical-align:middle;padding:4px">
+        ${dijitalImzaBlok(iz.ks_imza)}
+      </td>
+      <td style="height:70px;text-align:center;vertical-align:middle;padding:4px">
         ${dijitalImzaBlok(iz.ik_imza)}
       </td>
-      <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
+      <td style="height:70px;text-align:center;vertical-align:middle;padding:4px">
         ${dijitalImzaBlok(iz.mudur_imza)}
-      </td>
-      <td style="height:80px;text-align:center;vertical-align:middle;padding:4px">
-        ${dijitalImzaBlok(iz.yk_imza)}
       </td>
     </tr>
     <tr>
+      <td style="text-align:center;padding:4px 4px 2px;border-top:none">
+        <div class="sig-name">${iz.ks_onaylayan || ''}</div>
+        <div class="sig-title">Birim Sorumlusu</div>
+        <div style="font-size:9px;color:#888">${iz.ks_onay_tarihi ? fmt(iz.ks_onay_tarihi) : ''}</div>
+      </td>
       <td style="text-align:center;padding:4px 4px 2px;border-top:none">
         <div class="sig-name">${iz.ik_onaylayan || ''}</div>
         <div class="sig-title">İK/İdari İşler Sorumlusu</div>
         <div style="font-size:9px;color:#888">${iz.ik_onay_tarihi ? fmt(iz.ik_onay_tarihi) : ''}</div>
       </td>
       <td style="text-align:center;padding:4px 4px 2px;border-top:none">
-        <div class="sig-name">${iz.mudur_onaylayan || ''}</div>
-        <div class="sig-title">Genel Müdür</div>
+        <div class="sig-name">${isYkVekili ? (iz.mudur_onaylayan || YK_BASKAN_VEKILI_AD) : (iz.mudur_onaylayan || '')}</div>
+        <div class="sig-title">${kutu3Unvan}</div>
         <div style="font-size:9px;color:#888">${iz.mudur_onay_tarihi ? fmt(iz.mudur_onay_tarihi) : ''}</div>
       </td>
-      <td style="text-align:center;padding:4px 4px 2px;border-top:none">
-        <div class="sig-name">${iz.yk_onaylayan || ''}</div>
-        <div class="sig-title">YK Başkan Yrd.</div>
-        <div style="font-size:9px;color:#888">${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}</div>
+    </tr>
+  </table>
+
+  <!-- Görev Başlama + Dönüş İmza -->
+  <table style="margin-top:8px">
+    <tr>
+      <td style="width:67%;vertical-align:top;padding:8px 10px;font-size:11px;line-height:1.6">
+        ${gorevBaslamaStr
+          ? `Adı geçen <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanarak <b>(${gorevBaslamaStr})</b> tarihinde görevine başlamıştır.`
+          : `Adı geçen <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanarak <b>(..........)</b> tarihinde görevine başlamıştır.`}
+      </td>
+      <td style="width:33%;text-align:center;vertical-align:bottom;padding:4px">
+        <div style="height:50px">
+          ${dijitalImzaBlok(iz.yk_imza)}
+        </div>
+        <div style="border-top:1px solid #999;width:80%;margin:0 auto;padding-top:4px">
+          <div class="sig-name">${isYkVekili ? (iz.yk_onaylayan || YK_BASKAN_VEKILI_AD) : (iz.yk_onaylayan || '')}</div>
+          <div class="sig-title">${donusUnvan}</div>
+          <div style="font-size:9px;color:#888">${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}</div>
+        </div>
       </td>
     </tr>
   </table>
