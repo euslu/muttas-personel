@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from pydantic import BaseModel
 
 from db import get_pool
-from permissions import decode_token, require_ik_editor, IK_EDITORS, GM_EDITORS, YK_EDITORS
+from permissions import decode_token, require_ik_editor, require_izin_editor, IK_EDITORS, IZIN_EDITORS, GM_EDITORS, YK_EDITORS
 from vekalet import get_vekalet_rolleri
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
@@ -184,7 +184,7 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
 
 
 @router.post("", status_code=201)
-async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(require_ik_editor)):
+async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(require_izin_editor)):
     if body.izin_turu not in IZIN_TURLERI:
         raise HTTPException(status_code=400, detail=f"Geçersiz izin türü. Kabul edilenler: {IZIN_TURLERI}")
 
@@ -214,7 +214,7 @@ async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(
 
 
 @router.put("/{iid}")
-async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_ik_editor)):
+async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_izin_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval(

@@ -7,11 +7,12 @@ JWT_SECRET    = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 security      = HTTPBearer()
 
-IK_EDITORS    = {"admin", "ik_admin", "genel_mudur"}
-LIMAN_EDITORS = {"admin", "liman_admin"}
-KS_EDITORS    = {"admin", "koordinasyon_sorumlusu"}
-GM_EDITORS    = {"admin", "genel_mudur"}
-YK_EDITORS    = {"admin", "yk_uyesi"}
+IK_EDITORS     = {"admin", "ik_admin", "genel_mudur"}
+IZIN_EDITORS   = IK_EDITORS | {"koordinasyon_sorumlusu"}
+LIMAN_EDITORS  = {"admin", "liman_admin"}
+KS_EDITORS     = {"admin", "koordinasyon_sorumlusu"}
+GM_EDITORS     = {"admin", "genel_mudur"}
+YK_EDITORS     = {"admin", "yk_uyesi"}
 
 
 def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
@@ -23,6 +24,12 @@ def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) 
 
 def require_ik_editor(token: dict = Depends(decode_token)) -> dict:
     if token.get("rol") not in IK_EDITORS:
+        raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
+    return token
+
+
+def require_izin_editor(token: dict = Depends(decode_token)) -> dict:
+    if token.get("rol") not in IZIN_EDITORS:
         raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     return token
 
