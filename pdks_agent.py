@@ -1,6 +1,6 @@
 """
-PDKS Veri Aktarma Ajanı - Menteşe Belediyesi
-=============================================
+PDKS Veri Aktarma Ajanı - Muttaş A.Ş.
+=======================================
 Perkotek Bilgi Aktar tr500.txt verisini sunucuya gönderir.
 
 Kullanım:
@@ -31,12 +31,12 @@ import uuid
 # AYARLAR
 # =============================================================================
 TR500_DOSYA   = r"C:\Program Files (x86)\Perkotek\Bilgi Aktar v8.2.2\tr500.txt"
-SUNUCU_URL    = "http://209.38.219.210:8002/pdks/yukle"
-API_ANAHTAR   = "MentesePDKS2026!"
+SUNUCU_URL    = "https://ik.muttas.com.tr/pdks/yukle"
+API_ANAHTAR   = "MuttasPDKS2026!"
 LOG_KLASOR    = r"C:\Perkotek\pdks_logs"
 ARSIV_KLASOR  = r"C:\Perkotek\pdks_arsiv"
 GONDERIM_SAATLERI = ["02:00", "06:00", "08:30", "12:00", "13:30", "17:30", "22:00"]
-UYGULAMA_ADI  = "MentesePDKS_Agent"
+UYGULAMA_ADI  = "MuttasPDKS_Agent"
 # =============================================================================
 
 os.makedirs(LOG_KLASOR, exist_ok=True)
@@ -209,7 +209,7 @@ def windows_baslangictan_sil():
 
 def durum_goster():
     print("\n" + "=" * 55)
-    print("  PDKS Veri Aktarma Ajani - Mentese Belediyesi")
+    print("  PDKS Veri Aktarma Ajani - Muttas A.S.")
     print("=" * 55)
     print(f"  tr500 dosyasi : {TR500_DOSYA}")
     print(f"  Sunucu        : {SUNUCU_URL}")

@@ -101,6 +101,28 @@ CREATE TABLE IF NOT EXISTS personel_evraklari (
     notlar TEXT,
     yuklendi_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS pdks_cihazlar (
+    id SERIAL PRIMARY KEY,
+    cihaz_no INTEGER UNIQUE NOT NULL,
+    cihaz_adi VARCHAR(100) NOT NULL,
+    konum VARCHAR(200),
+    aktif BOOLEAN DEFAULT TRUE,
+    olusturuldu TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS pdks_hareketler (
+    id SERIAL PRIMARY KEY,
+    cihaz_no INTEGER NOT NULL,
+    personel_no VARCHAR(20) NOT NULL,
+    giris_cikis SMALLINT NOT NULL,
+    zaman TIMESTAMPTZ NOT NULL,
+    ham_veri TEXT,
+    yukleme_zamani TIMESTAMPTZ DEFAULT NOW(),
+    UNIQUE (cihaz_no, personel_no, zaman)
+);
+CREATE INDEX IF NOT EXISTS idx_pdks_zaman ON pdks_hareketler (zaman DESC);
+CREATE INDEX IF NOT EXISTS idx_pdks_personel ON pdks_hareketler (personel_no);
 """
 
 async def main():

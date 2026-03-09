@@ -1865,6 +1865,9 @@ tbody tr:hover td { background: var(--bg-soft); }
         <button class="nav-item" onclick="navigate('vekaletler', this)">
           <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
         </button>
+        <button class="nav-item" onclick="navigate('pdks', this)">
+          <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
+        </button>
       </div>
 
       <!-- Koordinasyon Sorumlusu -->
@@ -2950,6 +2953,81 @@ tbody tr:hover td { background: var(--bg-soft); }
         </div>
       </div><!-- /page-izinler -->
 
+      <!-- ── PDKS ── -->
+      <div class="page" id="page-pdks">
+
+        <!-- Özet kartlar -->
+        <div class="dash-grid" style="grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:16px;margin-bottom:20px" id="pdks-ozet-cards">
+          <div class="widget" style="padding:18px 20px">
+            <div style="font-size:12px;color:var(--text-3);margin-bottom:6px">Bugün Toplam</div>
+            <div style="font-size:28px;font-weight:700;color:var(--accent)" id="pdks-toplam">—</div>
+          </div>
+          <div class="widget" style="padding:18px 20px">
+            <div style="font-size:12px;color:var(--text-3);margin-bottom:6px">Giriş</div>
+            <div style="font-size:28px;font-weight:700;color:#22c55e" id="pdks-giris">—</div>
+          </div>
+          <div class="widget" style="padding:18px 20px">
+            <div style="font-size:12px;color:var(--text-3);margin-bottom:6px">Çıkış</div>
+            <div style="font-size:28px;font-weight:700;color:#f59e0b" id="pdks-cikis">—</div>
+          </div>
+          <div class="widget" style="padding:18px 20px">
+            <div style="font-size:12px;color:var(--text-3);margin-bottom:6px">Son Yükleme</div>
+            <div style="font-size:13px;font-weight:600;color:var(--text-2)" id="pdks-son-yukleme">—</div>
+          </div>
+        </div>
+
+        <!-- Filtreler -->
+        <div class="card" style="padding:16px 20px;margin-bottom:16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:13px;color:var(--text-3)">Tarih:</label>
+            <input type="date" id="pdks-tarih" class="form-control" style="width:160px" onchange="loadPdksHareketler()">
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:13px;color:var(--text-3)">Cihaz:</label>
+            <select id="pdks-cihaz" class="form-control" style="width:200px" onchange="loadPdksHareketler()">
+              <option value="">Tümü</option>
+            </select>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px">
+            <label style="font-size:13px;color:var(--text-3)">Personel No:</label>
+            <input type="text" id="pdks-personel-no" class="form-control" placeholder="Sicil No..." style="width:140px">
+          </div>
+          <button class="btn btn-primary" onclick="loadPdksHareketler()" style="margin-left:auto">
+            <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">search</span> Ara
+          </button>
+        </div>
+
+        <!-- Cihaz dağılımı -->
+        <div class="card" style="padding:16px 20px;margin-bottom:16px;display:none" id="pdks-cihaz-dagilim-card">
+          <div style="font-size:13px;font-weight:600;color:var(--text-2);margin-bottom:10px">Cihaz Bazlı Hareket (Bugün)</div>
+          <div id="pdks-cihaz-bars" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+        </div>
+
+        <!-- Hareketler tablosu -->
+        <div class="card" style="overflow:hidden">
+          <div style="padding:14px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between">
+            <span style="font-weight:600;color:var(--text-1)">Hareketler</span>
+            <span style="font-size:12px;color:var(--text-3)" id="pdks-kayit-sayisi"></span>
+          </div>
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse">
+              <thead>
+                <tr style="background:var(--bg-2)">
+                  <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Tarih/Saat</th>
+                  <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Cihaz</th>
+                  <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Personel No</th>
+                  <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Ad Soyad</th>
+                  <th style="padding:10px 14px;text-align:center;font-size:12px;color:var(--text-3);font-weight:600">Hareket</th>
+                </tr>
+              </thead>
+              <tbody id="pdks-tbody">
+                <tr><td colspan="5" style="text-align:center;padding:32px;color:var(--text-3)">Tarih seçin veya arayın</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div><!-- /page-pdks -->
+
       <div class="page" id="page-hesabim">
         <div style="max-width:520px;margin:0 auto">
           <div class="card" style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
@@ -3008,6 +3086,7 @@ const PAGE_TITLES = {
   faturalar:    'Faturalar',
   kullanicilar: 'Kullanıcılar',
   vekaletler:   'Vekalet Yönetimi',
+  pdks:         'PDKS - Personel Devam Takip',
   personel:     'Personel Listesi',
   izinler:      'İzin Yönetimi',
   hesabim:      'Hesabım',
@@ -3450,6 +3529,7 @@ function navigate(page, el) {
   if (page === 'izinler')      loadIzinler(1);
   if (page === 'kullanicilar') loadKullanicilar();
   if (page === 'vekaletler')   loadVekaletler();
+  if (page === 'pdks')         loadPdks();
   if (page === 'hesabim')      loadHesabim();
 }
 
@@ -7778,6 +7858,108 @@ async function saveKullanici() {
 }
 
 const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi',koordinasyon_sorumlusu:'Koordinasyon Sorumlusu'};
+
+let pdksCihazlar = [];
+
+async function loadPdks() {
+  const today = new Date().toISOString().slice(0, 10);
+  document.getElementById('pdks-tarih').value = today;
+  await loadPdksCihazlar();
+  await loadPdksOzet(today);
+  await loadPdksHareketler();
+}
+
+async function loadPdksCihazlar() {
+  try {
+    const res = await fetch('/pdks/cihazlar', { headers: authHeaders() });
+    if (!res.ok) return;
+    pdksCihazlar = await res.json();
+    const sel = document.getElementById('pdks-cihaz');
+    sel.innerHTML = '<option value="">Tümü</option>';
+    pdksCihazlar.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.cihaz_no;
+      opt.textContent = c.cihaz_adi;
+      sel.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
+async function loadPdksOzet(tarih) {
+  try {
+    const res = await fetch('/pdks/ozet?tarih=' + (tarih || new Date().toISOString().slice(0,10)),
+      { headers: authHeaders() });
+    if (!res.ok) return;
+    const d = await res.json();
+    document.getElementById('pdks-toplam').textContent = d.toplam ?? '—';
+    document.getElementById('pdks-giris').textContent  = d.giris ?? '—';
+    document.getElementById('pdks-cikis').textContent  = d.cikis ?? '—';
+    if (d.son_yukleme) {
+      const dt = new Date(d.son_yukleme);
+      document.getElementById('pdks-son-yukleme').textContent =
+        dt.toLocaleDateString('tr-TR') + ' ' + dt.toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'});
+    }
+    const barsDiv = document.getElementById('pdks-cihaz-bars');
+    if (d.cihaz_dagilim && d.cihaz_dagilim.length > 0) {
+      const maks = Math.max(...d.cihaz_dagilim.map(x => x.hareket));
+      barsDiv.innerHTML = d.cihaz_dagilim.map(c => `
+        <div style="display:flex;align-items:center;gap:8px;min-width:200px">
+          <div style="font-size:12px;color:var(--text-2);width:140px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${c.cihaz_adi}</div>
+          <div style="flex:1;background:var(--bg-2);border-radius:4px;height:8px">
+            <div style="width:${Math.round(c.hareket/maks*100)}%;background:var(--accent);height:100%;border-radius:4px"></div>
+          </div>
+          <div style="font-size:12px;font-weight:600;color:var(--text-1);width:28px;text-align:right">${c.hareket}</div>
+        </div>`).join('');
+      document.getElementById('pdks-cihaz-dagilim-card').style.display = '';
+    }
+  } catch(e) {}
+}
+
+async function loadPdksHareketler() {
+  const tarih    = document.getElementById('pdks-tarih').value;
+  const cihaz    = document.getElementById('pdks-cihaz').value;
+  const personel = document.getElementById('pdks-personel-no').value.trim();
+  const tbody    = document.getElementById('pdks-tbody');
+  tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Yükleniyor...</td></tr>';
+
+  if (tarih) loadPdksOzet(tarih);
+
+  let url = '/pdks/hareketler?limit=300';
+  if (tarih)    url += '&tarih='        + tarih;
+  if (cihaz)    url += '&cihaz_no='    + cihaz;
+  if (personel) url += '&personel_no=' + personel;
+
+  try {
+    const res = await fetch(url, { headers: authHeaders() });
+    if (!res.ok) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Veri yüklenemedi.</td></tr>'; return; }
+    const data = await res.json();
+
+    document.getElementById('pdks-kayit-sayisi').textContent = data.length + ' kayıt';
+
+    if (!data.length) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Kayıt bulunamadı.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = data.map(r => {
+      const dt = new Date(r.zaman);
+      const tarihStr = dt.toLocaleDateString('tr-TR');
+      const saatStr  = dt.toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+      const tur = r.giris_cikis === 0
+        ? '<span style="background:#dcfce7;color:#166534;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">GİRİŞ</span>'
+        : '<span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:600">ÇIKIŞ</span>';
+      return `<tr style="border-bottom:1px solid var(--border)">
+        <td style="padding:10px 14px;font-size:13px">${tarihStr} ${saatStr}</td>
+        <td style="padding:10px 14px;font-size:13px">${r.cihaz_adi || r.cihaz_no}</td>
+        <td style="padding:10px 14px;font-size:13px;font-family:monospace">${r.personel_no}</td>
+        <td style="padding:10px 14px;font-size:13px">${r.ad_soyad || '<span style="color:var(--text-3)">—</span>'}</td>
+        <td style="padding:10px 14px;text-align:center">${tur}</td>
+      </tr>`;
+    }).join('');
+  } catch(e) {
+    tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:24px;color:var(--text-3)">Hata oluştu.</td></tr>';
+  }
+}
 
 let vekaletKullanicilar = [];
 
