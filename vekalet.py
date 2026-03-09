@@ -9,7 +9,7 @@ from permissions import decode_token, require_admin
 
 router = APIRouter(prefix="/vekaletler", tags=["vekaletler"])
 
-VEKALET_ROLLER = {"admin", "genel_mudur", "koordinasyon_sorumlusu"}
+VEKALET_ROLLER = {"admin", "ik_admin", "genel_mudur", "koordinasyon_sorumlusu"}
 
 
 def require_vekalet_yetkisi(token: dict = Depends(decode_token)) -> dict:

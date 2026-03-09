@@ -1873,6 +1873,18 @@ tbody tr:hover td { background: var(--bg-soft); }
         </button>
       </div>
 
+      <!-- İK Sorumlusu Ek Menü -->
+      <div id="ik-section" style="display:none">
+        <div class="nav-sep"></div>
+        <div class="sb-section-label">Araçlar</div>
+        <button class="nav-item" onclick="navigate('vekaletler', this)">
+          <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
+        </button>
+        <button class="nav-item" onclick="navigate('pdks', this)">
+          <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
+        </button>
+      </div>
+
       <!-- Koordinasyon Sorumlusu -->
       <div id="ks-section" style="display:none">
         <div class="nav-sep"></div>
@@ -3277,6 +3289,9 @@ function applyRoleUI(rol) {
 
   if (isAdmin || isGM) {
     document.getElementById('admin-section').style.display = 'block';
+  }
+  if (rol === 'ik_admin') {
+    document.getElementById('ik-section').style.display = 'block';
   }
   if (rol === 'koordinasyon_sorumlusu') {
     document.getElementById('ks-section').style.display = 'block';
