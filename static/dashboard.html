@@ -7565,8 +7565,8 @@ async function izinYazdir(id) {
           ${dijitalImzaBlok(iz.yk_imza)}
         </div>
         <div style="border-top:1px solid #999;width:80%;margin:0 auto;padding-top:4px">
-          <div class="sig-name">${isYkVekili ? (iz.yk_onaylayan || YK_BASKAN_VEKILI_AD) : (iz.yk_onaylayan || '')}</div>
-          <div class="sig-title">${donusUnvan}</div>
+          <div class="sig-name">${iz.yk_onaylayan || YK_BASKAN_VEKILI_AD}</div>
+          <div class="sig-title">YK Başkan Yrd.</div>
           <div style="font-size:9px;color:#888">${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}</div>
         </div>
       </td>
