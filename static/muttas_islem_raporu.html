@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<title>Muttaş İK Sistemi – İşlem Raporu</title>
+<style>
+@media print { body { margin: 20mm; } .no-print { display: none; } }
+body { font-family: 'Segoe UI', Arial, sans-serif; max-width: 900px; margin: 0 auto; padding: 30px; color: #1a1a1a; line-height: 1.7; background: #fff; }
+h1 { text-align: center; color: #1a3a5c; border-bottom: 3px solid #0d6efd; padding-bottom: 12px; font-size: 22px; }
+h2 { color: #0d6efd; margin-top: 36px; border-left: 4px solid #0d6efd; padding-left: 12px; font-size: 17px; }
+h3 { color: #374151; margin-top: 20px; font-size: 15px; }
+.meta { text-align: center; color: #6b7280; margin-bottom: 30px; font-size: 14px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0 20px 0; font-size: 13px; }
+th { background: #0d6efd; color: #fff; padding: 8px 10px; text-align: left; font-weight: 600; }
+td { padding: 7px 10px; border: 1px solid #e5e7eb; }
+tr:nth-child(even) td { background: #f9fafb; }
+.badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
+.badge-done { background: #dcfce7; color: #166534; }
+.badge-new { background: #e0e7ff; color: #3730a3; }
+.badge-info { background: #dbeafe; color: #1e40af; }
+.badge-warn { background: #fef3c7; color: #92400e; }
+code { background: #f3f4f6; padding: 2px 6px; border-radius: 3px; font-size: 12px; font-family: 'Consolas', monospace; }
+.section-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px 20px; margin: 12px 0; }
+ul { padding-left: 20px; }
+li { margin-bottom: 6px; }
+.footer { margin-top: 40px; padding-top: 16px; border-top: 2px solid #e5e7eb; text-align: center; color: #9ca3af; font-size: 12px; }
+.btn-print { position: fixed; top: 20px; right: 20px; background: #0d6efd; color: #fff; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-size: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+.btn-print:hover { background: #0b5ed7; }
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0; }
+.stat-card { background: #f0f9ff; border: 1px solid #bae6fd; border-radius: 8px; padding: 12px; text-align: center; }
+.stat-card .num { font-size: 28px; font-weight: 700; color: #0369a1; }
+.stat-card .lbl { font-size: 12px; color: #6b7280; margin-top: 4px; }
+.new-section { border-left: 4px solid #16a34a; background: #f0fdf4; padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0; }
+</style>
+</head>
+<body>
+
+<button class="btn-print no-print" onclick="window.print()">&#128424; Yazdır / PDF</button>
+
+<h1>MUTTAŞ A.Ş. İK SİSTEMİ<br>İŞLEM VE GELİŞTİRME RAPORU</h1>
+<div class="meta">
+Güncelleme Tarihi: 6 Mart 2026 &nbsp;|&nbsp; Proje: İK Muttaş &nbsp;|&nbsp; Platform: Python FastAPI + PostgreSQL
+</div>
+
+<!-- ============================== -->
+<h2>1. PROJE GENEL BİLGİLERİ</h2>
+<div class="section-box">
+<table>
+<tr><td style="width:200px;font-weight:600">Proje Adı</td><td>İK Muttaş – Muğla Büyükşehir Belediyesi Muttaş A.Ş. Personel ve İzin Yönetim Sistemi</td></tr>
+<tr><td style="font-weight:600">Sunucu (Mevcut)</td><td>209.38.219.210 (DigitalOcean) – Port 8000</td></tr>
+<tr><td style="font-weight:600">Sunucu (Yeni)</td><td>185.123.103.61 – Port açılışı bekleniyor</td></tr>
+<tr><td style="font-weight:600">Domain</td><td>ik.muttas.com.tr</td></tr>
+<tr><td style="font-weight:600">Veritabanı</td><td>PostgreSQL – <code>muttas_db</code></td></tr>
+<tr><td style="font-weight:600">Uygulama Dizini</td><td><code>/opt/muttas/</code></td></tr>
+<tr><td style="font-weight:600">Servis</td><td><code>muttas.service</code> (Gunicorn + Uvicorn, 4 worker)</td></tr>
+<tr><td style="font-weight:600">Genel Müdür</td><td>Sedat BAYRAK</td></tr>
+</table>
+</div>
+
+<!-- ============================== -->
+<h2>2. YAPILAN GELİŞTİRMELER – ÖZET</h2>
+
+<div class="stat-grid">
+<div class="stat-card"><div class="num">8</div><div class="lbl">Geliştirme Maddesi</div></div>
+<div class="stat-card"><div class="num">9</div><div class="lbl">Sistem Kullanıcısı</div></div>
+<div class="stat-card"><div class="num">467</div><div class="lbl">Meslek Kodu</div></div>
+<div class="stat-card"><div class="num">5</div><div class="lbl">Yeni KS Hesabı</div></div>
+</div>
+
+<table>
+<tr><th>#</th><th>Geliştirme</th><th>Durum</th><th>Tarih</th></tr>
+<tr><td>1</td><td>Meslek Kodu Tablosu ve API tabanlı asenkron arama</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>2</td><td>Engelli Rapor Takibi modülü (DB + CRUD + Dashboard + Özet sayfası)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>3</td><td>İzin formunda YK Başkan Vekili imza süreci (6 kişi özel)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>4</td><td>Ücretsiz izinlerin kalan izin gününden düşürülmemesi</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>5</td><td>Genel Müdür rolüne personel düzenleme yetkisi verilmesi</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>6</td><td>Hesabım sayfasında rol bazlı yetki listesi gösterimi</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>7</td><td>Koordinasyon Sorumlusu kullanıcı hesapları oluşturulması (5 kişi)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+<tr><td>8</td><td>personel_evraklari tablosu eksik sütun düzeltmesi (evrak_adi, dosya_boyut, mime_type)</td><td><span class="badge badge-done">Tamamlandı</span></td><td>6 Mart 2026</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2>3. İZİN FORMU – YK BAŞKAN VEKİLİ SÜRECİ</h2>
+<div class="section-box">
+<p>Aşağıdaki 6 personelin izin formlarında 3. onay kutusu ve izin dönüşü imza alanı <strong>"Genel Müdür"</strong> yerine <strong>"Süleyman Özdemir / Yönetim Kurulu Başkan Vekili"</strong> olarak gösterilmektedir:</p>
+<table>
+<tr><th>#</th><th>Personel</th><th>ID</th></tr>
+<tr><td>1</td><td>Sedat Bayrak</td><td>222</td></tr>
+<tr><td>2</td><td>Uğur Yaka</td><td>3</td></tr>
+<tr><td>3</td><td>Seniye Gökyüz</td><td>285</td></tr>
+<tr><td>4</td><td>Ali Top</td><td>112</td></tr>
+<tr><td>5</td><td>Orhan Yavuz Yunak</td><td>434</td></tr>
+<tr><td>6</td><td>Burcu Kütükçü</td><td>25</td></tr>
+</table>
+<p><strong>Değişiklikler:</strong></p>
+<ul>
+<li>İzin formu yazdırma: 3. kutu başlığı "GENEL MÜDÜR" → <strong>"YÖNETİM KURULU BAŞKAN VEKİLİ"</strong></li>
+<li>3. kutu imza alanı: Onaylayan isim otomatik "Süleyman Özdemir", ünvan "Yönetim Kurulu Başkan Vekili"</li>
+<li>Alt kısım (izin dönüşü) imza alanı: Aynı şekilde YK Başkan Vekili olarak gösterilir</li>
+<li>Diğer personelin izin formları eskisi gibi "Genel Müdür" olarak devam eder</li>
+</ul>
+</div>
+
+<!-- ============================== -->
+<h2>4. ÜCRETSİZ İZİN DÜŞÜRME KURALI</h2>
+<div class="section-box">
+<p>İzin onay sürecinde <code>personel.kalan_izin</code> alanının güncellenmesi için kurallar:</p>
+<table>
+<tr><th>İzin Türü</th><th>Kalan İzinden Düşürülür mü?</th></tr>
+<tr><td>Yıllık İzin</td><td><span class="badge badge-done">Evet</span> – Genel Müdür onayında düşürülür</td></tr>
+<tr><td>Mazeret İzni</td><td><span class="badge badge-done">Evet</span> – Genel Müdür onayında düşürülür</td></tr>
+<tr><td><strong>Ücretsiz İzin</strong></td><td><strong><span style="color:#dc2626">Hayır</span></strong> – Kalan izinden düşürülmez</td></tr>
+<tr><td>Hastalık İzni</td><td><span style="color:#dc2626">Hayır</span></td></tr>
+<tr><td>Doğum İzni</td><td><span style="color:#dc2626">Hayır</span></td></tr>
+<tr><td>Ölüm İzni</td><td><span style="color:#dc2626">Hayır</span></td></tr>
+<tr><td>Saatlik İzin</td><td><span style="color:#dc2626">Hayır</span></td></tr>
+</table>
+<p><strong>Ek özellik:</strong> Onaylanmış bir izin sonradan reddedilirse, daha önce düşürülmüş gün sayısı personelin kalan iznine geri eklenir.</p>
+</div>
+
+<!-- ============================== -->
+<h2>5. YETKİ VE ROL YÖNETİMİ</h2>
+
+<h3>5.1 Roller ve Yetkileri</h3>
+<div class="section-box">
+<table>
+<tr><th>Rol</th><th>Yetkiler</th></tr>
+<tr><td><strong>admin</strong><br><em>Yönetici</em></td><td>Tüm modüllere tam erişim, personel/izin/kullanıcı yönetimi, liman kayıtları, Excel dışa aktarma, vekalet yönetimi</td></tr>
+<tr><td><strong>genel_mudur</strong><br><em>Genel Müdür</em></td><td>Personel ekleme/düzenleme/silme, izin oluşturma/onaylama/reddetme, GM onayı verme, evrak yükleme, Excel dışa aktarma, vekalet yönetimi</td></tr>
+<tr><td><strong>ik_admin</strong><br><em>İK Yöneticisi</em></td><td>Personel ekleme/düzenleme/silme, izin oluşturma/onaylama/reddetme, evrak yükleme, özgeçmiş düzenleme, Excel dışa aktarma, vekalet yönetimi</td></tr>
+<tr><td><strong>yk_uyesi</strong><br><em>YK Üyesi</em></td><td>Personel/izin görüntüleme, YK onayı verme (son onay), izin formu yazdırma</td></tr>
+<tr><td><strong>koordinasyon_sorumlusu</strong><br><em>Koordinasyon Sorumlusu</em></td><td>Personel/izin görüntüleme, koordinasyon onayı verme (birim sorumlusu), izin formu yazdırma</td></tr>
+<tr><td><strong>liman_admin</strong><br><em>Liman Yöneticisi</em></td><td>Liman ve günlük kayıt yönetimi, personel görüntüleme</td></tr>
+<tr><td><strong>liman_viewer</strong><br><em>Liman Görüntüleyici</em></td><td>Liman kayıtlarını görüntüleme</td></tr>
+</table>
+<p><span class="badge badge-info">Not</span> Her kullanıcı <strong>Hesabım</strong> sayfasında kendi rolüne ait yetkileri liste halinde görebilir.</p>
+</div>
+
+<h3>5.2 Sistem Kullanıcıları</h3>
+<table>
+<tr><th>#</th><th>Ad Soyad</th><th>TC Kimlik (Giriş)</th><th>Rol</th></tr>
+<tr><td>1</td><td>Admin Kullanıcı</td><td>26803902426</td><td>Yönetici</td></tr>
+<tr><td>2</td><td>Uğur Yaka</td><td>66292029624</td><td>İK Yöneticisi</td></tr>
+<tr><td>3</td><td>Sedat Bayrak</td><td>50668716706</td><td>Genel Müdür</td></tr>
+<tr><td>4</td><td>Ethem Usluoğlu</td><td>26803902427</td><td>YK Üyesi</td></tr>
+<tr style="background:#f0fdf4"><td>5</td><td>Adem Yiğit</td><td>36680006100</td><td>Koordinasyon Sorumlusu</td></tr>
+<tr style="background:#f0fdf4"><td>6</td><td>Deniz Komi</td><td>54028434538</td><td>Koordinasyon Sorumlusu</td></tr>
+<tr style="background:#f0fdf4"><td>7</td><td>Eda Narin</td><td>34142095402</td><td>Koordinasyon Sorumlusu</td></tr>
+<tr style="background:#f0fdf4"><td>8</td><td>Ferdi Uçar</td><td>41515842976</td><td>Koordinasyon Sorumlusu</td></tr>
+<tr style="background:#f0fdf4"><td>9</td><td>Selim Gevişen</td><td>28799273658</td><td>Koordinasyon Sorumlusu</td></tr>
+</table>
+<p><span class="badge badge-new">Yeni</span> Koordinasyon Sorumlusu hesapları 6 Mart 2026 tarihinde oluşturuldu. Varsayılan şifre: <code>Ks2026*</code></p>
+
+<!-- ============================== -->
+<h2>6. MESLEK KODU TABLOSU</h2>
+<div class="section-box">
+<table>
+<tr><th>Tablo</th><th>Sütunlar</th><th>Kayıt Sayısı</th></tr>
+<tr><td><code>meslek_kodlari</code></td><td>id, kod (VARCHAR UNIQUE), ad (VARCHAR), aktif, olusturuldu</td><td><strong>467</strong> SGK/İŞKUR meslek kodu</td></tr>
+</table>
+<ul>
+<li>Personel formundaki meslek kodu alanı <strong>API tabanlı asenkron arama</strong> kullanıyor</li>
+<li>52 satırlık hardcoded liste kaldırıldı, 467 kayıtlık veritabanı tablosundan anlık arama eklendi</li>
+<li>250ms debounce ile performanslı arama</li>
+</ul>
+</div>
+
+<!-- ============================== -->
+<h2>7. ENGELLİ RAPOR TAKİBİ MODÜLÜ</h2>
+<div class="section-box">
+<h3>Veritabanı</h3>
+<table>
+<tr><th>Tablo</th><th>Sütunlar</th></tr>
+<tr><td><code>engelli_rapor</code></td><td>id, personel_id (FK), rapor_no, engel_turu, engel_orani, rapor_baslangic, rapor_bitis, veren_kurum, sure_durumu (süreli/süresiz), notlar, aktif, olusturuldu</td></tr>
+</table>
+
+<h3>Özellikler</h3>
+<ul>
+<li>Sol menüde <strong>Engelli Rapor Takibi</strong> özet sayfası (filtre + badge + tablo)</li>
+<li>Durum filtreleri: Tümü / Süresi Dolmuş / 30 Gün İçinde Dolacak / Geçerli / Süresiz</li>
+<li>Personel detayında <strong>"Engelli Rapor"</strong> sekmesi (ekleme/düzenleme/silme)</li>
+<li>Her rapor için kalan gün hesaplaması ve renkli durum göstergesi</li>
+</ul>
+</div>
+
+<!-- ============================== -->
+<h2>8. TEKNİK DETAYLAR</h2>
+
+<h3>8.1 Değiştirilen Dosyalar</h3>
+<table>
+<tr><th>Dosya</th><th>Yapılan Değişiklik</th></tr>
+<tr><td><code>/opt/muttas/permissions.py</code></td><td><code>IK_EDITORS</code> kümesine <code>genel_mudur</code> rolü eklendi</td></tr>
+<tr><td><code>/opt/muttas/izinler.py</code></td><td>Ücretsiz izin kalan_izin düşürme kuralı, onay sürecinde kalan izin güncelleme mantığı, red durumunda gün iadesi</td></tr>
+<tr><td><code>/opt/muttas/static/dashboard.html</code></td><td>YK Başkan Vekili izin formu süreci (6 kişi özel), Hesabım sayfasında rol bazlı yetki listesi, meslek kodu API tabanlı arama, Engelli Rapor Takibi sayfası ve sekmesi</td></tr>
+<tr><td><code>/opt/muttas/personel.py</code></td><td>Meslek kodu CRUD endpoint'leri, engelli rapor CRUD endpoint'leri, route sırası düzeltmesi</td></tr>
+</table>
+
+<h3>8.2 Veritabanı Değişiklikleri</h3>
+<table>
+<tr><th>Tablo</th><th>İşlem</th></tr>
+<tr><td><code>meslek_kodlari</code></td><td>Yeni tablo (id, kod, ad, aktif, olusturuldu) – 467 kayıt yüklendi</td></tr>
+<tr><td><code>engelli_rapor</code></td><td>Yeni tablo (id, personel_id FK, rapor_no, engel_turu, engel_orani, rapor_baslangic, rapor_bitis, veren_kurum, sure_durumu, notlar, aktif, olusturuldu)</td></tr>
+<tr><td><code>personel_evraklari</code></td><td><code>ALTER TABLE ADD COLUMN</code>: evrak_adi, dosya_boyut, mime_type</td></tr>
+<tr><td><code>kullanicilar</code></td><td>5 yeni koordinasyon_sorumlusu hesabı eklendi</td></tr>
+</table>
+
+<h3>8.3 API Endpoint'leri</h3>
+<table>
+<tr><th>Endpoint</th><th>Metod</th><th>Açıklama</th></tr>
+<tr><td><code>/personel/meslek-kodlari</code></td><td>GET</td><td>Meslek kodu listesi/arama (?q= parametresi)</td></tr>
+<tr><td><code>/personel/meslek-kodlari</code></td><td>POST</td><td>Meslek kodu ekleme</td></tr>
+<tr><td><code>/personel/meslek-kodlari/{id}</code></td><td>PUT/DELETE</td><td>Meslek kodu güncelleme/silme</td></tr>
+<tr><td><code>/personel/engelli-rapor-ozet</code></td><td>GET</td><td>Tüm engelli rapor özeti</td></tr>
+<tr><td><code>/personel/{pid}/engelli-rapor</code></td><td>GET/POST</td><td>Personel engelli rapor listele/ekle</td></tr>
+<tr><td><code>/personel/{pid}/engelli-rapor/{rid}</code></td><td>PUT/DELETE</td><td>Engelli rapor güncelle/sil</td></tr>
+<tr><td><code>/izinler/{iid}/onay</code></td><td>PUT</td><td>İzin onay/red (kalan izin düşürme kuralı dahil)</td></tr>
+</table>
+
+<!-- ============================== -->
+<h2>9. BEKLEYEN GELİŞTİRMELER (TODO)</h2>
+<table>
+<tr><th>#</th><th>Konu</th><th>Durum</th></tr>
+<tr><td>1</td><td>Belge süre takibi (ehliyet, sertifika vb.)</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>2</td><td>İcra cetveli modülü</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+<tr><td>3</td><td>Yeni sunucu (185.123.103.61) DNS yapılandırması ve SSL</td><td><span class="badge badge-warn">Port açılışı bekleniyor</span></td></tr>
+<tr><td>4</td><td>Boy, kilo, ayakkabı no, beden bilgilerinin toplu girişi</td><td><span class="badge badge-warn">Veri bekleniyor</span></td></tr>
+<tr><td>5</td><td>Koordinasyon Sorumlusu izin onay akışı entegrasyonu</td><td><span class="badge badge-warn">Bekliyor</span></td></tr>
+</table>
+
+<!-- ============================== -->
+<div class="footer">
+Bu rapor İK Muttaş projesi kapsamında hazırlanmıştır.<br>
+Muttaş A.Ş. – Muğla Büyükşehir Belediyesi – 2026<br>
+Son güncelleme: 6 Mart 2026
+</div>
+
+</body>
+</html>

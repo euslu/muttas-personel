@@ -7,8 +7,9 @@ JWT_SECRET    = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 security      = HTTPBearer()
 
-IK_EDITORS    = {"admin", "ik_admin"}
+IK_EDITORS    = {"admin", "ik_admin", "genel_mudur"}
 LIMAN_EDITORS = {"admin", "liman_admin"}
+KS_EDITORS    = {"admin", "koordinasyon_sorumlusu"}
 GM_EDITORS    = {"admin", "genel_mudur"}
 YK_EDITORS    = {"admin", "yk_uyesi"}
 

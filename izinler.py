@@ -1,7 +1,7 @@
 from typing import Optional
 from datetime import date, datetime
 
-from fastapi import APIRouter, HTTPException, Query, Depends
+from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from pydantic import BaseModel
 
 from db import get_pool
@@ -12,6 +12,34 @@ router = APIRouter(prefix="/izinler", tags=["izinler"])
 
 IZIN_TURLERI = ["yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"]
 DURUMLAR     = ["beklemede", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
+
+DURUM_ACIKLAMA = {
+    "beklemede":        "İzin talebi oluşturuldu",
+    "ik_onayladi":      "İK/İdari İşler onayı verildi",
+    "mudur_onayladi":   "Genel Müdür onayı verildi",
+    "onaylandi":        "YK onayı verildi (UYGUNDUR)",
+    "reddedildi":       "İzin talebi reddedildi",
+    "tamamlandi":       "İzin tamamlandı, göreve başlandı",
+}
+
+
+async def izin_log_yaz(conn, izin_id, personel_id, personel_ad, onceki_durum, yeni_durum, token, ip=None, aciklama=None, ek_bilgi=None):
+    import json
+    islem_yapan_id  = int(token.get("sub", 0)) if token else None
+    islem_yapan_ad  = ((token.get("ad", "") + " " + token.get("soyad", "")).strip()) if token else None
+    islem_yapan_rol = token.get("rol", "") if token else None
+    if not aciklama:
+        aciklama = DURUM_ACIKLAMA.get(yeni_durum, f"Durum değişikliği: {yeni_durum}")
+    try:
+        await conn.execute("""
+            INSERT INTO izin_log (izin_id, personel_id, personel_ad, onceki_durum, yeni_durum,
+                islem_yapan_id, islem_yapan_ad, islem_yapan_rol, ip_adresi, aciklama, ek_bilgi)
+            VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11)
+        """, izin_id, personel_id, personel_ad, onceki_durum, yeni_durum,
+             islem_yapan_id, islem_yapan_ad, islem_yapan_rol, ip,
+             aciklama, json.dumps(ek_bilgi) if ek_bilgi else None)
+    except Exception:
+        pass
 
 
 class IzinCreate(BaseModel):
@@ -156,14 +184,14 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
 
 
 @router.post("", status_code=201)
-async def create_izin(body: IzinCreate, token: dict = Depends(require_ik_editor)):
+async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(require_ik_editor)):
     if body.izin_turu not in IZIN_TURLERI:
         raise HTTPException(status_code=400, detail=f"Geçersiz izin türü. Kabul edilenler: {IZIN_TURLERI}")
 
     pool = await get_pool()
     async with pool.acquire() as conn:
-        exists = await conn.fetchval("SELECT id FROM personel WHERE id = $1 AND aktif = TRUE", body.personel_id)
-        if not exists:
+        prs = await conn.fetchrow("SELECT id, ad_soyad FROM personel WHERE id = $1 AND aktif = TRUE", body.personel_id)
+        if not prs:
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
 
         talep = body.talep_tarihi or date.today()
@@ -178,6 +206,10 @@ async def create_izin(body: IzinCreate, token: dict = Depends(require_ik_editor)
             body.gun_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad,
             body.izin_adresi, body.aciklama, body.notlar, body.imza,
         )
+        ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
+        await izin_log_yaz(conn, row["id"], body.personel_id, prs["ad_soyad"],
+            None, "beklemede", token, ip,
+            f"İzin talebi oluşturuldu: {body.izin_turu}, {body.baslangic} - {body.bitis}, {body.gun_sayisi} gün")
         return {"id": row["id"]}
 
 
@@ -215,7 +247,7 @@ ONAY_YETKI = {
 
 
 @router.put("/{iid}/onay")
-async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token)):
+async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = Depends(decode_token)):
     if body.durum not in DURUMLAR:
         raise HTTPException(status_code=400, detail=f"Geçersiz durum. Kabul edilenler: {DURUMLAR}")
 
@@ -248,7 +280,11 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
 
     pool = await get_pool()
     async with pool.acquire() as conn:
-        row = await conn.fetchrow("SELECT durum FROM izinler WHERE id = $1", iid)
+        row = await conn.fetchrow("""
+            SELECT i.durum, i.personel_id, p.ad_soyad
+            FROM izinler i JOIN personel p ON p.id = i.personel_id
+            WHERE i.id = $1
+        """, iid)
         if not row:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
 
@@ -292,22 +328,21 @@ async def onay_izin(iid: int, body: IzinOnay, token: dict = Depends(decode_token
             *base_params, *extra_vals,
         )
 
+        ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
+        personel_id = row["personel_id"]
+        personel_ad = row["ad_soyad"]
+        await izin_log_yaz(conn, iid, personel_id, personel_ad, mevcut_durum, body.durum, token, ip)
+
         if body.durum == "tamamlandi":
-            personel_row = await conn.fetchrow(
-                "SELECT p.ad_soyad FROM izinler i JOIN personel p ON p.id = i.personel_id WHERE i.id = $1",
-                iid
+            kullanici = await conn.fetchrow(
+                "SELECT id FROM kullanicilar WHERE TRIM(CONCAT(ad, ' ', soyad)) = $1 AND aktif = true",
+                personel_ad.strip()
             )
-            if personel_row:
-                ad_soyad_personel = personel_row["ad_soyad"].strip()
-                kullanici = await conn.fetchrow(
-                    "SELECT id FROM kullanicilar WHERE TRIM(CONCAT(ad, ' ', soyad)) = $1 AND aktif = true",
-                    ad_soyad_personel
+            if kullanici:
+                await conn.execute(
+                    "UPDATE vekaletler SET aktif = false WHERE veren_kullanici_id = $1 AND aktif = true",
+                    kullanici["id"]
                 )
-                if kullanici:
-                    await conn.execute(
-                        "UPDATE vekaletler SET aktif = false WHERE veren_kullanici_id = $1 AND aktif = true",
-                        kullanici["id"]
-                    )
 
         return {"ok": True}
 
@@ -329,6 +364,83 @@ async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
                 raise HTTPException(status_code=400, detail="Sadece beklemede olan izinler silinebilir.")
         await conn.execute("DELETE FROM izinler WHERE id = $1", iid)
         return {"ok": True}
+
+
+@router.get("/log/listele")
+async def izin_log_listele(
+    page: int = Query(1, ge=1),
+    per_page: int = Query(50, ge=1, le=200),
+    izin_id: Optional[int] = None,
+    personel_ad: Optional[str] = None,
+    durum: Optional[str] = None,
+    baslangic: Optional[str] = None,
+    bitis: Optional[str] = None,
+    token: dict = Depends(decode_token),
+):
+    rol = token.get("rol", "")
+    if rol not in ("admin", "ik_admin", "genel_mudur"):
+        raise HTTPException(status_code=403, detail="Log görüntüleme yetkiniz yok.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        where = []
+        vals = []
+        idx = 1
+        if izin_id:
+            where.append(f"l.izin_id = ${idx}")
+            vals.append(izin_id)
+            idx += 1
+        if personel_ad:
+            where.append(f"l.personel_ad ILIKE ${idx}")
+            vals.append(f"%{personel_ad}%")
+            idx += 1
+        if durum:
+            where.append(f"l.yeni_durum = ${idx}")
+            vals.append(durum)
+            idx += 1
+        if baslangic:
+            where.append(f"l.islem_zamani >= ${idx}::timestamp")
+            vals.append(baslangic)
+            idx += 1
+        if bitis:
+            where.append(f"l.islem_zamani <= ${idx}::timestamp + interval '1 day'")
+            vals.append(bitis)
+            idx += 1
+        w = ("WHERE " + " AND ".join(where)) if where else ""
+
+        total = await conn.fetchval(f"SELECT COUNT(*) FROM izin_log l {w}", *vals)
+        offset = (page - 1) * per_page
+        rows = await conn.fetch(f"""
+            SELECT l.* FROM izin_log l {w}
+            ORDER BY l.islem_zamani DESC
+            LIMIT {per_page} OFFSET {offset}
+        """, *vals)
+
+        def fmt_ts(ts):
+            return ts.strftime("%d.%m.%Y %H:%M:%S") if ts else None
+
+        return {
+            "total": total,
+            "page": page,
+            "per_page": per_page,
+            "data": [
+                {
+                    "id": r["id"],
+                    "izin_id": r["izin_id"],
+                    "personel_id": r["personel_id"],
+                    "personel_ad": r["personel_ad"],
+                    "islem_zamani": fmt_ts(r["islem_zamani"]),
+                    "onceki_durum": r["onceki_durum"],
+                    "yeni_durum": r["yeni_durum"],
+                    "islem_yapan_id": r["islem_yapan_id"],
+                    "islem_yapan_ad": r["islem_yapan_ad"],
+                    "islem_yapan_rol": r["islem_yapan_rol"],
+                    "ip_adresi": r["ip_adresi"],
+                    "aciklama": r["aciklama"],
+                }
+                for r in rows
+            ],
+        }
 
 
 @router.get("/personel-izin-gecmisi/{pid}")

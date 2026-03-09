@@ -1868,6 +1868,9 @@ tbody tr:hover td { background: var(--bg-soft); }
         <button class="nav-item" onclick="navigate('pdks', this)">
           <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
         </button>
+        <button class="nav-item" onclick="navigate('izin_log', this)">
+          <span class="icon"><span class="material-symbols-outlined">history</span></span> İzin İşlem Geçmişi
+        </button>
       </div>
 
       <!-- Koordinasyon Sorumlusu -->
@@ -3028,6 +3031,81 @@ tbody tr:hover td { background: var(--bg-soft); }
         </div>
       </div><!-- /page-pdks -->
 
+      <!-- ── İZİN LOG ── -->
+      <div class="page" id="page-izin_log">
+        <div class="page-header" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px">
+          <h2 style="margin:0;font-size:1.35rem;font-weight:700;display:flex;align-items:center;gap:8px">
+            <span class="material-symbols-outlined" style="font-size:26px;color:var(--accent)">history</span>
+            İzin İşlem Geçmişi
+          </h2>
+          <div style="flex:1"></div>
+          <button class="btn btn-sm" onclick="izinLogExcel()" style="font-size:13px;padding:6px 14px;display:flex;align-items:center;gap:6px;background:var(--accent);color:#fff;border:none;border-radius:8px;cursor:pointer">
+            <span class="material-symbols-outlined" style="font-size:18px">download</span> Excel
+          </button>
+        </div>
+
+        <div class="card" style="padding:16px;margin-bottom:14px;border-radius:12px">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end">
+            <div style="flex:1;min-width:160px">
+              <label style="font-size:12px;font-weight:600;color:var(--text-3)">Personel Adı</label>
+              <input id="log-q" class="form-control" placeholder="Ara..." style="margin-top:4px;font-size:13px;padding:7px 10px" onkeydown="if(event.key==='Enter')loadIzinLog()">
+            </div>
+            <div style="min-width:100px">
+              <label style="font-size:12px;font-weight:600;color:var(--text-3)">İzin No</label>
+              <input id="log-izin-id" class="form-control" type="number" placeholder="#" style="margin-top:4px;font-size:13px;padding:7px 10px;width:90px" onkeydown="if(event.key==='Enter')loadIzinLog()">
+            </div>
+            <div style="min-width:140px">
+              <label style="font-size:12px;font-weight:600;color:var(--text-3)">İşlem Türü</label>
+              <select id="log-durum" class="form-control" style="margin-top:4px;font-size:13px;padding:7px 10px" onchange="loadIzinLog()">
+                <option value="">Tümü</option>
+                <option value="beklemede">Talep Oluşturma</option>
+                <option value="ik_onayladi">İK Onayı</option>
+                <option value="mudur_onayladi">G.M. Onayı</option>
+                <option value="onaylandi">YK Onayı</option>
+                <option value="tamamlandi">Tamamlandı</option>
+                <option value="reddedildi">Red</option>
+              </select>
+            </div>
+            <div style="min-width:120px">
+              <label style="font-size:12px;font-weight:600;color:var(--text-3)">Başlangıç</label>
+              <input id="log-bas" class="form-control" type="date" style="margin-top:4px;font-size:13px;padding:7px 10px">
+            </div>
+            <div style="min-width:120px">
+              <label style="font-size:12px;font-weight:600;color:var(--text-3)">Bitiş</label>
+              <input id="log-bit" class="form-control" type="date" style="margin-top:4px;font-size:13px;padding:7px 10px">
+            </div>
+            <button class="btn btn-primary" onclick="loadIzinLog()" style="padding:7px 16px;font-size:13px;height:36px">
+              <span class="material-symbols-outlined" style="font-size:18px;vertical-align:middle">search</span> Filtrele
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="border-radius:12px;overflow:hidden">
+          <div style="overflow-x:auto">
+            <table style="width:100%;border-collapse:collapse;font-size:13px">
+              <thead>
+                <tr style="background:var(--bg-2)">
+                  <th style="padding:10px 12px;text-align:left;white-space:nowrap;font-size:12px;color:var(--text-3);font-weight:600">Tarih / Saat</th>
+                  <th style="padding:10px 12px;text-align:left;white-space:nowrap;font-size:12px;color:var(--text-3);font-weight:600">İzin No</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Personel</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">İşlem</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Önceki Durum</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Yeni Durum</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">İşlemi Yapan</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">Rol</th>
+                  <th style="padding:10px 12px;text-align:left;font-size:12px;color:var(--text-3);font-weight:600">IP Adresi</th>
+                </tr>
+              </thead>
+              <tbody id="log-tbody"><tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-3)">Filtre uygulayın veya arayın</td></tr></tbody>
+            </table>
+          </div>
+          <div id="log-pagination" style="display:flex;justify-content:center;align-items:center;gap:8px;padding:12px"></div>
+        </div>
+        <div style="margin-top:8px;font-size:12px;color:var(--text-3)">
+          Toplam: <span id="log-total">0</span> kayıt
+        </div>
+      </div><!-- /page-izin_log -->
+
       <div class="page" id="page-hesabim">
         <div style="max-width:520px;margin:0 auto">
           <div class="card" style="border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)">
@@ -3087,6 +3165,7 @@ const PAGE_TITLES = {
   kullanicilar: 'Kullanıcılar',
   vekaletler:   'Vekalet Yönetimi',
   pdks:         'PDKS - Personel Devam Takip',
+  izin_log:     'İzin İşlem Geçmişi',
   personel:     'Personel Listesi',
   izinler:      'İzin Yönetimi',
   hesabim:      'Hesabım',
@@ -3530,6 +3609,7 @@ function navigate(page, el) {
   if (page === 'kullanicilar') loadKullanicilar();
   if (page === 'vekaletler')   loadVekaletler();
   if (page === 'pdks')         loadPdks();
+  if (page === 'izin_log')     loadIzinLog(1);
   if (page === 'hesabim')      loadHesabim();
 }
 
@@ -7858,6 +7938,103 @@ async function saveKullanici() {
 }
 
 const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi',koordinasyon_sorumlusu:'Koordinasyon Sorumlusu'};
+
+const LOG_DURUM_LABEL = {
+  beklemede:        'Talep Oluşturma',
+  ik_onayladi:      'İK Onayı',
+  mudur_onayladi:   'G.M. İzin Onayı',
+  onaylandi:        'YK Dönüş Onayı',
+  tamamlandi:       'Tamamlandı',
+  reddedildi:       'Reddedildi',
+};
+const LOG_ROL_LABEL = {
+  admin:                    'Admin',
+  ik_admin:                 'İK Yöneticisi',
+  ik_sorumlusu:             'İK Sorumlusu',
+  koordinasyon_sorumlusu:   'Koord. Sorumlusu',
+  genel_mudur:              'Genel Müdür',
+  yk_uyesi:                 'YK Üyesi',
+};
+let logPage = 1;
+
+async function loadIzinLog(page) {
+  logPage = page || 1;
+  const q      = document.getElementById('log-q')?.value || '';
+  const izinId = document.getElementById('log-izin-id')?.value || '';
+  const durum  = document.getElementById('log-durum')?.value || '';
+  const bas    = document.getElementById('log-bas')?.value || '';
+  const bit    = document.getElementById('log-bit')?.value || '';
+
+  const params = new URLSearchParams({ page: logPage, per_page: 50 });
+  if (q)      params.append('personel_ad', q);
+  if (izinId) params.append('izin_id', izinId);
+  if (durum)  params.append('durum', durum);
+  if (bas)    params.append('baslangic', bas);
+  if (bit)    params.append('bitis', bit);
+
+  const res = await fetch('/izinler/log/listele?' + params, {
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    showToast('Log yüklenemedi', 'error');
+    return;
+  }
+  const data = await res.json();
+  document.getElementById('log-total').textContent = data.total;
+
+  const tbody = document.getElementById('log-tbody');
+  if (!data.data.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;padding:32px;color:var(--text-3)">Kayıt bulunamadı</td></tr>';
+  } else {
+    tbody.innerHTML = data.data.map(r => {
+      const durumBadge = r.yeni_durum === 'reddedildi'
+        ? '<span style="color:#dc2626;font-weight:600">' + (LOG_DURUM_LABEL[r.yeni_durum]||r.yeni_durum) + '</span>'
+        : r.yeni_durum === 'onaylandi' || r.yeni_durum === 'tamamlandi'
+        ? '<span style="color:#16a34a;font-weight:600">' + (LOG_DURUM_LABEL[r.yeni_durum]||r.yeni_durum) + '</span>'
+        : (LOG_DURUM_LABEL[r.yeni_durum]||r.yeni_durum);
+      return '<tr style="border-bottom:1px solid var(--border)">' +
+        '<td style="padding:9px 12px;white-space:nowrap;font-size:12px">' + (r.islem_zamani||'-') + '</td>' +
+        '<td style="padding:9px 12px;text-align:center;font-weight:600;color:var(--accent)">#' + r.izin_id + '</td>' +
+        '<td style="padding:9px 12px;font-weight:500">' + (r.personel_ad||'-') + '</td>' +
+        '<td style="padding:9px 12px">' + (r.aciklama||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:12px">' + (LOG_DURUM_LABEL[r.onceki_durum]||r.onceki_durum||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:12px">' + durumBadge + '</td>' +
+        '<td style="padding:9px 12px;font-weight:500">' + (r.islem_yapan_ad||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:12px">' + (LOG_ROL_LABEL[r.islem_yapan_rol]||r.islem_yapan_rol||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:11px;color:var(--text-3)">' + (r.ip_adresi||'-') + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  const totalPages = Math.ceil(data.total / 50);
+  const pgDiv = document.getElementById('log-pagination');
+  if (totalPages <= 1) { pgDiv.innerHTML = ''; return; }
+  let pgHtml = '';
+  if (logPage > 1) pgHtml += '<button onclick="loadIzinLog(' + (logPage-1) + ')" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:12px">&laquo; Önceki</button>';
+  pgHtml += '<span style="font-size:13px;color:var(--text-3)">' + logPage + ' / ' + totalPages + '</span>';
+  if (logPage < totalPages) pgHtml += '<button onclick="loadIzinLog(' + (logPage+1) + ')" style="padding:6px 12px;border:1px solid var(--border);border-radius:6px;background:#fff;cursor:pointer;font-size:12px">Sonraki &raquo;</button>';
+  pgDiv.innerHTML = pgHtml;
+}
+
+function izinLogExcel() {
+  const table = document.querySelector('#page-izin_log table');
+  if (!table) return;
+  let csv = '';
+  const rows = table.querySelectorAll('tr');
+  rows.forEach(r => {
+    const cells = r.querySelectorAll('th, td');
+    const line = Array.from(cells).map(c => '"' + c.textContent.replace(/"/g, '""').trim() + '"').join(';');
+    csv += line + '\n';
+  });
+  const BOM = '\uFEFF';
+  const blob = new Blob([BOM + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'izin_log_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
 let pdksCihazlar = [];
 
