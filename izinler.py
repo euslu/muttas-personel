@@ -89,6 +89,12 @@ async def list_izinler(
         wheres = []
         params = []
 
+        # KS kullanıcısı yalnızca kendi birim sorumlusu olduğu izinleri görebilir
+        if token.get("rol") == "koordinasyon_sorumlusu":
+            ks_adi = (token.get("ad", "") + " " + token.get("soyad", "")).strip()
+            params.append(ks_adi)
+            wheres.append(f"UPPER(i.ks_onaylayan) = UPPER(${len(params)})")
+
         if personel_id:
             params.append(personel_id)
             wheres.append(f"i.personel_id = ${len(params)}")
@@ -181,6 +187,10 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
         """, iid)
         if not r:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+        if token.get("rol") == "koordinasyon_sorumlusu":
+            ks_adi = (token.get("ad", "") + " " + token.get("soyad", "")).strip()
+            if (r["ks_onaylayan"] or "").upper() != ks_adi.upper():
+                raise HTTPException(status_code=403, detail="Bu izin kaydına erişim yetkiniz yok.")
         return row_to_dict(r)
 
 
