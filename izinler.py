@@ -368,6 +368,34 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
         return {"ok": True}
 
 
+@router.put("/{iid}/ks-onayla")
+async def ks_onayla_izin(iid: int, token: dict = Depends(decode_token)):
+    if token.get("rol") != "koordinasyon_sorumlusu":
+        raise HTTPException(status_code=403, detail="Bu işlem sadece Koordinasyon Sorumlusu tarafından yapılabilir.")
+
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        ks_row = await conn.fetchrow(
+            "SELECT p.ad_soyad FROM personel p JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email WHERE k.email = $1",
+            token.get("email", "")
+        )
+        ks_adi = ks_row["ad_soyad"] if ks_row else (token.get("ad", "") + " " + token.get("soyad", "")).strip()
+
+        row = await conn.fetchrow("SELECT id, ks_onaylayan FROM izinler WHERE id = $1", iid)
+        if not row:
+            raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+        if (row["ks_onaylayan"] or "").upper() != ks_adi.upper():
+            raise HTTPException(status_code=403, detail="Bu izin size atanmamış.")
+
+        now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+        today = date.today()
+        await conn.execute(
+            "UPDATE izinler SET ks_onay_tarihi = $2, ks_imza = $3, ks_onaylayan = $4 WHERE id = $1",
+            iid, today, now_str, ks_adi
+        )
+    return {"ok": True}
+
+
 @router.delete("/{iid}")
 async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
