@@ -507,7 +507,7 @@
       <textarea id="f-notlar" placeholder="Varsa ek açıklamalarınız..."></textarea>
     </div>
 
-    <div id="f-ks-section" style="display:none">
+    <div id="f-ks-section">
       <div class="section-title">Birim Sorumlusu</div>
       <div class="form-field">
         <label>Birim Sorumlusu Seçin *</label>
@@ -757,7 +757,8 @@ async function smsDogrula() {
     document.getElementById('f-bit').min = today;
     document.getElementById('gun-badge-wrap').style.display = 'none';
 
-    await guncelleBirimSorumlusuGorunurlugu(personelId, personelUnvan);
+    document.getElementById('f-ks').value = '';
+    await loadKsListesi();
 
     if (smsTimerInterval) clearInterval(smsTimerInterval);
     setStep(3);
@@ -833,9 +834,8 @@ function formGecis() {
     errEl.style.display = 'flex';
     return;
   }
-  const ksSec = document.getElementById('f-ks-section');
   const ksVal = document.getElementById('f-ks').value;
-  if (ksSec.style.display !== 'none' && !ksVal) {
+  if (!ksVal) {
     errEl.textContent = 'Lütfen birim sorumlusunu seçiniz.';
     errEl.style.display = 'flex';
     return;
