@@ -102,6 +102,50 @@ async def remove_yonetici_unvan(
     return {"ok": True}
 
 
+class YkUyeUnvanBody(BaseModel):
+    unvan: str
+
+
+@router.get("/yk-uye-unvanlar")
+async def get_yk_uye_unvanlar(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT unvan FROM yk_uye_unvanlar ORDER BY unvan"
+        )
+    return [r["unvan"] for r in rows]
+
+
+@router.post("/yk-uye-unvanlar", status_code=201)
+async def add_yk_uye_unvan(
+    body: YkUyeUnvanBody,
+    token: dict = Depends(require_ayar_editor),
+):
+    unvan = body.unvan.strip().upper()
+    if not unvan:
+        raise HTTPException(status_code=400, detail="Unvan boş olamaz.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "INSERT INTO yk_uye_unvanlar (unvan) VALUES ($1) ON CONFLICT DO NOTHING",
+            unvan,
+        )
+    return {"ok": True}
+
+
+@router.delete("/yk-uye-unvanlar")
+async def remove_yk_uye_unvan(
+    body: YkUyeUnvanBody,
+    token: dict = Depends(require_ayar_editor),
+):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "DELETE FROM yk_uye_unvanlar WHERE unvan = $1", body.unvan
+        )
+    return {"ok": True}
+
+
 @router.get("/ks-listesi")
 async def get_ks_listesi(token: dict = Depends(require_ayar_editor)):
     pool = await get_pool()
