@@ -91,7 +91,11 @@ async def list_izinler(
 
         # KS kullanıcısı yalnızca kendi birim sorumlusu olduğu izinleri görebilir
         if token.get("rol") == "koordinasyon_sorumlusu":
-            ks_adi = (token.get("ad", "") + " " + token.get("soyad", "")).strip()
+            ks_row = await conn.fetchrow(
+                "SELECT p.ad_soyad FROM personel p JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email WHERE k.email = $1",
+                token.get("email", "")
+            )
+            ks_adi = ks_row["ad_soyad"] if ks_row else (token.get("ad", "") + " " + token.get("soyad", "")).strip()
             params.append(ks_adi)
             wheres.append(f"UPPER(i.ks_onaylayan) = UPPER(${len(params)})")
 
@@ -188,7 +192,11 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
         if not r:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
         if token.get("rol") == "koordinasyon_sorumlusu":
-            ks_adi = (token.get("ad", "") + " " + token.get("soyad", "")).strip()
+            ks_row2 = await conn.fetchrow(
+                "SELECT p.ad_soyad FROM personel p JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email WHERE k.email = $1",
+                token.get("email", "")
+            )
+            ks_adi = ks_row2["ad_soyad"] if ks_row2 else (token.get("ad", "") + " " + token.get("soyad", "")).strip()
             if (r["ks_onaylayan"] or "").upper() != ks_adi.upper():
                 raise HTTPException(status_code=403, detail="Bu izin kaydına erişim yetkiniz yok.")
         return row_to_dict(r)
