@@ -394,7 +394,14 @@ def basvuru_sayfasi():
 
 @app.get("/izin-basvuru")
 def izin_basvuru_sayfasi():
-    return FileResponse("static/izin-basvuru.html")
+    return FileResponse(
+        "static/izin-basvuru.html",
+        headers={
+            "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+            "Pragma": "no-cache",
+            "Expires": "0",
+        }
+    )
 
 
 @app.get("/basvuru/{token}")

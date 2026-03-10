@@ -759,10 +759,13 @@ async function smsDogrula() {
 
     document.getElementById('f-ks').value = '';
     const ksSec = document.getElementById('f-ks-section');
+    console.log('[KS DEBUG] unvan:', data.personel.unvan, '| is_yonetici:', data.personel.is_yonetici);
     if (data.personel.is_yonetici) {
       ksSec.style.display = 'none';
+      console.log('[KS DEBUG] Yönetici → KS section gizlendi');
     } else {
       ksSec.style.display = 'block';
+      console.log('[KS DEBUG] Normal personel → KS section gösterildi');
       await loadKsListesi();
     }
 
