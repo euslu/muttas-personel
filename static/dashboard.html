@@ -7789,6 +7789,7 @@ async function izinYazdir(id) {
   const durumLabel = IZIN_DURUM_LABEL[iz.durum]    || iz.durum;
 
   const isYkVekili  = YK_BASKAN_VEKILI_PERSONEL.includes(iz.personel_id);
+  const isYonetici  = YONETICI_UNVANLAR.includes(iz.unvan || '');
   const kutu3Baslik = isYkVekili ? 'YÖNETİM KURULU BAŞKAN VEKİLİ' : 'GENEL MÜDÜR';
   const kutu3Unvan  = isYkVekili ? YK_BASKAN_VEKILI_UNVAN : 'Genel Müdür';
   const donusUnvan  = isYkVekili ? YK_BASKAN_VEKILI_UNVAN : 'Genel Müdür';
