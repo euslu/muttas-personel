@@ -130,6 +130,17 @@ async def add_yk_uye_unvan(
             "INSERT INTO yk_uye_unvanlar (unvan) VALUES ($1) ON CONFLICT DO NOTHING",
             unvan,
         )
+        await conn.execute(
+            """
+            UPDATE kullanicilar k
+            SET rol = 'genel_mudur'
+            FROM personel p
+            WHERE LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email
+              AND p.unvan = $1
+              AND k.aktif = TRUE
+            """,
+            unvan,
+        )
     return {"ok": True}
 
 
