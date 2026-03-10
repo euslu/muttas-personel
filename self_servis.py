@@ -482,6 +482,17 @@ class PublicIzinCreate(BaseModel):
     aciklama:           Optional[str] = None
     notlar:             Optional[str] = None
     imza:               Optional[str] = None
+    ks_onaylayan:       Optional[str] = None
+
+
+@router.get("/public/ks-listesi")
+async def public_ks_listesi():
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT ad_soyad FROM personel WHERE unvan = 'KOORDİNASYON SORUMLUSU' AND aktif = TRUE ORDER BY ad_soyad"
+        )
+    return [r["ad_soyad"] for r in rows]
 
 
 IZIN_TURLERI_PUBLIC = {"yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"}
@@ -534,13 +545,15 @@ async def public_izin_olustur(data: PublicIzinCreate):
         row = await conn.fetchrow("""
             INSERT INTO izinler
                 (personel_id, talep_tarihi, izin_turu, baslangic, bitis,
-                 gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza)
-            VALUES ($1, CURRENT_DATE, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+                 gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi,
+                 aciklama, notlar, imza, ks_onaylayan)
+            VALUES ($1, CURRENT_DATE, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING id
         """,
             data.personel_id, data.izin_turu, data.baslangic, data.bitis,
             data.gun_sayisi, data.kullanilabilir_gun, data.vekil_ad_soyad,
             data.izin_adresi, data.aciklama, data.notlar, data.imza,
+            data.ks_onaylayan,
         )
         await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
 

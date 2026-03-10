@@ -507,6 +507,16 @@
       <textarea id="f-notlar" placeholder="Varsa ek açıklamalarınız..."></textarea>
     </div>
 
+    <div id="f-ks-section" style="display:none">
+      <div class="section-title">Birim Sorumlusu</div>
+      <div class="form-field">
+        <label>Birim Sorumlusu Seçin *</label>
+        <select id="f-ks">
+          <option value="">— Seçiniz —</option>
+        </select>
+      </div>
+    </div>
+
     <div class="btn-row">
       <button class="btn btn-outline" onclick="geriGit(2)">← Geri</button>
       <button class="btn btn-primary" style="flex:1" onclick="formGecis()">İmza Adımı →</button>
@@ -565,15 +575,17 @@
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────
-let currentStep = 1;
-let personelId  = null;
-let personelTc  = '';
-let smsToken    = '';
-let sigDrawing  = false;
-let sigSigned   = false;
-let sigCtx      = null;
-let sigCanvas   = null;
+let currentStep  = 1;
+let personelId   = null;
+let personelUnvan = '';
+let personelTc   = '';
+let smsToken     = '';
+let sigDrawing   = false;
+let sigSigned    = false;
+let sigCtx       = null;
+let sigCanvas    = null;
 let smsTimerInterval = null;
+const IZ_YONETICI_IDS = [3, 222, 981];
 
 // ── STEP NAVIGATION ───────────────────────────────────────────
 function setStep(n) {
@@ -731,6 +743,7 @@ async function smsDogrula() {
     const data = await res.json();
     smsToken = data.sms_token;
     personelId = data.personel.id;
+    personelUnvan = data.personel.unvan || '';
 
     const initials = data.personel.ad_soyad.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
     document.getElementById('prs-avatar').textContent = initials;
@@ -743,6 +756,8 @@ async function smsDogrula() {
     document.getElementById('f-bas').min = today;
     document.getElementById('f-bit').min = today;
     document.getElementById('gun-badge-wrap').style.display = 'none';
+
+    await guncelleBirimSorumlusuGorunurlugu(personelId, personelUnvan);
 
     if (smsTimerInterval) clearInterval(smsTimerInterval);
     setStep(3);
@@ -888,6 +903,35 @@ function sigTemizle() {
   document.getElementById('sig-label').textContent = 'İmza bekleniyor';
 }
 
+// ── BİRİM SORUMLUSU (KS) ──────────────────────────────────────
+async function guncelleBirimSorumlusuGorunurlugu(pid, unvan) {
+  const sec = document.getElementById('f-ks-section');
+  const gizle = (unvan === 'KOORDİNASYON SORUMLUSU') || IZ_YONETICI_IDS.includes(pid);
+  if (gizle) {
+    sec.style.display = 'none';
+    document.getElementById('f-ks').value = '';
+  } else {
+    sec.style.display = 'block';
+    await loadKsListesi();
+  }
+}
+
+async function loadKsListesi() {
+  const sel = document.getElementById('f-ks');
+  if (sel.options.length > 1) return;
+  try {
+    const res = await fetch('/public/ks-listesi');
+    if (!res.ok) return;
+    const liste = await res.json();
+    liste.forEach(ad => {
+      const opt = document.createElement('option');
+      opt.value = ad;
+      opt.textContent = ad;
+      sel.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
 // ── ADIM 4: GÖNDER ────────────────────────────────────────────
 async function basvuruGonder() {
   const errEl = document.getElementById('imza-error');
@@ -928,7 +972,8 @@ async function basvuruGonder() {
       aciklama:           document.getElementById('f-aciklama').value.trim() || null,
       notlar:             document.getElementById('f-notlar').value.trim() || null,
       imza,
-      sms_token: smsToken,
+      sms_token:          smsToken,
+      ks_onaylayan:       document.getElementById('f-ks').value.trim() || null,
     };
 
     const res = await fetch('/public/izin', {
