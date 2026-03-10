@@ -833,6 +833,13 @@ function formGecis() {
     errEl.style.display = 'flex';
     return;
   }
+  const ksSec = document.getElementById('f-ks-section');
+  const ksVal = document.getElementById('f-ks').value;
+  if (ksSec.style.display !== 'none' && !ksVal) {
+    errEl.textContent = 'Lütfen birim sorumlusunu seçiniz.';
+    errEl.style.display = 'flex';
+    return;
+  }
   setStep(4);
   sigInit();
 }

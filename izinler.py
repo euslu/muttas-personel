@@ -89,7 +89,7 @@ async def list_izinler(
         wheres = []
         params = []
 
-        # KS kullanıcısı yalnızca kendi birim sorumlusu olduğu izinleri görebilir
+        # KS kullanıcısı: kendi atandığı VEYA henüz birim sorumlusu atanmamış izinleri görebilir
         if token.get("rol") == "koordinasyon_sorumlusu":
             ks_row = await conn.fetchrow(
                 "SELECT p.ad_soyad FROM personel p JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email WHERE k.email = $1",
@@ -97,7 +97,7 @@ async def list_izinler(
             )
             ks_adi = ks_row["ad_soyad"] if ks_row else (token.get("ad", "") + " " + token.get("soyad", "")).strip()
             params.append(ks_adi)
-            wheres.append(f"UPPER(i.ks_onaylayan) = UPPER(${len(params)})")
+            wheres.append(f"(UPPER(i.ks_onaylayan) = UPPER(${len(params)}) OR i.ks_onaylayan IS NULL OR i.ks_onaylayan = '')")
 
         if personel_id:
             params.append(personel_id)
@@ -197,7 +197,8 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
                 token.get("email", "")
             )
             ks_adi = ks_row2["ad_soyad"] if ks_row2 else (token.get("ad", "") + " " + token.get("soyad", "")).strip()
-            if (r["ks_onaylayan"] or "").upper() != ks_adi.upper():
+            existing_ks = (r["ks_onaylayan"] or "").strip()
+            if existing_ks and existing_ks.upper() != ks_adi.upper():
                 raise HTTPException(status_code=403, detail="Bu izin kaydına erişim yetkiniz yok.")
         return row_to_dict(r)
 
@@ -384,7 +385,8 @@ async def ks_onayla_izin(iid: int, token: dict = Depends(decode_token)):
         row = await conn.fetchrow("SELECT id, ks_onaylayan FROM izinler WHERE id = $1", iid)
         if not row:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
-        if (row["ks_onaylayan"] or "").upper() != ks_adi.upper():
+        existing_ks = (row["ks_onaylayan"] or "").strip()
+        if existing_ks and existing_ks.upper() != ks_adi.upper():
             raise HTTPException(status_code=403, detail="Bu izin size atanmamış.")
 
         now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
