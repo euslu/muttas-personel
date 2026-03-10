@@ -3196,6 +3196,26 @@ tbody tr:hover td { background: var(--bg-soft); }
             </div>
           </div>
 
+          <!-- Yönetici Unvanları -->
+          <div class="card" style="padding:24px 28px;margin-top:20px">
+            <div style="margin-bottom:20px">
+              <h2 style="margin:0 0 4px;font-size:18px">Yönetici Unvanları</h2>
+              <p style="margin:0;font-size:13px;color:var(--text-3)">Bu unvanlara sahip personeller izin formunda Birim Sorumlusu (KS) seçim alanını görmez.</p>
+            </div>
+
+            <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:16px;flex-wrap:wrap">
+              <div class="form-field" style="flex:1;min-width:220px;margin:0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Unvan Seçin</label>
+                <select id="yonetici-unvan-sel" style="width:100%">
+                  <option value="">— Unvan Seçin —</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" style="white-space:nowrap;height:38px" onclick="yoneticiUnvanEkle()">+ Ekle</button>
+            </div>
+
+            <div id="yonetici-unvan-listesi"></div>
+          </div>
+
         </div>
       </div><!-- /page-ayarlar -->
 
@@ -3394,6 +3414,7 @@ function applyRoleUI(rol) {
 async function loadDashboard() {
   loadIKDashboard();
   loadCalismaGunleri();
+  loadYoneticiUnvanlar();
 }
 
 const DONUT_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#14b8a6','#e11d48','#6366f1'];
@@ -7094,7 +7115,7 @@ async function loadIzinler(page) {
   document.getElementById('iz-next').disabled = izPage >= totalPages;
 }
 
-const IZ_YONETICI_PERSONEL_IDS = [3, 222, 981];
+let YONETICI_UNVANLAR = [];
 let UNVAN_CALISMA_GUNU = {};
 let izSeciliUnvan = '';
 
@@ -7107,7 +7128,7 @@ async function loadCalismaGunleri() {
 }
 
 async function loadAyarlar() {
-  await loadCalismaGunleri();
+  await Promise.all([loadCalismaGunleri(), loadYoneticiUnvanlar()]);
   const tbody = document.getElementById('ayarlar-unvan-body');
   if (!tbody) return;
   const unvanlar = Object.keys(UNVAN_CALISMA_GUNU).sort();
@@ -7129,7 +7150,62 @@ async function loadAyarlar() {
       </td>
     </tr>`;
   }).join('');
+  renderYoneticiUnvanlar();
+  const yoSel = document.getElementById('yonetici-unvan-sel');
+  if (yoSel && yoSel.options.length <= 1) {
+    unvanlar.forEach(u => {
+      const opt = document.createElement('option');
+      opt.value = u;
+      opt.textContent = u;
+      yoSel.appendChild(opt);
+    });
+  }
   await ksAtamaYukleKsList();
+}
+
+function renderYoneticiUnvanlar() {
+  const el = document.getElementById('yonetici-unvan-listesi');
+  if (!el) return;
+  if (!YONETICI_UNVANLAR.length) {
+    el.innerHTML = '<div style="color:var(--text-3);font-size:13px;padding:8px 0">Henüz yönetici unvanı tanımlanmamış.</div>';
+    return;
+  }
+  el.innerHTML = YONETICI_UNVANLAR.map(u =>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--border);border-radius:8px;margin-bottom:6px;font-size:13px">
+      <span style="font-weight:500">${u}</span>
+      <button onclick="yoneticiUnvanSil('${u.replace(/'/g,"\\'")}',this)"
+        style="border:none;background:none;color:var(--danger);cursor:pointer;font-size:15px;line-height:1" title="Kaldır">✕</button>
+    </div>`
+  ).join('');
+}
+
+async function yoneticiUnvanEkle() {
+  const sel = document.getElementById('yonetici-unvan-sel');
+  const unvan = sel.value.trim();
+  if (!unvan) { showToast('Lütfen bir unvan seçin', 'error'); return; }
+  const res = await fetch('/ayarlar/yonetici-unvanlar', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ unvan })
+  });
+  if (!res.ok) { showToast('Eklenemedi', 'error'); return; }
+  await loadYoneticiUnvanlar();
+  renderYoneticiUnvanlar();
+  sel.value = '';
+  showToast(unvan + ' eklendi', 'success');
+}
+
+async function yoneticiUnvanSil(unvan, btn) {
+  btn.disabled = true;
+  const res = await fetch('/ayarlar/yonetici-unvanlar', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ unvan })
+  });
+  if (!res.ok) { showToast('Silinemedi', 'error'); btn.disabled = false; return; }
+  await loadYoneticiUnvanlar();
+  renderYoneticiUnvanlar();
+  showToast(unvan + ' kaldırıldı', 'success');
 }
 
 async function ksAtamaYukleKsList() {
@@ -7265,9 +7341,15 @@ async function loadKsSorumluları() {
   });
 }
 
+async function loadYoneticiUnvanlar() {
+  const res = await fetch('/ayarlar/yonetici-unvanlar', { headers: authHeaders() });
+  if (!res.ok) return;
+  YONETICI_UNVANLAR = await res.json();
+}
+
 function guncelleBirimSorumlusuGorunurlugu(personelId, unvan) {
   const sec = document.getElementById('iz-birim-sorumlusu-section');
-  const gizle = (unvan === 'KOORDİNASYON SORUMLUSU') || IZ_YONETICI_PERSONEL_IDS.includes(personelId);
+  const gizle = YONETICI_UNVANLAR.includes(unvan);
   if (gizle) {
     sec.style.display = 'none';
     document.getElementById('iz-form-ks').value = '';

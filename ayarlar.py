@@ -1,14 +1,12 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
+from typing import Optional
 from db import get_pool
 from permissions import decode_token, IK_EDITORS
 
 router = APIRouter(prefix="/ayarlar", tags=["ayarlar"])
 
 AYAR_ROLLER = IK_EDITORS
-
-KS_HARIC_UNVAN = "KOORDİNASYON SORUMLUSU"
-KS_HARIC_PERSONEL_IDS = [3, 222, 981]
 
 
 def require_ayar_editor(token: dict = Depends(decode_token)) -> dict:
@@ -25,6 +23,10 @@ class CalismaGunuGuncelle(BaseModel):
 class KsAtamaEkle(BaseModel):
     ks_personel_id: int
     personel_id: int
+
+
+class YoneticiUnvanBody(BaseModel):
+    unvan: str
 
 
 @router.get("/calisma-gunleri")
@@ -56,6 +58,46 @@ async def update_calisma_gunu(
             """,
             body.unvan,
             body.gun_sayisi,
+        )
+    return {"ok": True}
+
+
+@router.get("/yonetici-unvanlar")
+async def get_yonetici_unvanlar(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT unvan FROM yonetici_unvanlar ORDER BY unvan"
+        )
+    return [r["unvan"] for r in rows]
+
+
+@router.post("/yonetici-unvanlar", status_code=201)
+async def add_yonetici_unvan(
+    body: YoneticiUnvanBody,
+    token: dict = Depends(require_ayar_editor),
+):
+    unvan = body.unvan.strip().upper()
+    if not unvan:
+        raise HTTPException(status_code=400, detail="Unvan boş olamaz.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "INSERT INTO yonetici_unvanlar (unvan) VALUES ($1) ON CONFLICT DO NOTHING",
+            unvan,
+        )
+    return {"ok": True}
+
+
+@router.delete("/yonetici-unvanlar")
+async def remove_yonetici_unvan(
+    body: YoneticiUnvanBody,
+    token: dict = Depends(require_ayar_editor),
+):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        await conn.execute(
+            "DELETE FROM yonetici_unvanlar WHERE unvan = $1", body.unvan
         )
     return {"ok": True}
 
@@ -129,14 +171,17 @@ async def remove_ks_atama(aid: int, token: dict = Depends(require_ayar_editor)):
 async def get_personel_havuzu(q: str = "", token: dict = Depends(require_ayar_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
+        yonetici_rows = await conn.fetch(
+            "SELECT unvan FROM yonetici_unvanlar"
+        )
+        yonetici_unvanlar = [r["unvan"] for r in yonetici_rows]
         rows = await conn.fetch("""
             SELECT p.id, p.ad_soyad, p.bolum, p.unvan
             FROM personel p
             WHERE p.aktif = TRUE
-              AND p.unvan != $1
-              AND p.id != ALL($2::int[])
-              AND ($3 = '' OR p.ad_soyad ILIKE $4)
+              AND p.unvan != ALL($1::varchar[])
+              AND ($2 = '' OR p.ad_soyad ILIKE $3)
             ORDER BY p.ad_soyad
             LIMIT 30
-        """, KS_HARIC_UNVAN, KS_HARIC_PERSONEL_IDS, q, f"%{q}%")
+        """, yonetici_unvanlar, q, f"%{q}%")
         return [dict(r) for r in rows]

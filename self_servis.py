@@ -495,6 +495,16 @@ async def public_ks_listesi():
     return [r["ad_soyad"] for r in rows]
 
 
+@router.get("/public/yonetici-unvanlar")
+async def public_yonetici_unvanlar():
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT unvan FROM yonetici_unvanlar ORDER BY unvan"
+        )
+    return [r["unvan"] for r in rows]
+
+
 IZIN_TURLERI_PUBLIC = {"yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"}
 
 

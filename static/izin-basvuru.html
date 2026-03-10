@@ -575,17 +575,17 @@
 
 <script>
 // ── STATE ──────────────────────────────────────────────────────
-let currentStep  = 1;
-let personelId   = null;
+let currentStep   = 1;
+let personelId    = null;
 let personelUnvan = '';
-let personelTc   = '';
-let smsToken     = '';
-let sigDrawing   = false;
-let sigSigned    = false;
-let sigCtx       = null;
-let sigCanvas    = null;
+let personelTc    = '';
+let smsToken      = '';
+let sigDrawing    = false;
+let sigSigned     = false;
+let sigCtx        = null;
+let sigCanvas     = null;
 let smsTimerInterval = null;
-const IZ_YONETICI_IDS = [3, 222, 981];
+let YONETICI_UNVANLAR_PUBLIC = [];
 
 // ── STEP NAVIGATION ───────────────────────────────────────────
 function setStep(n) {
@@ -905,8 +905,14 @@ function sigTemizle() {
 
 // ── BİRİM SORUMLUSU (KS) ──────────────────────────────────────
 async function guncelleBirimSorumlusuGorunurlugu(pid, unvan) {
+  if (!YONETICI_UNVANLAR_PUBLIC.length) {
+    try {
+      const r = await fetch('/public/yonetici-unvanlar');
+      if (r.ok) YONETICI_UNVANLAR_PUBLIC = await r.json();
+    } catch(e) {}
+  }
   const sec = document.getElementById('f-ks-section');
-  const gizle = (unvan === 'KOORDİNASYON SORUMLUSU') || IZ_YONETICI_IDS.includes(pid);
+  const gizle = YONETICI_UNVANLAR_PUBLIC.includes(unvan);
   if (gizle) {
     sec.style.display = 'none';
     document.getElementById('f-ks').value = '';
