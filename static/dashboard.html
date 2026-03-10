@@ -7233,10 +7233,10 @@ async function ksAtamaSil(aid, btn) {
 }
 
 async function setCalismaGunu(unvan, gun, btn) {
-  const res = await fetch('/ayarlar/calisma-gunleri/' + encodeURIComponent(unvan), {
+  const res = await fetch('/ayarlar/calisma-gunleri', {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
-    body: JSON.stringify({ gun_sayisi: gun })
+    body: JSON.stringify({ unvan: unvan, gun_sayisi: gun })
   });
   if (!res.ok) { showToast('Güncelleme başarısız', 'error'); return; }
   UNVAN_CALISMA_GUNU[unvan] = gun;

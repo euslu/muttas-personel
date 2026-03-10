@@ -18,6 +18,7 @@ def require_ayar_editor(token: dict = Depends(decode_token)) -> dict:
 
 
 class CalismaGunuGuncelle(BaseModel):
+    unvan:     str
     gun_sayisi: int
 
 
@@ -36,9 +37,8 @@ async def get_calisma_gunleri(token: dict = Depends(decode_token)):
         return {r["unvan"]: r["gun_sayisi"] for r in rows}
 
 
-@router.put("/calisma-gunleri/{unvan}")
+@router.put("/calisma-gunleri")
 async def update_calisma_gunu(
-    unvan: str,
     body: CalismaGunuGuncelle,
     token: dict = Depends(require_ayar_editor),
 ):
@@ -54,7 +54,7 @@ async def update_calisma_gunu(
               SET gun_sayisi = EXCLUDED.gun_sayisi,
                   guncellendi = NOW()
             """,
-            unvan,
+            body.unvan,
             body.gun_sayisi,
         )
     return {"ok": True}
