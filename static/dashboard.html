@@ -3148,6 +3148,54 @@ tbody tr:hover td { background: var(--bg-soft); }
               <tbody id="ayarlar-unvan-body"></tbody>
             </table>
           </div>
+
+          <!-- KS ve Bağlı Personeller -->
+          <div class="card" style="padding:24px 28px;margin-top:20px">
+            <div style="margin-bottom:20px">
+              <h2 style="margin:0 0 4px;font-size:18px">KS ve Bağlı Personeller</h2>
+              <p style="margin:0;font-size:13px;color:var(--text-3)">Koordinasyon sorumlusuna bağlı personelleri yönetin.</p>
+            </div>
+
+            <div style="display:flex;gap:12px;align-items:flex-end;margin-bottom:20px;flex-wrap:wrap">
+              <div class="form-field" style="flex:0 0 220px;margin:0">
+                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Koordinasyon Sorumlusu</label>
+                <select id="ks-atama-ks-sel" onchange="ksAtamaKsSecildi()" style="width:100%">
+                  <option value="">— KS Seçin —</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="ks-atama-panel" style="display:none">
+              <div style="display:flex;gap:10px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap">
+                <div class="form-field" style="flex:1;min-width:200px;margin:0;position:relative">
+                  <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Personel Ara</label>
+                  <input type="text" id="ks-atama-p-q" placeholder="Ad ile arayın..." autocomplete="off"
+                    oninput="ksAtamaPAra(this.value)"
+                    style="width:100%;box-sizing:border-box">
+                  <div id="ks-atama-p-list" class="autocomplete-list" style="display:none"></div>
+                  <input type="hidden" id="ks-atama-p-id">
+                  <input type="hidden" id="ks-atama-p-adi">
+                </div>
+                <button class="btn btn-primary" style="white-space:nowrap;height:38px" onclick="ksAtamaEkle()">+ Ekle</button>
+              </div>
+
+              <table class="iz-table" style="width:100%">
+                <thead>
+                  <tr>
+                    <th style="text-align:left">Ad Soyad</th>
+                    <th style="text-align:left">Birim</th>
+                    <th style="text-align:left">Unvan</th>
+                    <th style="width:60px"></th>
+                  </tr>
+                </thead>
+                <tbody id="ks-atama-list-body"></tbody>
+              </table>
+              <div id="ks-atama-bos" style="display:none;text-align:center;padding:20px;color:var(--text-3);font-size:13px">
+                Bu KS'ye henüz personel eklenmemiş.
+              </div>
+            </div>
+          </div>
+
         </div>
       </div><!-- /page-ayarlar -->
 
@@ -7081,6 +7129,107 @@ async function loadAyarlar() {
       </td>
     </tr>`;
   }).join('');
+  await ksAtamaYukleKsList();
+}
+
+async function ksAtamaYukleKsList() {
+  const sel = document.getElementById('ks-atama-ks-sel');
+  if (!sel || sel.options.length > 1) return;
+  const res = await fetch('/ayarlar/ks-listesi', { headers: authHeaders() });
+  if (!res.ok) return;
+  const liste = await res.json();
+  liste.forEach(ks => {
+    const opt = document.createElement('option');
+    opt.value = ks.personel_id;
+    opt.textContent = ks.ad_soyad;
+    sel.appendChild(opt);
+  });
+}
+
+async function ksAtamaKsSecildi() {
+  const ksId = document.getElementById('ks-atama-ks-sel').value;
+  const panel = document.getElementById('ks-atama-panel');
+  if (!ksId) { panel.style.display = 'none'; return; }
+  panel.style.display = 'block';
+  document.getElementById('ks-atama-p-q').value = '';
+  document.getElementById('ks-atama-p-id').value = '';
+  document.getElementById('ks-atama-p-list').style.display = 'none';
+  await ksAtamaListeYukle(parseInt(ksId));
+}
+
+async function ksAtamaListeYukle(ksId) {
+  const res = await fetch('/ayarlar/ks-atama/' + ksId, { headers: authHeaders() });
+  if (!res.ok) return;
+  const liste = await res.json();
+  const tbody = document.getElementById('ks-atama-list-body');
+  const bos   = document.getElementById('ks-atama-bos');
+  if (!liste.length) {
+    tbody.innerHTML = '';
+    bos.style.display = 'block';
+    return;
+  }
+  bos.style.display = 'none';
+  tbody.innerHTML = liste.map(p => `
+    <tr>
+      <td style="font-weight:600;font-size:13px">${p.ad_soyad}</td>
+      <td style="font-size:12px;color:var(--text-2)">${p.bolum || '—'}</td>
+      <td style="font-size:12px;color:var(--text-2)">${p.unvan || '—'}</td>
+      <td style="text-align:center">
+        <button onclick="ksAtamaSil(${p.id},this)" style="border:none;background:none;color:var(--danger);cursor:pointer;font-size:16px" title="Kaldır">✕</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function ksAtamaPAra(q) {
+  const list = document.getElementById('ks-atama-p-list');
+  if (!q || q.length < 2) { list.style.display = 'none'; return; }
+  const res = await fetch('/ayarlar/personel-havuzu?q=' + encodeURIComponent(q), { headers: authHeaders() });
+  if (!res.ok) return;
+  const data = await res.json();
+  if (!data.length) { list.style.display = 'none'; return; }
+  list.innerHTML = data.map(p =>
+    `<div class="autocomplete-item" onclick="ksAtamaPSec(${p.id},'${p.ad_soyad.replace(/'/g,"\\'")}')">
+      <strong>${p.ad_soyad}</strong>
+      <span style="font-size:11px;color:var(--text-3);margin-left:8px">${[p.bolum,p.unvan].filter(Boolean).join(' / ')}</span>
+    </div>`
+  ).join('');
+  list.style.display = 'block';
+}
+
+function ksAtamaPSec(id, adSoyad) {
+  document.getElementById('ks-atama-p-id').value  = id;
+  document.getElementById('ks-atama-p-q').value   = adSoyad;
+  document.getElementById('ks-atama-p-list').style.display = 'none';
+}
+
+async function ksAtamaEkle() {
+  const ksId = parseInt(document.getElementById('ks-atama-ks-sel').value);
+  const pId  = parseInt(document.getElementById('ks-atama-p-id').value);
+  if (!ksId) { showToast('KS seçiniz', 'error'); return; }
+  if (!pId)  { showToast('Personel seçiniz', 'error'); return; }
+  const res = await fetch('/ayarlar/ks-atama', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ ks_personel_id: ksId, personel_id: pId })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'Eklenemedi', 'error'); return;
+  }
+  document.getElementById('ks-atama-p-q').value = '';
+  document.getElementById('ks-atama-p-id').value = '';
+  showToast('Personel eklendi', 'success');
+  await ksAtamaListeYukle(ksId);
+}
+
+async function ksAtamaSil(aid, btn) {
+  const ksId = parseInt(document.getElementById('ks-atama-ks-sel').value);
+  const res = await fetch('/ayarlar/ks-atama/' + aid, {
+    method: 'DELETE', headers: authHeaders()
+  });
+  if (!res.ok) { showToast('Silinemedi', 'error'); return; }
+  showToast('Kaldırıldı', 'success');
+  await ksAtamaListeYukle(ksId);
 }
 
 async function setCalismaGunu(unvan, gun, btn) {
