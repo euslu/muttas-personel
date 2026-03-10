@@ -418,6 +418,9 @@ async def sms_kod_dogrula(data: SmsKodDogrula):
                 "UPDATE sms_kodlari SET verified=TRUE, sms_token=$1 WHERE id=$2",
                 sms_token, entry["id"]
             )
+            is_yonetici_row = await conn.fetchval(
+                "SELECT 1 FROM yonetici_unvanlar WHERE unvan = $1", entry["unvan"] or ""
+            )
 
     return {
         "mesaj": "Doğrulama başarılı.",
@@ -428,6 +431,7 @@ async def sms_kod_dogrula(data: SmsKodDogrula):
             "bolum": entry["bolum"],
             "unvan": entry["unvan"],
             "ilce": entry["ilce"],
+            "is_yonetici": bool(is_yonetici_row),
         }
     }
 
