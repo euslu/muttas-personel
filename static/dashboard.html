@@ -8006,7 +8006,7 @@ async function izinYazdir(id) {
         </div>
         <div style="border-top:1px solid #999;width:80%;margin:0 auto;padding-top:4px">
           <div class="sig-name">${isYonetici ? (iz.yk_onaylayan || YK_BASKAN_VEKILI_AD) : (isYkVekili ? (iz.mudur_onaylayan || YK_BASKAN_VEKILI_AD) : (iz.mudur_onaylayan || ''))}</div>
-          <div class="sig-title">${isYonetici ? donusUnvan : 'Genel Müdür'}</div>
+          <div class="sig-title">${isYonetici ? 'Yönetim Kurulu Başkan Yardımcısı' : 'Genel Müdür'}</div>
           <div style="font-size:9px;color:#888">${isYonetici ? (iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : '') : (iz.mudur_onay_tarihi ? fmt(iz.mudur_onay_tarihi) : '')}</div>
         </div>
       </td>
