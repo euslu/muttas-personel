@@ -7918,6 +7918,43 @@ async function izinYazdir(id) {
   </table>
 
   <!-- İmza Alanları (Yatay - 3 sütun) -->
+  ${isYonetici ? `
+  <table style="margin-top:6px">
+    <tr>
+      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">İK / İDARİ İŞLER</td>
+      <td style="width:34%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">GENEL MÜDÜR</td>
+      <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">YÖNETİM KURULU</td>
+    </tr>
+    <tr>
+      <td style="height:70px;text-align:center;vertical-align:middle;padding:4px">
+        ${dijitalImzaBlok(iz.ik_imza)}
+      </td>
+      <td style="height:70px;text-align:center;vertical-align:middle;padding:4px">
+        ${dijitalImzaBlok(iz.mudur_imza)}
+      </td>
+      <td style="height:70px;text-align:center;vertical-align:middle;padding:4px">
+        ${dijitalImzaBlok(iz.yk_imza)}
+      </td>
+    </tr>
+    <tr>
+      <td style="text-align:center;padding:4px 4px 2px;border-top:none">
+        <div class="sig-name">${iz.ik_onaylayan || ''}</div>
+        <div class="sig-title">İK/İdari İşler Sorumlusu</div>
+        <div style="font-size:9px;color:#888">${iz.ik_onay_tarihi ? fmt(iz.ik_onay_tarihi) : ''}</div>
+      </td>
+      <td style="text-align:center;padding:4px 4px 2px;border-top:none">
+        <div class="sig-name">${iz.mudur_onaylayan || ''}</div>
+        <div class="sig-title">Genel Müdür</div>
+        <div style="font-size:9px;color:#888">${iz.mudur_onay_tarihi ? fmt(iz.mudur_onay_tarihi) : ''}</div>
+      </td>
+      <td style="text-align:center;padding:4px 4px 2px;border-top:none">
+        <div class="sig-name">${iz.yk_onaylayan || YK_BASKAN_VEKILI_AD}</div>
+        <div class="sig-title">${YK_BASKAN_VEKILI_UNVAN}</div>
+        <div style="font-size:9px;color:#888">${iz.yk_onay_tarihi ? fmt(iz.yk_onay_tarihi) : ''}</div>
+      </td>
+    </tr>
+  </table>
+  ` : `
   <table style="margin-top:6px">
     <tr>
       <td style="width:33%;text-align:center;padding:6px;font-size:10px;font-weight:700;background:#f5f5f5">BİRİM SORUMLUSU</td>
@@ -7953,6 +7990,7 @@ async function izinYazdir(id) {
       </td>
     </tr>
   </table>
+  `}
 
   <!-- Görev Başlama + Dönüş İmza -->
   <table style="margin-top:8px">
