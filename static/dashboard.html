@@ -5477,6 +5477,16 @@ function ftExport() {
       <textarea id="iz-form-aciklama" rows="2" placeholder="İzin gerekçesi / açıklama yazınız..."></textarea>
     </div>
 
+    <div id="iz-birim-sorumlusu-section" style="display:none;margin-bottom:12px">
+      <div class="drawer-section">Birim Sorumlusu</div>
+      <div class="form-field">
+        <label>Birim Sorumlusu Seçin</label>
+        <select id="iz-form-ks">
+          <option value="">— Seçiniz —</option>
+        </select>
+      </div>
+    </div>
+
     <div id="iz-vekalet-section">
     <div class="drawer-section">Vekalet & Adres</div>
     <div class="form-grid-2" style="margin-bottom:12px">
@@ -7000,6 +7010,36 @@ async function loadIzinler(page) {
   document.getElementById('iz-next').disabled = izPage >= totalPages;
 }
 
+const IZ_YONETICI_PERSONEL_IDS = [3, 222, 981];
+
+async function loadKsSorumluları() {
+  const sel = document.getElementById('iz-form-ks');
+  if (sel.options.length > 1) return;
+  const res = await fetch('/personel?unvan=KOORDİNASYON%20SORUMLUSU&per_page=50&aktif=true', {
+    headers: { Authorization: 'Bearer ' + getToken() }
+  });
+  if (!res.ok) return;
+  const data = await res.json();
+  data.veri.forEach(p => {
+    const opt = document.createElement('option');
+    opt.value = p.ad_soyad;
+    opt.textContent = p.ad_soyad;
+    sel.appendChild(opt);
+  });
+}
+
+function guncelleBirimSorumlusuGorunurlugu(personelId, unvan) {
+  const sec = document.getElementById('iz-birim-sorumlusu-section');
+  const gizle = (unvan === 'KOORDİNASYON SORUMLUSU') || IZ_YONETICI_PERSONEL_IDS.includes(personelId);
+  if (gizle) {
+    sec.style.display = 'none';
+    document.getElementById('iz-form-ks').value = '';
+  } else {
+    sec.style.display = 'block';
+    loadKsSorumluları();
+  }
+}
+
 async function openIzinDrawer(id) {
   izEditId = id;
   const overlay = document.getElementById('iz-drawer-overlay');
@@ -7026,6 +7066,8 @@ async function openIzinDrawer(id) {
   document.getElementById('iz-form-bit').value = '';
   document.getElementById('iz-form-gun').value = '';
   document.getElementById('iz-form-kullanilabilir').value = '';
+  document.getElementById('iz-form-ks').value = '';
+  document.getElementById('iz-birim-sorumlusu-section').style.display = 'none';
 
   if (id) {
     const res = await fetch('/izinler/' + id, { headers: { Authorization: 'Bearer ' + getToken() } });
@@ -7046,6 +7088,11 @@ async function openIzinDrawer(id) {
     document.getElementById('iz-form-notlar').value          = iz.notlar || '';
     izTurDegisti();
     if (iz.imza) izImzaYukle(iz.imza);
+    guncelleBirimSorumlusuGorunurlugu(iz.personel_id, iz.unvan || '');
+    if (iz.ks_onaylayan) {
+      await loadKsSorumluları();
+      document.getElementById('iz-form-ks').value = iz.ks_onaylayan;
+    }
 
     const bilgi = document.getElementById('iz-personel-bilgi');
     bilgi.style.display = 'block';
@@ -7259,6 +7306,7 @@ function izPersonelSec(id, adSoyad, bolum, unvan, kalanIzin, toplamHak) {
   bilgi.style.display = 'block';
   bilgi.innerHTML = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}` +
     `<span style="float:right;color:var(--primary);font-weight:600">Kalan İzin: ${kalanIzin||0} / ${toplamHak||0} gün</span>`;
+  guncelleBirimSorumlusuGorunurlugu(id, unvan);
 }
 
 async function izVekilAra(q) {
@@ -7307,6 +7355,7 @@ async function saveIzin() {
     izin_adresi:        document.getElementById('iz-form-adres').value || null,
     aciklama:           document.getElementById('iz-form-aciklama').value || null,
     notlar:             document.getElementById('iz-form-notlar').value || null,
+    ks_onaylayan:       document.getElementById('iz-form-ks').value || null,
     imza:               null,
   };
 

@@ -55,6 +55,7 @@ class IzinCreate(BaseModel):
     aciklama:         Optional[str] = None
     notlar:           Optional[str] = None
     imza:             Optional[str] = None
+    ks_onaylayan:     Optional[str] = None
 
 
 class IzinOnay(BaseModel):
@@ -198,13 +199,13 @@ async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(
         row = await conn.fetchrow("""
             INSERT INTO izinler (
                 personel_id, talep_tarihi, izin_turu, baslangic, bitis,
-                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza
-            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)
+                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza, ks_onaylayan
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
             RETURNING id
         """,
             body.personel_id, talep, body.izin_turu, body.baslangic, body.bitis,
             body.gun_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad,
-            body.izin_adresi, body.aciklama, body.notlar, body.imza,
+            body.izin_adresi, body.aciklama, body.notlar, body.imza, body.ks_onaylayan,
         )
         ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
         await izin_log_yaz(conn, row["id"], body.personel_id, prs["ad_soyad"],
@@ -227,12 +228,14 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_
             UPDATE izinler SET
                 izin_turu = $2, baslangic = $3, bitis = $4, gun_sayisi = $5,
                 kullanilabilir_gun = $6, vekil_ad_soyad = $7, izin_adresi = $8,
-                aciklama = $9, notlar = $10, talep_tarihi = $11, imza = COALESCE($12, imza)
+                aciklama = $9, notlar = $10, talep_tarihi = $11, imza = COALESCE($12, imza),
+                ks_onaylayan = $13
             WHERE id = $1
         """,
             iid, body.izin_turu, body.baslangic, body.bitis, body.gun_sayisi,
             body.kullanilabilir_gun, body.vekil_ad_soyad, body.izin_adresi,
             body.aciklama, body.notlar, body.talep_tarihi or date.today(), body.imza,
+            body.ks_onaylayan,
         )
         return {"ok": True}
 
