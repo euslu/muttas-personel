@@ -7513,17 +7513,22 @@ async function openIzinDrawer(id) {
       document.getElementById('iz-onay-section').style.display = 'block';
       renderIzinTimeline(iz);
 
-      // tamamlandi seçeneğini sadece dönüş günü >= bugün ise etkinleştir
+      // tamamlandi seçeneği: sadece GM/admin + dönüş günü geldiğinde
       const tamOpt = document.querySelector('#iz-form-durum-onay option[value="tamamlandi"]');
       if (tamOpt) {
-        const today = new Date(); today.setHours(0,0,0,0);
-        const bitisDate = iz.bitis ? new Date(iz.bitis) : null;
-        const donusGunu = bitisDate ? new Date(bitisDate.getTime() + 86400000) : null;
-        const aktif = donusGunu ? today >= donusGunu : false;
-        tamOpt.disabled = !aktif;
-        tamOpt.textContent = aktif
-          ? 'Tamamlandı (Göreve Başladı)'
-          : `Tamamlandı (Dönüş: ${donusGunu ? donusGunu.toLocaleDateString('tr-TR') : '?'})`;
+        const isGM = currentUser && (currentUser.rol === 'genel_mudur' || currentUser.rol === 'admin');
+        if (!isGM) {
+          tamOpt.remove();
+        } else {
+          const today = new Date(); today.setHours(0,0,0,0);
+          const bitisDate = iz.bitis ? new Date(iz.bitis) : null;
+          const donusGunu = bitisDate ? new Date(bitisDate.getTime() + 86400000) : null;
+          const aktif = donusGunu ? today >= donusGunu : false;
+          tamOpt.disabled = !aktif;
+          tamOpt.textContent = aktif
+            ? 'Tamamlandı (Göreve Başladı)'
+            : `Tamamlandı (Dönüş: ${donusGunu ? donusGunu.toLocaleDateString('tr-TR') : '?'})`;
+        }
       }
     }
 

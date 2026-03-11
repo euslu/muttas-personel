@@ -264,7 +264,7 @@ ONAY_YETKI = {
     "mudur_onayladi":  GM_EDITORS,
     "onaylandi":       YK_EDITORS,
     "reddedildi":      IK_EDITORS | GM_EDITORS | YK_EDITORS,
-    "tamamlandi":      IK_EDITORS,
+    "tamamlandi":      GM_EDITORS,
 }
 
 
@@ -288,7 +288,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
             "ik_onayladi": "İK onayını sadece İK yöneticisi verebilir.",
             "mudur_onayladi": "Genel Müdür onayını sadece Genel Müdür verebilir.",
             "onaylandi": "YK onayını sadece Yönetim Kurulu üyesi verebilir.",
-            "tamamlandi": "Tamamlama işlemini sadece İK yöneticisi yapabilir.",
+            "tamamlandi": "Dönüş imzasını sadece Genel Müdür atabilir.",
         }
         raise HTTPException(status_code=403, detail=durum_label.get(body.durum, "Bu onay için yetkiniz yok."))
 
