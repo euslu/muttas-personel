@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel
 from typing import Optional
+from datetime import date
 from db import get_pool
 from permissions import decode_token, IK_EDITORS
 
@@ -239,4 +240,137 @@ async def get_personel_havuzu(q: str = "", token: dict = Depends(require_ayar_ed
             ORDER BY p.ad_soyad
             LIMIT 30
         """, yonetici_unvanlar, q, f"%{q}%")
+        return [dict(r) for r in rows]
+
+
+# ── Resmi Tatiller ─────────────────────────────────────────────────────────────
+
+class ResmiTatilEkle(BaseModel):
+    ad: str
+    tarih: date
+    gun: float
+
+
+class ResmiTatilGuncelle(BaseModel):
+    ad: str
+    gun: float
+
+
+@router.get("/resmi-tatiller")
+async def get_resmi_tatiller(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT id, ad, tarih::text, gun::float FROM resmi_tatiller ORDER BY tarih"
+        )
+        return [dict(r) for r in rows]
+
+
+@router.post("/resmi-tatiller", status_code=201)
+async def add_resmi_tatil(body: ResmiTatilEkle, token: dict = Depends(require_ayar_editor)):
+    if not body.ad.strip():
+        raise HTTPException(status_code=400, detail="Ad boş olamaz.")
+    if body.gun <= 0:
+        raise HTTPException(status_code=400, detail="Gün sayısı 0'dan büyük olmalıdır.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        try:
+            row = await conn.fetchrow(
+                "INSERT INTO resmi_tatiller (ad, tarih, gun) VALUES ($1, $2, $3) RETURNING id",
+                body.ad.strip(), body.tarih, body.gun
+            )
+        except Exception:
+            raise HTTPException(status_code=409, detail="Bu tarihte zaten bir tatil kayıtlı.")
+    return {"id": row["id"]}
+
+
+@router.put("/resmi-tatiller/{tid}")
+async def update_resmi_tatil(tid: int, body: ResmiTatilGuncelle, token: dict = Depends(require_ayar_editor)):
+    if not body.ad.strip():
+        raise HTTPException(status_code=400, detail="Ad boş olamaz.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM resmi_tatiller WHERE id = $1", tid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Tatil bulunamadı.")
+        await conn.execute(
+            "UPDATE resmi_tatiller SET ad=$1, gun=$2 WHERE id=$3",
+            body.ad.strip(), body.gun, tid
+        )
+    return {"ok": True}
+
+
+@router.delete("/resmi-tatiller/{tid}")
+async def delete_resmi_tatil(tid: int, token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM resmi_tatiller WHERE id = $1", tid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Tatil bulunamadı.")
+        await conn.execute("DELETE FROM resmi_tatiller WHERE id=$1", tid)
+    return {"ok": True}
+
+
+# ── YK Başkan Vekili ───────────────────────────────────────────────────────────
+
+class YkBvEkle(BaseModel):
+    personel_id: int
+
+
+@router.get("/yk-baskan-vekili")
+async def get_yk_baskan_vekili(token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT b.id, b.personel_id, p.ad_soyad, p.unvan, p.bolum
+            FROM yk_baskan_vekili b
+            JOIN personel p ON p.id = b.personel_id
+            ORDER BY p.ad_soyad
+        """)
+        return [dict(r) for r in rows]
+
+
+@router.post("/yk-baskan-vekili", status_code=201)
+async def add_yk_baskan_vekili(body: YkBvEkle, token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        p = await conn.fetchval("SELECT id FROM personel WHERE id=$1 AND aktif=TRUE", body.personel_id)
+        if not p:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+        try:
+            row = await conn.fetchrow(
+                "INSERT INTO yk_baskan_vekili (personel_id) VALUES($1) RETURNING id",
+                body.personel_id
+            )
+        except Exception:
+            raise HTTPException(status_code=409, detail="Bu personel zaten YK Başkan Vekili listesinde.")
+    return {"id": row["id"]}
+
+
+@router.delete("/yk-baskan-vekili/{bid}")
+async def remove_yk_baskan_vekili(bid: int, token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM yk_baskan_vekili WHERE id=$1", bid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Kayıt bulunamadı.")
+        await conn.execute("DELETE FROM yk_baskan_vekili WHERE id=$1", bid)
+    return {"ok": True}
+
+
+@router.get("/yk-bv-personel-havuzu")
+async def get_yk_bv_personel_havuzu(q: str = "", token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        mevcut = await conn.fetch("SELECT personel_id FROM yk_baskan_vekili")
+        mevcut_ids = [r["personel_id"] for r in mevcut]
+        rows = await conn.fetch("""
+            SELECT p.id, p.ad_soyad, p.unvan, p.bolum
+            FROM personel p
+            WHERE p.aktif = TRUE
+              AND p.id != ALL($1::int[])
+              AND ($2 = '' OR p.ad_soyad ILIKE $3)
+            ORDER BY p.ad_soyad
+            LIMIT 30
+        """, mevcut_ids or [-1], q, f"%{q}%")
         return [dict(r) for r in rows]
