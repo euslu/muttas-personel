@@ -8114,7 +8114,7 @@ async function izinYazdir(id) {
       </td>
       <td style="width:33%;text-align:center;vertical-align:bottom;padding:4px">
         <div style="height:50px">
-          ${iz.gorev_baslama ? dijitalImzaBlok(isYonetici ? iz.yk_imza : iz.mudur_imza) : ''}
+          ${dijitalImzaBlok(isYonetici ? iz.yk_imza : iz.mudur_imza)}
         </div>
         <div style="border-top:1px solid #999;width:80%;margin:0 auto;padding-top:4px">
           <div class="sig-name">${isYonetici ? (iz.yk_onaylayan || YK_BASKAN_VEKILI_AD) : (isYkVekili ? (iz.mudur_onaylayan || YK_BASKAN_VEKILI_AD) : (iz.mudur_onaylayan || ''))}</div>
