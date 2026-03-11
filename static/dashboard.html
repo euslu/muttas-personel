@@ -7068,7 +7068,7 @@ function canDonus(iz) {
   if (!currentUser) return false;
   const r = currentUser.rol;
   if (r !== 'genel_mudur' && r !== 'admin') return false;
-  if (iz.durum !== 'onaylandi') return false;
+  if (iz.durum !== 'onaylandi' && iz.durum !== 'mudur_onayladi') return false;
   if (iz.gorev_baslama) return false;
   return true;
 }

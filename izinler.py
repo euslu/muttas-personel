@@ -296,14 +296,14 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
         "ik_onayladi":     {"beklemede"},
         "mudur_onayladi":  {"ik_onayladi"},
         "onaylandi":       {"mudur_onayladi"},
-        "tamamlandi":      {"onaylandi"},
+        "tamamlandi":      {"onaylandi", "mudur_onayladi"},
         "reddedildi":      {"beklemede", "ik_onayladi", "mudur_onayladi"},
     }
 
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow("""
-            SELECT i.durum, i.personel_id, p.ad_soyad
+            SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi, p.ad_soyad
             FROM izinler i JOIN personel p ON p.id = i.personel_id
             WHERE i.id = $1
         """, iid)
@@ -317,10 +317,18 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
                 "ik_onayladi":    "İK onayı yalnızca 'Beklemede' durumundaki izinlere verilebilir.",
                 "mudur_onayladi": "Genel Müdür onayı için önce İK onayı gereklidir.",
                 "onaylandi":      "YK onayı için önce Genel Müdür onayı gereklidir.",
-                "tamamlandi":     "Tamamlama için önce YK onayı gereklidir.",
+                "tamamlandi":     "Tamamlama için önce en az Genel Müdür onayı gereklidir.",
                 "reddedildi":     "Bu durumdaki izin reddedilemez.",
             }
             raise HTTPException(status_code=400, detail=sira_mesaj.get(body.durum, "Onay sırası uygun değil."))
+
+        # KS onayı zorunluluğu: ks_onaylayan atanmışsa İK imzalamadan önce KS onayı gerekli
+        if body.durum == "ik_onayladi" and row["ks_onaylayan"] and not row["ks_onay_tarihi"]:
+            raise HTTPException(status_code=400, detail="İK onayı için önce Koordinasyon Sorumlusu onayı gereklidir.")
+
+        # İK onayı zorunluluğu: Genel Müdür imzalamadan önce İK onayı gerekli
+        if body.durum == "mudur_onayladi" and not row["ik_onay_tarihi"]:
+            raise HTTPException(status_code=400, detail="Genel Müdür onayı için önce İK onayı gereklidir.")
 
         today = date.today()
         extra_sets = ""
