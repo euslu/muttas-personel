@@ -7064,6 +7064,39 @@ function canKsApprove(iz) {
   return !iz.ks_onay_tarihi;
 }
 
+function canDonus(iz) {
+  if (!currentUser) return false;
+  const r = currentUser.rol;
+  if (r !== 'genel_mudur' && r !== 'admin') return false;
+  if (iz.durum !== 'onaylandi') return false;
+  if (iz.gorev_baslama) return false;
+  return true;
+}
+
+function donusGunuGeldiMi(iz) {
+  if (!iz.bitis) return false;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const donus = new Date(iz.bitis); donus.setDate(donus.getDate() + 1);
+  return today >= donus;
+}
+
+async function izinHizliDonus(id) {
+  if (!confirm('Göreve başlama işlemi kaydedilecek. Onaylıyor musunuz?')) return;
+  const onaylayan = currentUser ? (currentUser.ad + ' ' + currentUser.soyad) : '';
+  const res = await fetch('/izinler/' + id + '/onay', {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + getToken() },
+    body: JSON.stringify({ durum: 'tamamlandi', onaylayan }),
+  });
+  if (res.ok) {
+    showToast('Göreve başlama kaydedildi', 'success');
+    loadIzinler(izPage);
+  } else {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'İşlem başarısız', 'error');
+  }
+}
+
 async function loadIzinler(page) {
   izPage = page || 1;
   const isAdmin = currentUser && currentUser.rol === 'admin';
@@ -7130,6 +7163,11 @@ async function loadIzinler(page) {
             ? `<button class="iz-action-btn approve" title="Onayla" onclick="izinHizliOnay(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l3 3 5-6"/></svg></button>` : ''}
           ${canKsApprove(iz)
             ? `<button class="iz-action-btn approve" title="KS Onayı Ver" onclick="ksOnayVer(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 8l3 3 5-6"/></svg></button>` : ''}
+          ${canDonus(iz)
+            ? (donusGunuGeldiMi(iz)
+                ? `<button class="iz-action-btn" style="color:#0369a1;border-color:rgba(3,105,161,.25);background:#f0f9ff" title="Göreve Başladı (Dönüş İmzala)" onclick="izinHizliDonus(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l4-4-4-4M7 12l4-4-4-4"/></svg></button>`
+                : `<button class="iz-action-btn" style="opacity:.4;cursor:not-allowed" title="Dönüş günü henüz gelmedi" disabled><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l4-4-4-4M7 12l4-4-4-4"/></svg></button>`)
+            : ''}
           <button class="iz-action-btn" title="Yazdır" onclick="izinYazdir(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V2h4v5M5 12H4a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3a1 1 0 01-1 1H9M5 10h4v3H5z"/></svg></button>
           ${isAdmin || (canEditIK && iz.durum === 'beklemede') ? `<button class="iz-action-btn del" title="Sil" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
         </div>
