@@ -2684,6 +2684,8 @@ tbody tr:hover td { background: var(--bg-soft); }
               <option value="liman_admin">Liman — Yönetici</option>
               <option value="ik_viewer">İK — Görüntüleyici</option>
               <option value="ik_admin">İK — Yönetici</option>
+              <option value="koordinasyon_sorumlusu">Koordinasyon Sorumlusu</option>
+              <option value="mudur">Müdür</option>
               <option value="genel_mudur">Genel Müdür</option>
               <option value="yk_uyesi">YK Üyesi</option>
               <option value="admin">Admin (Tam Yetki)</option>
@@ -3438,28 +3440,29 @@ function showToast(mesaj, tip = 'info', sure = 3500) {
 }
 
 function applyRoleUI(rol) {
-  const isAdmin = rol === 'admin';
-  const isIK    = rol === 'ik_admin' || rol === 'ik_viewer';
-  const isKS    = rol === 'koordinasyon_sorumlusu';
-  const isGM    = rol === 'genel_mudur';
-  const isYK    = rol === 'yk_uyesi';
+  const isAdmin  = rol === 'admin';
+  const isIK     = rol === 'ik_admin' || rol === 'ik_viewer';
+  const isKS     = rol === 'koordinasyon_sorumlusu';
+  const isMudur  = rol === 'mudur';
+  const isGM     = rol === 'genel_mudur';
+  const isYK     = rol === 'yk_uyesi';
   const isLimanAdmin = rol === 'admin';
-  const isLiman = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
+  const isLiman  = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
 
-  canEditIK    = isLimanAdmin || rol === 'ik_admin' || isGM || isKS;
+  canEditIK    = isLimanAdmin || rol === 'ik_admin' || isGM || isKS || isMudur;
   canEditLiman = isLimanAdmin || rol === 'liman_admin';
 
   document.querySelectorAll('.nav-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
   });
   document.querySelectorAll('.nav-ik').forEach(el => {
-    el.style.display = isIK || isLimanAdmin || isKS || isGM || isYK ? '' : 'none';
+    el.style.display = isIK || isLimanAdmin || isKS || isMudur || isGM || isYK ? '' : 'none';
   });
   document.querySelectorAll('.dash-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
   });
   document.querySelectorAll('.dash-ik').forEach(el => {
-    el.style.display = isIK || isLimanAdmin || isGM || isYK ? '' : 'none';
+    el.style.display = isIK || isLimanAdmin || isGM || isYK || isMudur ? '' : 'none';
   });
 
   const subtitle = document.getElementById('sb-subtitle');
@@ -3509,12 +3512,13 @@ function applyRoleUI(rol) {
   document.getElementById('sb-name').textContent =
     currentUser.ad + ' ' + currentUser.soyad;
 
+  const isMudurInit = rol === 'mudur';
   const isKSInit = rol === 'koordinasyon_sorumlusu';
   document.getElementById('sb-liman').textContent =
-    isAdmin ? 'Tüm Modüller' : isGM ? 'Genel Müdür' : isYK ? 'Yönetim Kurulu' : isKSInit ? 'Koordinasyon Sorumlusu' : isIK ? 'İnsan Kaynakları' : (currentLiman || 'Liman atanmamış');
+    isAdmin ? 'Tüm Modüller' : isGM ? 'Genel Müdür' : isYK ? 'Yönetim Kurulu' : isKSInit ? 'Koordinasyon Sorumlusu' : isMudurInit ? 'Müdür' : isIK ? 'İnsan Kaynakları' : (currentLiman || 'Liman atanmamış');
 
   const badge = document.getElementById('sb-badge');
-  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', koordinasyon_sorumlusu: 'Koord. Sorumlusu', genel_mudur: 'Genel Müdür', yk_uyesi: 'YK Üyesi', kullanici: 'Görevli' };
+  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', koordinasyon_sorumlusu: 'Koord. Sorumlusu', mudur: 'Müdür', genel_mudur: 'Genel Müdür', yk_uyesi: 'YK Üyesi', kullanici: 'Görevli' };
   badge.textContent  = badgeLabels[rol] || 'Görevli';
   badge.className    = 'badge ' + (isAdmin || isGM ? 'badge-admin' : 'badge-user');
 
@@ -3524,7 +3528,7 @@ function applyRoleUI(rol) {
   if (rol === 'ik_admin') {
     document.getElementById('ik-section').style.display = 'block';
   }
-  if (rol === 'koordinasyon_sorumlusu') {
+  if (rol === 'koordinasyon_sorumlusu' || rol === 'mudur') {
     document.getElementById('ks-section').style.display = 'block';
   }
   if (isAdmin) {

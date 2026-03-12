@@ -8,9 +8,9 @@ JWT_ALGORITHM = "HS256"
 security      = HTTPBearer()
 
 IK_EDITORS     = {"admin", "ik_admin", "genel_mudur"}
-IZIN_EDITORS   = IK_EDITORS | {"koordinasyon_sorumlusu"}
+IZIN_EDITORS   = IK_EDITORS | {"koordinasyon_sorumlusu", "mudur"}
 LIMAN_EDITORS  = {"admin", "liman_admin"}
-KS_EDITORS     = {"admin", "koordinasyon_sorumlusu"}
+KS_EDITORS     = {"admin", "koordinasyon_sorumlusu", "mudur"}
 GM_EDITORS     = {"admin", "genel_mudur"}
 YK_EDITORS     = {"admin", "yk_uyesi"}
 

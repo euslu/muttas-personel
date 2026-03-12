@@ -493,9 +493,14 @@ class PublicIzinCreate(BaseModel):
 async def public_ks_listesi():
     pool = await get_pool()
     async with pool.acquire() as conn:
-        rows = await conn.fetch(
-            "SELECT ad_soyad FROM personel WHERE unvan = 'KOORDİNASYON SORUMLUSU' AND aktif = TRUE ORDER BY ad_soyad"
-        )
+        rows = await conn.fetch("""
+            SELECT DISTINCT p.ad_soyad
+            FROM personel p
+            JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email
+            WHERE k.rol IN ('koordinasyon_sorumlusu', 'mudur')
+              AND k.aktif = TRUE AND p.aktif = TRUE
+            ORDER BY p.ad_soyad
+        """)
     return [r["ad_soyad"] for r in rows]
 
 

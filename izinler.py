@@ -89,8 +89,8 @@ async def list_izinler(
         wheres = []
         params = []
 
-        # KS kullanıcısı: kendi atandığı VEYA henüz birim sorumlusu atanmamış izinleri görebilir
-        if token.get("rol") == "koordinasyon_sorumlusu":
+        # KS kullanıcısı veya Müdür: kendi atandığı VEYA henüz birim sorumlusu atanmamış izinleri görebilir
+        if token.get("rol") in {"koordinasyon_sorumlusu", "mudur"}:
             ks_row = await conn.fetchrow(
                 "SELECT p.ad_soyad FROM personel p JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email WHERE k.email = $1",
                 token.get("email", "")
@@ -191,7 +191,7 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
         """, iid)
         if not r:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
-        if token.get("rol") == "koordinasyon_sorumlusu":
+        if token.get("rol") in {"koordinasyon_sorumlusu", "mudur"}:
             ks_row2 = await conn.fetchrow(
                 "SELECT p.ad_soyad FROM personel p JOIN kullanicilar k ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email WHERE k.email = $1",
                 token.get("email", "")
@@ -379,8 +379,8 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
 
 @router.put("/{iid}/ks-onayla")
 async def ks_onayla_izin(iid: int, token: dict = Depends(decode_token)):
-    if token.get("rol") != "koordinasyon_sorumlusu":
-        raise HTTPException(status_code=403, detail="Bu işlem sadece Koordinasyon Sorumlusu tarafından yapılabilir.")
+    if token.get("rol") not in {"koordinasyon_sorumlusu", "mudur"}:
+        raise HTTPException(status_code=403, detail="Bu işlem sadece Koordinasyon Sorumlusu veya Müdür tarafından yapılabilir.")
 
     pool = await get_pool()
     async with pool.acquire() as conn:
