@@ -54,6 +54,7 @@ class IzinCreate(BaseModel):
     baslangic:        date
     bitis:            date
     gun_sayisi:       int
+    saat_sayisi:      Optional[int] = None
     kullanilabilir_gun: Optional[int] = None
     vekil_ad_soyad:   Optional[str] = None
     izin_adresi:      Optional[str] = None
@@ -184,6 +185,52 @@ async def get_ozet(
         }
 
 
+@router.get("/hesapla-kalan/{personel_id}")
+async def hesapla_kalan_izin(personel_id: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        p = await conn.fetchrow(
+            "SELECT kalan_izin, toplam_izin_hak FROM personel WHERE id = $1 AND aktif = TRUE",
+            personel_id
+        )
+        if not p:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+
+        toplam_hak  = p["toplam_izin_hak"] or 0
+        kalan_pdks  = p["kalan_izin"] or 0
+
+        # Reddedilmeyenler arasından yıllık izin kullanımı
+        yillik_kullanilan = await conn.fetchval("""
+            SELECT COALESCE(SUM(gun_sayisi), 0)
+            FROM izinler
+            WHERE personel_id = $1
+              AND izin_turu = 'yillik'
+              AND durum NOT IN ('reddedildi')
+        """, personel_id) or 0
+
+        # Saatlik izin toplamı (saat cinsinden); eski kayıtlarda 8 saat varsay
+        saatlik_toplam_saat = await conn.fetchval("""
+            SELECT COALESCE(SUM(COALESCE(saat_sayisi, 8)), 0)
+            FROM izinler
+            WHERE personel_id = $1
+              AND izin_turu = 'saatlik'
+              AND durum NOT IN ('reddedildi')
+        """, personel_id) or 0
+
+        import math
+        saatlik_gun_karsiligi = math.ceil(saatlik_toplam_saat / 8)
+        efektif_kalan = max(0, kalan_pdks - saatlik_gun_karsiligi)
+
+        return {
+            "toplam_hak":            toplam_hak,
+            "kalan_pdks":            kalan_pdks,
+            "yillik_kullanilan":     int(yillik_kullanilan),
+            "saatlik_toplam_saat":   int(saatlik_toplam_saat),
+            "saatlik_gun_karsiligi": saatlik_gun_karsiligi,
+            "efektif_kalan":         efektif_kalan,
+        }
+
+
 @router.get("/{iid}")
 async def get_izin(iid: int, token: dict = Depends(decode_token)):
     pool = await get_pool()
@@ -224,12 +271,12 @@ async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(
         row = await conn.fetchrow("""
             INSERT INTO izinler (
                 personel_id, talep_tarihi, izin_turu, baslangic, bitis,
-                gun_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza, ks_onaylayan
-            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13)
+                gun_sayisi, saat_sayisi, kullanilabilir_gun, vekil_ad_soyad, izin_adresi, aciklama, notlar, imza, ks_onaylayan
+            ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
             RETURNING id
         """,
             body.personel_id, talep, body.izin_turu, body.baslangic, body.bitis,
-            body.gun_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad,
+            body.gun_sayisi, body.saat_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad,
             body.izin_adresi, body.aciklama, body.notlar, body.imza, body.ks_onaylayan,
         )
         ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
@@ -252,13 +299,13 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_
         await conn.execute("""
             UPDATE izinler SET
                 izin_turu = $2, baslangic = $3, bitis = $4, gun_sayisi = $5,
-                kullanilabilir_gun = $6, vekil_ad_soyad = $7, izin_adresi = $8,
-                aciklama = $9, notlar = $10, talep_tarihi = $11, imza = COALESCE($12, imza),
-                ks_onaylayan = $13
+                saat_sayisi = $6, kullanilabilir_gun = $7, vekil_ad_soyad = $8, izin_adresi = $9,
+                aciklama = $10, notlar = $11, talep_tarihi = $12, imza = COALESCE($13, imza),
+                ks_onaylayan = $14
             WHERE id = $1
         """,
             iid, body.izin_turu, body.baslangic, body.bitis, body.gun_sayisi,
-            body.kullanilabilir_gun, body.vekil_ad_soyad, body.izin_adresi,
+            body.saat_sayisi, body.kullanilabilir_gun, body.vekil_ad_soyad, body.izin_adresi,
             body.aciklama, body.notlar, body.talep_tarihi or date.today(), body.imza,
             body.ks_onaylayan,
         )
