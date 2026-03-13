@@ -7761,11 +7761,20 @@ async function loadKsSorumluları() {
   const res = await fetch('/ayarlar/ks-listesi', { headers: authHeaders() });
   if (!res.ok) return;
   const liste = await res.json();
-  liste.forEach(ks => {
-    const opt = document.createElement('option');
-    opt.value = ks.ad_soyad;
-    opt.textContent = ks.ad_soyad;
-    sel.appendChild(opt);
+  const gruplar = { mudur: [], koordinasyon_sorumlusu: [] };
+  liste.forEach(ks => gruplar[ks.rol] && gruplar[ks.rol].push(ks));
+  const etiketler = { mudur: 'Müdürler', koordinasyon_sorumlusu: 'Koordinasyon Sorumluları' };
+  ['mudur', 'koordinasyon_sorumlusu'].forEach(rol => {
+    if (!gruplar[rol].length) return;
+    const grp = document.createElement('optgroup');
+    grp.label = etiketler[rol];
+    gruplar[rol].forEach(ks => {
+      const opt = document.createElement('option');
+      opt.value = ks.ad_soyad;
+      opt.textContent = ks.ad_soyad;
+      grp.appendChild(opt);
+    });
+    sel.appendChild(grp);
   });
 }
 
