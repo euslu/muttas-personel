@@ -5715,7 +5715,7 @@ function ftExport() {
       </div>
       <div class="form-field">
         <label>Başlangıç Tarihi *</label>
-        <input type="date" id="iz-form-bas" onchange="izGunHesapla()">
+        <input type="date" id="iz-form-bas" onchange="izBasTarihDegisti()">
       </div>
       <div class="form-field">
         <label>Bitiş Tarihi *</label>
@@ -5724,19 +5724,6 @@ function ftExport() {
       <div class="form-field" id="iz-gun-field">
         <label>Gün Sayısı</label>
         <input type="number" id="iz-form-gun" min="1" placeholder="Otomatik hesaplanır">
-      </div>
-      <div class="form-field" id="iz-saat-field" style="display:none">
-        <label>Saat Sayısı *</label>
-        <select id="iz-form-saat">
-          <option value="1">1 Saat</option>
-          <option value="2">2 Saat</option>
-          <option value="3">3 Saat</option>
-          <option value="4" selected>4 Saat</option>
-          <option value="5">5 Saat</option>
-          <option value="6">6 Saat</option>
-          <option value="7">7 Saat</option>
-          <option value="8">8 Saat</option>
-        </select>
       </div>
       <div class="form-field">
         <label>Kalan İzin (Gün)</label>
@@ -7854,10 +7841,7 @@ async function openIzinDrawer(id) {
   document.getElementById('iz-form-bit').value = '';
   document.getElementById('iz-form-gun').value = '';
   document.getElementById('iz-form-kullanilabilir').value = '';
-  document.getElementById('iz-form-saat').value = '4';
   document.getElementById('iz-kalan-detay').style.display = 'none';
-  document.getElementById('iz-gun-field').style.display  = '';
-  document.getElementById('iz-saat-field').style.display = 'none';
   document.getElementById('iz-form-ks').value = '';
   document.getElementById('iz-birim-sorumlusu-section').style.display = 'none';
 
@@ -7874,7 +7858,6 @@ async function openIzinDrawer(id) {
     document.getElementById('iz-form-bit').value             = iz.bitis ? iz.bitis.split('T')[0] : '';
     document.getElementById('iz-form-gun').value             = iz.gun_sayisi || '';
     document.getElementById('iz-form-kullanilabilir').value  = iz.kullanilabilir_gun || '';
-    if (iz.saat_sayisi) document.getElementById('iz-form-saat').value = iz.saat_sayisi;
     document.getElementById('iz-form-vekil').value           = iz.vekil_ad_soyad || '';
     document.getElementById('iz-form-adres').value           = iz.izin_adresi || '';
     document.getElementById('iz-form-aciklama').value        = iz.aciklama || '';
@@ -8055,24 +8038,33 @@ function izTurDegisti() {
   const bitEl = document.getElementById('iz-form-bit');
   const gunEl = document.getElementById('iz-form-gun');
   const vekaletSec = document.getElementById('iz-vekalet-section');
-  const gunField  = document.getElementById('iz-gun-field');
-  const saatField = document.getElementById('iz-saat-field');
   if (tur === 'saatlik') {
     const bas = document.getElementById('iz-form-bas').value;
     if (bas) bitEl.value = bas;
     bitEl.readOnly = true;
     gunEl.value = 1;
     gunEl.readOnly = true;
-    if (gunField)  gunField.style.display  = 'none';
-    if (saatField) saatField.style.display = '';
     if (vekaletSec) vekaletSec.style.display = 'none';
   } else {
     bitEl.readOnly = false;
     gunEl.readOnly = false;
-    if (gunField)  gunField.style.display  = '';
-    if (saatField) saatField.style.display = 'none';
     if (vekaletSec) vekaletSec.style.display = '';
   }
+}
+
+function izBasTarihDegisti() {
+  const basEl = document.getElementById('iz-form-bas');
+  if (!basEl.value) { izGunHesapla(); return; }
+  const d = new Date(basEl.value + 'T00:00:00');
+  const gun = d.getDay();
+  if (gun === 6) d.setDate(d.getDate() + 2);       // Cumartesi → Pazartesi
+  else if (gun === 0) d.setDate(d.getDate() + 1);  // Pazar → Pazartesi
+  const yeni = d.toISOString().split('T')[0];
+  if (yeni !== basEl.value) {
+    basEl.value = yeni;
+    showToast('Başlangıç tarihi haftasonuna geldiğinden Pazartesiye alındı', 'info');
+  }
+  izGunHesapla();
 }
 
 function izGunHesapla() {
@@ -8183,9 +8175,6 @@ async function saveIzin() {
     baslangic:          bas,
     bitis:              bit,
     gun_sayisi:         parseInt(document.getElementById('iz-form-gun').value) || 1,
-    saat_sayisi:        document.getElementById('iz-form-tur').value === 'saatlik'
-                          ? parseInt(document.getElementById('iz-form-saat').value) || null
-                          : null,
     kullanilabilir_gun: parseInt(document.getElementById('iz-form-kullanilabilir').value) || null,
     vekil_ad_soyad:     document.getElementById('iz-form-vekil').value || null,
     izin_adresi:        document.getElementById('iz-form-adres').value || null,
@@ -8311,8 +8300,7 @@ async function izinYazdir(id) {
   const donusUnvan  = isYkVekili ? YK_BASKAN_VEKILI_UNVAN : 'Genel Müdür';
 
   const isSaatlik = iz.izin_turu === 'saatlik';
-  const saatSayisi = iz.saat_sayisi || 8;
-  const gunSayisi = isSaatlik ? `${saatSayisi} Saatlik` : (iz.gun_sayisi || '—');
+  const gunSayisi = isSaatlik ? 'Saatlik' : (iz.gun_sayisi || '—');
   const kalanGun  = iz.kullanilabilir_gun != null ? iz.kullanilabilir_gun : '—';
   const birimStr  = [iz.ilce, iz.hizmet_noktasi].filter(Boolean).join(' / ') || iz.bolum || '—';
   const telStr    = iz.telefon || '—';
@@ -8375,7 +8363,7 @@ async function izinYazdir(id) {
     <tr>
       <td colspan="2" style="font-size:12px;line-height:1.6;padding:10px">
         ${isSaatlik
-          ? `<b>${fmt(iz.baslangic)}</b> tarihinde <b>${saatSayisi} saatlik</b> izin kullanmak istiyorum gereğini müsaadelerinize arz ederim.`
+          ? `<b>${fmt(iz.baslangic)}</b> tarihinde <b>saatlik</b> izin kullanmak istiyorum gereğini müsaadelerinize arz ederim.`
           : `<b>${fmt(iz.baslangic)}</b> tarihinden <b>${fmt(iz.bitis)}</b> tarihine kadar geçerli olmak üzere <b>(${gunSayisi})</b> gün <b>${turLabel}</b> kullanmak istiyorum gereğini müsaadelerinize arz ederim.`}
         ${aciklamaStr ? `<br><br><span class="lbl">İzin Açıklaması:</span> ${aciklamaStr}` : ''}
         <span style="float:right"><b>${fmt(iz.talep_tarihi)}</b></span>

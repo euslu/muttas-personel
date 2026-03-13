@@ -1,5 +1,5 @@
 import re
-from datetime import datetime
+from datetime import datetime, date
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Header
 from db import get_pool
@@ -132,16 +132,17 @@ async def pdks_ozet(
     pool = await get_pool()
     if not tarih:
         tarih = datetime.now().strftime("%Y-%m-%d")
+    tarih_dt = date.fromisoformat(tarih)
 
     async with pool.acquire() as conn:
         toplam = await conn.fetchval(
-            "SELECT COUNT(*) FROM pdks_hareketler WHERE DATE(zaman) = $1", tarih
+            "SELECT COUNT(*) FROM pdks_hareketler WHERE DATE(zaman) = $1", tarih_dt
         )
         giris = await conn.fetchval(
-            "SELECT COUNT(*) FROM pdks_hareketler WHERE DATE(zaman) = $1 AND giris_cikis = 0", tarih
+            "SELECT COUNT(*) FROM pdks_hareketler WHERE DATE(zaman) = $1 AND giris_cikis = 0", tarih_dt
         )
         cikis = await conn.fetchval(
-            "SELECT COUNT(*) FROM pdks_hareketler WHERE DATE(zaman) = $1 AND giris_cikis = 1", tarih
+            "SELECT COUNT(*) FROM pdks_hareketler WHERE DATE(zaman) = $1 AND giris_cikis = 1", tarih_dt
         )
         cihaz_rows = await conn.fetch(
             """
@@ -150,7 +151,7 @@ async def pdks_ozet(
             JOIN pdks_cihazlar c ON c.cihaz_no = h.cihaz_no
             WHERE DATE(h.zaman) = $1
             GROUP BY c.cihaz_adi ORDER BY hareket DESC
-            """, tarih
+            """, tarih_dt
         )
         son_yukleme = await conn.fetchval(
             "SELECT MAX(yukleme_zamani) FROM pdks_hareketler"
