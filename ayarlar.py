@@ -30,6 +30,11 @@ class YoneticiUnvanBody(BaseModel):
     unvan: str
 
 
+class IzinTuruBody(BaseModel):
+    kod: str
+    ad:  str
+
+
 @router.get("/calisma-gunleri")
 async def get_calisma_gunleri(token: dict = Depends(decode_token)):
     pool = await get_pool()
@@ -355,6 +360,51 @@ async def remove_yk_baskan_vekili(bid: int, token: dict = Depends(require_ayar_e
         if not exists:
             raise HTTPException(status_code=404, detail="Kayıt bulunamadı.")
         await conn.execute("DELETE FROM yk_baskan_vekili WHERE id=$1", bid)
+    return {"ok": True}
+
+
+@router.get("/izin-turleri")
+async def get_izin_turleri(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT kod, ad FROM izin_turleri WHERE aktif = TRUE ORDER BY sira, ad")
+        return [{"kod": r["kod"], "ad": r["ad"]} for r in rows]
+
+
+@router.post("/izin-turleri", status_code=201)
+async def ekle_izin_turu(body: IzinTuruBody, token: dict = Depends(require_ayar_editor)):
+    kod = body.kod.strip().lower().replace(" ", "_")
+    ad  = body.ad.strip()
+    if not kod or not ad:
+        raise HTTPException(status_code=400, detail="Kod ve ad boş olamaz.")
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM izin_turleri WHERE kod=$1", kod)
+        if exists:
+            raise HTTPException(status_code=409, detail="Bu kod zaten mevcut.")
+        max_sira = await conn.fetchval("SELECT COALESCE(MAX(sira),0) FROM izin_turleri") or 0
+        await conn.execute(
+            "INSERT INTO izin_turleri (kod, ad, sira) VALUES ($1, $2, $3)",
+            kod, ad, max_sira + 1
+        )
+    return {"ok": True, "kod": kod}
+
+
+@router.delete("/izin-turleri/{kod}")
+async def sil_izin_turu(kod: str, token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        kullanimda = await conn.fetchval(
+            "SELECT COUNT(*) FROM izinler WHERE izin_turu = $1", kod
+        )
+        if kullanimda and kullanimda > 0:
+            raise HTTPException(
+                status_code=409,
+                detail=f"Bu izin türünde {kullanimda} kayıt var. Silinemez, pasif yapılabilir."
+            )
+        result = await conn.execute("DELETE FROM izin_turleri WHERE kod=$1", kod)
+        if result == "DELETE 0":
+            raise HTTPException(status_code=404, detail="İzin türü bulunamadı.")
     return {"ok": True}
 
 

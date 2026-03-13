@@ -3180,6 +3180,44 @@ tbody tr:hover td { background: var(--bg-soft); }
               </table>
             </div>
 
+            <!-- İzin Türleri -->
+            <div class="card" style="padding:24px 28px;margin-bottom:20px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+                <div>
+                  <h2 style="margin:0 0 4px;font-size:17px">İzin Türleri</h2>
+                  <p style="margin:0;font-size:13px;color:var(--text-3)">İzin taleplerinde kullanılacak izin türlerini yönetin.</p>
+                </div>
+                <button class="btn btn-primary" style="height:36px;font-size:13px" onclick="izinTuruEklePanelAc()">+ Yeni Tür Ekle</button>
+              </div>
+
+              <div id="izin-turu-ekle-panel" style="display:none;background:var(--bg-2);border-radius:10px;padding:16px;margin-bottom:16px">
+                <div style="display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:flex-end">
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Kod <span style="color:var(--text-3);font-weight:400">(İngilizce, boşluksuz)</span></label>
+                    <input type="text" id="izin-turu-ekle-kod" placeholder="Örn: yillik" style="width:100%;box-sizing:border-box">
+                  </div>
+                  <div>
+                    <label style="font-size:11px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Görünen Ad</label>
+                    <input type="text" id="izin-turu-ekle-ad" placeholder="Örn: Yıllık İzin" style="width:100%;box-sizing:border-box">
+                  </div>
+                  <div style="display:flex;gap:6px">
+                    <button class="btn btn-primary" style="height:38px" onclick="izinTuruEkle()">Ekle</button>
+                    <button class="btn" style="height:38px" onclick="izinTuruEklePanelKapat()">İptal</button>
+                  </div>
+                </div>
+              </div>
+
+              <table class="iz-table" style="width:100%">
+                <thead><tr>
+                  <th style="text-align:left">Kod</th>
+                  <th style="text-align:left">Görünen Ad</th>
+                  <th style="width:60px"></th>
+                </tr></thead>
+                <tbody id="izin-turu-list-body"></tbody>
+              </table>
+              <div id="izin-turu-list-bos" style="display:none;text-align:center;padding:20px;color:var(--text-3);font-size:13px">Kayıtlı izin türü yok.</div>
+            </div>
+
             <!-- Resmi Tatiller -->
             <div class="card" style="padding:24px 28px">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
@@ -7345,7 +7383,7 @@ async function loadAyarlar() {
   if (ykSel && ykSel.options.length <= 1) {
     unvanlar.forEach(u => { const opt = document.createElement('option'); opt.value = u; opt.textContent = u; ykSel.appendChild(opt); });
   }
-  await loadTatiller();
+  await Promise.all([loadTatiller(), loadIzinTurleri()]);
 }
 
 // ── Resmi Tatiller ──────────────────────────────────────────────────────────
@@ -7425,6 +7463,76 @@ async function tatilSil(id, btn) {
   if (!res.ok) { showToast('Silinemedi', 'error'); btn.disabled = false; return; }
   showToast('Tatil kaldırıldı', 'success');
   await loadTatiller();
+}
+
+// ── İzin Türleri ─────────────────────────────────────────────────────────────
+
+let IZIN_TURLERI_LISTE = [];
+
+async function loadIzinTurleri() {
+  const res = await fetch('/ayarlar/izin-turleri', { headers: authHeaders() });
+  if (!res.ok) return;
+  IZIN_TURLERI_LISTE = await res.json();
+  renderIzinTurleri();
+}
+
+function renderIzinTurleri() {
+  const tbody = document.getElementById('izin-turu-list-body');
+  const bos   = document.getElementById('izin-turu-list-bos');
+  if (!tbody) return;
+  if (!IZIN_TURLERI_LISTE.length) {
+    tbody.innerHTML = '';
+    if (bos) bos.style.display = 'block';
+    return;
+  }
+  if (bos) bos.style.display = 'none';
+  tbody.innerHTML = IZIN_TURLERI_LISTE.map(t => `
+    <tr>
+      <td><code style="background:var(--bg-2);padding:2px 8px;border-radius:4px;font-size:12px">${t.kod}</code></td>
+      <td style="font-size:13px">${t.ad}</td>
+      <td style="text-align:center">
+        <button class="btn btn-sm" style="color:var(--danger);font-size:11px;padding:3px 10px"
+          onclick="izinTuruSil('${t.kod}',this)">Sil</button>
+      </td>
+    </tr>`).join('');
+}
+
+function izinTuruEklePanelAc() {
+  document.getElementById('izin-turu-ekle-panel').style.display = 'block';
+  document.getElementById('izin-turu-ekle-kod').focus();
+}
+function izinTuruEklePanelKapat() {
+  document.getElementById('izin-turu-ekle-panel').style.display = 'none';
+  document.getElementById('izin-turu-ekle-kod').value = '';
+  document.getElementById('izin-turu-ekle-ad').value = '';
+}
+
+async function izinTuruEkle() {
+  const kod = document.getElementById('izin-turu-ekle-kod').value.trim();
+  const ad  = document.getElementById('izin-turu-ekle-ad').value.trim();
+  if (!kod || !ad) { showToast('Kod ve ad boş olamaz', 'error'); return; }
+  const res = await fetch('/ayarlar/izin-turleri', {
+    method: 'POST',
+    headers: { ...authHeaders(), 'Content-Type': 'application/json' },
+    body: JSON.stringify({ kod, ad })
+  });
+  const data = await res.json();
+  if (!res.ok) { showToast(data.detail || 'Eklenemedi', 'error'); return; }
+  showToast('İzin türü eklendi', 'success');
+  izinTuruEklePanelKapat();
+  await loadIzinTurleri();
+}
+
+async function izinTuruSil(kod, btn) {
+  if (!confirm(`"${kod}" izin türü silinecek. Emin misiniz?`)) return;
+  btn.disabled = true;
+  const res = await fetch('/ayarlar/izin-turleri/' + encodeURIComponent(kod), {
+    method: 'DELETE', headers: authHeaders()
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) { showToast(data.detail || 'Silinemedi', 'error'); btn.disabled = false; return; }
+  showToast('İzin türü kaldırıldı', 'success');
+  await loadIzinTurleri();
 }
 
 // ── YK Başkan Vekili ────────────────────────────────────────────────────────

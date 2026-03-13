@@ -10,8 +10,13 @@ from vekalet import get_vekalet_rolleri
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
 
-IZIN_TURLERI = ["yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"]
-DURUMLAR     = ["beklemede", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
+async def get_izin_turleri_db() -> list:
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT kod FROM izin_turleri WHERE aktif = TRUE ORDER BY sira, ad")
+        return [r["kod"] for r in rows]
+
+DURUMLAR = ["beklemede", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
 
 DURUM_ACIKLAMA = {
     "beklemede":        "İzin talebi oluşturuldu",
@@ -205,8 +210,9 @@ async def get_izin(iid: int, token: dict = Depends(decode_token)):
 
 @router.post("", status_code=201)
 async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(require_izin_editor)):
-    if body.izin_turu not in IZIN_TURLERI:
-        raise HTTPException(status_code=400, detail=f"Geçersiz izin türü. Kabul edilenler: {IZIN_TURLERI}")
+    izin_turleri = await get_izin_turleri_db()
+    if body.izin_turu not in izin_turleri:
+        raise HTTPException(status_code=400, detail=f"Geçersiz izin türü. Kabul edilenler: {izin_turleri}")
 
     pool = await get_pool()
     async with pool.acquire() as conn:

@@ -524,12 +524,20 @@ async def public_yk_uye_unvanlar():
     return [r["unvan"] for r in rows]
 
 
-IZIN_TURLERI_PUBLIC = {"yillik", "ucretsiz", "mazeret", "hastalik", "dogum", "olum", "saatlik", "diger"}
+@router.get("/public/izin-turleri")
+async def public_izin_turleri():
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT kod, ad FROM izin_turleri WHERE aktif = TRUE ORDER BY sira, ad")
+    return [{"kod": r["kod"], "ad": r["ad"]} for r in rows]
 
 
 @router.post("/public/izin", status_code=201)
 async def public_izin_olustur(data: PublicIzinCreate):
-    if data.izin_turu not in IZIN_TURLERI_PUBLIC:
+    pool_check = await get_pool()
+    async with pool_check.acquire() as conn_check:
+        gecerli = [r["kod"] for r in await conn_check.fetch("SELECT kod FROM izin_turleri WHERE aktif=TRUE")]
+    if data.izin_turu not in gecerli:
         raise HTTPException(status_code=400, detail="Geçersiz izin türü.")
 
     if data.gun_sayisi < 1 or data.gun_sayisi > 365:
