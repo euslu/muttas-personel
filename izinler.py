@@ -185,49 +185,22 @@ async def get_ozet(
         }
 
 
-@router.get("/hesapla-kalan/{personel_id}")
-async def hesapla_kalan_izin(personel_id: int, token: dict = Depends(decode_token)):
+@router.get("/saatlik-ozet/{personel_id}")
+async def saatlik_izin_ozet(personel_id: int, token: dict = Depends(decode_token)):
     pool = await get_pool()
     async with pool.acquire() as conn:
-        p = await conn.fetchrow(
-            "SELECT kalan_izin, toplam_izin_hak FROM personel WHERE id = $1 AND aktif = TRUE",
-            personel_id
-        )
-        if not p:
-            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
-
-        toplam_hak  = p["toplam_izin_hak"] or 0
-        kalan_pdks  = p["kalan_izin"] or 0
-
-        # Reddedilmeyenler arasından yıllık izin kullanımı
-        yillik_kullanilan = await conn.fetchval("""
-            SELECT COALESCE(SUM(gun_sayisi), 0)
-            FROM izinler
-            WHERE personel_id = $1
-              AND izin_turu = 'yillik'
-              AND durum NOT IN ('reddedildi')
-        """, personel_id) or 0
-
-        # Saatlik izin toplamı (saat cinsinden); eski kayıtlarda 8 saat varsay
-        saatlik_toplam_saat = await conn.fetchval("""
-            SELECT COALESCE(SUM(COALESCE(saat_sayisi, 8)), 0)
+        row = await conn.fetchrow("""
+            SELECT
+                COUNT(*)                                    AS sayi,
+                COALESCE(SUM(COALESCE(saat_sayisi, 8)), 0) AS toplam_saat
             FROM izinler
             WHERE personel_id = $1
               AND izin_turu = 'saatlik'
               AND durum NOT IN ('reddedildi')
-        """, personel_id) or 0
-
-        import math
-        saatlik_gun_karsiligi = math.ceil(saatlik_toplam_saat / 8)
-        efektif_kalan = max(0, kalan_pdks - saatlik_gun_karsiligi)
-
+        """, personel_id)
         return {
-            "toplam_hak":            toplam_hak,
-            "kalan_pdks":            kalan_pdks,
-            "yillik_kullanilan":     int(yillik_kullanilan),
-            "saatlik_toplam_saat":   int(saatlik_toplam_saat),
-            "saatlik_gun_karsiligi": saatlik_gun_karsiligi,
-            "efektif_kalan":         efektif_kalan,
+            "sayi":        int(row["sayi"]),
+            "toplam_saat": int(row["toplam_saat"]),
         }
 
 

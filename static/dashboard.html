@@ -1575,7 +1575,7 @@ tbody tr:hover td { background: var(--bg-soft); }
 .pd-actions .btn-primary:hover { background: rgba(255,255,255,0.3); }
 .pd-actions .btn-ghost { color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.08); }
 .pd-actions .btn-ghost:hover { background: rgba(255,255,255,0.18); color: #fff; }
-.pd-stat-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; animation: pdFadeIn .6s ease-out .1s both; }
+.pd-stat-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; animation: pdFadeIn .6s ease-out .1s both; }
 .pd-stat-card {
   background: var(--bg); border: 1px solid var(--border); border-radius: 14px;
   padding: 18px 20px; text-align: center; position: relative; overflow: hidden;
@@ -6091,11 +6091,20 @@ function pdGetInitials(name) {
 
 async function pdLoadPersonel() {
   const token = getToken();
+  const headers = { Authorization: 'Bearer ' + token };
   try {
-    const res = await fetch('/personel/' + pdCurrentId, { headers: { Authorization: 'Bearer ' + token } });
+    const [res, saatRes] = await Promise.all([
+      fetch('/personel/' + pdCurrentId, { headers }),
+      fetch('/izinler/saatlik-ozet/' + pdCurrentId, { headers }),
+    ]);
     if (!res.ok) throw new Error('Veri alınamadı');
     pdData = await res.json();
     pdRenderPage();
+    if (saatRes.ok) {
+      const ozet = await saatRes.json();
+      const el = document.getElementById('pd-saatlik-val');
+      if (el) el.textContent = ozet.sayi + (ozet.toplam_saat > 0 ? ' (' + ozet.toplam_saat + ' saat)' : '');
+    }
   } catch(e) {
     document.getElementById('pd-content').innerHTML = '<div class="pd-loading"><p style="color:var(--danger)">Hata: ' + e.message + '</p></div>';
   }
@@ -6174,6 +6183,13 @@ function pdRenderPage() {
         </div>
         <div class="pd-stat-val">${(p.toplam_izin_hak || 0) - (p.kalan_izin || 0)}</div>
         <div class="pd-stat-label">Kullanılan İzin</div>
+      </div>
+      <div class="pd-stat-card" id="pd-saatlik-card">
+        <div class="pd-stat-icon" style="background:#f0f9ff;color:#0ea5e9">
+          <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="9"/><path d="M11 7v4l2.5 2.5"/></svg>
+        </div>
+        <div class="pd-stat-val" id="pd-saatlik-val">—</div>
+        <div class="pd-stat-label">Saatlik İzin (Kez)</div>
       </div>
     </div>
 
@@ -8112,43 +8128,18 @@ async function izPersonelAra(q) {
   list.style.display = 'block';
 }
 
-async function izPersonelSec(id, adSoyad, bolum, unvan, kalanIzin, toplamHak) {
+function izPersonelSec(id, adSoyad, bolum, unvan, kalanIzin, toplamHak) {
   document.getElementById('iz-form-personel-id').value = id;
   document.getElementById('iz-form-personel-q').value  = adSoyad;
   document.getElementById('iz-personel-list').style.display = 'none';
+  document.getElementById('iz-form-kullanilabilir').value = kalanIzin || '';
+  const bilgi = document.getElementById('iz-personel-bilgi');
+  bilgi.style.display = 'block';
+  bilgi.innerHTML = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}` +
+    `<span style="float:right;color:var(--primary);font-weight:600">Kalan İzin: ${kalanIzin||0} / ${toplamHak||0} gün</span>`;
   izSeciliUnvan = unvan || '';
   guncelleBirimSorumlusuGorunurlugu(id, unvan);
   izGunHesapla();
-
-  const bilgi = document.getElementById('iz-personel-bilgi');
-  bilgi.style.display = 'block';
-  bilgi.innerHTML = `${adSoyad} — ${[bolum,unvan].filter(Boolean).join(' / ')}`;
-
-  // Kalan izin hesapla (saatlik dahil)
-  const detayEl = document.getElementById('iz-kalan-detay');
-  try {
-    const res = await fetch('/izinler/hesapla-kalan/' + id, { headers: authHeaders() });
-    if (res.ok) {
-      const k = await res.json();
-      document.getElementById('iz-form-kullanilabilir').value = k.efektif_kalan;
-      const satirlar = [
-        `<b>Yıllık İzin Hakkı:</b> ${k.toplam_hak} gün`,
-        `<b>Kalan (PDKS):</b> ${k.kalan_pdks} gün`,
-        k.saatlik_toplam_saat > 0
-          ? `<b>Saatlik İzin:</b> ${k.saatlik_toplam_saat} saat = ${k.saatlik_gun_karsiligi} gün`
-          : null,
-        `<b style="color:${k.efektif_kalan <= 5 ? '#dc2626' : k.efektif_kalan <= 14 ? '#d97706' : '#16a34a'}">Kullanılabilir Kalan: ${k.efektif_kalan} gün</b>`,
-      ].filter(Boolean);
-      detayEl.innerHTML = satirlar.join('<br>');
-      detayEl.style.display = 'block';
-    } else {
-      document.getElementById('iz-form-kullanilabilir').value = kalanIzin || '';
-      detayEl.style.display = 'none';
-    }
-  } catch {
-    document.getElementById('iz-form-kullanilabilir').value = kalanIzin || '';
-    detayEl.style.display = 'none';
-  }
 }
 
 async function izVekilAra(q) {
