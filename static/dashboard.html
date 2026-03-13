@@ -7758,15 +7758,13 @@ async function setCalismaGunu(unvan, gun, btn) {
 async function loadKsSorumluları() {
   const sel = document.getElementById('iz-form-ks');
   if (sel.options.length > 1) return;
-  const res = await fetch('/personel?unvan=KOORDİNASYON%20SORUMLUSU&per_page=50&aktif=true', {
-    headers: { Authorization: 'Bearer ' + getToken() }
-  });
+  const res = await fetch('/ayarlar/ks-listesi', { headers: authHeaders() });
   if (!res.ok) return;
-  const data = await res.json();
-  data.veri.forEach(p => {
+  const liste = await res.json();
+  liste.forEach(ks => {
     const opt = document.createElement('option');
-    opt.value = p.ad_soyad;
-    opt.textContent = p.ad_soyad;
+    opt.value = ks.ad_soyad;
+    opt.textContent = ks.ad_soyad;
     sel.appendChild(opt);
   });
 }
