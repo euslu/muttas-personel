@@ -1876,10 +1876,12 @@ tbody tr:hover td { background: var(--bg-soft); }
       <!-- İnsan Kaynakları Accordion -->
       <div class="nav-sep nav-ik"></div>
       <div class="nav-ik" id="ik-accordion-wrapper">
-        <div class="sb-section-label sb-accordion-toggle" onclick="toggleNavAccordion('ik-accordion-body', this)">
-          <span>İnsan Kaynakları</span>
-          <span class="material-symbols-outlined sb-chevron">chevron_right</span>
-        </div>
+        <button class="nav-item sb-accordion-toggle" onclick="toggleNavAccordion('ik-accordion-body', this)" style="width:100%;justify-content:space-between">
+          <span style="display:flex;align-items:center;gap:8px">
+            <span class="icon"><span class="material-symbols-outlined">groups_2</span></span> İnsan Kaynakları
+          </span>
+          <span class="material-symbols-outlined sb-chevron" style="font-size:18px;color:inherit;opacity:.6">chevron_right</span>
+        </button>
         <div id="ik-accordion-body" class="sb-accordion-body" style="display:none">
           <button class="nav-item" onclick="navigate('personel', this)">
             <span class="icon"><span class="material-symbols-outlined">groups</span></span> Personel Listesi
@@ -1896,10 +1898,12 @@ tbody tr:hover td { background: var(--bg-soft); }
       <!-- Satın Alma Accordion -->
       <div class="nav-sep nav-sa"></div>
       <div class="nav-sa" id="sa-accordion-wrapper">
-        <div class="sb-section-label sb-accordion-toggle" onclick="toggleNavAccordion('sa-accordion-body', this)">
-          <span>Satın Alma</span>
-          <span class="material-symbols-outlined sb-chevron">chevron_right</span>
-        </div>
+        <button class="nav-item sb-accordion-toggle" onclick="toggleNavAccordion('sa-accordion-body', this)" style="width:100%;justify-content:space-between">
+          <span style="display:flex;align-items:center;gap:8px">
+            <span class="icon"><span class="material-symbols-outlined">shopping_cart</span></span> Satın Alma
+          </span>
+          <span class="material-symbols-outlined sb-chevron" style="font-size:18px;color:inherit;opacity:.6">chevron_right</span>
+        </button>
         <div id="sa-accordion-body" class="sb-accordion-body" style="display:none">
           <button class="nav-item" onclick="navigate('ihtiyac_talebi', this)">
             <span class="icon"><span class="material-symbols-outlined">assignment</span></span> İhtiyaç Talebi
