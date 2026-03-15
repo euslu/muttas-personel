@@ -21,6 +21,7 @@ from izinler import router as izinler_router
 from vekalet import router as vekalet_router
 from pdks import router as pdks_router
 from ayarlar import router as ayarlar_router
+from satin_alma import router as satin_alma_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -271,6 +272,47 @@ ALTER TABLE izinler ADD COLUMN IF NOT EXISTS ik_imza TEXT;
 ALTER TABLE izinler ADD COLUMN IF NOT EXISTS mudur_imza TEXT;
 ALTER TABLE izinler ADD COLUMN IF NOT EXISTS yk_imza TEXT;
 
+CREATE TABLE IF NOT EXISTS satin_alma (
+    id           SERIAL PRIMARY KEY,
+    sayi         VARCHAR(100),
+    konu         TEXT NOT NULL,
+    tur          VARCHAR(50) DEFAULT 'dogrudan_temin',
+    durum        VARCHAR(50) DEFAULT 'hazirlaniyor',
+    tarih        DATE DEFAULT CURRENT_DATE,
+    aciklama     TEXT,
+    olusturan_ad VARCHAR(200),
+    created_at   TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS satin_alma_kalemler (
+    id             SERIAL PRIMARY KEY,
+    satin_alma_id  INT REFERENCES satin_alma(id) ON DELETE CASCADE,
+    sira           INT DEFAULT 1,
+    ad             TEXT NOT NULL,
+    miktar         NUMERIC DEFAULT 1,
+    birim          VARCHAR(50) DEFAULT 'Adet',
+    fiyat1         NUMERIC,
+    fiyat2         NUMERIC,
+    fiyat3         NUMERIC,
+    fiyat4         NUMERIC
+);
+
+CREATE TABLE IF NOT EXISTS satin_alma_firmalar (
+    id             SERIAL PRIMARY KEY,
+    satin_alma_id  INT REFERENCES satin_alma(id) ON DELETE CASCADE,
+    sira           INT DEFAULT 1,
+    firma_adi      VARCHAR(300)
+);
+
+CREATE TABLE IF NOT EXISTS satin_alma_komisyon (
+    id             SERIAL PRIMARY KEY,
+    satin_alma_id  INT REFERENCES satin_alma(id) ON DELETE CASCADE,
+    komisyon_turu  VARCHAR(100),
+    gorev          VARCHAR(50) DEFAULT 'uye',
+    ad_soyad       VARCHAR(200),
+    unvan          VARCHAR(200)
+);
+
 CREATE TABLE IF NOT EXISTS sms_kodlari (
     id SERIAL PRIMARY KEY,
     tc_kimlik VARCHAR(11) NOT NULL,
@@ -380,6 +422,7 @@ app.include_router(izinler_router)
 app.include_router(vekalet_router)
 app.include_router(pdks_router)
 app.include_router(ayarlar_router)
+app.include_router(satin_alma_router)
 
 
 @app.get("/")

@@ -1864,6 +1864,12 @@ tbody tr:hover td { background: var(--bg-soft); }
         <span class="icon"><span class="material-symbols-outlined">flight_takeoff</span></span> İzin Yönetimi
       </button>
 
+      <div class="nav-sep nav-sa"></div>
+      <div class="sb-section-label nav-sa">Satın Alma</div>
+      <button class="nav-item nav-sa" onclick="navigate('satin_alma', this)">
+        <span class="icon"><span class="material-symbols-outlined">shopping_cart</span></span> Satın Alma
+      </button>
+
       <!-- Sadece admin -->
       <div id="admin-section" style="display:none">
         <div class="nav-sep"></div>
@@ -3416,6 +3422,230 @@ tbody tr:hover td { background: var(--bg-soft); }
         </div>
       </div>
 
+      <!-- ══════════════════ SATIN ALMA SAYFASI ══════════════════ -->
+      <div class="page" id="page-satin_alma">
+        <div class="page-toolbar" style="margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+            <input class="form-input" id="sa-search" type="search" placeholder="Konu veya Sayı ara…"
+              oninput="saArama()" style="width:240px;border-radius:10px;font-size:13px">
+            <select class="form-input" id="sa-filter-tur" onchange="saArama()" style="width:160px;border-radius:10px;font-size:13px">
+              <option value="">Tüm Türler</option>
+              <option value="dogrudan_temin">Doğrudan Temin</option>
+              <option value="ihale">İhale</option>
+              <option value="tek_kaynak">Tek Kaynak</option>
+            </select>
+            <select class="form-input" id="sa-filter-durum" onchange="saArama()" style="width:160px;border-radius:10px;font-size:13px">
+              <option value="">Tüm Durumlar</option>
+              <option value="hazirlaniyor">Hazırlanıyor</option>
+              <option value="komisyon_kuruldu">Komisyon Kuruldu</option>
+              <option value="teklif_alindi">Teklif Alındı</option>
+              <option value="tamamlandi">Tamamlandı</option>
+              <option value="iptal">İptal</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" onclick="saYeniDrawerAc()" style="gap:6px;border-radius:10px">
+            <span class="material-symbols-outlined" style="font-size:18px">add</span> Yeni Satın Alma
+          </button>
+        </div>
+
+        <div class="card" style="border-radius:14px;overflow:hidden">
+          <div class="table-container">
+            <table class="table" id="sa-table">
+              <thead>
+                <tr>
+                  <th style="width:80px">Sayı</th>
+                  <th>Konu</th>
+                  <th style="width:130px">Tür</th>
+                  <th style="width:110px">Durum</th>
+                  <th style="width:90px">Tarih</th>
+                  <th style="width:60px">Kalem</th>
+                  <th style="width:100px"></th>
+                </tr>
+              </thead>
+              <tbody id="sa-tbody">
+                <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-3)">Yükleniyor…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border)">
+            <span id="sa-page-info" style="font-size:13px;color:var(--text-3)"></span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline" id="sa-prev" onclick="saPage(-1)" style="padding:6px 12px;font-size:12px;border-radius:8px">‹ Önceki</button>
+              <button class="btn btn-outline" id="sa-next" onclick="saPage(1)"  style="padding:6px 12px;font-size:12px;border-radius:8px">Sonraki ›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Satın Alma Drawer -->
+      <div id="sa-drawer" class="drawer-overlay" style="display:none" onclick="if(event.target===this)saDrawerKapat()">
+        <div class="drawer" style="width:720px;max-width:95vw">
+          <div class="drawer-header">
+            <span id="sa-drawer-baslik">Yeni Satın Alma</span>
+            <button class="drawer-close" onclick="saDrawerKapat()">✕</button>
+          </div>
+          <div class="drawer-body" style="padding:24px;overflow-y:auto;max-height:calc(100vh - 140px)">
+            <!-- Adım göstergesi -->
+            <div id="sa-steps" style="display:flex;gap:0;margin-bottom:28px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+              <div class="sa-step active" id="sa-step-1" onclick="saGoStep(1)" style="flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff">1. Temel Bilgi</div>
+              <div class="sa-step" id="sa-step-2" onclick="saGoStep(2)" style="flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text-3);border-left:1px solid var(--border)">2. Kalemler</div>
+              <div class="sa-step" id="sa-step-3" onclick="saGoStep(3)" style="flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text-3);border-left:1px solid var(--border)">3. Firmalar</div>
+              <div class="sa-step" id="sa-step-4" onclick="saGoStep(4)" style="flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text-3);border-left:1px solid var(--border)">4. Komisyon</div>
+            </div>
+
+            <!-- Adım 1: Temel bilgi -->
+            <div id="sa-panel-1">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Konu / İşin Adı <span style="color:var(--danger)">*</span></label>
+                  <input class="form-input" id="sa-konu" placeholder="Örn: Ofis Malzemeleri Alımı" style="border-radius:10px">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Dosya Sayısı</label>
+                  <input class="form-input" id="sa-sayi" placeholder="Örn: 2025/001" style="border-radius:10px">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Tarih</label>
+                  <input class="form-input" id="sa-tarih" type="date" style="border-radius:10px">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Satın Alma Türü</label>
+                  <select class="form-input" id="sa-tur" style="border-radius:10px">
+                    <option value="dogrudan_temin">Doğrudan Temin</option>
+                    <option value="ihale">İhale</option>
+                    <option value="tek_kaynak">Tek Kaynak</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Durum</label>
+                  <select class="form-input" id="sa-durum" style="border-radius:10px">
+                    <option value="hazirlaniyor">Hazırlanıyor</option>
+                    <option value="komisyon_kuruldu">Komisyon Kuruldu</option>
+                    <option value="teklif_alindi">Teklif Alındı</option>
+                    <option value="tamamlandi">Tamamlandı</option>
+                    <option value="iptal">İptal</option>
+                  </select>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Açıklama</label>
+                  <textarea class="form-input" id="sa-aciklama" rows="2" placeholder="Ek notlar…" style="border-radius:10px;resize:vertical"></textarea>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;gap:10px">
+                <button class="btn btn-primary" onclick="saKaydetVeDevam()" style="border-radius:10px">
+                  Kaydet ve Devam Et <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Adım 2: Kalemler -->
+            <div id="sa-panel-2" style="display:none">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                <span style="font-size:14px;font-weight:600;color:var(--text)">Alım Kalemleri</span>
+                <button class="btn btn-outline" onclick="saKalemEkle()" style="font-size:12px;padding:6px 12px;border-radius:8px;gap:4px">
+                  <span class="material-symbols-outlined" style="font-size:15px">add</span> Kalem Ekle
+                </button>
+              </div>
+              <div style="overflow-x:auto">
+                <table class="table" style="font-size:12px;min-width:620px">
+                  <thead>
+                    <tr>
+                      <th style="width:30px">#</th>
+                      <th>Mal/Hizmet Adı</th>
+                      <th style="width:70px">Miktar</th>
+                      <th style="width:70px">Birim</th>
+                      <th style="width:90px">Fiyat 1 ₺</th>
+                      <th style="width:90px">Fiyat 2 ₺</th>
+                      <th style="width:90px">Fiyat 3 ₺</th>
+                      <th style="width:90px">Fiyat 4 ₺</th>
+                      <th style="width:36px"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="sa-kalemler-tbody"></tbody>
+                </table>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:16px">
+                <button class="btn btn-outline" onclick="saGoStep(1)" style="border-radius:10px;font-size:13px">‹ Geri</button>
+                <button class="btn btn-primary" onclick="saKalemlerKaydet()" style="border-radius:10px;font-size:13px">Kaydet ve Devam ›</button>
+              </div>
+            </div>
+
+            <!-- Adım 3: Firmalar -->
+            <div id="sa-panel-3" style="display:none">
+              <div style="margin-bottom:12px">
+                <span style="font-size:14px;font-weight:600;color:var(--text)">Fiyat Alınan Firmalar (en fazla 4)</span>
+                <div style="font-size:12px;color:var(--text-3);margin-top:4px">Bu firmalar kalem bazında fiyat sütunlarıyla eşleştirilir.</div>
+              </div>
+              <div id="sa-firmalar-wrap" style="display:flex;flex-direction:column;gap:10px"></div>
+              <button class="btn btn-outline" onclick="saFirmaEkle()" id="sa-firma-ekle-btn" style="margin-top:12px;font-size:12px;padding:6px 12px;border-radius:8px;gap:4px">
+                <span class="material-symbols-outlined" style="font-size:15px">add</span> Firma Ekle
+              </button>
+              <div style="display:flex;justify-content:space-between;margin-top:20px">
+                <button class="btn btn-outline" onclick="saGoStep(2)" style="border-radius:10px;font-size:13px">‹ Geri</button>
+                <button class="btn btn-primary" onclick="saFirmalarKaydet()" style="border-radius:10px;font-size:13px">Kaydet ve Devam ›</button>
+              </div>
+            </div>
+
+            <!-- Adım 4: Komisyon -->
+            <div id="sa-panel-4" style="display:none">
+              <div style="display:flex;flex-direction:column;gap:24px">
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                    <span class="material-symbols-outlined" style="font-size:16px;color:var(--accent)">groups</span> Yaklaşık Maliyet Komisyonu
+                  </div>
+                  <div id="sa-kom-ym" class="sa-kom-list"></div>
+                  <button class="btn btn-outline" onclick="saKomisyonEkle('yaklasik_maliyet')" style="font-size:12px;padding:5px 10px;border-radius:8px;margin-top:6px;gap:4px">
+                    <span class="material-symbols-outlined" style="font-size:14px">add</span> Üye Ekle
+                  </button>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                    <span class="material-symbols-outlined" style="font-size:16px;color:var(--accent)">search</span> Muayene ve Kabul Komisyonu
+                  </div>
+                  <div id="sa-kom-mk" class="sa-kom-list"></div>
+                  <button class="btn btn-outline" onclick="saKomisyonEkle('muayene_kabul')" style="font-size:12px;padding:5px 10px;border-radius:8px;margin-top:6px;gap:4px">
+                    <span class="material-symbols-outlined" style="font-size:14px">add</span> Üye Ekle
+                  </button>
+                </div>
+                <div>
+                  <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:6px">
+                    <span class="material-symbols-outlined" style="font-size:16px;color:var(--accent)">verified</span> Kontrol Teşkilatı
+                  </div>
+                  <div id="sa-kom-kt" class="sa-kom-list"></div>
+                  <button class="btn btn-outline" onclick="saKomisyonEkle('kontrol_teskilati')" style="font-size:12px;padding:5px 10px;border-radius:8px;margin-top:6px;gap:4px">
+                    <span class="material-symbols-outlined" style="font-size:14px">add</span> Üye Ekle
+                  </button>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:20px">
+                <button class="btn btn-outline" onclick="saGoStep(3)" style="border-radius:10px;font-size:13px">‹ Geri</button>
+                <button class="btn btn-primary" onclick="saKomisyonKaydet()" style="border-radius:10px;font-size:13px">
+                  <span class="material-symbols-outlined" style="font-size:16px;vertical-align:middle">save</span> Tamamla
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Satın Alma Yazdırma Modal -->
+      <div id="sa-print-modal" class="drawer-overlay" style="display:none" onclick="if(event.target===this)document.getElementById('sa-print-modal').style.display='none'">
+        <div class="drawer" style="width:820px;max-width:96vw;border-radius:14px">
+          <div class="drawer-header">
+            <span id="sa-print-baslik">Belge Önizleme</span>
+            <div style="display:flex;gap:8px">
+              <button class="btn btn-primary" onclick="window.print()" style="font-size:13px;padding:7px 14px;border-radius:8px;gap:6px">
+                <span class="material-symbols-outlined" style="font-size:16px">print</span> Yazdır
+              </button>
+              <button class="drawer-close" onclick="document.getElementById('sa-print-modal').style.display='none'">✕</button>
+            </div>
+          </div>
+          <div class="drawer-body" style="padding:0;overflow-y:auto;max-height:calc(100vh-120px)">
+            <div id="sa-print-content" style="padding:28px 36px;font-family:'Times New Roman',serif;font-size:13px;line-height:1.6;color:#000;background:#fff"></div>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
   </div><!-- /main -->
 </div><!-- /layout -->
@@ -3435,6 +3665,7 @@ const PAGE_TITLES = {
   personel:     'Personel Listesi',
   izinler:      'İzin Yönetimi',
   hesabim:      'Hesabım',
+  satin_alma:   'Satın Alma',
 };
 
 let currentUser  = null;
@@ -3478,6 +3709,10 @@ function applyRoleUI(rol) {
   });
   document.querySelectorAll('.nav-ik').forEach(el => {
     el.style.display = isIK || isLimanAdmin || isKS || isMudur || isGM || isYK ? '' : 'none';
+  });
+  const canSA = isLimanAdmin || isIK || isGM || isMudur;
+  document.querySelectorAll('.nav-sa').forEach(el => {
+    el.style.display = canSA ? '' : 'none';
   });
   document.querySelectorAll('.dash-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
@@ -3887,6 +4122,7 @@ function navigate(page, el) {
   if (page === 'izin_log')     loadIzinLog(1);
   if (page === 'ayarlar')      loadAyarlar();
   if (page === 'hesabim')      loadHesabim();
+  if (page === 'satin_alma')   saYukle(1);
 }
 
 function updateTopbar(page) {
@@ -9350,6 +9586,508 @@ function onayImzaOnayla() {
   closeOnayImzaModal();
   if (onayImzaCallback) onayImzaCallback(imzaData);
 }
+
+// ══════════════════════════════════════════════════════════════════
+// SATIN ALMA MODÜLÜ
+// ══════════════════════════════════════════════════════════════════
+
+let saCurrentPage = 1;
+let saPerPage     = 25;
+let saToplam      = 0;
+let saCurrentId   = null;   // Aktif satın alma ID (null = yeni)
+let saCurrentStep = 1;
+let saAramaTimeout = null;
+
+const SA_TUR_ETIKET = {
+  dogrudan_temin: 'Doğrudan Temin',
+  ihale:          'İhale',
+  tek_kaynak:     'Tek Kaynak',
+};
+const SA_DURUM_ETIKET = {
+  hazirlaniyor:     'Hazırlanıyor',
+  komisyon_kuruldu: 'Komisyon Kuruldu',
+  teklif_alindi:    'Teklif Alındı',
+  tamamlandi:       'Tamamlandı',
+  iptal:            'İptal',
+};
+const SA_DURUM_RENK = {
+  hazirlaniyor:     '#f59e0b',
+  komisyon_kuruldu: '#3b82f6',
+  teklif_alindi:    '#8b5cf6',
+  tamamlandi:       '#16a34a',
+  iptal:            '#ef4444',
+};
+
+// ── Liste & Arama ────────────────────────────────────────────────
+
+async function saYukle(page = 1) {
+  saCurrentPage = page;
+  const q     = document.getElementById('sa-search')?.value || '';
+  const tur   = document.getElementById('sa-filter-tur')?.value || '';
+  const durum = document.getElementById('sa-filter-durum')?.value || '';
+  const params = new URLSearchParams({ page, per_page: saPerPage });
+  if (q)     params.set('q', q);
+  if (tur)   params.set('tur', tur);
+  if (durum) params.set('durum', durum);
+  try {
+    const res  = await api(`/satin-alma?${params}`);
+    const data = await res.json();
+    saToplam = data.toplam || 0;
+    saRenderTablo(data.kayitlar || []);
+    saRenderPagination();
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function saArama() {
+  clearTimeout(saAramaTimeout);
+  saAramaTimeout = setTimeout(() => saYukle(1), 350);
+}
+
+function saPage(delta) {
+  const maxPage = Math.ceil(saToplam / saPerPage) || 1;
+  const yeni    = saCurrentPage + delta;
+  if (yeni < 1 || yeni > maxPage) return;
+  saYukle(yeni);
+}
+
+function saRenderTablo(kayitlar) {
+  const tbody = document.getElementById('sa-tbody');
+  if (!tbody) return;
+  if (!kayitlar.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--text-3)">Kayıt bulunamadı.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = kayitlar.map(r => {
+    const durum = SA_DURUM_ETIKET[r.durum] || r.durum;
+    const tur   = SA_TUR_ETIKET[r.tur]     || r.tur;
+    const renk  = SA_DURUM_RENK[r.durum]   || '#888';
+    return `<tr>
+      <td style="font-family:monospace;font-size:12px">${r.sayi || '—'}</td>
+      <td style="font-weight:500">${r.konu}</td>
+      <td style="font-size:12px">${tur}</td>
+      <td><span style="background:${renk}18;color:${renk};border-radius:6px;padding:3px 8px;font-size:11px;font-weight:600">${durum}</span></td>
+      <td style="font-size:12px">${r.tarih ? r.tarih.slice(0,10) : '—'}</td>
+      <td style="text-align:center;font-size:12px">${r.kalem_sayisi || 0}</td>
+      <td>
+        <div style="display:flex;gap:4px;justify-content:flex-end">
+          <button class="btn btn-outline" onclick="saDetayAc(${r.id})" style="padding:5px 8px;font-size:11px;border-radius:7px" title="Düzenle">
+            <span class="material-symbols-outlined" style="font-size:14px">edit</span>
+          </button>
+          <button class="btn btn-outline" onclick="saYaklasiMaliyetYazdir(${r.id})" style="padding:5px 8px;font-size:11px;border-radius:7px" title="Yaklaşık Maliyet Cetveli">
+            <span class="material-symbols-outlined" style="font-size:14px">print</span>
+          </button>
+          <button class="btn btn-outline" onclick="saSil(${r.id})" style="padding:5px 8px;font-size:11px;border-radius:7px;color:var(--danger)" title="Sil">
+            <span class="material-symbols-outlined" style="font-size:14px">delete</span>
+          </button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function saRenderPagination() {
+  const maxPage = Math.ceil(saToplam / saPerPage) || 1;
+  const info    = document.getElementById('sa-page-info');
+  if (info) info.textContent = `Toplam ${saToplam} kayıt — Sayfa ${saCurrentPage} / ${maxPage}`;
+  const prev = document.getElementById('sa-prev');
+  const next = document.getElementById('sa-next');
+  if (prev) prev.disabled = saCurrentPage <= 1;
+  if (next) next.disabled = saCurrentPage >= maxPage;
+}
+
+// ── Drawer ───────────────────────────────────────────────────────
+
+function saYeniDrawerAc() {
+  saCurrentId   = null;
+  saCurrentStep = 1;
+  document.getElementById('sa-drawer-baslik').textContent = 'Yeni Satın Alma';
+  document.getElementById('sa-konu').value     = '';
+  document.getElementById('sa-sayi').value     = '';
+  document.getElementById('sa-tarih').value    = new Date().toISOString().slice(0,10);
+  document.getElementById('sa-tur').value      = 'dogrudan_temin';
+  document.getElementById('sa-durum').value    = 'hazirlaniyor';
+  document.getElementById('sa-aciklama').value = '';
+  saGoStep(1);
+  document.getElementById('sa-kalemler-tbody').innerHTML = '';
+  document.getElementById('sa-firmalar-wrap').innerHTML  = '';
+  ['sa-kom-ym','sa-kom-mk','sa-kom-kt'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+  document.getElementById('sa-drawer').style.display = 'flex';
+}
+
+async function saDetayAc(id) {
+  saCurrentId   = id;
+  saCurrentStep = 1;
+  document.getElementById('sa-drawer-baslik').textContent = 'Satın Alma Düzenle';
+  document.getElementById('sa-drawer').style.display      = 'flex';
+  try {
+    const res  = await api(`/satin-alma/${id}`);
+    const data = await res.json();
+    document.getElementById('sa-konu').value     = data.konu     || '';
+    document.getElementById('sa-sayi').value     = data.sayi     || '';
+    document.getElementById('sa-tarih').value    = (data.tarih   || '').slice(0,10);
+    document.getElementById('sa-tur').value      = data.tur      || 'dogrudan_temin';
+    document.getElementById('sa-durum').value    = data.durum    || 'hazirlaniyor';
+    document.getElementById('sa-aciklama').value = data.aciklama || '';
+    saRenderKalemlerTablo(data.kalemler || []);
+    saRenderFirmalar(data.firmalar || []);
+    saRenderKomisyon(data.komisyon || []);
+    saGoStep(1);
+  } catch(e) { showToast('Kayıt yüklenemedi', 'error'); }
+}
+
+function saDrawerKapat() {
+  document.getElementById('sa-drawer').style.display = 'none';
+  saCurrentId = null;
+}
+
+function saGoStep(step) {
+  saCurrentStep = step;
+  for (let i = 1; i <= 4; i++) {
+    const panel = document.getElementById(`sa-panel-${i}`);
+    const stepEl= document.getElementById(`sa-step-${i}`);
+    if (panel) panel.style.display = (i === step) ? '' : 'none';
+    if (stepEl) {
+      stepEl.style.background = (i === step) ? 'var(--accent)' : 'var(--surface)';
+      stepEl.style.color      = (i === step) ? '#fff'          : 'var(--text-3)';
+    }
+  }
+}
+
+// ── Adım 1: Temel Bilgi kaydet ──────────────────────────────────
+
+async function saKaydetVeDevam() {
+  const konu = document.getElementById('sa-konu').value.trim();
+  if (!konu) { showToast('Konu zorunludur', 'error'); return; }
+  const body = {
+    konu,
+    sayi:     document.getElementById('sa-sayi').value.trim()    || null,
+    tarih:    document.getElementById('sa-tarih').value           || null,
+    tur:      document.getElementById('sa-tur').value,
+    durum:    document.getElementById('sa-durum').value,
+    aciklama: document.getElementById('sa-aciklama').value.trim() || null,
+  };
+  try {
+    let res;
+    if (saCurrentId) {
+      res = await api(`/satin-alma/${saCurrentId}`, { method:'PUT', body: JSON.stringify(body) });
+    } else {
+      res = await api('/satin-alma', { method:'POST', body: JSON.stringify(body) });
+    }
+    if (!res.ok) throw new Error();
+    const data = await res.json();
+    saCurrentId = data.id;
+    showToast('Temel bilgiler kaydedildi', 'success');
+    saGoStep(2);
+  } catch(e) { showToast('Kayıt hatası', 'error'); }
+}
+
+// ── Adım 2: Kalemler ────────────────────────────────────────────
+
+function saKalemEkle() {
+  const tbody = document.getElementById('sa-kalemler-tbody');
+  const sira  = tbody.querySelectorAll('tr').length + 1;
+  const tr    = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="text-align:center;font-size:12px;color:var(--text-3)">${sira}</td>
+    <td><input class="form-input sa-kalem-ad" placeholder="Mal/Hizmet Adı" style="font-size:12px;padding:5px 8px;border-radius:7px;min-width:140px"></td>
+    <td><input class="form-input sa-kalem-miktar" type="number" value="1" min="0" style="font-size:12px;padding:5px 8px;border-radius:7px;width:60px"></td>
+    <td><input class="form-input sa-kalem-birim" value="Adet" style="font-size:12px;padding:5px 8px;border-radius:7px;width:60px"></td>
+    <td><input class="form-input sa-kalem-f1" type="number" min="0" step="0.01" placeholder="0,00" style="font-size:12px;padding:5px 8px;border-radius:7px;width:80px"></td>
+    <td><input class="form-input sa-kalem-f2" type="number" min="0" step="0.01" placeholder="0,00" style="font-size:12px;padding:5px 8px;border-radius:7px;width:80px"></td>
+    <td><input class="form-input sa-kalem-f3" type="number" min="0" step="0.01" placeholder="0,00" style="font-size:12px;padding:5px 8px;border-radius:7px;width:80px"></td>
+    <td><input class="form-input sa-kalem-f4" type="number" min="0" step="0.01" placeholder="0,00" style="font-size:12px;padding:5px 8px;border-radius:7px;width:80px"></td>
+    <td><button onclick="this.closest('tr').remove();saNumarala()" style="background:none;border:none;cursor:pointer;color:var(--danger);padding:4px">
+      <span class="material-symbols-outlined" style="font-size:16px">delete</span></button></td>`;
+  tbody.appendChild(tr);
+}
+
+function saNumarala() {
+  document.querySelectorAll('#sa-kalemler-tbody tr').forEach((tr, i) => {
+    const ilk = tr.querySelector('td');
+    if (ilk) ilk.textContent = i + 1;
+  });
+}
+
+function saRenderKalemlerTablo(kalemler) {
+  const tbody = document.getElementById('sa-kalemler-tbody');
+  tbody.innerHTML = '';
+  (kalemler || []).forEach(k => {
+    saKalemEkle();
+    const tr = tbody.lastElementChild;
+    tr.querySelector('.sa-kalem-ad').value     = k.ad     || '';
+    tr.querySelector('.sa-kalem-miktar').value = k.miktar || 1;
+    tr.querySelector('.sa-kalem-birim').value  = k.birim  || 'Adet';
+    tr.querySelector('.sa-kalem-f1').value     = k.fiyat1 != null ? k.fiyat1 : '';
+    tr.querySelector('.sa-kalem-f2').value     = k.fiyat2 != null ? k.fiyat2 : '';
+    tr.querySelector('.sa-kalem-f3').value     = k.fiyat3 != null ? k.fiyat3 : '';
+    tr.querySelector('.sa-kalem-f4').value     = k.fiyat4 != null ? k.fiyat4 : '';
+  });
+}
+
+async function saKalemlerKaydet() {
+  if (!saCurrentId) { showToast('Önce temel bilgileri kaydedin', 'warning'); saGoStep(1); return; }
+  const rows = [...document.querySelectorAll('#sa-kalemler-tbody tr')];
+  const kalemler = rows.map((tr, i) => ({
+    sira:   i + 1,
+    ad:     tr.querySelector('.sa-kalem-ad').value.trim(),
+    miktar: parseFloat(tr.querySelector('.sa-kalem-miktar').value) || 1,
+    birim:  tr.querySelector('.sa-kalem-birim').value.trim() || 'Adet',
+    fiyat1: parseFloat(tr.querySelector('.sa-kalem-f1').value) || null,
+    fiyat2: parseFloat(tr.querySelector('.sa-kalem-f2').value) || null,
+    fiyat3: parseFloat(tr.querySelector('.sa-kalem-f3').value) || null,
+    fiyat4: parseFloat(tr.querySelector('.sa-kalem-f4').value) || null,
+  })).filter(k => k.ad);
+  try {
+    const res = await api(`/satin-alma/${saCurrentId}/kalemler`, { method:'PUT', body: JSON.stringify(kalemler) });
+    if (!res.ok) throw new Error();
+    showToast('Kalemler kaydedildi', 'success');
+    saGoStep(3);
+  } catch(e) { showToast('Kayıt hatası', 'error'); }
+}
+
+// ── Adım 3: Firmalar ─────────────────────────────────────────────
+
+function saFirmaEkle() {
+  const wrap = document.getElementById('sa-firmalar-wrap');
+  const mevcut = wrap.querySelectorAll('.sa-firma-satir').length;
+  if (mevcut >= 4) { showToast('En fazla 4 firma eklenebilir', 'warning'); return; }
+  const sira = mevcut + 1;
+  const div  = document.createElement('div');
+  div.className = 'sa-firma-satir';
+  div.style.cssText = 'display:flex;align-items:center;gap:10px';
+  div.innerHTML = `
+    <div style="width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0">${sira}</div>
+    <input class="form-input sa-firma-ad" placeholder="Firma Adı" style="border-radius:9px;font-size:13px;flex:1" data-sira="${sira}">
+    <button onclick="this.parentElement.remove();saFirmaNumarala()" style="background:none;border:none;cursor:pointer;color:var(--danger)">
+      <span class="material-symbols-outlined" style="font-size:18px">close</span></button>`;
+  wrap.appendChild(div);
+  const btn = document.getElementById('sa-firma-ekle-btn');
+  if (btn) btn.style.display = wrap.querySelectorAll('.sa-firma-satir').length >= 4 ? 'none' : '';
+}
+
+function saFirmaNumarala() {
+  document.querySelectorAll('.sa-firma-satir').forEach((el, i) => {
+    const badge = el.querySelector('div');
+    if (badge) badge.textContent = i + 1;
+    const inp = el.querySelector('.sa-firma-ad');
+    if (inp) inp.dataset.sira = i + 1;
+  });
+  const btn = document.getElementById('sa-firma-ekle-btn');
+  if (btn) btn.style.display = document.querySelectorAll('.sa-firma-satir').length >= 4 ? 'none' : '';
+}
+
+function saRenderFirmalar(firmalar) {
+  document.getElementById('sa-firmalar-wrap').innerHTML = '';
+  (firmalar || []).forEach(f => {
+    saFirmaEkle();
+    const wrap = document.getElementById('sa-firmalar-wrap');
+    const last = wrap.lastElementChild?.querySelector('.sa-firma-ad');
+    if (last) last.value = f.firma_adi || '';
+  });
+}
+
+async function saFirmalarKaydet() {
+  if (!saCurrentId) { showToast('Önce temel bilgileri kaydedin', 'warning'); saGoStep(1); return; }
+  const inputs  = [...document.querySelectorAll('.sa-firma-ad')];
+  const firmalar= inputs.map((inp, i) => ({ sira: i+1, firma_adi: inp.value.trim() })).filter(f => f.firma_adi);
+  try {
+    const res = await api(`/satin-alma/${saCurrentId}/firmalar`, { method:'PUT', body: JSON.stringify(firmalar) });
+    if (!res.ok) throw new Error();
+    showToast('Firmalar kaydedildi', 'success');
+    saGoStep(4);
+  } catch(e) { showToast('Kayıt hatası', 'error'); }
+}
+
+// ── Adım 4: Komisyon ─────────────────────────────────────────────
+
+const SA_KOM_TUR_KUTU = {
+  yaklasik_maliyet:  'sa-kom-ym',
+  muayene_kabul:     'sa-kom-mk',
+  kontrol_teskilati: 'sa-kom-kt',
+};
+
+function saKomisyonEkle(tur) {
+  const containerId = SA_KOM_TUR_KUTU[tur];
+  if (!containerId) return;
+  const container = document.getElementById(containerId);
+  const div = document.createElement('div');
+  div.className   = 'sa-kom-satir';
+  div.dataset.tur = tur;
+  div.style.cssText = 'display:grid;grid-template-columns:120px 1fr 1fr 32px;gap:8px;align-items:center;margin-bottom:6px';
+  div.innerHTML = `
+    <select class="form-input sa-kom-gorev" style="font-size:12px;padding:5px 8px;border-radius:7px">
+      <option value="baskan">Başkan</option>
+      <option value="uye" selected>Üye</option>
+    </select>
+    <input class="form-input sa-kom-ad" placeholder="Ad Soyad" style="font-size:12px;padding:5px 8px;border-radius:7px">
+    <input class="form-input sa-kom-unvan" placeholder="Ünvan" style="font-size:12px;padding:5px 8px;border-radius:7px">
+    <button onclick="this.parentElement.remove()" style="background:none;border:none;cursor:pointer;color:var(--danger)">
+      <span class="material-symbols-outlined" style="font-size:16px">close</span></button>`;
+  container.appendChild(div);
+}
+
+function saRenderKomisyon(komisyon) {
+  Object.values(SA_KOM_TUR_KUTU).forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '';
+  });
+  (komisyon || []).forEach(k => {
+    saKomisyonEkle(k.komisyon_turu);
+    const containerId = SA_KOM_TUR_KUTU[k.komisyon_turu];
+    if (!containerId) return;
+    const container = document.getElementById(containerId);
+    const last = container.lastElementChild;
+    if (!last) return;
+    const gorev = last.querySelector('.sa-kom-gorev');
+    const ad    = last.querySelector('.sa-kom-ad');
+    const unvan = last.querySelector('.sa-kom-unvan');
+    if (gorev) gorev.value = k.gorev    || 'uye';
+    if (ad)    ad.value    = k.ad_soyad || '';
+    if (unvan) unvan.value = k.unvan    || '';
+  });
+}
+
+async function saKomisyonKaydet() {
+  if (!saCurrentId) { showToast('Önce temel bilgileri kaydedin', 'warning'); saGoStep(1); return; }
+  const satirlar = [...document.querySelectorAll('.sa-kom-satir')];
+  const komisyon = satirlar.map(div => ({
+    komisyon_turu: div.dataset.tur,
+    gorev:         div.querySelector('.sa-kom-gorev')?.value || 'uye',
+    ad_soyad:      div.querySelector('.sa-kom-ad')?.value.trim()    || '',
+    unvan:         div.querySelector('.sa-kom-unvan')?.value.trim()  || null,
+  })).filter(k => k.ad_soyad);
+  try {
+    const res = await api(`/satin-alma/${saCurrentId}/komisyon`, { method:'PUT', body: JSON.stringify(komisyon) });
+    if (!res.ok) throw new Error();
+    showToast('Komisyon kaydedildi', 'success');
+    saDrawerKapat();
+    saYukle(saCurrentPage);
+  } catch(e) { showToast('Kayıt hatası', 'error'); }
+}
+
+// ── Sil ─────────────────────────────────────────────────────────
+
+async function saSil(id) {
+  if (!confirm('Bu satın alma kaydı silinecek. Emin misiniz?')) return;
+  try {
+    const res = await api(`/satin-alma/${id}`, { method:'DELETE' });
+    if (!res.ok) throw new Error();
+    showToast('Kayıt silindi', 'success');
+    saYukle(saCurrentPage);
+  } catch(e) { showToast('Silinemedi', 'error'); }
+}
+
+// ── Yazdır: Yaklaşık Maliyet Cetveli ────────────────────────────
+
+async function saYaklasiMaliyetYazdir(id) {
+  try {
+    const res  = await api(`/satin-alma/${id}`);
+    const data = await res.json();
+    const firmalar = data.firmalar || [];
+    const kalemler = data.kalemler || [];
+    const f = i => firmalar[i-1]?.firma_adi || `Firma ${i}`;
+
+    // Fiyat ortalaması
+    const ortFiyat = k => {
+      const vals = [k.fiyat1, k.fiyat2, k.fiyat3, k.fiyat4].filter(v => v != null && v > 0);
+      if (!vals.length) return 0;
+      return vals.reduce((a,b) => a+b, 0) / vals.length;
+    };
+    const fmt = v => v != null ? Number(v).toLocaleString('tr-TR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
+
+    const kalemRows = kalemler.map((k, i) => {
+      const ort = ortFiyat(k);
+      const toplam = ort * (k.miktar || 1);
+      return `<tr>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:center">${i+1}</td>
+        <td style="border:1px solid #999;padding:4px 6px">${k.ad}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:center">${k.miktar}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:center">${k.birim}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:right">${fmt(k.fiyat1)}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:right">${fmt(k.fiyat2)}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:right">${fmt(k.fiyat3)}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:right">${fmt(k.fiyat4)}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:600">${fmt(ort)}</td>
+        <td style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:600">${fmt(toplam)}</td>
+      </tr>`;
+    }).join('');
+
+    const genelToplam = kalemler.reduce((acc, k) => acc + ortFiyat(k) * (k.miktar||1), 0);
+
+    // KDV
+    const kdvRow = `<tr>
+      <td colspan="9" style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:600">KDV %20</td>
+      <td style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:600">${fmt(genelToplam * 0.20)}</td>
+    </tr>
+    <tr>
+      <td colspan="9" style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:700;background:#f5f5f5">GENEL TOPLAM (KDV DAHİL)</td>
+      <td style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:700;background:#f5f5f5">${fmt(genelToplam * 1.20)}</td>
+    </tr>`;
+
+    // Komisyon imza blokları
+    const ymUyeler = (data.komisyon||[]).filter(k => k.komisyon_turu==='yaklasik_maliyet');
+    const imzaHTML = ymUyeler.length ? `
+      <div style="margin-top:40px">
+        <div style="font-size:11px;font-weight:700;text-align:center;margin-bottom:12px">YAKLAŞIK MALİYET KOMİSYONU</div>
+        <div style="display:flex;justify-content:space-around;flex-wrap:wrap;gap:20px">
+          ${ymUyeler.map(u => `
+            <div style="text-align:center;min-width:160px">
+              <div style="border-bottom:1px solid #333;height:48px;margin-bottom:6px"></div>
+              <div style="font-size:11px;font-weight:600">${u.ad_soyad}</div>
+              <div style="font-size:10px;color:#555">${u.unvan || ''}</div>
+              <div style="font-size:10px;color:#555">${u.gorev==='baskan'?'Komisyon Başkanı':'Komisyon Üyesi'}</div>
+            </div>`).join('')}
+        </div>
+      </div>` : '';
+
+    const tarih = data.tarih ? new Date(data.tarih).toLocaleDateString('tr-TR',{day:'2-digit',month:'long',year:'numeric'}) : '—';
+
+    const html = `
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:13px;font-weight:700;text-transform:uppercase">MUĞLA BÜYÜKŞEHİR BELEDİYESİ MUTTAŞ A.Ş.</div>
+        <div style="font-size:14px;font-weight:700;margin-top:8px">YAKLAŞIK MALİYET HESAP CETVELİ</div>
+        <div style="font-size:12px;margin-top:4px">${data.sayi ? `Sayı: ${data.sayi} — ` : ''}Tarih: ${tarih}</div>
+      </div>
+      <div style="font-size:12px;margin-bottom:12px">
+        <strong>Alımın Konusu:</strong> ${data.konu}
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:16px">
+        <thead>
+          <tr style="background:#f0f0f0">
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:28px">S.No</th>
+            <th style="border:1px solid #999;padding:5px 6px">Mal/Hizmet Adı ve Kısa Teknik Özellikleri</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:50px">Miktar</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:50px">Birim</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:80px">${f(1)}</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:80px">${f(2)}</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:80px">${f(3)}</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:80px">${f(4)}</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:80px">Ort. Birim Fiyat ₺</th>
+            <th style="border:1px solid #999;padding:5px 6px;text-align:center;width:90px">Tutar ₺</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${kalemRows}
+          <tr>
+            <td colspan="9" style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:600">KDV HARİÇ TOPLAM</td>
+            <td style="border:1px solid #999;padding:4px 6px;text-align:right;font-weight:600">${fmt(genelToplam)}</td>
+          </tr>
+          ${kdvRow}
+        </tbody>
+      </table>
+      ${imzaHTML}`;
+
+    document.getElementById('sa-print-baslik').textContent = 'Yaklaşık Maliyet Cetveli';
+    document.getElementById('sa-print-content').innerHTML  = html;
+    document.getElementById('sa-print-modal').style.display= 'flex';
+  } catch(e) { showToast('Belge oluşturulamadı', 'error'); console.error(e); }
+}
+
 </script>
 
 <div id="toast-container"></div>
