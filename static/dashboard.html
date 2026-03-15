@@ -10752,10 +10752,10 @@ function itDosyaListeRender(dosyalar) {
         <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.dosya_adi}</div>
         <div style="font-size:11px;color:var(--text-3)">${boyut}${d.yukleyen_ad ? ' · ' + d.yukleyen_ad : ''}</div>
       </div>
-      <a href="/ihtiyac-talebi/dosyalar/${d.id}/indir" target="_blank"
+      <button onclick="itDosyaIndir(${d.id}, ${JSON.stringify(d.dosya_adi)})"
         style="background:none;border:none;cursor:pointer;padding:5px;color:var(--accent);display:flex;border-radius:6px" title="İndir">
         <span class="material-symbols-outlined" style="font-size:18px">download</span>
-      </a>
+      </button>
       <button onclick="itDosyaSil(${d.id})" style="background:none;border:none;cursor:pointer;padding:5px;color:var(--danger);display:flex;border-radius:6px" title="Sil">
         <span class="material-symbols-outlined" style="font-size:18px">delete</span>
       </button>
@@ -10801,17 +10801,34 @@ async function itDosyaYukleGercek(tid, files) {
   return basari;
 }
 
-async function itDosyaYukle(files) {
-  if (!files || !files.length) return;
+async function itDosyaYukle(fileList) {
+  if (!fileList || !fileList.length) return;
+  const files = Array.from(fileList);               // FileList → Array (input clear öncesi yakala)
   document.getElementById('it-dosya-input').value = '';
   if (!itCurrentId) {
-    for (const f of files) itPendingFiles.push(f);
+    files.forEach(f => itPendingFiles.push(f));
     itDosyaListeRender([]);
     return;
   }
   const basari = await itDosyaYukleGercek(itCurrentId, files);
   if (basari) showToast(`${basari} evrak yüklendi`, 'success');
   await itDosyaListeYukle();
+}
+
+async function itDosyaIndir(did, ad) {
+  try {
+    const res = await fetch(`/ihtiyac-talebi/dosyalar/${did}/indir`, {
+      headers: { 'Authorization': 'Bearer ' + getToken() }
+    });
+    if (!res.ok) { showToast('Dosya indirilemedi', 'error'); return; }
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = ad;
+    document.body.appendChild(a); a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch(e) { showToast('İndirme hatası', 'error'); }
 }
 
 async function itDosyaSil(did) {

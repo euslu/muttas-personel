@@ -12,12 +12,17 @@ DOSYA_DIR = Path("uploads/ihtiyac_talebi")
 DOSYA_DIR.mkdir(parents=True, exist_ok=True)
 
 IZIN_MIME = {
-    "application/pdf", "image/jpeg", "image/png", "image/gif",
+    "application/pdf",
+    "image/jpeg", "image/jpg", "image/png", "image/gif", "image/webp", "image/bmp", "image/tiff",
     "application/msword",
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     "application/vnd.ms-excel",
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    "text/plain",
+    "application/vnd.ms-powerpoint",
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "text/plain", "text/csv",
+    "application/zip", "application/x-zip-compressed", "application/x-rar-compressed",
+    "application/octet-stream",
 }
 
 router = APIRouter(prefix="/ihtiyac-talebi", tags=["ihtiyac-talebi"])
