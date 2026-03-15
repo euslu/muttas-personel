@@ -3424,17 +3424,17 @@ tbody tr:hover td { background: var(--bg-soft); }
 
       <!-- ══════════════════ SATIN ALMA SAYFASI ══════════════════ -->
       <div class="page" id="page-satin_alma">
-        <div class="page-toolbar" style="margin-bottom:20px">
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
             <input class="form-input" id="sa-search" type="search" placeholder="Konu veya Sayı ara…"
-              oninput="saArama()" style="width:240px;border-radius:10px;font-size:13px">
-            <select class="form-input" id="sa-filter-tur" onchange="saArama()" style="width:160px;border-radius:10px;font-size:13px">
+              oninput="saArama()" style="width:230px;border-radius:10px;font-size:13px">
+            <select class="form-input" id="sa-filter-tur" onchange="saArama()" style="width:155px;border-radius:10px;font-size:13px">
               <option value="">Tüm Türler</option>
               <option value="dogrudan_temin">Doğrudan Temin</option>
               <option value="ihale">İhale</option>
               <option value="tek_kaynak">Tek Kaynak</option>
             </select>
-            <select class="form-input" id="sa-filter-durum" onchange="saArama()" style="width:160px;border-radius:10px;font-size:13px">
+            <select class="form-input" id="sa-filter-durum" onchange="saArama()" style="width:155px;border-radius:10px;font-size:13px">
               <option value="">Tüm Durumlar</option>
               <option value="hazirlaniyor">Hazırlanıyor</option>
               <option value="komisyon_kuruldu">Komisyon Kuruldu</option>
@@ -3443,8 +3443,8 @@ tbody tr:hover td { background: var(--bg-soft); }
               <option value="iptal">İptal</option>
             </select>
           </div>
-          <button class="btn btn-primary" onclick="saYeniDrawerAc()" style="gap:6px;border-radius:10px">
-            <span class="material-symbols-outlined" style="font-size:18px">add</span> Yeni Satın Alma
+          <button onclick="saYeniDrawerAc()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:linear-gradient(135deg,#0ea5e9,#0284c7);color:#fff;white-space:nowrap;box-shadow:0 2px 8px rgba(14,165,233,.35)">
+            <span class="material-symbols-outlined" style="font-size:18px">add_shopping_cart</span> Yeni Satın Alma
           </button>
         </div>
 
