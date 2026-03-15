@@ -8,7 +8,7 @@ import json
 
 router = APIRouter(prefix="/ihtiyac-talebi", tags=["ihtiyac-talebi"])
 
-IT_ONAY_ROLLERI = {"admin", "genel_mudur"}
+IT_ONAY_ROLLERI = {"admin", "genel_mudur", "yk_baskani"}
 YK_ONAY_ROLLERI = {"admin", "yk_baskani"}
 
 

@@ -10330,7 +10330,7 @@ function itRenderPagination() {
 
 function itRenderTablo(rows) {
   const rol = currentUser?.rol || '';
-  const isGM     = rol === 'admin' || rol === 'genel_mudur';
+  const isGM     = rol === 'admin' || rol === 'genel_mudur' || rol === 'yk_baskani';
   const isYK     = rol === 'admin' || rol === 'yk_baskani';
   const isSAEdit = ['admin','ik_admin','genel_mudur','mudur','yk_baskani'].includes(rol);
   const tbody = document.getElementById('it-tbody');
@@ -10415,16 +10415,13 @@ function itLokToggle(val, chk) {
 }
 
 function itLokChipsGuncelle() {
-  const chips = document.getElementById('it-lok-chips');
-  const ph    = document.getElementById('it-lok-placeholder');
+  const chips   = document.getElementById('it-lok-chips');
   const visible = itSecili.filter(v => v !== '__DIGER__');
   const hasDiger = itSecili.includes('__DIGER__');
   if (!visible.length && !hasDiger) {
-    chips.innerHTML = '';
-    ph.style.display = '';
+    chips.innerHTML = '<span id="it-lok-placeholder" style="color:var(--text-3);font-size:13px">Lokasyon seçin…</span>';
     return;
   }
-  ph.style.display = 'none';
   chips.innerHTML = visible.map(l =>
     `<span style="display:inline-flex;align-items:center;gap:4px;background:#ede9fe;color:#6d28d9;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600">
       ${l} <span onclick="itLokToggle('${l.replace(/'/g,"\\'")}',false);itLokChipsGuncelle();" style="cursor:pointer;font-size:14px;line-height:1">×</span>
