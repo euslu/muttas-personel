@@ -1439,6 +1439,14 @@ tbody tr:hover td { background: var(--bg-soft); }
   box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
+.dash-ik {
+  background: linear-gradient(145deg, rgba(67,97,238,.07) 0%, var(--bg) 60%);
+  border-color: rgba(67,97,238,.18);
+}
+.dash-sa {
+  background: linear-gradient(145deg, rgba(245,158,11,.07) 0%, var(--bg) 60%);
+  border-color: rgba(245,158,11,.22);
+}
 .widget-header {
   display: flex;
   align-items: center;
@@ -1998,46 +2006,7 @@ tbody tr:hover td { background: var(--bg-soft); }
       <div class="page active" id="page-dashboard">
         <div class="dash-grid" id="dash-widgets">
 
-          <!-- Çalışan Dağılımı -->
-          <div class="widget dash-ik" data-widget-id="calisanlar">
-            <div class="widget-header">
-              <div class="w-icon w-icon-blue"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
-              <h3>Çalışan Dağılımı</h3>
-              <button class="w-refresh" onclick="loadIKDashboard()" title="Yenile">&#8635;</button>
-            </div>
-            <div class="donut-container"><canvas id="donut-chart"></canvas><div class="donut-center"><div class="dc-count" id="dc-count">—</div><div class="dc-label" id="dc-label">Toplam</div></div><div class="donut-tooltip" id="donut-tooltip"></div></div>
-            <div class="w-total"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1a4 4 0 110 8 4 4 0 010-8zM1 14c0-3 3-5 7-5s7 2 7 5"/></svg> <span id="w-total-count">—</span></div>
-            <div class="donut-legend" id="donut-legend"></div>
-          </div>
-
-          <!-- Yaklaşan Doğum Günleri -->
-          <div class="widget dash-ik" data-widget-id="dogumlar">
-            <div class="widget-header">
-              <div class="w-icon w-icon-pink"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg></div>
-              <h3>Yaklaşan Doğum Günleri</h3>
-            </div>
-            <div class="widget-body" id="w-dogumlar"><div class="widget-empty">Yükleniyor...</div></div>
-          </div>
-
-          <!-- Yaklaşan İzinler -->
-          <div class="widget dash-ik" data-widget-id="yaklasan-izin">
-            <div class="widget-header">
-              <div class="w-icon w-icon-blue"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm0 4v8h10V5H3z"/></svg></div>
-              <h3>Yaklaşan İzinler</h3>
-            </div>
-            <div class="widget-body" id="w-yaklasan-izin"><div class="widget-empty">Yükleniyor...</div></div>
-          </div>
-
-          <!-- İzin Talepleri -->
-          <div class="widget dash-ik" data-widget-id="izin-talep">
-            <div class="widget-header">
-              <div class="w-icon w-icon-orange"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm0 4v8h10V5H3z"/></svg></div>
-              <h3>İzin Talepleri</h3>
-              <button class="w-refresh" onclick="loadIKDashboard()" title="Yenile">&#8635;</button>
-            </div>
-            <div class="widget-body" id="w-izin-talep"><div class="widget-empty">Yükleniyor...</div></div>
-            <a href="#" class="w-link" onclick="navigate('izinler',document.querySelector('[onclick*=izinler]'));return false">Tümünü Gör &rsaquo;</a>
-          </div>
+          <!-- ── İK Grubu ── -->
 
           <!-- Personel Özet -->
           <div class="widget dash-ik" data-widget-id="personel-ozet">
@@ -2058,8 +2027,51 @@ tbody tr:hover td { background: var(--bg-soft); }
             <a href="#" class="w-link" onclick="navigate('personel',document.querySelector('[onclick*=personel]'));return false">Personel Listesi &rsaquo;</a>
           </div>
 
+          <!-- Çalışan Dağılımı -->
+          <div class="widget dash-ik" data-widget-id="calisanlar">
+            <div class="widget-header">
+              <div class="w-icon w-icon-blue"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
+              <h3>Çalışan Dağılımı</h3>
+              <button class="w-refresh" onclick="loadIKDashboard()" title="Yenile">&#8635;</button>
+            </div>
+            <div class="donut-container"><canvas id="donut-chart"></canvas><div class="donut-center"><div class="dc-count" id="dc-count">—</div><div class="dc-label" id="dc-label">Toplam</div></div><div class="donut-tooltip" id="donut-tooltip"></div></div>
+            <div class="w-total"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1a4 4 0 110 8 4 4 0 010-8zM1 14c0-3 3-5 7-5s7 2 7 5"/></svg> <span id="w-total-count">—</span></div>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+
+          <!-- İzin Talepleri -->
+          <div class="widget dash-ik" data-widget-id="izin-talep">
+            <div class="widget-header">
+              <div class="w-icon w-icon-orange"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm0 4v8h10V5H3z"/></svg></div>
+              <h3>İzin Talepleri</h3>
+              <button class="w-refresh" onclick="loadIKDashboard()" title="Yenile">&#8635;</button>
+            </div>
+            <div class="widget-body" id="w-izin-talep"><div class="widget-empty">Yükleniyor...</div></div>
+            <a href="#" class="w-link" onclick="navigate('izinler',document.querySelector('[onclick*=izinler]'));return false">Tümünü Gör &rsaquo;</a>
+          </div>
+
+          <!-- Yaklaşan Doğum Günleri -->
+          <div class="widget dash-ik" data-widget-id="dogumlar">
+            <div class="widget-header">
+              <div class="w-icon w-icon-pink"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg></div>
+              <h3>Yaklaşan Doğum Günleri</h3>
+            </div>
+            <div class="widget-body" id="w-dogumlar"><div class="widget-empty">Yükleniyor...</div></div>
+          </div>
+
+          <!-- Yaklaşan İzinler -->
+          <div class="widget dash-ik" data-widget-id="yaklasan-izin">
+            <div class="widget-header">
+              <div class="w-icon w-icon-blue"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm0 4v8h10V5H3z"/></svg></div>
+              <h3>Yaklaşan İzinler</h3>
+            </div>
+            <div class="widget-body" id="w-yaklasan-izin"><div class="widget-empty">Yükleniyor...</div></div>
+          </div>
+
+          <!-- ── Satın Alma Grubu ── -->
+
           <!-- İhtiyaç Talebi -->
-          <div class="widget" data-widget-id="ihtiyac-talebi">
+          <div class="widget dash-sa" data-widget-id="ihtiyac-talebi">
             <div class="widget-header">
               <div class="w-icon w-icon-purple"><span class="material-symbols-outlined" style="font-size:16px">assignment</span></div>
               <h3>İhtiyaç Talebi</h3>
@@ -2087,9 +2099,9 @@ tbody tr:hover td { background: var(--bg-soft); }
           </div>
 
           <!-- Satın Alma -->
-          <div class="widget" data-widget-id="satin-alma">
+          <div class="widget dash-sa" data-widget-id="satin-alma">
             <div class="widget-header">
-              <div class="w-icon w-icon-blue"><span class="material-symbols-outlined" style="font-size:16px">shopping_cart</span></div>
+              <div class="w-icon w-icon-orange"><span class="material-symbols-outlined" style="font-size:16px">shopping_cart</span></div>
               <h3>Satın Alma</h3>
               <button class="w-refresh" onclick="loadSADashboard()" title="Yenile">&#8635;</button>
             </div>
