@@ -49,7 +49,7 @@ class SifreDegistir(BaseModel):
     yeni_sifre: str
 
 
-def create_token(user_id: int, email: str, rol: str, ad: str = "", soyad: str = "") -> str:
+def create_token(user_id: int, email: str, rol: str, ad: str = "", soyad: str = "", unvan: str = "") -> str:
     expire = datetime.utcnow() + timedelta(minutes=JWT_EXPIRE_MINUTES)
     payload = {
         "sub": str(user_id),
@@ -57,6 +57,7 @@ def create_token(user_id: int, email: str, rol: str, ad: str = "", soyad: str = 
         "rol": rol,
         "ad": ad,
         "soyad": soyad,
+        "unvan": unvan,
         "exp": expire,
     }
     return jwt.encode(payload, JWT_SECRET, algorithm=JWT_ALGORITHM)
@@ -161,7 +162,14 @@ async def login(body: LoginRequest):
             detail="E-posta veya şifre hatalı.",
         )
 
-    token = create_token(row["id"], row["email"], row["rol"], row["ad"], row["soyad"])
+    async with pool.acquire() as conn:
+        p_row = await conn.fetchrow(
+            "SELECT unvan FROM personel WHERE tc_kimlik = $1 LIMIT 1",
+            body.email,
+        )
+    unvan = (p_row["unvan"] or "") if p_row else ""
+
+    token = create_token(row["id"], row["email"], row["rol"], row["ad"], row["soyad"], unvan)
     return {
         "token": token,
         "kullanici": {
@@ -170,6 +178,7 @@ async def login(body: LoginRequest):
             "soyad": row["soyad"],
             "email": row["email"],
             "rol": row["rol"],
+            "unvan": unvan,
         },
     }
 
