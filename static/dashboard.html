@@ -3717,6 +3717,7 @@ function applyRoleUI(rol) {
   document.querySelectorAll('.nav-sa').forEach(el => {
     el.style.display = canSA ? '' : 'none';
   });
+  // Unvan tabanlı erişim loadYoneticiUnvanlar() sonrası updateNavSA() ile de çalışır
   document.querySelectorAll('.dash-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
   });
@@ -3758,6 +3759,14 @@ function applyRoleUI(rol) {
   }
 
   currentUser  = JSON.parse(userData);
+  // Mevcut oturumlarda unvan yoksa JWT'den oku
+  if (!currentUser.unvan) {
+    try {
+      const b64     = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
+      const payload = JSON.parse(atob(b64));
+      currentUser.unvan = payload.unvan || '';
+    } catch { currentUser.unvan = ''; }
+  }
   currentLiman = liman || null;
   const rol     = currentUser.rol || 'kullanici';
   const isAdmin = rol === 'admin';
@@ -8039,6 +8048,17 @@ async function loadYoneticiUnvanlar() {
   const res = await fetch('/ayarlar/yonetici-unvanlar', { headers: authHeaders() });
   if (!res.ok) return;
   YONETICI_UNVANLAR = await res.json();
+  updateNavSA();
+}
+
+function updateNavSA() {
+  const rol    = currentUser?.rol || '';
+  const unvan  = (currentUser?.unvan || '').toUpperCase().trim();
+  const rolOK  = ['admin','ik_admin','genel_mudur','mudur'].includes(rol);
+  const unvanOK= YONETICI_UNVANLAR.map(u => u.toUpperCase().trim()).includes(unvan);
+  if (rolOK || unvanOK) {
+    document.querySelectorAll('.nav-sa').forEach(el => el.style.display = '');
+  }
 }
 
 
