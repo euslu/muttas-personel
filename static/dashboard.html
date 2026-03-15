@@ -1997,8 +1997,9 @@ tbody tr:hover td { background: var(--bg-soft); }
       <!-- ── Dashboard ── -->
       <div class="page active" id="page-dashboard">
         <div class="dash-grid" id="dash-widgets">
+
           <!-- Çalışan Dağılımı -->
-          <div class="widget" style="grid-row: span 2">
+          <div class="widget dash-ik" data-widget-id="calisanlar" style="grid-row: span 2">
             <div class="widget-header">
               <div class="w-icon w-icon-blue"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></div>
               <h3>Çalışan Dağılımı</h3>
@@ -2010,7 +2011,7 @@ tbody tr:hover td { background: var(--bg-soft); }
           </div>
 
           <!-- Yaklaşan Doğum Günleri -->
-          <div class="widget">
+          <div class="widget dash-ik" data-widget-id="dogumlar">
             <div class="widget-header">
               <div class="w-icon w-icon-pink"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M8 1l1.5 3 3.5.5-2.5 2.5.5 3.5L8 9l-3 1.5.5-3.5L3 4.5 6.5 4z"/></svg></div>
               <h3>Yaklaşan Doğum Günleri</h3>
@@ -2019,7 +2020,7 @@ tbody tr:hover td { background: var(--bg-soft); }
           </div>
 
           <!-- Yaklaşan İzinler -->
-          <div class="widget">
+          <div class="widget dash-ik" data-widget-id="yaklasan-izin">
             <div class="widget-header">
               <div class="w-icon w-icon-blue"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm0 4v8h10V5H3z"/></svg></div>
               <h3>Yaklaşan İzinler</h3>
@@ -2027,17 +2028,8 @@ tbody tr:hover td { background: var(--bg-soft); }
             <div class="widget-body" id="w-yaklasan-izin"><div class="widget-empty">Yükleniyor...</div></div>
           </div>
 
-          <!-- Resmi Tatiller -->
-          <div class="widget">
-            <div class="widget-header">
-              <div class="w-icon w-icon-purple"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm2 6l2 2 4-4"/></svg></div>
-              <h3>Resmi Tatiller</h3>
-            </div>
-            <div class="widget-body" id="w-tatiller"><div class="widget-empty">Yükleniyor...</div></div>
-          </div>
-
           <!-- İzin Talepleri -->
-          <div class="widget">
+          <div class="widget dash-ik" data-widget-id="izin-talep">
             <div class="widget-header">
               <div class="w-icon w-icon-orange"><svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M3 1h10a2 2 0 012 2v10a2 2 0 01-2 2H3a2 2 0 01-2-2V3a2 2 0 012-2zm0 4v8h10V5H3z"/></svg></div>
               <h3>İzin Talepleri</h3>
@@ -2048,7 +2040,7 @@ tbody tr:hover td { background: var(--bg-soft); }
           </div>
 
           <!-- Personel Özet -->
-          <div class="widget">
+          <div class="widget dash-ik" data-widget-id="personel-ozet">
             <div class="widget-header">
               <div class="w-icon w-icon-green"><svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 1a4 4 0 110 8 4 4 0 010-8zM1 14c0-3 3-5 7-5s7 2 7 5"/></svg></div>
               <h3>Personel Özet</h3>
@@ -2064,6 +2056,62 @@ tbody tr:hover td { background: var(--bg-soft); }
               </div>
             </div>
             <a href="#" class="w-link" onclick="navigate('personel',document.querySelector('[onclick*=personel]'));return false">Personel Listesi &rsaquo;</a>
+          </div>
+
+          <!-- İhtiyaç Talebi -->
+          <div class="widget" data-widget-id="ihtiyac-talebi">
+            <div class="widget-header">
+              <div class="w-icon w-icon-purple"><span class="material-symbols-outlined" style="font-size:16px">assignment</span></div>
+              <h3>İhtiyaç Talebi</h3>
+              <button class="w-refresh" onclick="loadITDashboard()" title="Yenile">&#8635;</button>
+            </div>
+            <div class="widget-body" id="w-ihtiyac">
+              <div class="w-stat-row">
+                <span class="w-stat-label">Beklemede</span>
+                <span class="w-stat-val" id="w-it-beklemede" style="font-size:20px;font-weight:700;color:var(--warn)">—</span>
+              </div>
+              <div class="w-stat-row">
+                <span class="w-stat-label">GM Onayladı</span>
+                <span class="w-stat-val" id="w-it-gm" style="font-size:20px;font-weight:700;color:#3b82f6">—</span>
+              </div>
+              <div class="w-stat-row">
+                <span class="w-stat-label">Satın Almaya Dönüştü</span>
+                <span class="w-stat-val" id="w-it-sa" style="font-size:20px;font-weight:700;color:#10b981">—</span>
+              </div>
+              <div class="w-stat-row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+                <span class="w-stat-label" style="font-weight:600">Toplam</span>
+                <span class="w-stat-val" id="w-it-toplam" style="font-size:20px;font-weight:700;color:var(--text)">—</span>
+              </div>
+            </div>
+            <a href="#" class="w-link" onclick="navigate('ihtiyac_talebi',null);return false">Tümünü Gör &rsaquo;</a>
+          </div>
+
+          <!-- Satın Alma -->
+          <div class="widget" data-widget-id="satin-alma">
+            <div class="widget-header">
+              <div class="w-icon w-icon-blue"><span class="material-symbols-outlined" style="font-size:16px">shopping_cart</span></div>
+              <h3>Satın Alma</h3>
+              <button class="w-refresh" onclick="loadSADashboard()" title="Yenile">&#8635;</button>
+            </div>
+            <div class="widget-body" id="w-satin-alma">
+              <div class="w-stat-row">
+                <span class="w-stat-label">Bekliyor</span>
+                <span class="w-stat-val" id="w-sa-bekliyor" style="font-size:20px;font-weight:700;color:var(--warn)">—</span>
+              </div>
+              <div class="w-stat-row">
+                <span class="w-stat-label">Onaylandı</span>
+                <span class="w-stat-val" id="w-sa-onaylandi" style="font-size:20px;font-weight:700;color:#3b82f6">—</span>
+              </div>
+              <div class="w-stat-row">
+                <span class="w-stat-label">Tamamlandı</span>
+                <span class="w-stat-val" id="w-sa-tamamlandi" style="font-size:20px;font-weight:700;color:#10b981">—</span>
+              </div>
+              <div class="w-stat-row" style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">
+                <span class="w-stat-label" style="font-weight:600">Toplam</span>
+                <span class="w-stat-val" id="w-sa-toplam" style="font-size:20px;font-weight:700;color:var(--text)">—</span>
+              </div>
+            </div>
+            <a href="#" class="w-link" onclick="navigate('satin_alma',null);return false">Tümünü Gör &rsaquo;</a>
           </div>
 
         </div>
@@ -3188,6 +3236,10 @@ tbody tr:hover td { background: var(--bg-soft); }
               <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">star</span>
               YK Başkan Vekili
             </button>
+            <button class="ayar-tab-btn" onclick="ayarTabSec('dashboard',this)">
+              <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">dashboard</span>
+              Dashboard
+            </button>
           </div>
 
           <!-- ── TAB 1: İzin Kuralları ── -->
@@ -3396,6 +3448,18 @@ tbody tr:hover td { background: var(--bg-soft); }
                 <tbody id="yk-bv-list-body"></tbody>
               </table>
               <div id="yk-bv-list-bos" style="display:none;text-align:center;padding:20px;color:var(--text-3);font-size:13px">Listede kimse yok.</div>
+            </div>
+          </div>
+
+          <!-- ── TAB: Dashboard ── -->
+          <div class="ayar-tab-panel" id="ayar-panel-dashboard" style="display:none">
+            <div class="card" style="padding:24px 28px">
+              <h2 style="margin:0 0 4px;font-size:17px">Dashboard Widget Görünürlüğü</h2>
+              <p style="margin:0 0 20px;font-size:13px;color:var(--text-3)">Hangi widget'ların dashboard'da görünmesini istediğinizi seçin. Ayarlar tarayıcınıza kaydedilir.</p>
+              <div id="dash-widget-settings" style="display:flex;flex-direction:column;gap:10px">
+                <!-- JS ile doldurulur -->
+              </div>
+              <button class="btn btn-primary" style="margin-top:20px" onclick="dashWidgetAyarKaydet()">Kaydet</button>
             </div>
           </div>
 
@@ -4001,10 +4065,89 @@ function applyRoleUI(rol) {
   updateTopbar('dashboard');
 })();
 
+const DASH_WIDGET_DEFS = [
+  { id: 'calisanlar',     label: 'Çalışan Dağılımı' },
+  { id: 'dogumlar',       label: 'Yaklaşan Doğum Günleri' },
+  { id: 'yaklasan-izin',  label: 'Yaklaşan İzinler' },
+  { id: 'izin-talep',     label: 'İzin Talepleri' },
+  { id: 'personel-ozet',  label: 'Personel Özet' },
+  { id: 'ihtiyac-talebi', label: 'İhtiyaç Talebi' },
+  { id: 'satin-alma',     label: 'Satın Alma' },
+];
+
+function dashWidgetGorSetting() {
+  try { return JSON.parse(localStorage.getItem('dash_widgets') || '{}'); } catch { return {}; }
+}
+
+function dashWidgetUygula() {
+  const cfg = dashWidgetGorSetting();
+  document.querySelectorAll('#dash-widgets [data-widget-id]').forEach(el => {
+    const wid = el.dataset.widgetId;
+    el.style.display = (cfg[wid] === false) ? 'none' : '';
+  });
+}
+
+function dashWidgetAyarPanelDoldur() {
+  const cfg = dashWidgetGorSetting();
+  const cont = document.getElementById('dash-widget-settings');
+  if (!cont) return;
+  cont.innerHTML = DASH_WIDGET_DEFS.map(w => {
+    const checked = cfg[w.id] !== false;
+    return `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:var(--bg-2);border-radius:8px">
+      <input type="checkbox" id="dw-chk-${w.id}" ${checked ? 'checked' : ''} style="width:16px;height:16px;cursor:pointer">
+      <span style="font-size:14px">${w.label}</span>
+    </label>`;
+  }).join('');
+}
+
+function dashWidgetAyarKaydet() {
+  const cfg = {};
+  DASH_WIDGET_DEFS.forEach(w => {
+    const chk = document.getElementById('dw-chk-' + w.id);
+    if (chk) cfg[w.id] = chk.checked;
+  });
+  localStorage.setItem('dash_widgets', JSON.stringify(cfg));
+  dashWidgetUygula();
+  showToast('Dashboard ayarları kaydedildi.', 'success');
+}
+
 async function loadDashboard() {
+  dashWidgetUygula();
   loadIKDashboard();
+  loadITDashboard();
+  loadSADashboard();
   loadCalismaGunleri();
   loadYoneticiUnvanlar();
+}
+
+async function loadITDashboard() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch('/ihtiyac-talebi/ozet', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    const d = await res.json();
+    const el = id => document.getElementById(id);
+    if (el('w-it-beklemede')) el('w-it-beklemede').textContent = d.beklemede ?? 0;
+    if (el('w-it-gm'))        el('w-it-gm').textContent        = d.gm_onayladi ?? 0;
+    if (el('w-it-sa'))        el('w-it-sa').textContent        = d.satinalimaya_donusturuldu ?? 0;
+    if (el('w-it-toplam'))    el('w-it-toplam').textContent    = d.toplam ?? 0;
+  } catch (e) { console.error('IT dashboard error:', e); }
+}
+
+async function loadSADashboard() {
+  const token = getToken();
+  if (!token) return;
+  try {
+    const res = await fetch('/satin-alma/ozet', { headers: { Authorization: 'Bearer ' + token } });
+    if (!res.ok) return;
+    const d = await res.json();
+    const el = id => document.getElementById(id);
+    if (el('w-sa-bekliyor'))   el('w-sa-bekliyor').textContent   = d.bekliyor ?? 0;
+    if (el('w-sa-onaylandi'))  el('w-sa-onaylandi').textContent  = d.onaylandi ?? 0;
+    if (el('w-sa-tamamlandi')) el('w-sa-tamamlandi').textContent = d.tamamlandi ?? 0;
+    if (el('w-sa-toplam'))     el('w-sa-toplam').textContent     = d.toplam ?? 0;
+  } catch (e) { console.error('SA dashboard error:', e); }
 }
 
 const DONUT_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#14b8a6','#e11d48','#6366f1'];
@@ -7818,6 +7961,7 @@ function ayarTabSec(tabId, btn) {
   document.getElementById('ayar-panel-' + tabId).style.display = 'block';
   if (tabId === 'ks-atama') ksAtamaYukleKsList();
   if (tabId === 'yk-bv') loadYkBv();
+  if (tabId === 'dashboard') dashWidgetAyarPanelDoldur();
 }
 
 async function loadAyarlar() {

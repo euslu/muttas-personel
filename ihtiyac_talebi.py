@@ -80,6 +80,21 @@ async def get_hizmet_noktalari(token: dict = Depends(decode_token)):
         return [r["hizmet_noktasi"] for r in rows]
 
 
+@router.get("/ozet")
+async def ihtiyac_ozet(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT durum, COUNT(*) AS adet FROM ihtiyac_talebi GROUP BY durum")
+        dm = {r["durum"]: int(r["adet"]) for r in rows}
+        return {
+            "beklemede":                   dm.get("beklemede", 0),
+            "gm_onayladi":                 dm.get("gm_onayladi", 0),
+            "yk_onayladi":                 dm.get("yk_onayladi", 0),
+            "satinalimaya_donusturuldu":   dm.get("satinalimaya_donusturuldu", 0),
+            "toplam": sum(dm.values()),
+        }
+
+
 @router.get("")
 async def list_ihtiyac(
     q: Optional[str] = Query(None),

@@ -62,6 +62,21 @@ def _row(r):
 
 # ── Satın Alma CRUD ─────────────────────────────────────────────────────────
 
+@router.get("/ozet")
+async def satin_alma_ozet(token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT durum, COUNT(*) AS adet FROM satin_alma GROUP BY durum")
+        dm = {r["durum"]: int(r["adet"]) for r in rows}
+        return {
+            "bekliyor":   dm.get("bekliyor", 0),
+            "onaylandi":  dm.get("onaylandi", 0),
+            "tamamlandi": dm.get("tamamlandi", 0),
+            "iptal":      dm.get("iptal", 0),
+            "toplam":     sum(dm.values()),
+        }
+
+
 @router.get("")
 async def list_satin_alma(
     q:        Optional[str] = Query(None),
