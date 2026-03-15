@@ -9716,14 +9716,18 @@ function saYeniDrawerAc() {
     const el = document.getElementById(id);
     if (el) el.innerHTML = '';
   });
-  document.getElementById('sa-drawer').style.display = 'flex';
+  const overlay = document.getElementById('sa-drawer');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => overlay.querySelector('.drawer').classList.add('open'));
 }
 
 async function saDetayAc(id) {
   saCurrentId   = id;
   saCurrentStep = 1;
   document.getElementById('sa-drawer-baslik').textContent = 'Satın Alma Düzenle';
-  document.getElementById('sa-drawer').style.display      = 'flex';
+  const overlay2 = document.getElementById('sa-drawer');
+  overlay2.style.display = 'flex';
+  requestAnimationFrame(() => overlay2.querySelector('.drawer').classList.add('open'));
   try {
     const res  = await api(`/satin-alma/${id}`);
     const data = await res.json();
@@ -9741,7 +9745,10 @@ async function saDetayAc(id) {
 }
 
 function saDrawerKapat() {
-  document.getElementById('sa-drawer').style.display = 'none';
+  const overlay = document.getElementById('sa-drawer');
+  const drawer  = overlay.querySelector('.drawer');
+  drawer.classList.remove('open');
+  setTimeout(() => { overlay.style.display = 'none'; }, 260);
   saCurrentId = null;
 }
 
