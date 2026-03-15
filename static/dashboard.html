@@ -1863,6 +1863,9 @@ tbody tr:hover td { background: var(--bg-soft); }
       <button class="nav-item nav-ik" onclick="navigate('izinler', this)">
         <span class="icon"><span class="material-symbols-outlined">flight_takeoff</span></span> İzin Yönetimi
       </button>
+      <button class="nav-item nav-ik" onclick="navigate('vekaletler', this)">
+        <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
+      </button>
 
       <div class="nav-sep nav-sa"></div>
       <div class="sb-section-label nav-sa">Satın Alma</div>
@@ -1880,9 +1883,6 @@ tbody tr:hover td { background: var(--bg-soft); }
         <button class="nav-item" onclick="navigate('kullanicilar', this)">
           <span class="icon"><span class="material-symbols-outlined">manage_accounts</span></span> Kullanıcılar
         </button>
-        <button class="nav-item" onclick="navigate('vekaletler', this)">
-          <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
-        </button>
         <button class="nav-item" onclick="navigate('pdks', this)">
           <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
         </button>
@@ -1898,23 +1898,11 @@ tbody tr:hover td { background: var(--bg-soft); }
       <div id="ik-section" style="display:none">
         <div class="nav-sep"></div>
         <div class="sb-section-label">Araçlar</div>
-        <button class="nav-item" onclick="navigate('vekaletler', this)">
-          <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
-        </button>
         <button class="nav-item" onclick="navigate('pdks', this)">
           <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
         </button>
         <button class="nav-item" onclick="navigate('ayarlar', this)">
           <span class="icon"><span class="material-symbols-outlined">settings</span></span> Ayarlar
-        </button>
-      </div>
-
-      <!-- Koordinasyon Sorumlusu -->
-      <div id="ks-section" style="display:none">
-        <div class="nav-sep"></div>
-        <div class="sb-section-label">Vekalet</div>
-        <button class="nav-item" onclick="navigate('vekaletler', this)">
-          <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
         </button>
       </div>
 
@@ -3963,9 +3951,6 @@ function applyRoleUI(rol) {
   }
   if (rol === 'ik_admin') {
     document.getElementById('ik-section').style.display = 'block';
-  }
-  if (rol === 'koordinasyon_sorumlusu' || rol === 'mudur') {
-    document.getElementById('ks-section').style.display = 'block';
   }
   if (isAdmin) {
     document.getElementById('liman-filter').classList.add('visible');
