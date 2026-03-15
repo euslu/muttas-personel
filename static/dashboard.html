@@ -3810,7 +3810,6 @@ function applyRoleUI(rol) {
   }
 
   updateTopbar('dashboard');
-  loadDashboard();
 })();
 
 async function loadDashboard() {
@@ -4176,6 +4175,12 @@ function getToken() { return localStorage.getItem('token'); }
 
 function authHeaders() {
   return { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getToken() };
+}
+
+async function api(url, opts = {}) {
+  const options = Object.assign({}, opts);
+  options.headers = Object.assign({}, authHeaders(), opts.headers || {});
+  return fetch(url, options);
 }
 
 let glPage       = 1;
@@ -10114,6 +10119,7 @@ async function saYaklasiMaliyetYazdir(id) {
   } catch(e) { showToast('Belge oluşturulamadı', 'error'); console.error(e); }
 }
 
+loadDashboard();
 </script>
 
 <div id="toast-container"></div>
