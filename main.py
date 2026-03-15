@@ -22,6 +22,7 @@ from vekalet import router as vekalet_router
 from pdks import router as pdks_router
 from ayarlar import router as ayarlar_router
 from satin_alma import router as satin_alma_router
+from ihtiyac_talebi import router as ihtiyac_talebi_router
 
 
 class CSPMiddleware(BaseHTTPMiddleware):
@@ -313,6 +314,38 @@ CREATE TABLE IF NOT EXISTS satin_alma_komisyon (
     unvan          VARCHAR(200)
 );
 
+CREATE TABLE IF NOT EXISTS ihtiyac_talebi (
+    id                    SERIAL PRIMARY KEY,
+    konu                  TEXT NOT NULL,
+    talep_eden            TEXT NOT NULL,
+    talep_eden_id         INT REFERENCES personel(id) ON DELETE SET NULL,
+    lokasyonlar           TEXT DEFAULT '[]',
+    diger_lokasyon        TEXT,
+    aciklama              TEXT,
+    durum                 VARCHAR(50) DEFAULT 'beklemede',
+    gm_onay_ad            VARCHAR(200),
+    gm_onay_tarih         TIMESTAMP,
+    yk_onay_ad            VARCHAR(200),
+    yk_onay_tarih         TIMESTAMP,
+    satin_alma_id         INT REFERENCES satin_alma(id) ON DELETE SET NULL,
+    olusturan_id          INT,
+    olusturan_ad          VARCHAR(200),
+    created_at            TIMESTAMP DEFAULT NOW(),
+    updated_at            TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS ihtiyac_talebi_kalemler (
+    id         SERIAL PRIMARY KEY,
+    talep_id   INT REFERENCES ihtiyac_talebi(id) ON DELETE CASCADE,
+    sira       INT DEFAULT 1,
+    ad         TEXT NOT NULL,
+    miktar     NUMERIC DEFAULT 1,
+    birim      VARCHAR(50) DEFAULT 'Adet',
+    aciklama   TEXT
+);
+
+ALTER TABLE satin_alma ADD COLUMN IF NOT EXISTS ihtiyac_talep_id INT REFERENCES ihtiyac_talebi(id) ON DELETE SET NULL;
+
 CREATE TABLE IF NOT EXISTS sms_kodlari (
     id SERIAL PRIMARY KEY,
     tc_kimlik VARCHAR(11) NOT NULL,
@@ -423,6 +456,7 @@ app.include_router(vekalet_router)
 app.include_router(pdks_router)
 app.include_router(ayarlar_router)
 app.include_router(satin_alma_router)
+app.include_router(ihtiyac_talebi_router)
 
 
 @app.get("/")

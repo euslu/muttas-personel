@@ -1866,6 +1866,9 @@ tbody tr:hover td { background: var(--bg-soft); }
 
       <div class="nav-sep nav-sa"></div>
       <div class="sb-section-label nav-sa">Satın Alma</div>
+      <button class="nav-item nav-sa" onclick="navigate('ihtiyac_talebi', this)">
+        <span class="icon"><span class="material-symbols-outlined">assignment</span></span> İhtiyaç Talebi
+      </button>
       <button class="nav-item nav-sa" onclick="navigate('satin_alma', this)">
         <span class="icon"><span class="material-symbols-outlined">shopping_cart</span></span> Satın Alma
       </button>
@@ -3424,6 +3427,155 @@ tbody tr:hover td { background: var(--bg-soft); }
       </div>
 
       <!-- ══════════════════ SATIN ALMA SAYFASI ══════════════════ -->
+      <!-- ══ İHTİYAÇ TALEBİ SAYFASI ══ -->
+      <div class="page" id="page-ihtiyac_talebi">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px">
+          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <input class="form-input" id="it-search" type="search" placeholder="Konu veya talep eden ara…"
+              oninput="itArama()" style="width:230px;border-radius:10px;font-size:13px">
+            <select class="form-input" id="it-filter-durum" onchange="itArama()" style="width:175px;border-radius:10px;font-size:13px">
+              <option value="">Tüm Durumlar</option>
+              <option value="beklemede">Beklemede</option>
+              <option value="gm_onayladi">GM Onayladı</option>
+              <option value="yk_onayladi">YK Onayladı</option>
+              <option value="satin_almaya_donusturuldu">Satın Almaya Dönüştürüldü</option>
+              <option value="reddedildi">Reddedildi</option>
+            </select>
+          </div>
+          <button onclick="itYeniAc()" style="display:flex;align-items:center;gap:6px;padding:9px 18px;border-radius:10px;border:none;cursor:pointer;font-size:13px;font-weight:600;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;white-space:nowrap;box-shadow:0 2px 8px rgba(139,92,246,.35)">
+            <span class="material-symbols-outlined" style="font-size:18px">add_task</span> Yeni Talep
+          </button>
+        </div>
+
+        <div class="card" style="border-radius:14px;overflow:hidden">
+          <div class="table-container">
+            <table class="table" id="it-table">
+              <thead>
+                <tr>
+                  <th style="width:50px">#</th>
+                  <th>Konu</th>
+                  <th style="width:160px">Talep Eden</th>
+                  <th style="width:160px">Lokasyon</th>
+                  <th style="width:120px">Durum</th>
+                  <th style="width:90px">Tarih</th>
+                  <th style="width:120px"></th>
+                </tr>
+              </thead>
+              <tbody id="it-tbody">
+                <tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-3)">Yükleniyor…</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card-footer" style="padding:12px 16px;display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border)">
+            <span id="it-page-info" style="font-size:13px;color:var(--text-3)"></span>
+            <div style="display:flex;gap:6px">
+              <button class="btn btn-outline" id="it-prev" onclick="itPage(-1)" style="padding:6px 12px;font-size:12px;border-radius:8px">‹ Önceki</button>
+              <button class="btn btn-outline" id="it-next" onclick="itPage(1)"  style="padding:6px 12px;font-size:12px;border-radius:8px">Sonraki ›</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- İhtiyaç Talebi Modal -->
+      <div id="it-drawer" class="modal-overlay" style="display:none;align-items:flex-start;padding:48px 16px 24px" onclick="if(event.target===this)itDrawerKapat()">
+        <div style="background:var(--bg);border-radius:16px;width:800px;max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.22);display:flex;flex-direction:column;max-height:calc(100vh - 80px)">
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--border);flex-shrink:0">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span class="material-symbols-outlined" style="font-size:22px;color:#8b5cf6">assignment</span>
+              <span id="it-drawer-baslik" style="font-size:16px;font-weight:700;color:var(--text)">Yeni İhtiyaç Talebi</span>
+            </div>
+            <button onclick="itDrawerKapat()" style="background:none;border:none;cursor:pointer;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--text-3);font-size:20px;transition:background .15s" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='none'">✕</button>
+          </div>
+          <div style="padding:24px;overflow-y:auto;flex:1">
+            <!-- Adım göstergesi -->
+            <div style="display:flex;gap:0;margin-bottom:28px;border-radius:10px;overflow:hidden;border:1px solid var(--border)">
+              <div class="it-step active" id="it-step-1" onclick="itGoStep(1)" style="flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--accent);color:#fff">1. Temel Bilgi</div>
+              <div class="it-step" id="it-step-2" onclick="itGoStep(2)" style="flex:1;padding:10px 6px;text-align:center;font-size:12px;font-weight:600;cursor:pointer;background:var(--surface);color:var(--text-3);border-left:1px solid var(--border)">2. Kalemler</div>
+            </div>
+
+            <!-- Adım 1 -->
+            <div id="it-panel-1">
+              <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Konu / İhtiyaç Başlığı <span style="color:var(--danger)">*</span></label>
+                  <input class="form-input" id="it-konu" placeholder="Örn: Temizlik Malzemeleri İhtiyacı" style="border-radius:10px">
+                </div>
+                <!-- Talep Eden -->
+                <div class="form-group" style="grid-column:1/-1;position:relative">
+                  <label class="form-label">Talep Eden <span style="color:var(--danger)">*</span></label>
+                  <input class="form-input" id="it-talep-eden" placeholder="Personel adı yazın veya arayın…" autocomplete="off"
+                    oninput="itPersonelAra()" style="border-radius:10px" onblur="setTimeout(()=>document.getElementById('it-personel-drop').style.display='none',200)">
+                  <input type="hidden" id="it-talep-eden-id">
+                  <div id="it-personel-drop" style="display:none;position:absolute;top:100%;left:0;right:0;z-index:200;background:var(--bg);border:1px solid var(--border);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.15);max-height:220px;overflow-y:auto;margin-top:4px"></div>
+                </div>
+                <!-- Lokasyon çoklu seçim -->
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Kullanılacağı Lokasyon(lar)</label>
+                  <div style="border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--bg);cursor:pointer" onclick="itLokDrop()">
+                    <div style="display:flex;align-items:center;justify-content:space-between">
+                      <div id="it-lok-chips" style="display:flex;flex-wrap:wrap;gap:6px;flex:1">
+                        <span id="it-lok-placeholder" style="color:var(--text-3);font-size:13px">Lokasyon seçin…</span>
+                      </div>
+                      <span class="material-symbols-outlined" style="font-size:18px;color:var(--text-3);flex-shrink:0;margin-left:8px">expand_more</span>
+                    </div>
+                  </div>
+                  <div id="it-lok-dropdown" style="display:none;border:1px solid var(--border);border-radius:10px;background:var(--bg);box-shadow:0 8px 24px rgba(0,0,0,.12);margin-top:4px;z-index:150;position:relative">
+                    <div style="padding:8px">
+                      <input id="it-lok-search" class="form-input" placeholder="Lokasyon ara…" oninput="itLokFiltrele()" style="border-radius:8px;font-size:13px">
+                    </div>
+                    <div id="it-lok-list" style="max-height:220px;overflow-y:auto;padding:0 8px 8px"></div>
+                  </div>
+                  <!-- Diğer alanı -->
+                  <div id="it-diger-wrap" style="display:none;margin-top:10px">
+                    <input class="form-input" id="it-diger-lokasyon" placeholder="Diğer lokasyon açıklayın…" style="border-radius:10px">
+                  </div>
+                </div>
+                <div class="form-group" style="grid-column:1/-1">
+                  <label class="form-label">Açıklama / Gerekçe</label>
+                  <textarea class="form-input" id="it-aciklama" rows="3" placeholder="İhtiyaç gerekçesi…" style="border-radius:10px;resize:vertical"></textarea>
+                </div>
+              </div>
+              <div style="display:flex;justify-content:flex-end;margin-top:20px">
+                <button onclick="itKaydetStep1()" style="padding:10px 28px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,.3)">
+                  Kaydet &amp; Devam →
+                </button>
+              </div>
+            </div>
+
+            <!-- Adım 2: Kalemler -->
+            <div id="it-panel-2" style="display:none">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+                <span style="font-weight:600;font-size:14px;color:var(--text)">İhtiyaç Kalemleri</span>
+                <button onclick="itKalemEkle()" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;border:none;cursor:pointer;font-size:12px;font-weight:600;background:#8b5cf6;color:#fff">
+                  <span class="material-symbols-outlined" style="font-size:16px">add</span> Kalem Ekle
+                </button>
+              </div>
+              <div style="overflow-x:auto;border-radius:10px;border:1px solid var(--border)">
+                <table class="table" style="margin:0">
+                  <thead>
+                    <tr>
+                      <th style="width:40px">#</th>
+                      <th>Kalem Adı</th>
+                      <th style="width:90px">Miktar</th>
+                      <th style="width:90px">Birim</th>
+                      <th style="width:180px">Açıklama</th>
+                      <th style="width:36px"></th>
+                    </tr>
+                  </thead>
+                  <tbody id="it-kalemler-tbody"></tbody>
+                </table>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-top:20px">
+                <button onclick="itGoStep(1)" style="padding:10px 20px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;background:var(--bg);color:var(--text)">← Geri</button>
+                <button onclick="itKaydetStep2()" style="padding:10px 28px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,.3)">
+                  Tamamla ✓
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="page" id="page-satin_alma">
         <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:20px">
           <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
@@ -4134,7 +4286,8 @@ function navigate(page, el) {
   if (page === 'izin_log')     loadIzinLog(1);
   if (page === 'ayarlar')      loadAyarlar();
   if (page === 'hesabim')      loadHesabim();
-  if (page === 'satin_alma')   saYukle(1);
+  if (page === 'satin_alma')     saYukle(1);
+  if (page === 'ihtiyac_talebi') itYukle(1);
 }
 
 function updateTopbar(page) {
@@ -10117,6 +10270,387 @@ async function saYaklasiMaliyetYazdir(id) {
     document.getElementById('sa-print-content').innerHTML  = html;
     document.getElementById('sa-print-modal').style.display= 'flex';
   } catch(e) { showToast('Belge oluşturulamadı', 'error'); console.error(e); }
+}
+
+
+// ════════════════════════════════════════════════════════════
+//  İHTİYAÇ TALEBİ MODÜLÜ
+// ════════════════════════════════════════════════════════════
+
+let itCurrentId      = null;
+let itCurrentPage    = 1;
+let itToplam         = 0;
+const itPerPage      = 25;
+let itAramaTimeout   = null;
+let itLokasyonlar    = [];   // mevcut hizmet noktaları listesi
+let itSecili         = [];   // seçili lokasyonlar
+
+const IT_DURUM_BADGE = {
+  beklemede:               '<span style="background:#fef3c7;color:#92400e;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">Beklemede</span>',
+  gm_onayladi:             '<span style="background:#dbeafe;color:#1e40af;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">GM Onayladı</span>',
+  yk_onayladi:             '<span style="background:#d1fae5;color:#065f46;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">YK Onayladı</span>',
+  satin_almaya_donusturuldu:'<span style="background:#e0f2fe;color:#0369a1;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">SA\'ya Dönüştürüldü</span>',
+  reddedildi:              '<span style="background:#fee2e2;color:#991b1b;padding:2px 10px;border-radius:20px;font-size:11px;font-weight:700">Reddedildi</span>',
+};
+
+async function itYukle(page) {
+  itCurrentPage = page || 1;
+  const q     = document.getElementById('it-search')?.value || '';
+  const durum = document.getElementById('it-filter-durum')?.value || '';
+  const params = new URLSearchParams({ page: itCurrentPage, per_page: itPerPage });
+  if (q)     params.set('q', q);
+  if (durum) params.set('durum', durum);
+  try {
+    const res  = await api(`/ihtiyac-talebi?${params}`);
+    const data = await res.json();
+    itToplam   = data.toplam || 0;
+    itRenderTablo(data.kayitlar || []);
+    itRenderPagination();
+  } catch(e) { console.error(e); }
+}
+
+function itArama() {
+  clearTimeout(itAramaTimeout);
+  itAramaTimeout = setTimeout(() => itYukle(1), 350);
+}
+
+function itPage(d) {
+  const total = Math.ceil(itToplam / itPerPage) || 1;
+  const np    = itCurrentPage + d;
+  if (np < 1 || np > total) return;
+  itYukle(np);
+}
+
+function itRenderPagination() {
+  const total = Math.ceil(itToplam / itPerPage) || 1;
+  document.getElementById('it-page-info').textContent = `${itToplam} kayıt — Sayfa ${itCurrentPage} / ${total}`;
+  document.getElementById('it-prev').disabled = itCurrentPage <= 1;
+  document.getElementById('it-next').disabled = itCurrentPage >= total;
+}
+
+function itRenderTablo(rows) {
+  const rol = currentUser?.rol || '';
+  const isGM     = rol === 'admin' || rol === 'genel_mudur' || rol === 'ik_admin';
+  const isYK     = rol === 'admin' || rol === 'yk_baskani';
+  const isSAEdit = ['admin','ik_admin','genel_mudur','mudur','yk_baskani'].includes(rol);
+  const tbody = document.getElementById('it-tbody');
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:32px;color:var(--text-3)">Kayıt bulunamadı</td></tr>';
+    return;
+  }
+  tbody.innerHTML = rows.map(r => {
+    const lokStr = (() => {
+      const loks = Array.isArray(r.lokasyonlar) ? r.lokasyonlar : [];
+      const all  = r.diger_lokasyon ? [...loks, 'Diğer: ' + r.diger_lokasyon] : loks;
+      if (!all.length) return '—';
+      if (all.length === 1) return all[0];
+      return `${all[0]} +${all.length-1}`;
+    })();
+    const badge = IT_DURUM_BADGE[r.durum] || r.durum;
+    let aksiyon = `<button onclick="itDuzenle(${r.id})" title="Düzenle" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--accent)"><span class="material-symbols-outlined" style="font-size:18px">edit</span></button>`;
+    if (isGM && r.durum === 'beklemede')
+      aksiyon += `<button onclick="itGmOnayla(${r.id})" title="GM Onayla" style="background:none;border:none;cursor:pointer;padding:4px;color:#1e40af"><span class="material-symbols-outlined" style="font-size:18px">thumb_up</span></button>`;
+    if (isYK && r.durum === 'gm_onayladi')
+      aksiyon += `<button onclick="itYkOnayla(${r.id})" title="YK Onayla" style="background:none;border:none;cursor:pointer;padding:4px;color:#065f46"><span class="material-symbols-outlined" style="font-size:18px">verified</span></button>`;
+    if (isSAEdit && r.durum === 'yk_onayladi')
+      aksiyon += `<button onclick="itSatinAlmayaDon(${r.id})" title="Satın Almaya Dönüştür" style="background:none;border:none;cursor:pointer;padding:4px;color:#0369a1"><span class="material-symbols-outlined" style="font-size:18px">shopping_cart</span></button>`;
+    if ((isGM || isYK) && ['beklemede','gm_onayladi'].includes(r.durum))
+      aksiyon += `<button onclick="itReddet(${r.id})" title="Reddet" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--danger)"><span class="material-symbols-outlined" style="font-size:18px">cancel</span></button>`;
+    return `<tr>
+      <td style="font-size:12px;color:var(--text-3)">${r.id}</td>
+      <td style="font-weight:500">${r.konu}</td>
+      <td style="font-size:12px">${r.talep_eden}</td>
+      <td style="font-size:12px">${lokStr}</td>
+      <td>${badge}</td>
+      <td style="font-size:12px;color:var(--text-3)">${r.created_at ? r.created_at.slice(0,10) : '—'}</td>
+      <td style="white-space:nowrap">${aksiyon}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Hizmet noktaları ────────────────────────────────────────
+
+async function itLokasyonlariYukle() {
+  if (itLokasyonlar.length) return;
+  try {
+    const res = await api('/ihtiyac-talebi/hizmet-noktalari');
+    itLokasyonlar = await res.json();
+  } catch(e) { console.error(e); }
+}
+
+function itLokDrop() {
+  const dd = document.getElementById('it-lok-dropdown');
+  if (dd.style.display === 'none') {
+    dd.style.display = 'block';
+    itLokRender('');
+    document.getElementById('it-lok-search').value = '';
+    document.getElementById('it-lok-search').focus();
+  } else {
+    dd.style.display = 'none';
+  }
+}
+
+function itLokFiltrele() {
+  itLokRender(document.getElementById('it-lok-search').value.toLowerCase());
+}
+
+function itLokRender(q) {
+  const list = document.getElementById('it-lok-list');
+  const items = itLokasyonlar.filter(l => !q || l.toLowerCase().includes(q));
+  list.innerHTML = items.map(l => {
+    const chk = itSecili.includes(l) ? 'checked' : '';
+    return `<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:13px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background=''">
+      <input type="checkbox" ${chk} onchange="itLokToggle('${l.replace(/'/g,"\\'")}',this.checked)" style="accent-color:#8b5cf6"> ${l}
+    </label>`;
+  }).join('') + `<label style="display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:6px;cursor:pointer;font-size:13px;border-top:1px solid var(--border);margin-top:4px" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background=''">
+      <input type="checkbox" ${itSecili.includes('__DIGER__') ? 'checked' : ''} onchange="itLokToggle('__DIGER__',this.checked)" style="accent-color:#8b5cf6"> Diğer
+    </label>`;
+}
+
+function itLokToggle(val, chk) {
+  if (chk && !itSecili.includes(val)) itSecili.push(val);
+  else if (!chk) itSecili = itSecili.filter(v => v !== val);
+  itLokChipsGuncelle();
+  document.getElementById('it-diger-wrap').style.display = itSecili.includes('__DIGER__') ? '' : 'none';
+}
+
+function itLokChipsGuncelle() {
+  const chips = document.getElementById('it-lok-chips');
+  const ph    = document.getElementById('it-lok-placeholder');
+  const visible = itSecili.filter(v => v !== '__DIGER__');
+  const hasDiger = itSecili.includes('__DIGER__');
+  if (!visible.length && !hasDiger) {
+    chips.innerHTML = '';
+    ph.style.display = '';
+    return;
+  }
+  ph.style.display = 'none';
+  chips.innerHTML = visible.map(l =>
+    `<span style="display:inline-flex;align-items:center;gap:4px;background:#ede9fe;color:#6d28d9;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600">
+      ${l} <span onclick="itLokToggle('${l.replace(/'/g,"\\'")}',false);itLokChipsGuncelle();" style="cursor:pointer;font-size:14px;line-height:1">×</span>
+    </span>`
+  ).join('') + (hasDiger ? `<span style="display:inline-flex;align-items:center;gap:4px;background:#fce7f3;color:#9d174d;padding:3px 10px;border-radius:20px;font-size:12px;font-weight:600">Diğer <span onclick="itLokToggle('__DIGER__',false);itLokChipsGuncelle();" style="cursor:pointer;font-size:14px">×</span></span>` : '');
+}
+
+// ── Personel arama ──────────────────────────────────────────
+
+async function itPersonelAra() {
+  const q   = document.getElementById('it-talep-eden').value.trim();
+  const drop = document.getElementById('it-personel-drop');
+  document.getElementById('it-talep-eden-id').value = '';
+  if (q.length < 2) { drop.style.display = 'none'; return; }
+  try {
+    const res  = await api(`/personel?q=${encodeURIComponent(q)}&per_page=10`);
+    const data = await res.json();
+    const list = data.kayitlar || data;
+    if (!list.length) { drop.style.display = 'none'; return; }
+    drop.innerHTML = list.map(p =>
+      `<div onclick="itPersonelSec(${p.id},'${(p.ad+' '+p.soyad).replace(/'/g,"\\'")}','${(p.unvan||'').replace(/'/g,"\\'")}','${(p.hizmet_noktasi||'').replace(/'/g,"\\'")}');document.getElementById('it-personel-drop').style.display='none'"
+        style="padding:10px 14px;cursor:pointer;border-bottom:1px solid var(--border);font-size:13px"
+        onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background=''">
+        <div style="font-weight:600">${p.ad} ${p.soyad}</div>
+        <div style="font-size:11px;color:var(--text-3)">${p.unvan||''} ${p.hizmet_noktasi ? '— '+p.hizmet_noktasi : ''}</div>
+      </div>`
+    ).join('');
+    drop.style.display = 'block';
+  } catch(e) { drop.style.display = 'none'; }
+}
+
+function itPersonelSec(id, adSoyad, unvan, hizmet) {
+  document.getElementById('it-talep-eden').value   = adSoyad;
+  document.getElementById('it-talep-eden-id').value = id;
+}
+
+// ── Form aç/kapat ───────────────────────────────────────────
+
+async function itYeniAc() {
+  itCurrentId = null;
+  itSecili    = [];
+  document.getElementById('it-drawer-baslik').textContent = 'Yeni İhtiyaç Talebi';
+  document.getElementById('it-konu').value         = '';
+  document.getElementById('it-talep-eden').value   = '';
+  document.getElementById('it-talep-eden-id').value= '';
+  document.getElementById('it-aciklama').value     = '';
+  document.getElementById('it-diger-lokasyon').value = '';
+  document.getElementById('it-diger-wrap').style.display = 'none';
+  document.getElementById('it-lok-dropdown').style.display = 'none';
+  itLokChipsGuncelle();
+  itKalemlerSifirla();
+  itGoStep(1);
+  document.getElementById('it-drawer').style.display = 'flex';
+  await itLokasyonlariYukle();
+}
+
+async function itDuzenle(id) {
+  try {
+    const res  = await api(`/ihtiyac-talebi/${id}`);
+    const data = await res.json();
+    itCurrentId = id;
+    itSecili    = Array.isArray(data.lokasyonlar) ? [...data.lokasyonlar] : [];
+    if (data.diger_lokasyon) itSecili.push('__DIGER__');
+    document.getElementById('it-drawer-baslik').textContent = 'Talebi Düzenle';
+    document.getElementById('it-konu').value         = data.konu || '';
+    document.getElementById('it-talep-eden').value   = data.talep_eden || '';
+    document.getElementById('it-talep-eden-id').value= data.talep_eden_id || '';
+    document.getElementById('it-aciklama').value     = data.aciklama || '';
+    document.getElementById('it-diger-lokasyon').value = data.diger_lokasyon || '';
+    document.getElementById('it-diger-wrap').style.display = itSecili.includes('__DIGER__') ? '' : 'none';
+    document.getElementById('it-lok-dropdown').style.display = 'none';
+    itLokChipsGuncelle();
+    itKalemlerDoldur(data.kalemler || []);
+    itGoStep(1);
+    document.getElementById('it-drawer').style.display = 'flex';
+    await itLokasyonlariYukle();
+  } catch(e) { showToast('Talep yüklenemedi', 'error'); }
+}
+
+function itDrawerKapat() {
+  document.getElementById('it-drawer').style.display = 'none';
+}
+
+function itGoStep(n) {
+  [1,2].forEach(i => {
+    document.getElementById(`it-panel-${i}`).style.display = i === n ? '' : 'none';
+    const s = document.getElementById(`it-step-${i}`);
+    if (s) {
+      s.style.background = i === n ? 'var(--accent)' : 'var(--surface)';
+      s.style.color      = i === n ? '#fff' : 'var(--text-3)';
+    }
+  });
+}
+
+// ── Kaydet ──────────────────────────────────────────────────
+
+async function itKaydetStep1() {
+  const konu      = document.getElementById('it-konu').value.trim();
+  const talepEden = document.getElementById('it-talep-eden').value.trim();
+  if (!konu)       { showToast('Konu zorunludur', 'error'); return; }
+  if (!talepEden)  { showToast('Talep eden zorunludur', 'error'); return; }
+  const loklar   = itSecili.filter(v => v !== '__DIGER__');
+  const digerLok = itSecili.includes('__DIGER__') ? document.getElementById('it-diger-lokasyon').value.trim() || null : null;
+  const body = {
+    konu,
+    talep_eden:    talepEden,
+    talep_eden_id: parseInt(document.getElementById('it-talep-eden-id').value) || null,
+    lokasyonlar:   loklar,
+    diger_lokasyon: digerLok,
+    aciklama:      document.getElementById('it-aciklama').value.trim() || null,
+  };
+  try {
+    let res;
+    if (itCurrentId) {
+      res = await api(`/ihtiyac-talebi/${itCurrentId}`, { method:'PUT', body: JSON.stringify(body) });
+    } else {
+      res = await api('/ihtiyac-talebi', { method:'POST', body: JSON.stringify(body) });
+    }
+    if (!res.ok) throw new Error();
+    const data  = await res.json();
+    itCurrentId = data.id;
+    showToast('Temel bilgiler kaydedildi', 'success');
+    itGoStep(2);
+  } catch(e) { showToast('Kayıt hatası', 'error'); }
+}
+
+async function itKaydetStep2() {
+  const tbody = document.getElementById('it-kalemler-tbody');
+  const rows  = tbody.querySelectorAll('tr');
+  const kalemler = [];
+  let sira = 1;
+  for (const tr of rows) {
+    const ad = tr.querySelector('.it-k-ad')?.value.trim();
+    if (!ad) continue;
+    kalemler.push({
+      sira:    sira++,
+      ad,
+      miktar:  parseFloat(tr.querySelector('.it-k-miktar')?.value) || 1,
+      birim:   tr.querySelector('.it-k-birim')?.value  || 'Adet',
+      aciklama: tr.querySelector('.it-k-acik')?.value.trim() || null,
+    });
+  }
+  try {
+    const res = await api(`/ihtiyac-talebi/${itCurrentId}/kalemler`,
+      { method:'PUT', body: JSON.stringify({ kalemler }) });
+    if (!res.ok) throw new Error();
+    showToast('Talep kaydedildi', 'success');
+    itDrawerKapat();
+    itYukle(itCurrentPage);
+  } catch(e) { showToast('Kalem kayıt hatası', 'error'); }
+}
+
+// ── Kalemler tablosu ────────────────────────────────────────
+
+function itKalemlerSifirla() {
+  document.getElementById('it-kalemler-tbody').innerHTML = '';
+}
+
+function itKalemlerDoldur(kalemler) {
+  const tbody = document.getElementById('it-kalemler-tbody');
+  tbody.innerHTML = '';
+  kalemler.forEach(k => itKalemSatirEkle(k));
+}
+
+function itKalemEkle() {
+  itKalemSatirEkle({});
+}
+
+function itKalemSatirEkle(k) {
+  const tbody = document.getElementById('it-kalemler-tbody');
+  const sira  = tbody.querySelectorAll('tr').length + 1;
+  const tr    = document.createElement('tr');
+  tr.innerHTML = `
+    <td style="font-size:12px;color:var(--text-3);text-align:center">${sira}</td>
+    <td><input class="form-input it-k-ad" value="${k.ad||''}" placeholder="Kalem adı" style="border-radius:6px;font-size:13px;padding:6px 10px"></td>
+    <td><input class="form-input it-k-miktar" type="number" min="0.01" step="any" value="${k.miktar||1}" style="border-radius:6px;font-size:13px;padding:6px 10px"></td>
+    <td><select class="form-input it-k-birim" style="border-radius:6px;font-size:13px;padding:6px 10px">
+      ${['Adet','Kg','Lt','m²','m³','Paket','Kutu','Koli','Ton','m'].map(b=>`<option${b===(k.birim||'Adet')?' selected':''}>${b}</option>`).join('')}
+    </select></td>
+    <td><input class="form-input it-k-acik" value="${k.aciklama||''}" placeholder="Açıklama" style="border-radius:6px;font-size:13px;padding:6px 10px"></td>
+    <td><button onclick="this.closest('tr').remove()" style="background:none;border:none;cursor:pointer;color:var(--danger);padding:4px"><span class="material-symbols-outlined" style="font-size:18px">delete</span></button></td>`;
+  tbody.appendChild(tr);
+}
+
+// ── Onay / Red / Dönüştür ───────────────────────────────────
+
+async function itGmOnayla(id) {
+  if (!confirm('GM onayı verilsin mi?')) return;
+  try {
+    const res = await api(`/ihtiyac-talebi/${id}/gm-onayla`, { method:'POST' });
+    if (!res.ok) { const d = await res.json(); throw new Error(d.detail||''); }
+    showToast('GM onayı verildi', 'success');
+    itYukle(itCurrentPage);
+  } catch(e) { showToast(e.message||'Hata', 'error'); }
+}
+
+async function itYkOnayla(id) {
+  if (!confirm('YK Başkanı onayı verilsin mi?')) return;
+  try {
+    const res = await api(`/ihtiyac-talebi/${id}/yk-onayla`, { method:'POST' });
+    if (!res.ok) { const d = await res.json(); throw new Error(d.detail||''); }
+    showToast('YK onayı verildi', 'success');
+    itYukle(itCurrentPage);
+  } catch(e) { showToast(e.message||'Hata', 'error'); }
+}
+
+async function itReddet(id) {
+  if (!confirm('Talep reddedilsin mi?')) return;
+  try {
+    const res = await api(`/ihtiyac-talebi/${id}/reddet`, { method:'POST' });
+    if (!res.ok) throw new Error();
+    showToast('Talep reddedildi', 'warning');
+    itYukle(itCurrentPage);
+  } catch(e) { showToast('Hata', 'error'); }
+}
+
+async function itSatinAlmayaDon(id) {
+  if (!confirm('Bu talep Satın Alma kaydına dönüştürülsün mü?')) return;
+  try {
+    const res  = await api(`/ihtiyac-talebi/${id}/satin-almaya-don`, { method:'POST' });
+    if (!res.ok) { const d = await res.json(); throw new Error(d.detail||''); }
+    const data = await res.json();
+    showToast('Satın alma kaydı oluşturuldu!', 'success');
+    itYukle(itCurrentPage);
+    setTimeout(() => navigate('satin_alma'), 1200);
+  } catch(e) { showToast(e.message||'Dönüştürme hatası', 'error'); }
 }
 
 loadDashboard();
