@@ -10330,7 +10330,7 @@ function itRenderPagination() {
 
 function itRenderTablo(rows) {
   const rol = currentUser?.rol || '';
-  const isGM     = rol === 'admin' || rol === 'genel_mudur' || rol === 'ik_admin';
+  const isGM     = rol === 'admin' || rol === 'genel_mudur';
   const isYK     = rol === 'admin' || rol === 'yk_baskani';
   const isSAEdit = ['admin','ik_admin','genel_mudur','mudur','yk_baskani'].includes(rol);
   const tbody = document.getElementById('it-tbody');
