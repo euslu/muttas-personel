@@ -203,6 +203,24 @@ html, body {
   letter-spacing: 0.12em;
   padding: 16px 12px 8px;
 }
+.sb-accordion-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: background .15s;
+  user-select: none;
+}
+.sb-accordion-toggle:hover { background: var(--sb-hover); }
+.sb-accordion-toggle .sb-chevron {
+  font-size: 16px;
+  color: var(--sb-section);
+  transition: transform .2s;
+  flex-shrink: 0;
+}
+.sb-accordion-body { overflow: hidden; }
+.sb-accordion-body .nav-item { padding-left: 24px; }
 
 .nav-item {
   display: flex;
@@ -1855,56 +1873,67 @@ tbody tr:hover td { background: var(--bg-soft); }
         <span class="icon"><span class="material-symbols-outlined">receipt_long</span></span> Faturalar
       </button>
 
+      <!-- İnsan Kaynakları Accordion -->
       <div class="nav-sep nav-ik"></div>
-      <div class="sb-section-label nav-ik">İnsan Kaynakları</div>
-      <button class="nav-item nav-ik" onclick="navigate('personel', this)">
-        <span class="icon"><span class="material-symbols-outlined">groups</span></span> Personel Listesi
-      </button>
-      <button class="nav-item nav-ik" onclick="navigate('izinler', this)">
-        <span class="icon"><span class="material-symbols-outlined">flight_takeoff</span></span> İzin Yönetimi
-      </button>
-      <button class="nav-item nav-ik" onclick="navigate('vekaletler', this)">
-        <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
-      </button>
+      <div class="nav-ik" id="ik-accordion-wrapper">
+        <div class="sb-section-label sb-accordion-toggle" onclick="toggleNavAccordion('ik-accordion-body', this)">
+          <span>İnsan Kaynakları</span>
+          <span class="material-symbols-outlined sb-chevron">chevron_right</span>
+        </div>
+        <div id="ik-accordion-body" class="sb-accordion-body" style="display:none">
+          <button class="nav-item" onclick="navigate('personel', this)">
+            <span class="icon"><span class="material-symbols-outlined">groups</span></span> Personel Listesi
+          </button>
+          <button class="nav-item" onclick="navigate('izinler', this)">
+            <span class="icon"><span class="material-symbols-outlined">flight_takeoff</span></span> İzin Yönetimi
+          </button>
+          <button class="nav-item" onclick="navigate('vekaletler', this)">
+            <span class="icon"><span class="material-symbols-outlined">swap_horiz</span></span> Vekalet Yönetimi
+          </button>
+        </div>
+      </div>
 
+      <!-- Satın Alma Accordion -->
       <div class="nav-sep nav-sa"></div>
-      <div class="sb-section-label nav-sa">Satın Alma</div>
-      <button class="nav-item nav-sa" onclick="navigate('ihtiyac_talebi', this)">
-        <span class="icon"><span class="material-symbols-outlined">assignment</span></span> İhtiyaç Talebi
-      </button>
-      <button class="nav-item nav-sa" onclick="navigate('satin_alma', this)">
-        <span class="icon"><span class="material-symbols-outlined">shopping_cart</span></span> Satın Alma
+      <div class="nav-sa" id="sa-accordion-wrapper">
+        <div class="sb-section-label sb-accordion-toggle" onclick="toggleNavAccordion('sa-accordion-body', this)">
+          <span>Satın Alma</span>
+          <span class="material-symbols-outlined sb-chevron">chevron_right</span>
+        </div>
+        <div id="sa-accordion-body" class="sb-accordion-body" style="display:none">
+          <button class="nav-item" onclick="navigate('ihtiyac_talebi', this)">
+            <span class="icon"><span class="material-symbols-outlined">assignment</span></span> İhtiyaç Talebi
+          </button>
+          <button class="nav-item" onclick="navigate('satin_alma', this)">
+            <span class="icon"><span class="material-symbols-outlined">shopping_cart</span></span> Satın Alma
+          </button>
+        </div>
+      </div>
+
+      <!-- PDKS — ayrı bölüm -->
+      <div class="nav-sep nav-pdks"></div>
+      <div class="sb-section-label nav-pdks">PDKS</div>
+      <button class="nav-item nav-pdks" onclick="navigate('pdks', this)">
+        <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS Yönetimi
       </button>
 
-      <!-- Sadece admin -->
+      <!-- Yönetim — sadece admin -->
       <div id="admin-section" style="display:none">
         <div class="nav-sep"></div>
         <div class="sb-section-label">Yönetim</div>
         <button class="nav-item" onclick="navigate('kullanicilar', this)">
           <span class="icon"><span class="material-symbols-outlined">manage_accounts</span></span> Kullanıcılar
         </button>
-        <button class="nav-item" onclick="navigate('pdks', this)">
-          <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
-        </button>
         <button class="nav-item" onclick="navigate('izin_log', this)">
           <span class="icon"><span class="material-symbols-outlined">history</span></span> İzin İşlem Geçmişi
         </button>
-        <button class="nav-item" onclick="navigate('ayarlar', this)">
-          <span class="icon"><span class="material-symbols-outlined">settings</span></span> Ayarlar
-        </button>
       </div>
 
-      <!-- İK Sorumlusu Ek Menü -->
-      <div id="ik-section" style="display:none">
-        <div class="nav-sep"></div>
-        <div class="sb-section-label">Araçlar</div>
-        <button class="nav-item" onclick="navigate('pdks', this)">
-          <span class="icon"><span class="material-symbols-outlined">fingerprint</span></span> PDKS
-        </button>
-        <button class="nav-item" onclick="navigate('ayarlar', this)">
-          <span class="icon"><span class="material-symbols-outlined">settings</span></span> Ayarlar
-        </button>
-      </div>
+      <!-- Ayarlar — ayrı bölüm -->
+      <div class="nav-sep nav-ayarlar"></div>
+      <button class="nav-item nav-ayarlar" onclick="navigate('ayarlar', this)">
+        <span class="icon"><span class="material-symbols-outlined">settings</span></span> Ayarlar
+      </button>
 
     </nav>
 
@@ -3873,6 +3902,13 @@ function applyRoleUI(rol) {
   document.querySelectorAll('.nav-sa').forEach(el => {
     el.style.display = canSA ? '' : 'none';
   });
+  const canPDKS = isAdmin || isIK;
+  document.querySelectorAll('.nav-pdks').forEach(el => {
+    el.style.display = canPDKS ? '' : 'none';
+  });
+  document.querySelectorAll('.nav-ayarlar').forEach(el => {
+    el.style.display = canPDKS ? '' : 'none';
+  });
   // Unvan tabanlı erişim loadYoneticiUnvanlar() sonrası updateNavSA() ile de çalışır
   document.querySelectorAll('.dash-liman').forEach(el => {
     el.style.display = isLiman ? '' : 'none';
@@ -3948,9 +3984,6 @@ function applyRoleUI(rol) {
 
   if (isAdmin || isGM) {
     document.getElementById('admin-section').style.display = 'block';
-  }
-  if (rol === 'ik_admin') {
-    document.getElementById('ik-section').style.display = 'block';
   }
   if (isAdmin) {
     document.getElementById('liman-filter').classList.add('visible');
@@ -4263,6 +4296,15 @@ function donutLegendOut() {
   document.querySelectorAll('.donut-legend-item').forEach(el => el.classList.remove('active'));
 }
 
+function toggleNavAccordion(bodyId, headerEl) {
+  const body = document.getElementById(bodyId);
+  if (!body) return;
+  const isOpen = body.style.display !== 'none';
+  body.style.display = isOpen ? 'none' : '';
+  const chevron = headerEl.querySelector('.sb-chevron');
+  if (chevron) chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+}
+
 function navigate(page, el) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   if (!el) el = document.querySelector('button[onclick*="' + page + '"]');
@@ -4272,6 +4314,20 @@ function navigate(page, el) {
   document.getElementById('page-' + page).classList.add('active');
 
   updateTopbar(page);
+
+  // Accordion'ı aktif sayfa için otomatik aç
+  const IK_PAGES = ['personel','izinler','vekaletler'];
+  const SA_PAGES = ['ihtiyac_talebi','satin_alma'];
+  if (IK_PAGES.includes(page)) {
+    const body = document.getElementById('ik-accordion-body');
+    const hdr  = document.querySelector('#ik-accordion-wrapper .sb-accordion-toggle');
+    if (body && body.style.display === 'none') { body.style.display = ''; if (hdr) { const c = hdr.querySelector('.sb-chevron'); if (c) c.style.transform = 'rotate(90deg)'; } }
+  }
+  if (SA_PAGES.includes(page)) {
+    const body = document.getElementById('sa-accordion-body');
+    const hdr  = document.querySelector('#sa-accordion-wrapper .sb-accordion-toggle');
+    if (body && body.style.display === 'none') { body.style.display = ''; if (hdr) { const c = hdr.querySelector('.sb-chevron'); if (c) c.style.transform = 'rotate(90deg)'; } }
+  }
 
   if (page === 'dashboard') loadDashboard();
   if (page === 'gunluk') initGunluk();
