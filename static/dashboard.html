@@ -3565,6 +3565,20 @@ tbody tr:hover td { background: var(--bg-soft); }
                   <tbody id="it-kalemler-tbody"></tbody>
                 </table>
               </div>
+              <!-- Dosyalar -->
+              <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border)">
+                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+                  <span style="font-weight:600;font-size:14px;color:var(--text)">Ekler / Belgeler</span>
+                  <label id="it-dosya-ekle-btn" style="display:flex;align-items:center;gap:6px;padding:7px 14px;border-radius:8px;cursor:pointer;font-size:12px;font-weight:600;background:#f3f4f6;color:var(--text);border:1.5px solid var(--border)">
+                    <span class="material-symbols-outlined" style="font-size:16px">attach_file</span> Dosya Ekle
+                    <input type="file" id="it-dosya-input" multiple style="display:none" onchange="itDosyaYukle(this.files)">
+                  </label>
+                </div>
+                <div id="it-dosya-list" style="display:flex;flex-direction:column;gap:8px;min-height:40px">
+                  <div id="it-dosya-bos" style="font-size:13px;color:var(--text-3);text-align:center;padding:12px">Henüz dosya eklenmedi</div>
+                </div>
+              </div>
+
               <div style="display:flex;justify-content:space-between;margin-top:20px">
                 <button onclick="itGoStep(1)" style="padding:10px 20px;border-radius:10px;border:1.5px solid var(--border);cursor:pointer;font-size:13px;background:var(--bg);color:var(--text)">← Geri</button>
                 <button onclick="itKaydetStep2()" style="padding:10px 28px;border-radius:10px;border:none;cursor:pointer;font-size:14px;font-weight:600;background:linear-gradient(135deg,#8b5cf6,#7c3aed);color:#fff;box-shadow:0 2px 8px rgba(139,92,246,.3)">
@@ -10514,6 +10528,7 @@ function itGoStep(n) {
       s.style.color      = i === n ? '#fff' : 'var(--text-3)';
     }
   });
+  if (n === 2) itDosyaListeYukle();
 }
 
 // ── Kaydet ──────────────────────────────────────────────────
@@ -10636,6 +10651,99 @@ async function itReddet(id) {
     showToast('Talep reddedildi', 'warning');
     itYukle(itCurrentPage);
   } catch(e) { showToast('Hata', 'error'); }
+}
+
+// ── Dosya yükleme ───────────────────────────────────────────
+
+function itDosyaBoyutFormat(bytes) {
+  if (!bytes) return '';
+  if (bytes < 1024)       return bytes + ' B';
+  if (bytes < 1048576)    return (bytes/1024).toFixed(1) + ' KB';
+  return (bytes/1048576).toFixed(1) + ' MB';
+}
+
+function itDosyaIkonRenk(mime) {
+  if (!mime) return { icon: 'description', color: '#6b7280' };
+  if (mime.includes('pdf'))   return { icon: 'picture_as_pdf', color: '#ef4444' };
+  if (mime.includes('image')) return { icon: 'image',          color: '#10b981' };
+  if (mime.includes('word'))  return { icon: 'description',    color: '#3b82f6' };
+  if (mime.includes('excel') || mime.includes('spreadsheet')) return { icon: 'table_chart', color: '#10b981' };
+  return { icon: 'attach_file', color: '#8b5cf6' };
+}
+
+function itDosyaListeRender(dosyalar) {
+  const list = document.getElementById('it-dosya-list');
+  const bos  = document.getElementById('it-dosya-bos');
+  if (!dosyalar.length) {
+    list.innerHTML = '';
+    list.appendChild(bos || Object.assign(document.createElement('div'), {
+      id: 'it-dosya-bos',
+      style: 'font-size:13px;color:var(--text-3);text-align:center;padding:12px',
+      textContent: 'Henüz dosya eklenmedi'
+    }));
+    return;
+  }
+  list.innerHTML = dosyalar.map(d => {
+    const { icon, color } = itDosyaIkonRenk(d.mime_type);
+    const boyut = itDosyaBoyutFormat(d.dosya_boyut);
+    return `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--border);background:var(--surface)">
+      <span class="material-symbols-outlined" style="font-size:22px;color:${color};flex-shrink:0">${icon}</span>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${d.dosya_adi}</div>
+        <div style="font-size:11px;color:var(--text-3)">${boyut}${d.yukleyen_ad ? ' · ' + d.yukleyen_ad : ''}</div>
+      </div>
+      <a href="/ihtiyac-talebi/dosyalar/${d.id}/indir" target="_blank"
+        style="background:none;border:none;cursor:pointer;padding:5px;color:var(--accent);display:flex;border-radius:6px" title="İndir">
+        <span class="material-symbols-outlined" style="font-size:18px">download</span>
+      </a>
+      <button onclick="itDosyaSil(${d.id})" style="background:none;border:none;cursor:pointer;padding:5px;color:var(--danger);display:flex;border-radius:6px" title="Sil">
+        <span class="material-symbols-outlined" style="font-size:18px">delete</span>
+      </button>
+    </div>`;
+  }).join('');
+}
+
+async function itDosyaListeYukle() {
+  if (!itCurrentId) return;
+  try {
+    const res  = await api(`/ihtiyac-talebi/${itCurrentId}/dosyalar`);
+    const data = await res.json();
+    itDosyaListeRender(data);
+  } catch(e) { console.error(e); }
+}
+
+async function itDosyaYukle(files) {
+  if (!itCurrentId) { showToast('Önce temel bilgileri kaydedin', 'error'); return; }
+  if (!files || !files.length) return;
+  const btn = document.getElementById('it-dosya-ekle-btn');
+  if (btn) btn.style.opacity = '0.5';
+  let basari = 0;
+  for (const file of files) {
+    const fd = new FormData();
+    fd.append('dosya', file);
+    try {
+      const res = await fetch(`/ihtiyac-talebi/${itCurrentId}/dosyalar`, {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + getToken() },
+        body: fd,
+      });
+      if (res.ok) basari++;
+      else { const e = await res.json(); showToast(e.detail || 'Hata', 'error'); }
+    } catch(e) { showToast('Yükleme hatası', 'error'); }
+  }
+  document.getElementById('it-dosya-input').value = '';
+  if (btn) btn.style.opacity = '1';
+  if (basari) showToast(`${basari} dosya yüklendi`, 'success');
+  await itDosyaListeYukle();
+}
+
+async function itDosyaSil(did) {
+  if (!confirm('Dosya silinsin mi?')) return;
+  try {
+    const res = await api(`/ihtiyac-talebi/dosyalar/${did}`, { method: 'DELETE' });
+    if (!res.ok) throw new Error();
+    await itDosyaListeYukle();
+  } catch(e) { showToast('Silme hatası', 'error'); }
 }
 
 async function itSatinAlmayaDon(id) {

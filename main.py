@@ -346,6 +346,17 @@ CREATE TABLE IF NOT EXISTS ihtiyac_talebi_kalemler (
 
 ALTER TABLE satin_alma ADD COLUMN IF NOT EXISTS ihtiyac_talep_id INT REFERENCES ihtiyac_talebi(id) ON DELETE SET NULL;
 
+CREATE TABLE IF NOT EXISTS ihtiyac_talebi_dosyalar (
+    id           SERIAL PRIMARY KEY,
+    talep_id     INT REFERENCES ihtiyac_talebi(id) ON DELETE CASCADE,
+    dosya_adi    VARCHAR(255) NOT NULL,
+    dosya_yolu   TEXT NOT NULL,
+    dosya_boyut  BIGINT,
+    mime_type    VARCHAR(100),
+    yukleyen_ad  VARCHAR(200),
+    created_at   TIMESTAMP DEFAULT NOW()
+);
+
 CREATE TABLE IF NOT EXISTS sms_kodlari (
     id SERIAL PRIMARY KEY,
     tc_kimlik VARCHAR(11) NOT NULL,

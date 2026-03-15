@@ -1,10 +1,24 @@
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Optional, List
 from datetime import date
+from pathlib import Path
 from db import get_pool
 from permissions import decode_token
-import json
+import json, uuid, shutil
+
+DOSYA_DIR = Path("uploads/ihtiyac_talebi")
+DOSYA_DIR.mkdir(parents=True, exist_ok=True)
+
+IZIN_MIME = {
+    "application/pdf", "image/jpeg", "image/png", "image/gif",
+    "application/msword",
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    "application/vnd.ms-excel",
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    "text/plain",
+}
 
 router = APIRouter(prefix="/ihtiyac-talebi", tags=["ihtiyac-talebi"])
 
@@ -250,8 +264,94 @@ async def delete_ihtiyac(tid: int, token: dict = Depends(decode_token)):
         raise HTTPException(403, "Yetkiniz yok.")
     pool = await get_pool()
     async with pool.acquire() as conn:
+        dosyalar = await conn.fetch("SELECT dosya_yolu FROM ihtiyac_talebi_dosyalar WHERE talep_id=$1", tid)
+        for d in dosyalar:
+            try: Path(d["dosya_yolu"]).unlink(missing_ok=True)
+            except Exception: pass
         await conn.execute("DELETE FROM ihtiyac_talebi_kalemler WHERE talep_id=$1", tid)
         r = await conn.execute("DELETE FROM ihtiyac_talebi WHERE id=$1", tid)
         if r == "DELETE 0":
             raise HTTPException(404, "Talep bulunamadı.")
+        return {"ok": True}
+
+
+# ── Dosyalar ─────────────────────────────────────────────────────────────────
+
+@router.get("/{tid}/dosyalar")
+async def list_dosyalar(tid: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch(
+            "SELECT id, dosya_adi, dosya_boyut, mime_type, yukleyen_ad, created_at FROM ihtiyac_talebi_dosyalar WHERE talep_id=$1 ORDER BY created_at",
+            tid)
+        return [dict(r) for r in rows]
+
+
+@router.post("/{tid}/dosyalar", status_code=201)
+async def upload_dosya(
+    tid: int,
+    dosya: UploadFile = File(...),
+    token: dict = Depends(decode_token),
+):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        var = await conn.fetchrow("SELECT id FROM ihtiyac_talebi WHERE id=$1", tid)
+        if not var:
+            raise HTTPException(404, "Talep bulunamadı.")
+
+    mime = dosya.content_type or "application/octet-stream"
+    if mime not in IZIN_MIME:
+        raise HTTPException(400, f"İzin verilmeyen dosya türü: {mime}")
+
+    ext     = Path(dosya.filename).suffix or ""
+    unique  = f"{tid}_{uuid.uuid4().hex[:10]}{ext}"
+    dest    = DOSYA_DIR / unique
+
+    content = await dosya.read()
+    boyut   = len(content)
+    if boyut > 20 * 1024 * 1024:
+        raise HTTPException(400, "Dosya boyutu 20 MB'ı aşamaz.")
+
+    with open(dest, "wb") as f:
+        f.write(content)
+
+    yukleyen = (token.get("ad","") + " " + token.get("soyad","")).strip()
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("""
+            INSERT INTO ihtiyac_talebi_dosyalar
+                (talep_id, dosya_adi, dosya_yolu, dosya_boyut, mime_type, yukleyen_ad)
+            VALUES ($1,$2,$3,$4,$5,$6) RETURNING id, dosya_adi, dosya_boyut, mime_type, yukleyen_ad, created_at
+        """, tid, dosya.filename, str(dest), boyut, mime, yukleyen)
+        return dict(row)
+
+
+@router.get("/dosyalar/{did}/indir")
+async def indir_dosya(did: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT dosya_adi, dosya_yolu, mime_type FROM ihtiyac_talebi_dosyalar WHERE id=$1", did)
+        if not row:
+            raise HTTPException(404, "Dosya bulunamadı.")
+    p = Path(row["dosya_yolu"])
+    if not p.exists():
+        raise HTTPException(404, "Dosya diskte bulunamadı.")
+    return FileResponse(
+        path=str(p),
+        filename=row["dosya_adi"],
+        media_type=row["mime_type"] or "application/octet-stream",
+    )
+
+
+@router.delete("/dosyalar/{did}")
+async def delete_dosya(did: int, token: dict = Depends(decode_token)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT dosya_yolu FROM ihtiyac_talebi_dosyalar WHERE id=$1", did)
+        if not row:
+            raise HTTPException(404, "Dosya bulunamadı.")
+        try: Path(row["dosya_yolu"]).unlink(missing_ok=True)
+        except Exception: pass
+        await conn.execute("DELETE FROM ihtiyac_talebi_dosyalar WHERE id=$1", did)
         return {"ok": True}
