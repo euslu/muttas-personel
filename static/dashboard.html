@@ -2694,6 +2694,7 @@ tbody tr:hover td { background: var(--bg-soft); }
               <option value="mudur">Müdür</option>
               <option value="genel_mudur">Genel Müdür</option>
               <option value="yk_uyesi">YK Üyesi</option>
+              <option value="yk_baskani">YK Başkanı</option>
               <option value="admin">Admin (Tam Yetki)</option>
             </select>
           </div>
@@ -3700,7 +3701,7 @@ function applyRoleUI(rol) {
   const isKS     = rol === 'koordinasyon_sorumlusu';
   const isMudur  = rol === 'mudur';
   const isGM     = rol === 'genel_mudur';
-  const isYK     = rol === 'yk_uyesi';
+  const isYK     = rol === 'yk_uyesi' || rol === 'yk_baskani';
   const isLimanAdmin = rol === 'admin';
   const isLiman  = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
 
@@ -3772,7 +3773,7 @@ function applyRoleUI(rol) {
   const isAdmin = rol === 'admin';
   const isIK    = rol === 'ik_admin' || rol === 'ik';
   const isGM    = rol === 'genel_mudur';
-  const isYK    = rol === 'yk_uyesi';
+  const isYK    = rol === 'yk_uyesi' || rol === 'yk_baskani';
   const isLiman = !isIK;
 
   applyRoleUI(rol);
@@ -3786,7 +3787,7 @@ function applyRoleUI(rol) {
     isAdmin ? 'Tüm Modüller' : isGM ? 'Genel Müdür' : isYK ? 'Yönetim Kurulu' : isKSInit ? 'Koordinasyon Sorumlusu' : isMudurInit ? 'Müdür' : isIK ? 'İnsan Kaynakları' : (currentLiman || 'Liman atanmamış');
 
   const badge = document.getElementById('sb-badge');
-  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', koordinasyon_sorumlusu: 'Koord. Sorumlusu', mudur: 'Müdür', genel_mudur: 'Genel Müdür', yk_uyesi: 'YK Üyesi', kullanici: 'Görevli' };
+  const badgeLabels = { admin: 'Admin', ik_admin: 'İK Yöneticisi', ik: 'İK Görevlisi', liman_admin: 'Liman Yöneticisi', koordinasyon_sorumlusu: 'Koord. Sorumlusu', mudur: 'Müdür', genel_mudur: 'Genel Müdür', yk_uyesi: 'YK Üyesi', yk_baskani: 'YK Başkanı', kullanici: 'Görevli' };
   badge.textContent  = badgeLabels[rol] || 'Görevli';
   badge.className    = 'badge ' + (isAdmin || isGM ? 'badge-admin' : 'badge-user');
 
@@ -7454,7 +7455,7 @@ function canApprove(durum) {
   if (r === 'admin') return durum === 'beklemede' || durum === 'ik_onayladi' || durum === 'mudur_onayladi';
   if (r === 'ik_admin') return durum === 'beklemede';
   if (r === 'genel_mudur') return durum === 'ik_onayladi';
-  if (r === 'yk_uyesi') return durum === 'mudur_onayladi';
+  if (r === 'yk_uyesi' || r === 'yk_baskani') return durum === 'mudur_onayladi';
   return false;
 }
 
@@ -8054,7 +8055,7 @@ async function loadYoneticiUnvanlar() {
 function updateNavSA() {
   const rol    = currentUser?.rol || '';
   const unvan  = (currentUser?.unvan || '').toUpperCase().trim();
-  const rolOK  = ['admin','ik_admin','genel_mudur','mudur'].includes(rol);
+  const rolOK  = ['admin','ik_admin','genel_mudur','mudur','yk_baskani','yk_uyesi'].includes(rol);
   const unvanOK= YONETICI_UNVANLAR.map(u => u.toUpperCase().trim()).includes(unvan);
   if (rolOK || unvanOK) {
     document.querySelectorAll('.nav-sa').forEach(el => el.style.display = '');
@@ -9061,6 +9062,7 @@ const ROL_ETIKETI = {
   liman_viewer: 'Liman Görüntüleyici',
   genel_mudur:  'Genel Müdür',
   yk_uyesi:     'YK Üyesi',
+  yk_baskani:   'YK Başkanı',
 };
 
 async function loadKullanicilar() {
@@ -9170,7 +9172,7 @@ async function saveKullanici() {
   }
 }
 
-const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi',koordinasyon_sorumlusu:'Koordinasyon Sorumlusu'};
+const ROL_ETIKETLERI_TR = {admin:'Yönetici',ik_admin:'İK Yöneticisi',ik_viewer:'İK Görüntüleyici',liman_admin:'Liman Yöneticisi',liman_viewer:'Liman Görüntüleyici',genel_mudur:'Genel Müdür',yk_uyesi:'YK Üyesi',yk_baskani:'YK Başkanı',koordinasyon_sorumlusu:'Koordinasyon Sorumlusu'};
 
 const LOG_DURUM_LABEL = {
   beklemede:        'Talep Oluşturma',
@@ -9187,6 +9189,7 @@ const LOG_ROL_LABEL = {
   koordinasyon_sorumlusu:   'Koord. Sorumlusu',
   genel_mudur:              'Genel Müdür',
   yk_uyesi:                 'YK Üyesi',
+  yk_baskani:               'YK Başkanı',
 };
 let logPage = 1;
 
