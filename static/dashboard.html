@@ -3259,6 +3259,10 @@ tbody tr:hover td { background: var(--bg-soft); }
               <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">star</span>
               YK Başkan Vekili
             </button>
+            <button class="ayar-tab-btn" onclick="ayarTabSec('gm-vekil',this)">
+              <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">manage_accounts</span>
+              Genel Müdür Vekili
+            </button>
             <button class="ayar-tab-btn" onclick="ayarTabSec('dashboard',this)">
               <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">dashboard</span>
               Dashboard
@@ -3471,6 +3475,42 @@ tbody tr:hover td { background: var(--bg-soft); }
                 <tbody id="yk-bv-list-body"></tbody>
               </table>
               <div id="yk-bv-list-bos" style="display:none;text-align:center;padding:20px;color:var(--text-3);font-size:13px">Listede kimse yok.</div>
+            </div>
+          </div>
+
+          <!-- ── TAB: Genel Müdür Vekili ── -->
+          <div class="ayar-tab-panel" id="ayar-panel-gm-vekil" style="display:none">
+            <div class="card" style="padding:24px 28px">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
+                <div>
+                  <h2 style="margin:0 0 4px;font-size:17px">Genel Müdür Vekili Listesi</h2>
+                  <p style="margin:0;font-size:13px;color:var(--text-3)">İzin onay süreçlerinde Genel Müdür Vekili yetkisi verilecek personeller.</p>
+                </div>
+              </div>
+
+              <div style="background:var(--bg-2);border-radius:10px;padding:16px;margin-bottom:16px">
+                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Personel Ekle</label>
+                <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+                  <div style="flex:1;min-width:220px;position:relative">
+                    <input type="text" id="gm-vekil-p-q" placeholder="Ad Soyad ile arayın..." autocomplete="off"
+                      oninput="gmVekilPAra(this.value)" style="width:100%;box-sizing:border-box">
+                    <div id="gm-vekil-p-list" class="autocomplete-list" style="display:none"></div>
+                    <input type="hidden" id="gm-vekil-p-id">
+                  </div>
+                  <button class="btn btn-primary" style="height:38px;white-space:nowrap" onclick="gmVekilEkle()">+ Ekle</button>
+                </div>
+              </div>
+
+              <table class="iz-table" style="width:100%">
+                <thead><tr>
+                  <th style="text-align:left">Ad Soyad</th>
+                  <th style="text-align:left">Unvan</th>
+                  <th style="text-align:left">Bölüm</th>
+                  <th style="width:60px"></th>
+                </tr></thead>
+                <tbody id="gm-vekil-list-body"></tbody>
+              </table>
+              <div id="gm-vekil-list-bos" style="display:none;text-align:center;padding:20px;color:var(--text-3);font-size:13px">Listede kimse yok.</div>
             </div>
           </div>
 
@@ -7987,6 +8027,7 @@ function ayarTabSec(tabId, btn) {
   document.getElementById('ayar-panel-' + tabId).style.display = 'block';
   if (tabId === 'ks-atama') ksAtamaYukleKsList();
   if (tabId === 'yk-bv') loadYkBv();
+  if (tabId === 'gm-vekil') loadGmVekil();
   if (tabId === 'dashboard') dashWidgetAyarPanelDoldur();
 }
 
@@ -8247,6 +8288,88 @@ async function ykBvSil(id, btn) {
   showToast('Kaldırıldı', 'success');
   await loadYkBv();
 }
+
+// ── Genel Müdür Vekili ──────────────────────────────────────────────────────
+let GM_VEKIL_LISTE = [];
+
+async function loadGmVekil() {
+  const res = await fetch('/ayarlar/genel-mudur-vekili', { headers: authHeaders() });
+  if (!res.ok) return;
+  GM_VEKIL_LISTE = await res.json();
+  renderGmVekil();
+}
+
+function renderGmVekil() {
+  const tbody = document.getElementById('gm-vekil-list-body');
+  const bos   = document.getElementById('gm-vekil-list-bos');
+  if (!tbody) return;
+  if (!GM_VEKIL_LISTE.length) {
+    tbody.innerHTML = '';
+    if (bos) bos.style.display = 'block';
+    return;
+  }
+  if (bos) bos.style.display = 'none';
+  tbody.innerHTML = GM_VEKIL_LISTE.map(p => `
+    <tr>
+      <td style="font-weight:600;font-size:13px">${p.ad_soyad}</td>
+      <td style="font-size:12px;color:var(--text-2)">${p.unvan || '—'}</td>
+      <td style="font-size:12px;color:var(--text-2)">${p.bolum || '—'}</td>
+      <td style="text-align:center">
+        <button onclick="gmVekilSil(${p.id},this)" style="border:none;background:none;color:var(--danger);cursor:pointer;font-size:16px" title="Kaldır">✕</button>
+      </td>
+    </tr>`).join('');
+}
+
+async function gmVekilPAra(q) {
+  const list = document.getElementById('gm-vekil-p-list');
+  if (!q || q.length < 2) { list.style.display = 'none'; return; }
+  const res = await fetch('/ayarlar/gm-personel-havuzu?q=' + encodeURIComponent(q), { headers: authHeaders() });
+  if (!res.ok) return;
+  const data = await res.json();
+  if (!data.length) { list.style.display = 'none'; return; }
+  list.innerHTML = data.map(p =>
+    `<div class="autocomplete-item" onclick="gmVekilPSec(${p.id},'${p.ad_soyad.replace(/'/g,"\\'")}')">
+      <strong>${p.ad_soyad}</strong>
+      <span style="font-size:11px;color:var(--text-3);margin-left:8px">${[p.unvan,p.bolum].filter(Boolean).join(' / ')}</span>
+    </div>`
+  ).join('');
+  list.style.display = 'block';
+}
+
+function gmVekilPSec(id, adSoyad) {
+  document.getElementById('gm-vekil-p-id').value = id;
+  document.getElementById('gm-vekil-p-q').value  = adSoyad;
+  document.getElementById('gm-vekil-p-list').style.display = 'none';
+}
+
+async function gmVekilEkle() {
+  const pId = parseInt(document.getElementById('gm-vekil-p-id').value);
+  if (!pId) { showToast('Personel seçiniz', 'error'); return; }
+  const res = await fetch('/ayarlar/genel-mudur-vekili', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ personel_id: pId })
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'Eklenemedi', 'error'); return;
+  }
+  document.getElementById('gm-vekil-p-q').value = '';
+  document.getElementById('gm-vekil-p-id').value = '';
+  showToast('Personel eklendi', 'success');
+  await loadGmVekil();
+}
+
+async function gmVekilSil(id, btn) {
+  btn.disabled = true;
+  const res = await fetch('/ayarlar/genel-mudur-vekili/' + id, {
+    method: 'DELETE', headers: authHeaders()
+  });
+  if (!res.ok) { showToast('Silinemedi', 'error'); btn.disabled = false; return; }
+  showToast('Kaldırıldı', 'success');
+  await loadGmVekil();
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 function renderYoneticiUnvanlar() {
   const el = document.getElementById('yonetici-unvan-listesi');

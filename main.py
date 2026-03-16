@@ -417,6 +417,18 @@ CREATE TABLE IF NOT EXISTS ozgecmis_sertifika (
     aciklama     TEXT,
     olusturuldu  TIMESTAMPTZ DEFAULT NOW()
 );
+
+CREATE TABLE IF NOT EXISTS yk_baskan_vekili (
+    id           SERIAL PRIMARY KEY,
+    personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL UNIQUE,
+    olusturuldu  TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE TABLE IF NOT EXISTS genel_mudur_vekili (
+    id           SERIAL PRIMARY KEY,
+    personel_id  INT REFERENCES personel(id) ON DELETE CASCADE NOT NULL UNIQUE,
+    olusturuldu  TIMESTAMPTZ DEFAULT NOW()
+);
 """
 
 

@@ -424,3 +424,68 @@ async def get_yk_bv_personel_havuzu(q: str = "", token: dict = Depends(require_a
             LIMIT 30
         """, mevcut_ids or [-1], q, f"%{q}%")
         return [dict(r) for r in rows]
+
+
+# ── Genel Müdür Vekili ──────────────────────────────────────────────────────
+
+class GmVekilEkle(BaseModel):
+    personel_id: int
+
+
+@router.get("/genel-mudur-vekili")
+async def get_genel_mudur_vekili(token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("""
+            SELECT b.id, b.personel_id, p.ad_soyad, p.unvan, p.bolum
+            FROM genel_mudur_vekili b
+            JOIN personel p ON p.id = b.personel_id
+            ORDER BY p.ad_soyad
+        """)
+        return [dict(r) for r in rows]
+
+
+@router.post("/genel-mudur-vekili", status_code=201)
+async def add_genel_mudur_vekili(body: GmVekilEkle, token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        p = await conn.fetchval("SELECT id FROM personel WHERE id=$1 AND aktif=TRUE", body.personel_id)
+        if not p:
+            raise HTTPException(status_code=404, detail="Personel bulunamadı.")
+        try:
+            row = await conn.fetchrow(
+                "INSERT INTO genel_mudur_vekili (personel_id) VALUES($1) RETURNING id",
+                body.personel_id
+            )
+        except Exception:
+            raise HTTPException(status_code=409, detail="Bu personel zaten Genel Müdür Vekili listesinde.")
+    return {"id": row["id"]}
+
+
+@router.delete("/genel-mudur-vekili/{bid}")
+async def remove_genel_mudur_vekili(bid: int, token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        exists = await conn.fetchval("SELECT id FROM genel_mudur_vekili WHERE id=$1", bid)
+        if not exists:
+            raise HTTPException(status_code=404, detail="Kayıt bulunamadı.")
+        await conn.execute("DELETE FROM genel_mudur_vekili WHERE id=$1", bid)
+    return {"ok": True}
+
+
+@router.get("/gm-personel-havuzu")
+async def get_gm_personel_havuzu(q: str = "", token: dict = Depends(require_ayar_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        mevcut = await conn.fetch("SELECT personel_id FROM genel_mudur_vekili")
+        mevcut_ids = [r["personel_id"] for r in mevcut]
+        rows = await conn.fetch("""
+            SELECT p.id, p.ad_soyad, p.unvan, p.bolum
+            FROM personel p
+            WHERE p.aktif = TRUE
+              AND p.id != ALL($1::int[])
+              AND ($2 = '' OR p.ad_soyad ILIKE $3)
+            ORDER BY p.ad_soyad
+            LIMIT 30
+        """, mevcut_ids or [-1], q, f"%{q}%")
+        return [dict(r) for r in rows]

@@ -449,7 +449,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
             if body.durum == "ik_onayladi":
                 mesaj = (
                     f"Sayin {personel_ad}, izin talebiniz{tarih_str} "
-                    f"IK tarafindan onaylandi. Genel Mudur onayina iletilmistir."
+                    f"IK tarafindan onaylandi."
                 )
             elif body.durum == "reddedildi":
                 mesaj = (
