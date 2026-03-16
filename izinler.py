@@ -1,12 +1,49 @@
+import os
+import re
+import logging
 from typing import Optional
 from datetime import date, datetime
 
+import httpx
 from fastapi import APIRouter, HTTPException, Query, Depends, Request
 from pydantic import BaseModel
 
 from db import get_pool
 from permissions import decode_token, require_ik_editor, require_izin_editor, IK_EDITORS, IZIN_EDITORS, GM_EDITORS, YK_EDITORS
 from vekalet import get_vekalet_rolleri
+
+logger = logging.getLogger(__name__)
+
+_SMS_URL       = "https://api.netgsm.com.tr/sms/send/get/"
+_SMS_USER      = os.environ.get("NETGSM_USERCODE", "")
+_SMS_PASS      = os.environ.get("NETGSM_PASSWORD", "")
+_SMS_HEADER    = os.environ.get("NETGSM_MSGHEADER", "MUTTAS")
+
+
+def _fmt_phone(phone: str) -> str:
+    d = re.sub(r"\D", "", phone or "")
+    if d.startswith("0") and len(d) == 11:
+        d = "9" + d
+    elif len(d) == 10:
+        d = "90" + d
+    return d
+
+
+async def _sms_gonder(telefon: str, mesaj: str) -> None:
+    if not _SMS_USER or not _SMS_PASS or not telefon:
+        return
+    try:
+        async with httpx.AsyncClient(timeout=10) as c:
+            await c.get(_SMS_URL, params={
+                "usercode": _SMS_USER,
+                "password": _SMS_PASS,
+                "gsmno":    _fmt_phone(telefon),
+                "message":  mesaj,
+                "msgheader": _SMS_HEADER,
+                "dil":      "TR",
+            })
+    except Exception as e:
+        logger.warning(f"İzin SMS gönderilemedi: {e}")
 
 router = APIRouter(prefix="/izinler", tags=["izinler"])
 
@@ -329,7 +366,9 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow("""
-            SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi, p.ad_soyad
+            SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi,
+                   i.baslangic, i.bitis, i.gun_sayisi,
+                   p.ad_soyad, p.telefon
             FROM izinler i JOIN personel p ON p.id = i.personel_id
             WHERE i.id = $1
         """, iid)
@@ -388,6 +427,41 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
         personel_id = row["personel_id"]
         personel_ad = row["ad_soyad"]
         await izin_log_yaz(conn, iid, personel_id, personel_ad, mevcut_durum, body.durum, token, ip)
+
+        # ── SMS Bildirimleri ────────────────────────────────────────────────
+        telefon = row.get("telefon") or ""
+        if telefon and body.durum in ("ik_onayladi", "onaylandi", "reddedildi"):
+            baslangic = row.get("baslangic")
+            bitis     = row.get("bitis")
+            gun       = row.get("gun_sayisi") or ""
+            tarih_str = ""
+            if baslangic and bitis:
+                def _dfmt(d):
+                    return d.strftime("%d.%m.%Y") if hasattr(d, "strftime") else str(d)
+                tarih_str = f" ({_dfmt(baslangic)} - {_dfmt(bitis)}, {gun} gün)"
+
+            if body.durum == "ik_onayladi":
+                mesaj = (
+                    f"Sayin {personel_ad}, izin talebiniz{tarih_str} "
+                    f"IK tarafindan onaylandi. Genel Mudur onayina iletilmistir."
+                )
+            elif body.durum == "onaylandi":
+                mesaj = (
+                    f"Sayin {personel_ad}, izin talebiniz{tarih_str} "
+                    f"tamamen onaylandi. Iyi tatiller dileriz."
+                )
+            elif body.durum == "reddedildi":
+                mesaj = (
+                    f"Sayin {personel_ad}, izin talebiniz{tarih_str} "
+                    f"reddedilmistir. Detay icin IK ile iletisime gecebilirsiniz."
+                )
+            else:
+                mesaj = None
+
+            if mesaj:
+                import asyncio
+                asyncio.create_task(_sms_gonder(telefon, mesaj))
+        # ────────────────────────────────────────────────────────────────────
 
         if body.durum == "tamamlandi":
             kullanici = await conn.fetchrow(
