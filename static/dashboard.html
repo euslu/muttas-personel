@@ -7954,7 +7954,9 @@ async function loadIzinler(page) {
                 : `<button class="iz-action-btn" style="opacity:.4;cursor:not-allowed" title="Dönüş günü henüz gelmedi" disabled><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12l4-4-4-4M7 12l4-4-4-4"/></svg></button>`)
             : ''}
           <button class="iz-action-btn" title="Yazdır" onclick="izinYazdir(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 7V2h4v5M5 12H4a1 1 0 01-1-1V8a1 1 0 011-1h6a1 1 0 011 1v3a1 1 0 01-1 1H9M5 10h4v3H5z"/></svg></button>
-          ${isAdmin || (canEditIK && iz.durum === 'beklemede') ? `<button class="iz-action-btn del" title="Sil" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
+          ${canEditIK && iz.durum === 'ik_onayladi' ? `<button class="iz-action-btn" title="Karekodlu Rapor Yükle" onclick="izinRaporYukle(${iz.id})" style="color:#7c3aed;border-color:rgba(124,58,237,.25);background:#f5f3ff"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 14H2a1 1 0 01-1-1V4a1 1 0 011-1h5l4 4v2M14 14H8m3-3l3 3-3 3"/></svg></button>` : ''}
+          ${isAdmin || (canEditIK && iz.durum === 'beklemede') || (canEditIK && iz.durum === 'ik_onayladi' && iz.rapor_url)
+            ? `<button class="iz-action-btn del" title="${iz.durum === 'ik_onayladi' ? 'Sil (Rapor yüklendi)' : 'Sil'}" onclick="izinSil(${iz.id})"><svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 4h8M5 4V3h4v1M6 6v4M8 6v4"/></svg></button>` : ''}
         </div>
       </td>
     </tr>`;
@@ -9185,7 +9187,36 @@ async function izinSil(id) {
     headers: { Authorization: 'Bearer ' + getToken() },
   });
   if (res.ok) { showToast('İzin silindi', 'success'); loadIzinler(izPage); }
-  else showToast('İşlem başarısız', 'error');
+  else {
+    const err = await res.json().catch(() => ({}));
+    showToast(err.detail || 'İşlem başarısız', 'error');
+  }
+}
+
+async function izinRaporYukle(id) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.pdf,.png,.jpg,.jpeg';
+  input.onchange = async () => {
+    const file = input.files[0];
+    if (!file) return;
+    const form = new FormData();
+    form.append('dosya', file);
+    showToast('Rapor yükleniyor...', 'info');
+    const res = await fetch('/izinler/' + id + '/rapor', {
+      method: 'POST',
+      headers: { Authorization: 'Bearer ' + getToken() },
+      body: form,
+    });
+    if (res.ok) {
+      showToast('Rapor yüklendi. Artık izni silebilirsiniz.', 'success');
+      loadIzinler(izPage);
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast(err.detail || 'Rapor yüklenemedi', 'error');
+    }
+  };
+  input.click();
 }
 
 // ── Yıl dropdown doldur ──

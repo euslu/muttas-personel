@@ -1,12 +1,18 @@
 import os
 import re
+import shutil
+import uuid
 import logging
+from pathlib import Path
 from typing import Optional
 from datetime import date, datetime
 
 import httpx
-from fastapi import APIRouter, HTTPException, Query, Depends, Request
+from fastapi import APIRouter, HTTPException, Query, Depends, Request, UploadFile, File
 from pydantic import BaseModel
+
+RAPOR_DIR = Path("uploads/izin_rapor")
+RAPOR_DIR.mkdir(parents=True, exist_ok=True)
 
 from db import get_pool
 from permissions import decode_token, require_ik_editor, require_izin_editor, IK_EDITORS, IZIN_EDITORS, GM_EDITORS, YK_EDITORS
@@ -430,7 +436,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
 
         # ── SMS Bildirimleri ────────────────────────────────────────────────
         telefon = row.get("telefon") or ""
-        if telefon and body.durum in ("ik_onayladi", "onaylandi", "reddedildi"):
+        if telefon and body.durum in ("ik_onayladi", "reddedildi"):
             baslangic = row.get("baslangic")
             bitis     = row.get("bitis")
             gun       = row.get("gun_sayisi") or ""
@@ -444,11 +450,6 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
                 mesaj = (
                     f"Sayin {personel_ad}, izin talebiniz{tarih_str} "
                     f"IK tarafindan onaylandi. Genel Mudur onayina iletilmistir."
-                )
-            elif body.durum == "onaylandi":
-                mesaj = (
-                    f"Sayin {personel_ad}, izin talebiniz{tarih_str} "
-                    f"tamamen onaylandi. Iyi tatiller dileriz."
                 )
             elif body.durum == "reddedildi":
                 mesaj = (
@@ -506,21 +507,88 @@ async def ks_onayla_izin(iid: int, token: dict = Depends(decode_token)):
     return {"ok": True}
 
 
+@router.post("/{iid}/rapor")
+async def upload_izin_rapor(
+    iid: int,
+    dosya: UploadFile = File(...),
+    token: dict = Depends(require_ik_editor),
+):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT id, durum, rapor_url FROM izinler WHERE id = $1", iid
+        )
+        if not row:
+            raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+        if row["durum"] not in ("ik_onayladi", "mudur_onayladi", "onaylandi"):
+            raise HTTPException(
+                status_code=400,
+                detail="Rapor yalnızca İK imzası tamamlanmış izinlere yüklenebilir.",
+            )
+
+        ext = Path(dosya.filename).suffix or ".pdf"
+        unique_name = f"izin_{iid}_{uuid.uuid4().hex}{ext}"
+        dest = RAPOR_DIR / unique_name
+        with dest.open("wb") as f:
+            shutil.copyfileobj(dosya.file, f)
+
+        if row["rapor_url"]:
+            old = Path("." + row["rapor_url"])
+            if old.exists():
+                old.unlink(missing_ok=True)
+
+        rapor_url = f"/uploads/izin_rapor/{unique_name}"
+        await conn.execute(
+            "UPDATE izinler SET rapor_url = $1 WHERE id = $2", rapor_url, iid
+        )
+        return {"ok": True, "rapor_url": rapor_url}
+
+
+@router.delete("/{iid}/rapor")
+async def delete_izin_rapor(iid: int, token: dict = Depends(require_ik_editor)):
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        row = await conn.fetchrow("SELECT rapor_url FROM izinler WHERE id = $1", iid)
+        if not row:
+            raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+        if row["rapor_url"]:
+            p = Path("." + row["rapor_url"])
+            p.unlink(missing_ok=True)
+        await conn.execute("UPDATE izinler SET rapor_url = NULL WHERE id = $1", iid)
+        return {"ok": True}
+
+
 @router.delete("/{iid}")
 async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     rol = token.get("rol", "")
     async with pool.acquire() as conn:
+        row = await conn.fetchrow(
+            "SELECT id, durum, rapor_url FROM izinler WHERE id = $1", iid
+        )
+        if not row:
+            raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+
         if rol == "admin":
-            exists = await conn.fetchval("SELECT id FROM izinler WHERE id = $1", iid)
-            if not exists:
-                raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+            pass  # admin her durumda silebilir
+        elif row["durum"] == "beklemede":
+            pass  # beklemedeyse rapor şartı yok
+        elif row["durum"] == "ik_onayladi":
+            if not row["rapor_url"]:
+                raise HTTPException(
+                    status_code=400,
+                    detail="İK imzalı izni silebilmek için önce karekodlu raporu yükleyin.",
+                )
         else:
-            exists = await conn.fetchval(
-                "SELECT id FROM izinler WHERE id = $1 AND durum = 'beklemede'", iid
+            raise HTTPException(
+                status_code=400,
+                detail="Bu aşamadaki izin silinemez.",
             )
-            if not exists:
-                raise HTTPException(status_code=400, detail="Sadece beklemede olan izinler silinebilir.")
+
+        if row["rapor_url"]:
+            p = Path("." + row["rapor_url"])
+            p.unlink(missing_ok=True)
+
         await conn.execute("DELETE FROM izinler WHERE id = $1", iid)
         return {"ok": True}
 
