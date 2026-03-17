@@ -8826,14 +8826,17 @@ function izTurDegisti() {
 function izBasTarihDegisti() {
   const basEl = document.getElementById('iz-form-bas');
   if (!basEl.value) { izGunHesapla(); return; }
-  const d = new Date(basEl.value + 'T00:00:00');
-  const gun = d.getDay();
-  if (gun === 6) d.setDate(d.getDate() + 2);       // Cumartesi → Pazartesi
-  else if (gun === 0) d.setDate(d.getDate() + 1);  // Pazar → Pazartesi
-  const yeni = d.toISOString().split('T')[0];
-  if (yeni !== basEl.value) {
-    basEl.value = yeni;
-    showToast('Başlangıç tarihi haftasonuna geldiğinden Pazartesiye alındı', 'info');
+  const tur = document.getElementById('iz-form-tur').value;
+  if (tur !== 'ucretsiz') {
+    const d = new Date(basEl.value + 'T00:00:00');
+    const gun = d.getDay();
+    if (gun === 6) d.setDate(d.getDate() + 2);       // Cumartesi → Pazartesi
+    else if (gun === 0) d.setDate(d.getDate() + 1);  // Pazar → Pazartesi
+    const yeni = d.toISOString().split('T')[0];
+    if (yeni !== basEl.value) {
+      basEl.value = yeni;
+      showToast('Başlangıç tarihi haftasonuna geldiğinden Pazartesiye alındı', 'info');
+    }
   }
   izGunHesapla();
 }
@@ -8853,17 +8856,22 @@ function izGunHesapla() {
     const d1 = new Date(bas + 'T00:00:00');
     const d2 = new Date(bit + 'T00:00:00');
     if (d2 < d1) return;
-    const calismaGunu = UNVAN_CALISMA_GUNU[izSeciliUnvan] || 5;
     let gun = 0;
     const cur = new Date(d1);
-    while (cur <= d2) {
-      const hgunu = cur.getDay();
-      if (calismaGunu === 6) {
-        if (hgunu !== 0) gun++;
-      } else {
-        if (hgunu !== 0 && hgunu !== 6) gun++;
+    if (tur === 'ucretsiz') {
+      // Ücretsiz izin: hafta sonu dahil takvim günü sayılır
+      while (cur <= d2) { gun++; cur.setDate(cur.getDate() + 1); }
+    } else {
+      const calismaGunu = UNVAN_CALISMA_GUNU[izSeciliUnvan] || 5;
+      while (cur <= d2) {
+        const hgunu = cur.getDay();
+        if (calismaGunu === 6) {
+          if (hgunu !== 0) gun++;
+        } else {
+          if (hgunu !== 0 && hgunu !== 6) gun++;
+        }
+        cur.setDate(cur.getDate() + 1);
       }
-      cur.setDate(cur.getDate() + 1);
     }
     if (gun > 0) document.getElementById('iz-form-gun').value = gun;
   }

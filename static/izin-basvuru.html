@@ -815,9 +815,11 @@ function gunHesapla() {
   let gun = 0;
   for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
     const g = d.getDay();
-    if (g !== 0 && g !== 6) gun++;
+    if (tur === 'ucretsiz') gun++;
+    else if (g !== 0 && g !== 6) gun++;
   }
-  document.getElementById('gun-badge-text').textContent = gun + ' iş günü';
+  const etiket = tur === 'ucretsiz' ? ' takvim günü' : ' iş günü';
+  document.getElementById('gun-badge-text').textContent = gun + etiket;
   wrap.style.display = 'block';
 }
 
@@ -971,10 +973,13 @@ async function basvuruGonder() {
   const bas  = document.getElementById('f-bas').value;
   const bit  = document.getElementById('f-bit').value;
 
+  const izTur = document.getElementById('f-izin-tur').value;
   const d1 = new Date(bas), d2 = new Date(bit);
   let gun = 0;
   for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
-    const g = d.getDay(); if (g !== 0 && g !== 6) gun++;
+    const g = d.getDay();
+    if (izTur === 'ucretsiz') gun++;
+    else if (g !== 0 && g !== 6) gun++;
   }
 
   const btn = document.getElementById('btn-gonder');
