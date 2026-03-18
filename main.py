@@ -539,6 +539,20 @@ async def setup_db(token: dict = Depends(require_admin)):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.get("/public/resmi-tatiller")
+async def public_resmi_tatiller():
+    """Auth gerektirmeyen resmi tatil listesi — izin başvuru formu için."""
+    try:
+        pool = await get_pool()
+        async with pool.acquire() as conn:
+            rows = await conn.fetch(
+                "SELECT tarih::text, gun::float FROM resmi_tatiller ORDER BY tarih"
+            )
+            return [{"tarih": r["tarih"][:10], "gun": r["gun"]} for r in rows]
+    except Exception as e:
+        return []
+
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)

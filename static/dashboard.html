@@ -8841,6 +8841,20 @@ function izBasTarihDegisti() {
   izGunHesapla();
 }
 
+function resmiTatilSetOlustur(bas, bit) {
+  const set = new Set();
+  for (const t of RESMI_TATILLER) {
+    const gunSayisi = Math.ceil(parseFloat(t.gun) || 1);
+    const d = new Date(t.tarih.slice(0, 10) + 'T00:00:00');
+    for (let i = 0; i < gunSayisi; i++) {
+      const s = d.toISOString().split('T')[0];
+      if (s >= bas && s <= bit) set.add(s);
+      d.setDate(d.getDate() + 1);
+    }
+  }
+  return set;
+}
+
 function izGunHesapla() {
   const tur = document.getElementById('iz-form-tur').value;
   const basEl = document.getElementById('iz-form-bas');
@@ -8856,19 +8870,27 @@ function izGunHesapla() {
     const d1 = new Date(bas + 'T00:00:00');
     const d2 = new Date(bit + 'T00:00:00');
     if (d2 < d1) return;
+    const tatilSet = resmiTatilSetOlustur(bas, bit);
     let gun = 0;
     const cur = new Date(d1);
     if (tur === 'ucretsiz') {
-      // Ücretsiz izin: hafta sonu dahil takvim günü sayılır
-      while (cur <= d2) { gun++; cur.setDate(cur.getDate() + 1); }
+      // Ücretsiz izin: hafta sonu dahil takvim günü; resmi tatil sayılmaz
+      while (cur <= d2) {
+        const s = cur.toISOString().split('T')[0];
+        if (!tatilSet.has(s)) gun++;
+        cur.setDate(cur.getDate() + 1);
+      }
     } else {
       const calismaGunu = UNVAN_CALISMA_GUNU[izSeciliUnvan] || 5;
       while (cur <= d2) {
+        const s = cur.toISOString().split('T')[0];
         const hgunu = cur.getDay();
-        if (calismaGunu === 6) {
-          if (hgunu !== 0) gun++;
-        } else {
-          if (hgunu !== 0 && hgunu !== 6) gun++;
+        if (!tatilSet.has(s)) {
+          if (calismaGunu === 6) {
+            if (hgunu !== 0) gun++;
+          } else {
+            if (hgunu !== 0 && hgunu !== 6) gun++;
+          }
         }
         cur.setDate(cur.getDate() + 1);
       }

@@ -586,6 +586,7 @@ let sigCtx        = null;
 let sigCanvas     = null;
 let smsTimerInterval = null;
 let YONETICI_UNVANLAR_PUBLIC = [];
+let RESMI_TATILLER_PUBLIC    = [];
 
 // ── STEP NAVIGATION ───────────────────────────────────────────
 function setStep(n) {
@@ -799,6 +800,20 @@ function izinTuruDegisti() {
   }
 }
 
+function resmiTatilSetPublic(bas, bit) {
+  const set = new Set();
+  for (const t of RESMI_TATILLER_PUBLIC) {
+    const gunSayisi = Math.ceil(parseFloat(t.gun) || 1);
+    const d = new Date(t.tarih.slice(0, 10) + 'T00:00:00');
+    for (let i = 0; i < gunSayisi; i++) {
+      const s = d.toISOString().split('T')[0];
+      if (s >= bas && s <= bit) set.add(s);
+      d.setDate(d.getDate() + 1);
+    }
+  }
+  return set;
+}
+
 function gunHesapla() {
   const tur = document.getElementById('f-izin-tur').value;
   const bas = document.getElementById('f-bas').value;
@@ -812,8 +827,11 @@ function gunHesapla() {
   }
   if (!bas || !bit || bit < bas) { wrap.style.display = 'none'; return; }
   const d1 = new Date(bas), d2 = new Date(bit);
+  const tatilSet = resmiTatilSetPublic(bas, bit);
   let gun = 0;
   for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+    const s = d.toISOString().split('T')[0];
+    if (tatilSet.has(s)) continue;
     const g = d.getDay();
     if (tur === 'ucretsiz') gun++;
     else if (g !== 0 && g !== 6) gun++;
@@ -975,8 +993,11 @@ async function basvuruGonder() {
 
   const izTur = document.getElementById('f-izin-tur').value;
   const d1 = new Date(bas), d2 = new Date(bit);
+  const tatilSet2 = resmiTatilSetPublic(bas, bit);
   let gun = 0;
   for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
+    const s = d.toISOString().split('T')[0];
+    if (tatilSet2.has(s)) continue;
     const g = d.getDay();
     if (izTur === 'ucretsiz') gun++;
     else if (g !== 0 && g !== 6) gun++;
@@ -1043,11 +1064,15 @@ function yeniBasvuru() {
 }
 
 // ── INIT ──────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   setStep(1);
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('f-bas').min = today;
   document.getElementById('f-bit').min = today;
+  try {
+    const r = await fetch('/public/resmi-tatiller');
+    if (r.ok) RESMI_TATILLER_PUBLIC = await r.json();
+  } catch(e) {}
 });
 </script>
 </body>
