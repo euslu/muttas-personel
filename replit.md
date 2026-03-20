@@ -77,7 +77,21 @@ uploads/
 - SMS API henüz yapılandırılmadı (SMS_API_URL, SMS_API_KEY, SMS_API_SECRET env vars); API yokken kodlar sunucu loguna yazılır
 - Kod süresi: 5 dakika, max 5 deneme hakkı, 60 sn tekrar gönderim bekleme
 
+## Mobil Uygulama (mobile/)
+- **Framework:** Expo + React Native (iOS + Android)
+- **Port:** 8081 (Expo Metro bundler)
+- **API:** https://ik.muttas.com.tr (production)
+- **Workflow:** "Start Mobile" — QR kodu Expo Go ile taranır
+- **Ekranlar:**
+  - Login: TC kimlik + şifre
+  - Ana Sayfa: izin bakiyesi, hızlı aksiyonlar, son izinler
+  - İzin Talebi: 3 adımlı form (tür → tarih → özet)
+  - İzinlerim: tüm izinler, durum filtresi, detay modal
+  - Onaylar: yöneticiler için bekleyen talepler (onay/red)
+  - Profil: kullanıcı bilgileri, şifre değiştir, çıkış
+
 ## Notlar
 - Login TC kimlik numarası ile yapılır (email alanı TC olarak kullanılır)
 - Bcrypt hash'leri SSH ile aktarırken $ karakteri sorun çıkarır — heredoc SQL dosyaları kullan
 - `baglamalar.notlar` formatı: "Referans: REFNO | Sahip: AD"
+- uvicorn reload_excludes: mobile/* (node_modules taramasını engeller)
