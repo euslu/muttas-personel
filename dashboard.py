@@ -204,13 +204,15 @@ async def ik_ozet(token: dict = Depends(decode_token)):
         bolum_dagilim = [{"bolum": r["bolum"], "sayi": r["c"]} for r in bolum_rows]
 
         dogum_rows = await conn.fetch("""
-            SELECT id, ad_soyad, dogum_tarihi, foto_url FROM personel
-            WHERE aktif = true AND dogum_tarihi IS NOT NULL
-            AND (EXTRACT(MONTH FROM dogum_tarihi) * 100 + EXTRACT(DAY FROM dogum_tarihi))
-                BETWEEN ($1 * 100 + $2) AND (($1 * 100 + $2) + 30)
-            ORDER BY EXTRACT(MONTH FROM dogum_tarihi), EXTRACT(DAY FROM dogum_tarihi)
+            SELECT DISTINCT p.id, p.ad_soyad, p.dogum_tarihi, p.foto_url
+            FROM personel p,
+                 generate_series($1::date, $1::date + 29, '1 day') AS gs(d)
+            WHERE p.aktif = true AND p.dogum_tarihi IS NOT NULL
+              AND EXTRACT(MONTH FROM p.dogum_tarihi) = EXTRACT(MONTH FROM gs.d)
+              AND EXTRACT(DAY   FROM p.dogum_tarihi) = EXTRACT(DAY   FROM gs.d)
+            ORDER BY p.dogum_tarihi
             LIMIT 5
-        """, today.month, today.day)
+        """, today)
         dogumlar = []
         for r in dogum_rows:
             dt = r["dogum_tarihi"]

@@ -4256,11 +4256,23 @@ function fmtDateShort(d) {
 async function loadIKDashboard() {
   const token = getToken();
   if (!token) return;
+
+  let d;
   try {
     const res = await fetch('/dashboard/ik-ozet', { headers: { Authorization: 'Bearer ' + token } });
-    if (!res.ok) return;
-    const d = await res.json();
+    if (!res.ok) {
+      console.error('IK ozet HTTP:', res.status);
+      ikDashboardHata();
+      return;
+    }
+    d = await res.json();
+  } catch (e) {
+    console.error('IK Dashboard fetch hatası:', e);
+    ikDashboardHata();
+    return;
+  }
 
+  try {
     const tpEl = document.getElementById('w-toplam-p');
     if (tpEl) tpEl.textContent = d.toplam_personel ?? '—';
     const bkEl = document.getElementById('w-bekleyen-iz');
@@ -4269,9 +4281,11 @@ async function loadIKDashboard() {
     if (tcEl) tcEl.textContent = d.toplam_personel ?? '—';
     const dcEl = document.getElementById('dc-count');
     if (dcEl) dcEl.textContent = d.toplam_personel ?? '—';
+  } catch(e) { console.error('Sayaç güncelleme hatası:', e); }
 
-    drawDonut(d.bolum_dagilim || []);
+  try { drawDonut(d.bolum_dagilim || []); } catch(e) { console.error('Donut hatası:', e); }
 
+  try {
     const dogumEl = document.getElementById('w-dogumlar');
     if (dogumEl) {
       const items = d.yaklasan_dogumlar || [];
@@ -4288,7 +4302,9 @@ async function loadIKDashboard() {
         `).join('');
       }
     }
+  } catch(e) { console.error('Doğum günleri hatası:', e); const el = document.getElementById('w-dogumlar'); if(el) el.innerHTML='<div class="widget-empty">Yüklenemedi.</div>'; }
 
+  try {
     const yiEl = document.getElementById('w-yaklasan-izin');
     if (yiEl) {
       const items = d.yaklasan_izinler || [];
@@ -4305,7 +4321,9 @@ async function loadIKDashboard() {
         `).join('');
       }
     }
+  } catch(e) { console.error('Yaklaşan izinler hatası:', e); const el = document.getElementById('w-yaklasan-izin'); if(el) el.innerHTML='<div class="widget-empty">Yüklenemedi.</div>'; }
 
+  try {
     const itEl = document.getElementById('w-izin-talep');
     if (itEl) {
       const items = d.izin_talepleri || [];
@@ -4322,7 +4340,9 @@ async function loadIKDashboard() {
         `).join('');
       }
     }
+  } catch(e) { console.error('İzin talepleri hatası:', e); }
 
+  try {
     const ttEl = document.getElementById('w-tatiller');
     if (ttEl) {
       const items = d.resmi_tatiller || [];
@@ -4338,10 +4358,14 @@ async function loadIKDashboard() {
         `).join('');
       }
     }
+  } catch(e) { console.error('Tatiller hatası:', e); }
+}
 
-  } catch (e) {
-    console.error('IK Dashboard yüklenemedi:', e);
-  }
+function ikDashboardHata() {
+  ['w-dogumlar','w-yaklasan-izin','w-izin-talep','w-tatiller'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.innerHTML = '<div class="widget-empty">Veriler yüklenemedi.</div>';
+  });
 }
 
 let donutData = [];
