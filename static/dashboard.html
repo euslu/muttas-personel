@@ -3988,6 +3988,8 @@ tbody tr:hover td { background: var(--bg-soft); }
 </div><!-- /layout -->
 
 <script>
+var DONUT_COLORS  = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#14b8a6','#e11d48','#6366f1'];
+var AVATAR_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#e11d48','#14b8a6','#6366f1'];
 const PAGE_TITLES = {
   dashboard:    'Dashboard',
   gunluk:       'Liman Günlüğü',
@@ -4233,9 +4235,6 @@ async function loadSADashboard() {
     if (el('w-sa-toplam'))     el('w-sa-toplam').textContent     = d.toplam ?? 0;
   } catch (e) { console.error('SA dashboard error:', e); }
 }
-
-const DONUT_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#14b8a6','#e11d48','#6366f1'];
-const AVATAR_COLORS = ['#4361ee','#f59e0b','#22c55e','#ec4899','#8b5cf6','#06b6d4','#f97316','#e11d48','#14b8a6','#6366f1'];
 
 function getInitials(name) {
   if (!name) return '?';
