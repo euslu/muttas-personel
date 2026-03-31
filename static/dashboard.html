@@ -8077,10 +8077,23 @@ function ayarTabSec(tabId, btn) {
 
 async function loadAyarlar() {
   dashWidgetAyarPanelDoldur();
-  await Promise.all([loadCalismaGunleri(), loadYoneticiUnvanlar()]);
+  try {
+    await Promise.all([loadCalismaGunleri(), loadYoneticiUnvanlar()]);
+  } catch(e) {
+    console.error('[loadAyarlar] veri yükleme hatası:', e);
+  }
+  renderIzinKurallariUnvanlar();
+  await loadIzinTurleri();
+}
+
+function renderIzinKurallariUnvanlar() {
   const tbody = document.getElementById('ayarlar-unvan-body');
   if (!tbody) return;
   const unvanlar = Object.keys(UNVAN_CALISMA_GUNU).sort();
+  if (!unvanlar.length) {
+    tbody.innerHTML = '<tr><td colspan="2" style="text-align:center;padding:20px;color:var(--text-3,#6b7280);font-size:13px">Çalışma günü verisi bulunamadı.</td></tr>';
+    return;
+  }
   tbody.innerHTML = unvanlar.map(u => {
     const g = UNVAN_CALISMA_GUNU[u] || 5;
     return `<tr>
@@ -8088,9 +8101,9 @@ async function loadAyarlar() {
       <td style="text-align:center">
         <div style="display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:12px;font-weight:600">
           <button onclick="setCalismaGunu('${u.replace(/'/g,"\\'")}',5,this)"
-            style="padding:5px 16px;border:none;cursor:pointer;background:${g===5?'var(--accent)':'var(--bg-soft)'};color:${g===5?'#fff':'var(--text-2)'};transition:.2s">5 Gün</button>
+            style="padding:5px 16px;border:none;cursor:pointer;background:${g===5?'var(--accent)':'var(--bg-soft,#f4f6fa)'};color:${g===5?'#fff':'var(--text-2,#6b7280)'};transition:.2s">5 Gün</button>
           <button onclick="setCalismaGunu('${u.replace(/'/g,"\\'")}',6,this)"
-            style="padding:5px 16px;border:none;cursor:pointer;background:${g===6?'var(--accent)':'var(--bg-soft)'};color:${g===6?'#fff':'var(--text-2)'};transition:.2s">6 Gün</button>
+            style="padding:5px 16px;border:none;cursor:pointer;background:${g===6?'var(--accent)':'var(--bg-soft,#f4f6fa)'};color:${g===6?'#fff':'var(--text-2,#6b7280)'};transition:.2s">6 Gün</button>
         </div>
       </td>
     </tr>`;
@@ -8100,7 +8113,6 @@ async function loadAyarlar() {
   if (yoSel && yoSel.options.length <= 1) {
     unvanlar.forEach(u => { const opt = document.createElement('option'); opt.value = u; opt.textContent = u; yoSel.appendChild(opt); });
   }
-  await loadIzinTurleri();
 }
 
 // ── Resmi Tatiller ──────────────────────────────────────────────────────────
