@@ -8057,7 +8057,8 @@ let izSeciliUnvan = '';
 
 async function loadCalismaGunleri() {
   const res = await fetch('/ayarlar/calisma-gunleri', {
-    headers: { Authorization: 'Bearer ' + getToken() }
+    headers: { Authorization: 'Bearer ' + getToken() },
+    cache: 'no-store'
   });
   if (!res.ok) return;
   UNVAN_CALISMA_GUNU = await res.json();
@@ -8073,6 +8074,7 @@ function ayarTabSec(tabId, btn) {
   if (tabId === 'yk-bv') loadYkBv();
   if (tabId === 'gm-vekil') loadGmVekil();
   if (tabId === 'dashboard') dashWidgetAyarPanelDoldur();
+  if (tabId === 'rol-unvan') loadRolUnvanTab();
 }
 
 async function loadAyarlar() {
@@ -8619,10 +8621,25 @@ async function loadKsSorumluları() {
 }
 
 async function loadYoneticiUnvanlar() {
-  const res = await fetch('/ayarlar/yonetici-unvanlar', { headers: authHeaders() });
+  const res = await fetch('/ayarlar/yonetici-unvanlar', { headers: authHeaders(), cache: 'no-store' });
   if (!res.ok) return;
   YONETICI_UNVANLAR = await res.json();
   updateNavSA();
+}
+
+async function loadRolUnvanTab() {
+  await loadCalismaGunleri();
+  await loadYoneticiUnvanlar();
+  const sel = document.getElementById('yonetici-unvan-sel');
+  if (sel) {
+    sel.innerHTML = '<option value="">— Unvan Seçin —</option>';
+    Object.keys(UNVAN_CALISMA_GUNU).sort().forEach(u => {
+      const o = document.createElement('option');
+      o.value = u; o.textContent = u;
+      sel.appendChild(o);
+    });
+  }
+  renderYoneticiUnvanlar();
 }
 
 function updateNavSA() {
