@@ -8043,9 +8043,9 @@ async function loadAyarlar() {
       <td style="text-align:center">
         <div style="display:inline-flex;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:12px;font-weight:600">
           <button onclick="setCalismaGunu('${u.replace(/'/g,"\\'")}',5,this)"
-            style="padding:5px 16px;border:none;cursor:pointer;background:${g===5?'var(--primary)':'var(--bg-2)'};color:${g===5?'#fff':'var(--text-2)'};transition:.2s">5 Gün</button>
+            style="padding:5px 16px;border:none;cursor:pointer;background:${g===5?'var(--accent)':'var(--bg-soft)'};color:${g===5?'#fff':'var(--text-2)'};transition:.2s">5 Gün</button>
           <button onclick="setCalismaGunu('${u.replace(/'/g,"\\'")}',6,this)"
-            style="padding:5px 16px;border:none;cursor:pointer;background:${g===6?'var(--primary)':'var(--bg-2)'};color:${g===6?'#fff':'var(--text-2)'};transition:.2s">6 Gün</button>
+            style="padding:5px 16px;border:none;cursor:pointer;background:${g===6?'var(--accent)':'var(--bg-soft)'};color:${g===6?'#fff':'var(--text-2)'};transition:.2s">6 Gün</button>
         </div>
       </td>
     </tr>`;
@@ -8527,7 +8527,7 @@ async function setCalismaGunu(unvan, gun, btn) {
   const row = btn.closest('tr');
   row.querySelectorAll('button').forEach(b => {
     const isActive = b.textContent.trim().startsWith(gun.toString());
-    b.style.background = isActive ? 'var(--primary)' : 'var(--bg-2)';
+    b.style.background = isActive ? 'var(--accent)' : 'var(--bg-soft)';
     b.style.color      = isActive ? '#fff' : 'var(--text-2)';
   });
   showToast(unvan + ' → ' + gun + ' gün olarak güncellendi', 'success');
