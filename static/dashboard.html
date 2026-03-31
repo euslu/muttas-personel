@@ -4174,11 +4174,12 @@ function dashWidgetAyarPanelDoldur() {
   const cfg = dashWidgetGorSetting();
   const cont = document.getElementById('dash-widget-settings');
   if (!cont) return;
+  if (!DASH_WIDGET_DEFS || !DASH_WIDGET_DEFS.length) return;
   cont.innerHTML = DASH_WIDGET_DEFS.map(w => {
     const checked = cfg[w.id] !== false;
-    return `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:var(--bg-2);border-radius:8px">
-      <input type="checkbox" id="dw-chk-${w.id}" ${checked ? 'checked' : ''} style="width:16px;height:16px;cursor:pointer">
-      <span style="font-size:14px">${w.label}</span>
+    return `<label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 14px;background:var(--bg-soft,#f4f6fa);border:1px solid var(--border,#e5e7eb);border-radius:8px">
+      <input type="checkbox" id="dw-chk-${w.id}" ${checked ? 'checked' : ''} style="width:16px;height:16px;cursor:pointer;accent-color:var(--accent,#4361ee)">
+      <span style="font-size:14px;color:var(--text,#111)">${w.label}</span>
     </label>`;
   }).join('');
 }
@@ -4304,7 +4305,7 @@ async function loadIKDashboard() {
         `).join('');
       }
     }
-  } catch(e) { console.error('Doğum günleri hatası:', e); const el = document.getElementById('w-dogumlar'); if(el) el.innerHTML='<div class="widget-empty">Yüklenemedi.</div>'; }
+  } catch(e) { console.error('Doğum günleri hatası:', e); const el = document.getElementById('w-dogumlar'); if(el) el.innerHTML='<div class="widget-empty" style="color:#ef4444">Hata: '+(e&&e.message?e.message:String(e))+'</div>'; }
 
   try {
     const yiEl = document.getElementById('w-yaklasan-izin');
@@ -4323,7 +4324,7 @@ async function loadIKDashboard() {
         `).join('');
       }
     }
-  } catch(e) { console.error('Yaklaşan izinler hatası:', e); const el = document.getElementById('w-yaklasan-izin'); if(el) el.innerHTML='<div class="widget-empty">Yüklenemedi.</div>'; }
+  } catch(e) { console.error('Yaklaşan izinler hatası:', e); const el = document.getElementById('w-yaklasan-izin'); if(el) el.innerHTML='<div class="widget-empty" style="color:#ef4444">Hata: '+(e&&e.message?e.message:String(e))+'</div>'; }
 
   try {
     const itEl = document.getElementById('w-izin-talep');
@@ -8076,6 +8077,7 @@ function ayarTabSec(tabId, btn) {
 }
 
 async function loadAyarlar() {
+  dashWidgetAyarPanelDoldur();
   await Promise.all([loadCalismaGunleri(), loadYoneticiUnvanlar()]);
   const tbody = document.getElementById('ayarlar-unvan-body');
   if (!tbody) return;
