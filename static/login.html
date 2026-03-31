@@ -440,10 +440,15 @@ async function handleLogin(e) {
       return;
     }
 
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('kullanici', JSON.stringify(data.kullanici));
-
-    window.location.href = 'dashboard.html';
+    if (data.sifre_degistir_gerekli) {
+      window._pendingToken = data.token;
+      window._pendingKullanici = data.kullanici;
+      showSifreDegistirModal();
+    } else {
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('kullanici', JSON.stringify(data.kullanici));
+      window.location.href = 'dashboard.html';
+    }
 
   } catch (err) {
     showError('Sunucuya bağlanılamadı. Lütfen tekrar deneyin.');
@@ -452,11 +457,86 @@ async function handleLogin(e) {
   }
 }
 
+function showSifreDegistirModal() {
+  document.getElementById('sifre-modal').style.display = 'flex';
+  document.getElementById('yeni-sifre').focus();
+}
+
+async function handleSifreDegistir() {
+  const yeni = document.getElementById('yeni-sifre').value;
+  const tekrar = document.getElementById('yeni-sifre-tekrar').value;
+  const errEl = document.getElementById('modal-hata');
+  errEl.textContent = '';
+
+  if (yeni.length < 8) { errEl.textContent = 'Şifre en az 8 karakter olmalıdır.'; return; }
+  if (yeni === 'Muttas2026!') { errEl.textContent = 'Lütfen farklı bir şifre belirleyin.'; return; }
+  if (yeni !== tekrar) { errEl.textContent = 'Şifreler eşleşmiyor.'; return; }
+
+  const btn = document.getElementById('sifre-kaydet-btn');
+  btn.disabled = true;
+  btn.textContent = 'Kaydediliyor...';
+
+  try {
+    const res = await fetch('/auth/sifre-degistir', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + window._pendingToken
+      },
+      body: JSON.stringify({ mevcut_sifre: document.getElementById('password').value, yeni_sifre: yeni })
+    });
+    const d = await res.json();
+    if (!res.ok) { errEl.textContent = d.detail || 'Hata oluştu.'; btn.disabled = false; btn.textContent = 'Şifremi Kaydet'; return; }
+
+    localStorage.setItem('token', window._pendingToken);
+    localStorage.setItem('kullanici', JSON.stringify(window._pendingKullanici));
+    window.location.href = 'dashboard.html';
+  } catch (e) {
+    errEl.textContent = 'Sunucuya bağlanılamadı.';
+    btn.disabled = false;
+    btn.textContent = 'Şifremi Kaydet';
+  }
+}
+
 document.addEventListener('keydown', function(e) {
-  if (e.key === 'Enter') {
+  if (e.key === 'Enter' && document.getElementById('sifre-modal').style.display === 'none') {
     handleLogin(e);
   }
 });
 </script>
+
+<!-- Zorunlu Şifre Değiştirme Modalı -->
+<div id="sifre-modal" style="display:none;position:fixed;inset:0;background:rgba(15,20,40,.7);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center;">
+  <div style="background:#fff;border-radius:16px;padding:36px 32px;max-width:420px;width:90%;box-shadow:0 24px 60px rgba(0,0,0,.25);">
+    <div style="display:flex;align-items:center;gap:12px;margin-bottom:8px;">
+      <div style="width:40px;height:40px;border-radius:10px;background:#fef3c7;display:flex;align-items:center;justify-content:center;font-size:20px;">🔐</div>
+      <h2 style="font-size:18px;font-weight:700;color:#1e2a4a">Şifrenizi Değiştirin</h2>
+    </div>
+    <p style="font-size:13px;color:#6b7280;margin-bottom:24px;">Sisteme ilk kez giriş yapıyorsunuz. Güvenliğiniz için yeni bir şifre belirlemeniz zorunludur.</p>
+
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Yeni Şifre</label>
+      <input type="password" id="yeni-sifre" placeholder="En az 8 karakter"
+        style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border .15s"
+        onfocus="this.style.borderColor='#4361ee'" onblur="this.style.borderColor='#d1d5db'">
+    </div>
+
+    <div style="margin-bottom:14px;">
+      <label style="display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px;">Yeni Şifre Tekrar</label>
+      <input type="password" id="yeni-sifre-tekrar" placeholder="Şifreyi tekrar girin"
+        style="width:100%;padding:11px 14px;border:1.5px solid #d1d5db;border-radius:8px;font-size:14px;font-family:inherit;outline:none;transition:border .15s"
+        onfocus="this.style.borderColor='#4361ee'" onblur="this.style.borderColor='#d1d5db'"
+        onkeydown="if(event.key==='Enter')handleSifreDegistir()">
+    </div>
+
+    <div id="modal-hata" style="font-size:13px;color:#ef4444;min-height:18px;margin-bottom:14px;"></div>
+
+    <button id="sifre-kaydet-btn" onclick="handleSifreDegistir()"
+      style="width:100%;padding:13px;background:#4361ee;color:#fff;border:none;border-radius:8px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer;transition:background .15s;"
+      onmouseover="this.style.background='#3651d4'" onmouseout="this.style.background='#4361ee'">
+      Şifremi Kaydet
+    </button>
+  </div>
+</div>
 </body>
 </html>

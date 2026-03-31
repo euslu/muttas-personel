@@ -152,7 +152,7 @@ async def login(body: LoginRequest):
     pool = await get_pool()
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
-            "SELECT id, ad, soyad, email, rol, password_hash FROM kullanicilar WHERE email = $1 AND aktif = TRUE",
+            "SELECT id, ad, soyad, email, rol, password_hash, sifre_degistir_gerekli FROM kullanicilar WHERE email = $1 AND aktif = TRUE",
             body.email,
         )
 
@@ -172,6 +172,7 @@ async def login(body: LoginRequest):
     token = create_token(row["id"], row["email"], row["rol"], row["ad"], row["soyad"], unvan)
     return {
         "token": token,
+        "sifre_degistir_gerekli": bool(row["sifre_degistir_gerekli"]),
         "kullanici": {
             "id": row["id"],
             "ad": row["ad"],
@@ -203,7 +204,7 @@ async def sifre_degistir(body: SifreDegistir, token: dict = Depends(decode_token
 
         new_hash = hash_password(body.yeni_sifre)
         await conn.execute(
-            "UPDATE kullanicilar SET password_hash = $1 WHERE id = $2",
+            "UPDATE kullanicilar SET password_hash = $1, sifre_degistir_gerekli = FALSE WHERE id = $2",
             new_hash, user_id,
         )
 
