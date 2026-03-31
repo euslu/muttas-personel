@@ -16,7 +16,10 @@ JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
 JWT_EXPIRE_MINUTES = 60 * 24
 
-IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer", "genel_mudur", "yk_uyesi", "yk_baskani", "mudur"}
+IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer", "genel_mudur", "yk_uyesi", "yk_baskani", "mudur", "koordinasyon_sorumlusu"}
+
+SIFRE_SIFIRLAMA_ROLLER = {"koordinasyon_sorumlusu", "mudur", "genel_mudur"}
+DEFAULT_SIFRE = "Muttas2026!"
 
 
 def hash_password(password: str) -> str:
@@ -130,8 +133,18 @@ async def update_rol(uid: int, body: RolGuncelle, token: dict = Depends(require_
         exists = await conn.fetchval("SELECT id FROM kullanicilar WHERE id = $1", uid)
         if not exists:
             raise HTTPException(status_code=404, detail="Kullanıcı bulunamadı.")
-        await conn.execute("UPDATE kullanicilar SET rol = $2 WHERE id = $1", uid, body.rol)
-    return {"ok": True}
+
+        if body.rol in SIFRE_SIFIRLAMA_ROLLER:
+            new_hash = hash_password(DEFAULT_SIFRE)
+            await conn.execute(
+                "UPDATE kullanicilar SET rol = $2, password_hash = $3, sifre_degistir_gerekli = TRUE WHERE id = $1",
+                uid, body.rol, new_hash,
+            )
+        else:
+            await conn.execute("UPDATE kullanicilar SET rol = $2 WHERE id = $1", uid, body.rol)
+
+    sifre_sifirlandi = body.rol in SIFRE_SIFIRLAMA_ROLLER
+    return {"ok": True, "sifre_sifirlandi": sifre_sifirlandi}
 
 
 @router.delete("/kullanicilar/{uid}")
