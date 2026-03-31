@@ -3263,6 +3263,10 @@ tbody tr:hover td { background: var(--bg-soft); }
               <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">manage_accounts</span>
               Genel Müdür Vekili
             </button>
+            <button class="ayar-tab-btn" onclick="ayarTabSec('resmi-tatiller',this)">
+              <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">event_busy</span>
+              Resmi Tatiller
+            </button>
             <button class="ayar-tab-btn" onclick="ayarTabSec('dashboard',this)">
               <span class="material-symbols-outlined" style="font-size:16px;vertical-align:-3px">dashboard</span>
               Dashboard
@@ -3300,7 +3304,7 @@ tbody tr:hover td { background: var(--bg-soft); }
                 <button class="btn btn-primary" style="height:36px;font-size:13px" onclick="izinTuruEklePanelAc()">+ Yeni Tür Ekle</button>
               </div>
 
-              <div id="izin-turu-ekle-panel" style="display:none;background:var(--bg-2);border-radius:10px;padding:16px;margin-bottom:16px">
+              <div id="izin-turu-ekle-panel" style="display:none;background:var(--bg-soft);border-radius:10px;padding:16px;margin-bottom:16px">
                 <div style="display:grid;grid-template-columns:180px 1fr auto;gap:10px;align-items:flex-end">
                   <div>
                     <label style="font-size:11px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Kod <span style="color:var(--text-3);font-weight:400">(İngilizce, boşluksuz)</span></label>
@@ -3328,18 +3332,21 @@ tbody tr:hover td { background: var(--bg-soft); }
               <div id="izin-turu-list-bos" style="display:none;text-align:center;padding:20px;color:var(--text-3);font-size:13px">Kayıtlı izin türü yok.</div>
             </div>
 
-            <!-- Resmi Tatiller -->
+          </div>
+
+          <!-- ── TAB: Resmi Tatiller ── -->
+          <div class="ayar-tab-panel" id="ayar-panel-resmi-tatiller" style="display:none">
             <div class="card" style="padding:24px 28px">
               <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:10px">
                 <div>
                   <h2 style="margin:0 0 4px;font-size:17px">Resmi Tatiller</h2>
-                  <p style="margin:0;font-size:13px;color:var(--text-3)">İzin hesaplamalarında dikkate alınacak resmi tatil günleri.</p>
+                  <p style="margin:0;font-size:13px;color:var(--text-3)">İzin hesaplamalarında dikkate alınacak bayram ve resmi tatil günleri.</p>
                 </div>
                 <button class="btn btn-primary" style="height:36px;font-size:13px" onclick="tatilEklePanelAc()">+ Yeni Tatil Ekle</button>
               </div>
 
               <!-- Tatil Ekleme Formu -->
-              <div id="tatil-ekle-panel" style="display:none;background:var(--bg-2);border-radius:10px;padding:16px;margin-bottom:16px">
+              <div id="tatil-ekle-panel" style="display:none;background:var(--bg-soft);border-radius:10px;padding:16px;margin-bottom:16px">
                 <div style="display:grid;grid-template-columns:1fr 160px 100px auto;gap:10px;align-items:flex-end;flex-wrap:wrap">
                   <div>
                     <label style="font-size:11px;font-weight:600;color:var(--text-2);display:block;margin-bottom:4px">Tatil Adı</label>
@@ -4126,6 +4133,7 @@ function applyRoleUI(rol) {
   }
 
   updateTopbar('dashboard');
+  setTimeout(loadTatillerData, 600);
 })();
 
 const DASH_WIDGET_DEFS = [
@@ -8026,6 +8034,7 @@ function ayarTabSec(tabId, btn) {
   btn.classList.add('active');
   document.getElementById('ayar-panel-' + tabId).style.display = 'block';
   if (tabId === 'ks-atama') ksAtamaYukleKsList();
+  if (tabId === 'resmi-tatiller') loadTatiller();
   if (tabId === 'yk-bv') loadYkBv();
   if (tabId === 'gm-vekil') loadGmVekil();
   if (tabId === 'dashboard') dashWidgetAyarPanelDoldur();
@@ -8055,17 +8064,22 @@ async function loadAyarlar() {
   if (yoSel && yoSel.options.length <= 1) {
     unvanlar.forEach(u => { const opt = document.createElement('option'); opt.value = u; opt.textContent = u; yoSel.appendChild(opt); });
   }
-  await Promise.all([loadTatiller(), loadIzinTurleri()]);
+  await loadIzinTurleri();
 }
 
 // ── Resmi Tatiller ──────────────────────────────────────────────────────────
 
 let RESMI_TATILLER = [];
 
+async function loadTatillerData() {
+  try {
+    const res = await fetch('/ayarlar/resmi-tatiller', { headers: authHeaders() });
+    if (res.ok) RESMI_TATILLER = await res.json();
+  } catch {}
+}
+
 async function loadTatiller() {
-  const res = await fetch('/ayarlar/resmi-tatiller', { headers: authHeaders() });
-  if (!res.ok) return;
-  RESMI_TATILLER = await res.json();
+  await loadTatillerData();
   renderTatiller();
 }
 

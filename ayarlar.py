@@ -172,7 +172,7 @@ async def get_ks_listesi(token: dict = Depends(require_ayar_editor)):
             FROM kullanicilar k
             JOIN personel p ON LOWER(REPLACE(p.tc_kimlik,' ','')) = k.email
             WHERE k.rol IN ('koordinasyon_sorumlusu', 'mudur') AND k.aktif = TRUE AND p.aktif = TRUE
-            ORDER BY k.rol DESC, p.ad_soyad
+            ORDER BY p.ad_soyad
         """)
         return [{"personel_id": r["personel_id"], "ad_soyad": r["ad_soyad"], "rol": r["rol"]} for r in rows]
 
