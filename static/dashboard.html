@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
+<link rel="icon" type="image/png" href="/static/logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MUTTAŞ İK</title>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -3459,16 +3460,20 @@ tbody tr:hover td { background: var(--bg-soft); }
               </div>
 
               <!-- Personel Arama Ekleme -->
-              <div style="background:var(--bg-2);border-radius:10px;padding:16px;margin-bottom:16px">
-                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Personel Ekle</label>
-                <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+              <div style="background:var(--accent-bg);border:1px solid #d6dcff;border-radius:12px;padding:18px 20px;margin-bottom:20px">
+                <label style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:10px">Personel Ekle</label>
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                   <div style="flex:1;min-width:220px;position:relative">
+                    <span class="material-symbols-outlined" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--text-3);pointer-events:none">search</span>
                     <input type="text" id="yk-bv-p-q" placeholder="Ad Soyad ile arayın..." autocomplete="off"
-                      oninput="ykBvPAra(this.value)" style="width:100%;box-sizing:border-box">
+                      oninput="ykBvPAra(this.value)"
+                      style="width:100%;box-sizing:border-box;height:48px;padding:0 16px 0 42px;border:1.5px solid var(--border-dark);border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s,box-shadow .2s"
+                      onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(67,97,238,.12)'"
+                      onblur="this.style.borderColor='var(--border-dark)';this.style.boxShadow='none'">
                     <div id="yk-bv-p-list" class="autocomplete-list" style="display:none"></div>
                     <input type="hidden" id="yk-bv-p-id">
                   </div>
-                  <button class="btn btn-primary" style="height:38px;white-space:nowrap" onclick="ykBvEkle()">+ Ekle</button>
+                  <button class="btn btn-primary" style="height:48px;padding:0 22px;font-size:14px;font-weight:600;white-space:nowrap;border-radius:10px" onclick="ykBvEkle()">+ Ekle</button>
                 </div>
               </div>
 
@@ -3495,16 +3500,20 @@ tbody tr:hover td { background: var(--bg-soft); }
                 </div>
               </div>
 
-              <div style="background:var(--bg-2);border-radius:10px;padding:16px;margin-bottom:16px">
-                <label style="font-size:12px;font-weight:600;color:var(--text-2);display:block;margin-bottom:6px">Personel Ekle</label>
-                <div style="display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap">
+              <div style="background:var(--accent-bg);border:1px solid #d6dcff;border-radius:12px;padding:18px 20px;margin-bottom:20px">
+                <label style="font-size:11px;font-weight:700;color:var(--accent);letter-spacing:.5px;text-transform:uppercase;display:block;margin-bottom:10px">Personel Ekle</label>
+                <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
                   <div style="flex:1;min-width:220px;position:relative">
+                    <span class="material-symbols-outlined" style="position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:20px;color:var(--text-3);pointer-events:none">search</span>
                     <input type="text" id="gm-vekil-p-q" placeholder="Ad Soyad ile arayın..." autocomplete="off"
-                      oninput="gmVekilPAra(this.value)" style="width:100%;box-sizing:border-box">
+                      oninput="gmVekilPAra(this.value)"
+                      style="width:100%;box-sizing:border-box;height:48px;padding:0 16px 0 42px;border:1.5px solid var(--border-dark);border-radius:10px;font-size:14px;font-family:inherit;outline:none;background:#fff;transition:border-color .2s,box-shadow .2s"
+                      onfocus="this.style.borderColor='var(--accent)';this.style.boxShadow='0 0 0 3px rgba(67,97,238,.12)'"
+                      onblur="this.style.borderColor='var(--border-dark)';this.style.boxShadow='none'">
                     <div id="gm-vekil-p-list" class="autocomplete-list" style="display:none"></div>
                     <input type="hidden" id="gm-vekil-p-id">
                   </div>
-                  <button class="btn btn-primary" style="height:38px;white-space:nowrap" onclick="gmVekilEkle()">+ Ekle</button>
+                  <button class="btn btn-primary" style="height:48px;padding:0 22px;font-size:14px;font-weight:600;white-space:nowrap;border-radius:10px" onclick="gmVekilEkle()">+ Ekle</button>
                 </div>
               </div>
 
