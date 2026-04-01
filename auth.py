@@ -14,7 +14,7 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 JWT_SECRET = os.environ["JWT_SECRET"]
 JWT_ALGORITHM = "HS256"
-JWT_EXPIRE_MINUTES = 60 * 24
+JWT_EXPIRE_MINUTES = 60 * 48
 
 IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer", "genel_mudur", "yk_uyesi", "yk_baskani", "mudur", "koordinasyon_sorumlusu"}
 

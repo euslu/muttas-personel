@@ -4646,6 +4646,25 @@ async function api(url, opts = {}) {
   return fetch(url, options);
 }
 
+(function() {
+  const _origFetch = window.fetch.bind(window);
+  window.fetch = async function(input, init) {
+    const res = await _origFetch(input, init);
+    if (res.status === 401) {
+      const url = typeof input === 'string' ? input : (input?.url || '');
+      const hasToken = !!localStorage.getItem('token');
+      if (hasToken && !url.includes('/auth/')) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('kullanici');
+        localStorage.removeItem('liman');
+        try { showToast('Oturumunuz sona erdi. Yeniden giriş yapılıyor...', 'error'); } catch(e) {}
+        setTimeout(() => { window.location.href = '/static/login.html'; }, 1800);
+      }
+    }
+    return res;
+  };
+})();
+
 let glPage       = 1;
 let glTotalPages = 1;
 let glEditId     = null;
