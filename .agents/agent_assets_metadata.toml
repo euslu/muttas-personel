@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "RAoWzmG2B7S5e7EZyTtSl"
+uri = "file://CLAUDE.md"
+type = "text"
+title = "CLAUDE.md — Proje Bağlam Dosyası"
