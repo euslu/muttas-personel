@@ -2,7 +2,7 @@
 
 ## Genel Bakış
 
-FastAPI tabanlı bir insan kaynakları ve liman yönetim sistemi.  
+FastAPI tabanlı bir insan kaynakları ve liman yönetim sistemi.
 Canlı: **https://ik.muttas.com.tr** (sunucu: 185.123.103.61)
 
 ---
@@ -346,7 +346,7 @@ sshpass -p 'SIFRE' ssh srv@185.123.103.61 "sudo systemctl restart muttas"
 ## Bilinen Önemli Notlar
 
 1. **TC Kimlik = Email**: `kullanicilar.email` alanı TC kimlik numarasıdır
-2. **Bcrypt ve `$`**: SSH ile hash aktarırken `$` karakteri sorun yaratır — heredoc SQL dosyası kullan
+2. **Bcrypt ve `**: SSH ile hash aktarırken ` karakteri sorun yaratır — heredoc SQL dosyası kullan
 3. **`--bg-2` tanımsız**: CSS değişkeni yok, fallback ekle: `var(--bg-2, #f0f2f5)`
 4. **`--primary` tanımsız**: `var(--accent)` kullan
 5. **dashboard.html büyük**: 11.300+ satır, tüm modüller tek dosyada
