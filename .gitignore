@@ -1,0 +1,12 @@
+attached_assets/
+uploads/
+__pycache__/
+*.pyc
+*.pyo
+.env
+.env.*
+node_modules/
+mobile/node_modules/
+mobile/.expo/
+*.log
+.DS_Store
