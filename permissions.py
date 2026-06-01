@@ -12,7 +12,7 @@ IZIN_EDITORS   = IK_EDITORS | {"koordinasyon_sorumlusu", "mudur"}
 LIMAN_EDITORS  = {"admin", "liman_admin"}
 KS_EDITORS     = {"admin", "koordinasyon_sorumlusu", "mudur"}
 GM_EDITORS     = {"admin", "genel_mudur"}
-YK_EDITORS     = {"admin", "yk_uyesi"}
+YK_EDITORS     = {"admin", "yk_uyesi", "yk_baskani"}
 
 
 def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:

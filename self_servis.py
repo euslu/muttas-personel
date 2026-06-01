@@ -280,8 +280,6 @@ def _format_phone_netgsm(phone: str) -> str:
         digits = '9' + digits
     elif len(digits) == 10:
         digits = '90' + digits
-    elif not digits.startswith('90') and len(digits) == 10:
-        digits = '90' + digits
     return digits
 
 
@@ -442,6 +440,8 @@ async def sms_kod_dogrula(data: SmsKodDogrula):
 async def public_personel_ara(tc: Optional[str] = None, sms_token: Optional[str] = None):
     if not tc:
         raise HTTPException(status_code=400, detail="TC kimlik numarası gereklidir.")
+    if not sms_token:
+        raise HTTPException(status_code=403, detail="SMS doğrulaması gereklidir.")
 
     tc = tc.strip()
     if not tc or len(tc) != 11 or not tc.isdigit():
@@ -449,13 +449,12 @@ async def public_personel_ara(tc: Optional[str] = None, sms_token: Optional[str]
 
     pool = await get_pool()
     async with pool.acquire() as conn:
-        if sms_token:
-            entry = await conn.fetchrow(
-                "SELECT personel_id FROM sms_kodlari WHERE tc_kimlik=$1 AND verified=TRUE AND sms_token=$2",
-                tc, sms_token
-            )
-            if not entry:
-                raise HTTPException(status_code=403, detail="SMS doğrulaması gereklidir.")
+        entry = await conn.fetchrow(
+            "SELECT personel_id FROM sms_kodlari WHERE tc_kimlik=$1 AND verified=TRUE AND sms_token=$2",
+            tc, sms_token
+        )
+        if not entry:
+            raise HTTPException(status_code=403, detail="SMS doğrulaması gereklidir.")
 
         row = await conn.fetchrow(
             "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",
@@ -530,6 +529,14 @@ async def public_izin_turleri():
     async with pool.acquire() as conn:
         rows = await conn.fetch("SELECT kod, ad FROM izin_turleri WHERE aktif = TRUE ORDER BY sira, ad")
     return [{"kod": r["kod"], "ad": r["ad"]} for r in rows]
+
+
+@router.get("/public/calisma-gunleri")
+async def public_calisma_gunleri():
+    pool = await get_pool()
+    async with pool.acquire() as conn:
+        rows = await conn.fetch("SELECT unvan, gun_sayisi FROM unvan_calisma_gunu ORDER BY unvan")
+    return {r["unvan"]: r["gun_sayisi"] for r in rows}
 
 
 @router.post("/public/izin", status_code=201)

@@ -9,6 +9,7 @@ from fastapi import APIRouter, HTTPException, Query, Depends, UploadFile, File, 
 from fastapi.responses import FileResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel
+from jose import jwt, JWTError
 
 from db import get_pool
 from permissions import decode_token, require_ik_editor
@@ -265,7 +266,8 @@ async def update_personel(pid: int, body: PersonelUpdate, token: dict = Depends(
         if not exists:
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
 
-        fields = body.model_dump(exclude_none=True)
+        PROTECTED_FIELDS = {"kalan_izin", "toplam_izin_hak", "hakkedis_yillara_gore", "olusturuldu"}
+        fields = {k: v for k, v in body.model_dump(exclude_none=True).items() if k not in PROTECTED_FIELDS}
         if not fields:
             raise HTTPException(status_code=400, detail="Güncellenecek alan yok.")
 
@@ -320,6 +322,7 @@ async def upload_evrak(
         if not exists:
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
 
+    MAX_EVRAK_BOYUT = 10 * 1024 * 1024  # 10 MB
     dest_dir = UPLOAD_DIR / str(pid)
     dest_dir.mkdir(parents=True, exist_ok=True)
 
@@ -331,6 +334,9 @@ async def upload_evrak(
         shutil.copyfileobj(dosya.file, f)
 
     boyut = dest.stat().st_size
+    if boyut > MAX_EVRAK_BOYUT:
+        dest.unlink(missing_ok=True)
+        raise HTTPException(status_code=400, detail="Dosya boyutu 10 MB'ı geçemez.")
 
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
@@ -342,6 +348,9 @@ async def upload_evrak(
     return {"id": row["id"]}
 
 
+JWT_SECRET    = os.environ["JWT_SECRET"]
+JWT_ALGORITHM = "HS256"
+
 @router.get("/evrak/{eid}/indir")
 async def indir_evrak(eid: int, token: Optional[str] = Query(None),
                       credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer(auto_error=False))):
@@ -349,7 +358,9 @@ async def indir_evrak(eid: int, token: Optional[str] = Query(None),
     if not t:
         raise HTTPException(status_code=401, detail="Token gerekli.")
     try:
-        jwt.decode(t, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        payload = jwt.decode(t, JWT_SECRET, algorithms=[JWT_ALGORITHM])
+        if not payload.get("sub"):
+            raise HTTPException(status_code=401, detail="Geçersiz token.")
     except JWTError:
         raise HTTPException(status_code=401, detail="Geçersiz token.")
 
@@ -376,6 +387,10 @@ async def upload_foto(
     if not dosya.content_type or not dosya.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Sadece resim dosyası yüklenebilir.")
 
+    ext = Path(dosya.filename).suffix.lower() or ".jpg"
+    if ext not in {".jpg", ".jpeg", ".png", ".webp"}:
+        raise HTTPException(status_code=400, detail="Sadece JPG, PNG, WEBP dosyaları kabul edilir.")
+
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT id FROM personel WHERE id = $1", pid)
@@ -384,8 +399,6 @@ async def upload_foto(
 
     dest_dir = Path("uploads/foto")
     dest_dir.mkdir(parents=True, exist_ok=True)
-
-    ext = Path(dosya.filename).suffix or ".jpg"
     unique = f"{pid}_{uuid.uuid4().hex[:8]}{ext}"
     dest = dest_dir / unique
 

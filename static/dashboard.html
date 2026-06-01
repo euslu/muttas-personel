@@ -1852,39 +1852,9 @@ tbody tr:hover td { background: var(--bg-soft); }
         <span class="icon"><span class="material-symbols-outlined">dashboard</span></span> Ana Sayfa
       </button>
 
-      <button class="nav-item nav-liman" onclick="navigate('gunluk', this)">
-        <span class="icon"><span class="material-symbols-outlined">assignment</span></span> Liman Günlüğü
-      </button>
-
-      <!-- Bağlama Başvuruları (collapsible) -->
-      <button class="nav-group-toggle nav-liman" id="baglama-toggle" onclick="toggleBaglamaMenu(this)">
-        <span class="icon"><span class="material-symbols-outlined">anchor</span></span> Bağlama Başvuruları
-        <span class="nav-arrow">▸</span>
-      </button>
-      <div class="nav-sub nav-liman" id="baglama-sub">
-        <button class="nav-sub-item active" onclick="navBasvuru('', this)">Tüm Başvurular</button>
-        <button class="nav-sub-item" onclick="navBasvuru('beklemede', this)">Yeni Başvurular</button>
-        <button class="nav-sub-item" onclick="navBasvuru('islem_bekliyor', this)">Link Gönderilenler</button>
-        <button class="nav-sub-item" onclick="navBasvuru('sigorta', this)">Sigorta Yaklaşanlar</button>
-        <button class="nav-sub-item" onclick="navBasvuru('odeme_islemde', this)">Ödeme Beklenenler</button>
-        <button class="nav-sub-item" onclick="navBasvuru('manuel_odeme', this)">Manuel Ödemeler</button>
-        <button class="nav-sub-item" onclick="navBasvuru('odendi', this)">Ödeme Alınanlar</button>
-        <button class="nav-sub-item" onclick="navBasvuru('onaylandi', this)">Onaylananlar</button>
-        <button class="nav-sub-item" onclick="navBasvuru('reddedildi', this)">Reddedilenler</button>
-        <button class="nav-sub-item" onclick="navBasvuru('dosya_yuklenenler', this)">Dosya Yüklenenler</button>
-      </div>
-
-      <button class="nav-item nav-liman" onclick="navigate('tekneler', this)">
-        <span class="icon"><span class="material-symbols-outlined">directions_boat</span></span> Tekneler
-      </button>
-
-      <button class="nav-item nav-liman" onclick="navigate('faturalar', this)">
-        <span class="icon"><span class="material-symbols-outlined">receipt_long</span></span> Faturalar
-      </button>
-
-      <!-- İnsan Kaynakları Accordion -->
-      <div class="nav-sep nav-ik"></div>
-      <div class="nav-ik" id="ik-accordion-wrapper">
+      <!-- İnsan Kaynakları Accordion — admin, ik_admin, genel_mudur -->
+      <div class="nav-sep nav-ik-full"></div>
+      <div class="nav-ik-full" id="ik-accordion-wrapper">
         <button class="nav-item sb-accordion-toggle" onclick="toggleNavAccordion('ik-accordion-body', this)" style="width:100%;justify-content:space-between">
           <span style="display:flex;align-items:center;gap:8px">
             <span class="icon"><span class="material-symbols-outlined">groups_2</span></span> İnsan Kaynakları
@@ -1903,6 +1873,12 @@ tbody tr:hover td { background: var(--bg-soft); }
           </button>
         </div>
       </div>
+
+      <!-- İzin Yönetimi — KS, müdür, YK (accordion dışında tek buton) -->
+      <div class="nav-sep nav-izin-only"></div>
+      <button class="nav-item nav-izin-only" onclick="navigate('izinler', this)">
+        <span class="icon"><span class="material-symbols-outlined">flight_takeoff</span></span> İzin Yönetimi
+      </button>
 
       <!-- Satın Alma Accordion -->
       <div class="nav-sep nav-sa"></div>
@@ -1937,6 +1913,9 @@ tbody tr:hover td { background: var(--bg-soft); }
         <button class="nav-item" onclick="navigate('kullanicilar', this)">
           <span class="icon"><span class="material-symbols-outlined">manage_accounts</span></span> Kullanıcılar
         </button>
+      </div>
+      <!-- İzin Log — admin, genel_mudur, ik_admin -->
+      <div id="izin-log-section" style="display:none">
         <button class="nav-item" onclick="navigate('izin_log', this)">
           <span class="icon"><span class="material-symbols-outlined">history</span></span> İzin İşlem Geçmişi
         </button>
@@ -4037,55 +4016,60 @@ function applyRoleUI(rol) {
   const isMudur  = rol === 'mudur';
   const isGM     = rol === 'genel_mudur';
   const isYK     = rol === 'yk_uyesi' || rol === 'yk_baskani';
-  const isLimanAdmin = rol === 'admin';
-  const isLiman  = isLimanAdmin || rol === 'liman_admin' || rol === 'liman_viewer';
 
-  canEditIK    = isLimanAdmin || rol === 'ik_admin' || isGM || isKS || isMudur;
-  canEditLiman = isLimanAdmin || rol === 'liman_admin';
+  // İK tam erişim: admin, ik_admin, genel_mudur
+  const isIKFull = isAdmin || isIK || isGM;
+  // Sadece izin erişimi: KS, müdür, YK
+  const isIzinOnly = isKS || isMudur || isYK;
 
-  document.querySelectorAll('.nav-liman').forEach(el => {
-    el.style.display = isLiman ? '' : 'none';
+  canEditIK    = isAdmin || rol === 'ik_admin' || isGM || isKS || isMudur;
+  canEditLiman = false; // Liman gizli
+
+  // Liman: tamamen gizli
+  document.querySelectorAll('.nav-liman').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.dash-liman').forEach(el => el.style.display = 'none');
+
+  // İK tam accordion (Personel + İzin + Vekalet): admin, ik_admin, GM
+  document.querySelectorAll('.nav-ik-full').forEach(el => {
+    el.style.display = isIKFull ? '' : 'none';
   });
-  document.querySelectorAll('.nav-ik').forEach(el => {
-    el.style.display = isIK || isLimanAdmin || isKS || isMudur || isGM || isYK ? '' : 'none';
+
+  // İzin tek buton: KS, müdür, YK (İK full görenler bunu görmez)
+  document.querySelectorAll('.nav-izin-only').forEach(el => {
+    el.style.display = isIzinOnly ? '' : 'none';
   });
-  const canSA = isLimanAdmin || isIK || isGM || isMudur;
+
+  // Satın Alma: admin, ik_admin, GM
+  const canSA = isAdmin || isIK || isGM;
   document.querySelectorAll('.nav-sa').forEach(el => {
     el.style.display = canSA ? '' : 'none';
   });
+
+  // PDKS: admin, ik_admin
   const canPDKS = isAdmin || isIK;
   document.querySelectorAll('.nav-pdks').forEach(el => {
     el.style.display = canPDKS ? '' : 'none';
   });
+
+  // Ayarlar: admin, ik_admin, GM
+  const canAyarlar = isAdmin || isIK || isGM;
   document.querySelectorAll('.nav-ayarlar').forEach(el => {
-    el.style.display = canPDKS ? '' : 'none';
+    el.style.display = canAyarlar ? '' : 'none';
   });
-  // Unvan tabanlı erişim loadYoneticiUnvanlar() sonrası updateNavSA() ile de çalışır
-  document.querySelectorAll('.dash-liman').forEach(el => {
-    el.style.display = isLiman ? '' : 'none';
-  });
+
+  // Dashboard widget'ları
   document.querySelectorAll('.dash-ik').forEach(el => {
-    el.style.display = isIK || isLimanAdmin || isGM || isYK || isMudur ? '' : 'none';
+    el.style.display = isIKFull || isIzinOnly ? '' : 'none';
   });
 
   const subtitle = document.getElementById('sb-subtitle');
   const brand    = document.getElementById('sb-brand');
-  if (isIK && !isLimanAdmin) {
-    if (brand)    brand.textContent    = 'MUTTAŞ İK';
-    if (subtitle) subtitle.textContent = 'İnsan Kaynakları Paneli';
-    document.title = 'Muttaş İK Paneli';
-  } else if (isLimanAdmin) {
-    if (brand)    brand.textContent    = 'MUTTAŞ';
-    if (subtitle) subtitle.textContent = 'Yönetim Paneli';
-    document.title = 'Muttaş Yönetim Paneli';
-  } else {
-    if (brand)    brand.textContent    = 'MUTTAŞ';
-    if (subtitle) subtitle.textContent = 'İnsan Kaynakları Yönetim Sistemi';
-    document.title = 'MUTTAŞ İK';
-  }
+  if (brand)    brand.textContent    = 'MUTTAŞ İK';
+  if (subtitle) subtitle.textContent = 'İnsan Kaynakları Yönetim Sistemi';
+  document.title = 'MUTTAŞ İK';
 
   const btnPersonelEkle = document.getElementById('btn-personel-ekle');
-  if (btnPersonelEkle) btnPersonelEkle.style.display = canEditIK ? '' : 'none';
+  if (btnPersonelEkle) btnPersonelEkle.style.display = isIKFull ? '' : 'none';
 
   const btnIzinEkle = document.getElementById('btn-izin-ekle');
   if (btnIzinEkle) btnIzinEkle.style.display = canEditIK ? '' : 'none';
@@ -4133,11 +4117,11 @@ function applyRoleUI(rol) {
   badge.textContent  = badgeLabels[rol] || 'Görevli';
   badge.className    = 'badge ' + (isAdmin || isGM ? 'badge-admin' : 'badge-user');
 
-  if (isAdmin || isGM) {
+  if (isAdmin) {
     document.getElementById('admin-section').style.display = 'block';
   }
-  if (isAdmin) {
-    document.getElementById('liman-filter').classList.add('visible');
+  if (isIKFull) {
+    document.getElementById('izin-log-section').style.display = 'block';
   }
 
   if (currentLiman && !isAdmin) {
@@ -4147,6 +4131,7 @@ function applyRoleUI(rol) {
 
   updateTopbar('dashboard');
   setTimeout(loadTatillerData, 600);
+  loadYkBvData();
 })();
 
 const DASH_WIDGET_DEFS = [
@@ -6706,9 +6691,12 @@ async function loadPersonel(page) {
   const tbody = document.getElementById('personel-tbody');
   tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:var(--text-3)">Yükleniyor...</td></tr>';
 
-  const res = await fetch('/personel?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
-  if (!res.ok) return;
-  const data = await res.json();
+  let res, data;
+  try {
+    res = await fetch('/personel?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
+    if (!res.ok) return;
+    data = await res.json();
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#dc2626">Bağlantı hatası</td></tr>'; return; }
 
   if (!data.veri.length) {
     tbody.innerHTML = '<tr><td colspan="10"><div style="text-align:center;padding:40px;color:var(--text-3)"><svg width="40" height="40" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><p style="margin-top:8px">Personel bulunamadı</p></div></td></tr>';
@@ -6734,15 +6722,15 @@ async function loadPersonel(page) {
       <td>
         <div class="prs-name-cell">
           <span class="prs-avatar" style="background:${avColor}">${initials}</span>
-          <span class="prs-name-link" onclick="openPersonelDetay(${p.id})">${p.ad_soyad}</span>
+          <span class="prs-name-link" onclick="openPersonelDetay(${p.id})">${escHtml(p.ad_soyad)}</span>
         </div>
       </td>
-      <td>${p.bolum || '—'}</td>
-      <td>${p.unvan || '—'}</td>
-      <td>${[p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ') || '—'}</td>
+      <td>${escHtml(p.bolum) || '—'}</td>
+      <td>${escHtml(p.unvan) || '—'}</td>
+      <td>${escHtml([p.ilce, p.hizmet_noktasi].filter(Boolean).join(' / ')) || '—'}</td>
       <td>${fmt(p.ise_giris)}</td>
       <td><span style="font-weight:600;color:${(p.kalan_izin||0) <= 5 ? '#dc2626' : (p.kalan_izin||0) <= 14 ? '#d97706' : '#16a34a'}">${p.kalan_izin||0}</span> <span style="font-size:11px;color:var(--text-3)">/ ${p.toplam_izin_hak||0}</span></td>
-      <td>${p.telefon || '—'}</td>
+      <td>${escHtml(p.telefon) || '—'}</td>
       <td>${aktifBadge}</td>
       <td>
         <div style="display:flex;gap:4px">
@@ -7903,10 +7891,12 @@ async function personelPasif(id) {
 
 function izinleriGor(personelId, adSoyad) {
   navigate('izinler', null);
-  setTimeout(() => {
-    document.getElementById('iz-q').value = adSoyad;
-    loadIzinler(1);
-  }, 200);
+  const trySet = () => {
+    const el = document.getElementById('iz-q');
+    if (el) { el.value = adSoyad; loadIzinler(1); }
+    else { requestAnimationFrame(trySet); }
+  };
+  requestAnimationFrame(trySet);
 }
 
 // ══════════════════════════════════════════════
@@ -7947,8 +7937,9 @@ function canApprove(durum) {
 }
 
 function canKsApprove(iz) {
-  if (!currentUser || currentUser.rol !== 'koordinasyon_sorumlusu') return false;
-  return !iz.ks_onay_tarihi;
+  if (!currentUser) return false;
+  if (currentUser.rol !== 'koordinasyon_sorumlusu' && currentUser.rol !== 'mudur') return false;
+  return iz.durum === 'beklemede' && !iz.ks_onay_tarihi;
 }
 
 function canDonus(iz) {
@@ -8003,9 +7994,12 @@ async function loadIzinler(page) {
   const tbody = document.getElementById('izinler-tbody');
   tbody.innerHTML = '<tr><td colspan="10"><div class="iz-empty"><svg width="32" height="32" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg><p>Yükleniyor...</p></div></td></tr>';
 
-  const res = await fetch('/izinler?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
-  if (!res.ok) return;
-  const data = await res.json();
+  let res, data;
+  try {
+    res = await fetch('/izinler?' + params, { headers: { Authorization: 'Bearer ' + getToken() } });
+    if (!res.ok) return;
+    data = await res.json();
+  } catch(e) { tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:32px;color:#dc2626">Bağlantı hatası</td></tr>'; return; }
 
   if (!data.veri.length) {
     tbody.innerHTML = '<tr><td colspan="10"><div class="iz-empty"><svg width="40" height="40" fill="none" stroke="var(--text-3)" stroke-width="1.5" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M8 2v4M16 2v4"/></svg><p>İzin kaydı bulunamadı</p></div></td></tr>';
@@ -8033,8 +8027,8 @@ async function loadIzinler(page) {
 
     return `<tr>
       <td style="color:var(--text-3);font-size:11px">${(izPage-1)*25+idx+1}</td>
-      <td><strong style="font-weight:600">${iz.ad_soyad || '—'}</strong></td>
-      <td style="font-size:12px;color:var(--text-2)">${[iz.bolum, iz.unvan].filter(Boolean).join(' / ') || '—'}</td>
+      <td><strong style="font-weight:600">${escHtml(iz.ad_soyad) || '—'}</strong></td>
+      <td style="font-size:12px;color:var(--text-2)">${escHtml([iz.bolum, iz.unvan].filter(Boolean).join(' / ')) || '—'}</td>
       <td><span class="iz-tur-badge" style="${TUR_BADGE_STYLE[iz.izin_turu] || ''}">${turLabel}</span></td>
       <td style="font-size:12px">${fmt(iz.baslangic)}</td>
       <td style="font-size:12px">${fmt(iz.bitis)}</td>
@@ -9179,9 +9173,23 @@ async function ksOnayVer(id) {
   }
 }
 
-const YK_BASKAN_VEKILI_PERSONEL = [112, 25, 434, 222, 285, 3];
-const YK_BASKAN_VEKILI_AD    = 'Süleyman Özdemir';
-const YK_BASKAN_VEKILI_UNVAN = 'Yönetim Kurulu Başkan Yardımcısı';
+let YK_BASKAN_VEKILI_PERSONEL = [];
+let YK_BASKAN_VEKILI_AD    = '';
+let YK_BASKAN_VEKILI_UNVAN = 'Yönetim Kurulu Başkan Yardımcısı';
+
+async function loadYkBvData() {
+  try {
+    const res = await fetch('/ayarlar/yk-baskan-vekili', { headers: { Authorization: 'Bearer ' + getToken() } });
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length) {
+        YK_BASKAN_VEKILI_PERSONEL = data.map(d => d.personel_id).filter(Boolean);
+        YK_BASKAN_VEKILI_AD = data[0].ad_soyad || '';
+        YK_BASKAN_VEKILI_UNVAN = data[0].unvan || 'Yönetim Kurulu Başkan Yardımcısı';
+      }
+    }
+  } catch(e) {}
+}
 
 async function izinYazdir(id) {
   const res = await fetch('/izinler/' + id, { headers: { Authorization: 'Bearer ' + getToken() } });
@@ -9773,9 +9781,13 @@ async function rolGuncelle(uid, rol) {
     headers: { ...authHeaders(), 'Content-Type': 'application/json' },
     body: JSON.stringify({ rol }),
   });
-  if (!res.ok) {
+  if (res.ok) {
+    const data = await res.json().catch(() => ({}));
+    const msg = data.sifre_sifirlandi ? 'Rol güncellendi. Şifre sıfırlandı.' : 'Rol güncellendi.';
+    showToast(msg, 'success');
+  } else {
     const e = await res.json().catch(() => ({}));
-    alert(e.detail || 'Rol güncellenemedi.');
+    showToast(e.detail || 'Rol güncellenemedi.', 'error');
     loadKullanicilar();
   }
 }
@@ -9899,13 +9911,13 @@ async function loadIzinLog(page) {
       return '<tr style="border-bottom:1px solid var(--border)">' +
         '<td style="padding:9px 12px;white-space:nowrap;font-size:12px">' + (r.islem_zamani||'-') + '</td>' +
         '<td style="padding:9px 12px;text-align:center;font-weight:600;color:var(--accent)">#' + r.izin_id + '</td>' +
-        '<td style="padding:9px 12px;font-weight:500">' + (r.personel_ad||'-') + '</td>' +
-        '<td style="padding:9px 12px">' + (r.aciklama||'-') + '</td>' +
-        '<td style="padding:9px 12px;font-size:12px">' + (LOG_DURUM_LABEL[r.onceki_durum]||r.onceki_durum||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-weight:500">' + escHtml(r.personel_ad||'-') + '</td>' +
+        '<td style="padding:9px 12px">' + escHtml(r.aciklama||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:12px">' + (LOG_DURUM_LABEL[r.onceki_durum]||escHtml(r.onceki_durum)||'-') + '</td>' +
         '<td style="padding:9px 12px;font-size:12px">' + durumBadge + '</td>' +
-        '<td style="padding:9px 12px;font-weight:500">' + (r.islem_yapan_ad||'-') + '</td>' +
-        '<td style="padding:9px 12px;font-size:12px">' + (LOG_ROL_LABEL[r.islem_yapan_rol]||r.islem_yapan_rol||'-') + '</td>' +
-        '<td style="padding:9px 12px;font-size:11px;color:var(--text-3)">' + (r.ip_adresi||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-weight:500">' + escHtml(r.islem_yapan_ad||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:12px">' + (LOG_ROL_LABEL[r.islem_yapan_rol]||escHtml(r.islem_yapan_rol)||'-') + '</td>' +
+        '<td style="padding:9px 12px;font-size:11px;color:var(--text-3)">' + escHtml(r.ip_adresi||'-') + '</td>' +
         '</tr>';
     }).join('');
   }

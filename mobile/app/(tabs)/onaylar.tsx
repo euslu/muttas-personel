@@ -45,12 +45,13 @@ export default function Onaylar() {
       case "ik_admin":
       case "admin": return "ik_onayladi";
       case "genel_mudur": return "mudur_onayladi";
-      case "yk_uyesi": return "onaylandi";
-      case "koordinasyon_sorumlusu":
-      case "mudur": return "ik_onayladi";
+      case "yk_uyesi":
+      case "yk_baskani": return "onaylandi";
       default: return "ik_onayladi";
     }
   }
+
+  const canApproveViaOnay = ["admin", "ik_admin", "genel_mudur", "yk_uyesi", "yk_baskani"].includes(user?.rol ?? "");
 
   const { mutate: onayla, isPending: onayPending } = useMutation({
     mutationFn: (id: number) =>
@@ -176,6 +177,7 @@ export default function Onaylar() {
                 </View>
               ) : null}
 
+              {canApproveViaOnay && (
               <View style={styles.actionRow}>
                 <TouchableOpacity
                   style={styles.redBtn}
@@ -199,6 +201,7 @@ export default function Onaylar() {
                   )}
                 </TouchableOpacity>
               </View>
+              )}
             </ScrollView>
           </View>
         )}

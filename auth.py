@@ -75,6 +75,9 @@ async def register(body: RegisterRequest, token: dict = Depends(require_admin)):
             detail=f"Geçersiz rol. İzin verilen roller: {sorted(IZIN_VERILEN_ROLLER)}",
         )
 
+    if len(body.password) < 8:
+        raise HTTPException(status_code=400, detail="Şifre en az 8 karakter olmalıdır.")
+
     pool = await get_pool()
     async with pool.acquire() as conn:
         existing = await conn.fetchrow(
@@ -141,7 +144,7 @@ async def update_rol(uid: int, body: RolGuncelle, token: dict = Depends(require_
                 uid, body.rol, new_hash,
             )
         else:
-            await conn.execute("UPDATE kullanicilar SET rol = $2 WHERE id = $1", uid, body.rol)
+            await conn.execute("UPDATE kullanicilar SET rol = $2, sifre_degistir_gerekli = FALSE WHERE id = $1", uid, body.rol)
 
     sifre_sifirlandi = body.rol in SIFRE_SIFIRLAMA_ROLLER
     return {"ok": True, "sifre_sifirlandi": sifre_sifirlandi}
@@ -169,7 +172,7 @@ async def login(body: LoginRequest):
             body.email,
         )
 
-    if not row or not verify_password(body.password, row["password_hash"]):
+    if not row or not row["password_hash"] or not verify_password(body.password, row["password_hash"]):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="E-posta veya şifre hatalı.",
@@ -199,8 +202,10 @@ async def login(body: LoginRequest):
 
 @router.put("/sifre-degistir")
 async def sifre_degistir(body: SifreDegistir, token: dict = Depends(decode_token)):
-    if len(body.yeni_sifre) < 6:
-        raise HTTPException(status_code=400, detail="Yeni şifre en az 6 karakter olmalıdır.")
+    if len(body.yeni_sifre) < 8:
+        raise HTTPException(status_code=400, detail="Yeni şifre en az 8 karakter olmalıdır.")
+    if body.yeni_sifre == body.mevcut_sifre:
+        raise HTTPException(status_code=400, detail="Yeni şifre mevcut şifreyle aynı olamaz.")
 
     user_id = int(token["sub"])
     pool = await get_pool()

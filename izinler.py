@@ -239,7 +239,7 @@ async def saatlik_izin_ozet(personel_id: int, token: dict = Depends(decode_token
             FROM izinler
             WHERE personel_id = $1
               AND izin_turu = 'saatlik'
-              AND durum NOT IN ('reddedildi')
+              AND durum NOT IN ('reddedildi', 'beklemede')
         """, personel_id)
         return {
             "sayi":        int(row["sayi"]),
@@ -373,7 +373,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
     async with pool.acquire() as conn:
         row = await conn.fetchrow("""
             SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi,
-                   i.baslangic, i.bitis, i.gun_sayisi,
+                   i.baslangic, i.bitis, i.gun_sayisi, i.izin_turu,
                    p.ad_soyad, p.telefon
             FROM izinler i JOIN personel p ON p.id = i.personel_id
             WHERE i.id = $1
@@ -412,27 +412,43 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
 
         if body.durum == "ik_onayladi":
             extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"
-            extra_vals = [today, onaylayan_ad, now_str]
+            extra_vals = [today, onaylayan_ad, body.imza or now_str]
         elif body.durum == "mudur_onayladi":
             extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5, mudur_onaylayan = $6"
-            extra_vals = [today, now_str, onaylayan_ad]
+            extra_vals = [today, body.imza or now_str, onaylayan_ad]
         elif body.durum == "onaylandi":
             extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5, yk_onaylayan = $6"
-            extra_vals = [today, now_str, onaylayan_ad]
+            extra_vals = [today, body.imza or now_str, onaylayan_ad]
         elif body.durum == "tamamlandi":
             extra_sets = ", gorev_baslama = $4"
             extra_vals = [today]
 
         base_params = [iid, body.durum, body.notlar]
-        await conn.execute(
-            f"UPDATE izinler SET durum = $2, notlar = COALESCE($3, notlar){extra_sets} WHERE id = $1",
-            *base_params, *extra_vals,
-        )
 
-        ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
-        personel_id = row["personel_id"]
-        personel_ad = row["ad_soyad"]
-        await izin_log_yaz(conn, iid, personel_id, personel_ad, mevcut_durum, body.durum, token, ip)
+        # ── Transaction: durum + bakiye + log atomik ──────────────────────
+        async with conn.transaction():
+            await conn.execute(
+                f"UPDATE izinler SET durum = $2, notlar = COALESCE($3, notlar){extra_sets} WHERE id = $1",
+                *base_params, *extra_vals,
+            )
+
+            bakiye_dusulecek = False
+            if body.durum == "onaylandi":
+                bakiye_dusulecek = True
+            elif body.durum == "tamamlandi" and mevcut_durum == "mudur_onayladi":
+                bakiye_dusulecek = True
+
+            if bakiye_dusulecek and row["gun_sayisi"] and row["izin_turu"] != "saatlik":
+                await conn.execute(
+                    "UPDATE personel SET kalan_izin = COALESCE(kalan_izin, 0) - $1 WHERE id = $2",
+                    row["gun_sayisi"], row["personel_id"]
+                )
+
+            ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
+            personel_id = row["personel_id"]
+            personel_ad = row["ad_soyad"]
+            await izin_log_yaz(conn, iid, personel_id, personel_ad, mevcut_durum, body.durum, token, ip)
+        # ──────────────────────────────────────────────────────────────────
 
         # ── SMS Bildirimleri ────────────────────────────────────────────────
         telefon = row.get("telefon") or ""
@@ -479,7 +495,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
 
 
 @router.put("/{iid}/ks-onayla")
-async def ks_onayla_izin(iid: int, token: dict = Depends(decode_token)):
+async def ks_onayla_izin(iid: int, request: Request, token: dict = Depends(decode_token)):
     if token.get("rol") not in {"koordinasyon_sorumlusu", "mudur"}:
         raise HTTPException(status_code=403, detail="Bu işlem sadece Koordinasyon Sorumlusu veya Müdür tarafından yapılabilir.")
 
@@ -491,19 +507,26 @@ async def ks_onayla_izin(iid: int, token: dict = Depends(decode_token)):
         )
         ks_adi = ks_row["ad_soyad"] if ks_row else (token.get("ad", "") + " " + token.get("soyad", "")).strip()
 
-        row = await conn.fetchrow("SELECT id, ks_onaylayan FROM izinler WHERE id = $1", iid)
+        row = await conn.fetchrow("SELECT id, durum, ks_onaylayan, personel_id FROM izinler WHERE id = $1", iid)
         if not row:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+        if row["durum"] != "beklemede":
+            raise HTTPException(status_code=400, detail="KS onayı yalnızca 'Beklemede' durumundaki izinlere verilebilir.")
         existing_ks = (row["ks_onaylayan"] or "").strip()
         if existing_ks and existing_ks.upper() != ks_adi.upper():
             raise HTTPException(status_code=403, detail="Bu izin size atanmamış.")
 
         now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
         today = date.today()
-        await conn.execute(
-            "UPDATE izinler SET ks_onay_tarihi = $2, ks_imza = $3, ks_onaylayan = $4 WHERE id = $1",
-            iid, today, now_str, ks_adi
-        )
+        async with conn.transaction():
+            await conn.execute(
+                "UPDATE izinler SET ks_onay_tarihi = $2, ks_imza = $3, ks_onaylayan = $4 WHERE id = $1",
+                iid, today, now_str, ks_adi
+            )
+            prs = await conn.fetchrow("SELECT ad_soyad FROM personel WHERE id = $1", row["personel_id"])
+            ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
+            await izin_log_yaz(conn, iid, row["personel_id"], prs["ad_soyad"] if prs else "",
+                row["durum"], "ks_onayladi", token, ip, f"Koordinasyon Sorumlusu onayı: {ks_adi}")
     return {"ok": True}
 
 
@@ -526,7 +549,9 @@ async def upload_izin_rapor(
                 detail="Rapor yalnızca İK imzası tamamlanmış izinlere yüklenebilir.",
             )
 
-        ext = Path(dosya.filename).suffix or ".pdf"
+        ext = Path(dosya.filename).suffix.lower() or ".pdf"
+        if ext not in {".pdf", ".jpg", ".jpeg", ".png"}:
+            raise HTTPException(status_code=400, detail="Sadece PDF, JPG, PNG dosyaları kabul edilir.")
         unique_name = f"izin_{iid}_{uuid.uuid4().hex}{ext}"
         dest = RAPOR_DIR / unique_name
         with dest.open("wb") as f:
@@ -559,12 +584,12 @@ async def delete_izin_rapor(iid: int, token: dict = Depends(require_ik_editor)):
 
 
 @router.delete("/{iid}")
-async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
+async def delete_izin(iid: int, request: Request, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     rol = token.get("rol", "")
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
-            "SELECT id, durum, rapor_url FROM izinler WHERE id = $1", iid
+            "SELECT id, durum, rapor_url, gun_sayisi, personel_id, izin_turu FROM izinler WHERE id = $1", iid
         )
         if not row:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
@@ -589,7 +614,24 @@ async def delete_izin(iid: int, token: dict = Depends(require_ik_editor)):
             p = Path("." + row["rapor_url"])
             p.unlink(missing_ok=True)
 
-        await conn.execute("DELETE FROM izinler WHERE id = $1", iid)
+        # Transaction: bakiye + log + silme atomik
+        async with conn.transaction():
+            # Onaylanmış/tamamlanmış izin siliniyorsa bakiye iade et (saatlik hariç)
+            if row["durum"] in ("onaylandi", "tamamlandi") and row["gun_sayisi"] and row["izin_turu"] != "saatlik":
+                await conn.execute(
+                    "UPDATE personel SET kalan_izin = COALESCE(kalan_izin, 0) + $1 WHERE id = $2",
+                    row["gun_sayisi"], row["personel_id"]
+                )
+
+            # Silme logu
+            prs = await conn.fetchrow("SELECT ad_soyad FROM personel WHERE id = $1", row["personel_id"])
+            personel_ad = prs["ad_soyad"] if prs else ""
+            ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
+            await izin_log_yaz(conn, iid, row["personel_id"], personel_ad,
+                row["durum"], "silindi", token, ip,
+                f"İzin kaydı silindi (önceki durum: {row['durum']})")
+
+            await conn.execute("DELETE FROM izinler WHERE id = $1", iid)
         return {"ok": True}
 
 
@@ -637,10 +679,12 @@ async def izin_log_listele(
 
         total = await conn.fetchval(f"SELECT COUNT(*) FROM izin_log l {w}", *vals)
         offset = (page - 1) * per_page
+        vals.append(per_page)
+        vals.append(offset)
         rows = await conn.fetch(f"""
             SELECT l.* FROM izin_log l {w}
             ORDER BY l.islem_zamani DESC
-            LIMIT {per_page} OFFSET {offset}
+            LIMIT ${idx} OFFSET ${idx + 1}
         """, *vals)
 
         def fmt_ts(ts):

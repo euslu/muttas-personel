@@ -50,11 +50,15 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         }
         self.global_limit = {"max": 120, "window": 60}
 
+    TRUSTED_PROXIES = {"127.0.0.1", "::1"}
+
     def _get_client_ip(self, request):
-        forwarded = request.headers.get("x-forwarded-for")
-        if forwarded:
-            return forwarded.split(",")[0].strip()
-        return request.client.host if request.client else "unknown"
+        client_ip = request.client.host if request.client else "unknown"
+        if client_ip in self.TRUSTED_PROXIES:
+            forwarded = request.headers.get("x-forwarded-for")
+            if forwarded:
+                return forwarded.split(",")[0].strip()
+        return client_ip
 
     def _clean_old(self, key, window):
         now = time.time()
@@ -454,11 +458,6 @@ app.add_middleware(RateLimitMiddleware)
 ALLOWED_ORIGINS = [
     "https://ik.muttas.com.tr",
     "http://ik.muttas.com.tr",
-    "https://muttas-ik.replit.app",
-    "http://209.38.219.210",
-    "http://209.38.219.210:8000",
-    "http://localhost:5000",
-    "http://localhost:8000",
 ]
 
 app.add_middleware(

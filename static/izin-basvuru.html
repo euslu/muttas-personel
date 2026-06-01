@@ -456,14 +456,7 @@
     <div class="form-field">
       <label>İzin Türü *</label>
       <select id="f-izin-tur" onchange="izinTuruDegisti()">
-        <option value="yillik">Yıllık İzin</option>
-        <option value="ucretsiz">Ücretsiz İzin</option>
-        <option value="mazeret">Mazeret İzni</option>
-        <option value="hastalik">Hastalık İzni</option>
-        <option value="dogum">Doğum İzni</option>
-        <option value="olum">Ölüm İzni</option>
-        <option value="saatlik">Saatlik İzin</option>
-        <option value="diger">Diğer</option>
+        <option value="">— Yükleniyor... —</option>
       </select>
     </div>
 
@@ -588,6 +581,7 @@ let sigCanvas     = null;
 let smsTimerInterval = null;
 let YONETICI_UNVANLAR_PUBLIC = [];
 let RESMI_TATILLER_PUBLIC    = [];
+let CALISMA_GUNLERI_MAP      = {};  // { "UNVAN": 5 veya 6 }
 
 // ── STEP NAVIGATION ───────────────────────────────────────────
 function setStep(n) {
@@ -815,6 +809,13 @@ function resmiTatilSetPublic(bas, bit) {
   return set;
 }
 
+function getPersonelCalismaGunu() {
+  // Personelin unvanına göre 5 veya 6 gün çalışma
+  const u = (personelUnvan || '').toUpperCase().trim();
+  if (u && CALISMA_GUNLERI_MAP[u]) return CALISMA_GUNLERI_MAP[u];
+  return 5; // varsayılan
+}
+
 function gunHesapla() {
   const tur = document.getElementById('f-izin-tur').value;
   const bas = document.getElementById('f-bas').value;
@@ -829,13 +830,21 @@ function gunHesapla() {
   if (!bas || !bit || bit < bas) { wrap.style.display = 'none'; return; }
   const d1 = new Date(bas), d2 = new Date(bit);
   const tatilSet = resmiTatilSetPublic(bas, bit);
+  const calismaGunu = getPersonelCalismaGunu();
   let gun = 0;
   for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
     const s = d.toISOString().split('T')[0];
     if (tatilSet.has(s)) continue;
     const g = d.getDay();
-    if (tur === 'ucretsiz') gun++;
-    else if (g !== 0 && g !== 6) gun++;
+    if (tur === 'ucretsiz') {
+      gun++;
+    } else if (calismaGunu === 6) {
+      // 6 gün: sadece Pazar hariç
+      if (g !== 0) gun++;
+    } else {
+      // 5 gün: Cumartesi ve Pazar hariç
+      if (g !== 0 && g !== 6) gun++;
+    }
   }
   const etiket = tur === 'ucretsiz' ? ' takvim günü' : ' iş günü';
   document.getElementById('gun-badge-text').textContent = gun + etiket;
@@ -995,12 +1004,14 @@ async function basvuruGonder() {
   const izTur = document.getElementById('f-izin-tur').value;
   const d1 = new Date(bas), d2 = new Date(bit);
   const tatilSet2 = resmiTatilSetPublic(bas, bit);
+  const calismaGunu2 = getPersonelCalismaGunu();
   let gun = 0;
   for (let d = new Date(d1); d <= d2; d.setDate(d.getDate() + 1)) {
     const s = d.toISOString().split('T')[0];
     if (tatilSet2.has(s)) continue;
     const g = d.getDay();
     if (izTur === 'ucretsiz') gun++;
+    else if (calismaGunu2 === 6) { if (g !== 0) gun++; }
     else if (g !== 0 && g !== 6) gun++;
   }
 
@@ -1065,15 +1076,38 @@ function yeniBasvuru() {
 }
 
 // ── INIT ──────────────────────────────────────────────────────
+async function loadIzinTurleriSelect() {
+  const sel = document.getElementById('f-izin-tur');
+  try {
+    const r = await fetch('/public/izin-turleri');
+    if (r.ok) {
+      const liste = await r.json();
+      sel.innerHTML = '';
+      liste.forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t.kod;
+        opt.textContent = t.ad;
+        sel.appendChild(opt);
+      });
+    }
+  } catch(e) {
+    // Fallback: en azından yıllık izin seçeneği olsun
+    sel.innerHTML = '<option value="yillik">Yıllık İzin</option>';
+  }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
   setStep(1);
   const today = new Date().toISOString().split('T')[0];
   document.getElementById('f-bas').min = today;
   document.getElementById('f-bit').min = today;
-  try {
-    const r = await fetch('/public/resmi-tatiller');
-    if (r.ok) RESMI_TATILLER_PUBLIC = await r.json();
-  } catch(e) {}
+
+  // Paralel yükle: resmi tatiller, izin türleri, çalışma günleri
+  await Promise.all([
+    fetch('/public/resmi-tatiller').then(r => r.ok ? r.json() : []).then(d => RESMI_TATILLER_PUBLIC = d).catch(() => {}),
+    loadIzinTurleriSelect(),
+    fetch('/public/calisma-gunleri').then(r => r.ok ? r.json() : {}).then(d => CALISMA_GUNLERI_MAP = d).catch(() => {}),
+  ]);
 });
 </script>
 </body>

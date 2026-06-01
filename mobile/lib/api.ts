@@ -127,6 +127,7 @@ export type IzinTuru = {
 
 export const DURUM_RENK: Record<string, string> = {
   beklemede: "#f59e0b",
+  ks_onayladi: "#06b6d4",
   ik_onayladi: "#3b82f6",
   mudur_onayladi: "#8b5cf6",
   onaylandi: "#10b981",
@@ -136,6 +137,7 @@ export const DURUM_RENK: Record<string, string> = {
 
 export const DURUM_ETIKET: Record<string, string> = {
   beklemede: "Beklemede",
+  ks_onayladi: "KS Onayladı",
   ik_onayladi: "İK Onayladı",
   mudur_onayladi: "Müdür Onayladı",
   onaylandi: "Onaylandı",
