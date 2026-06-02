@@ -1,13 +1,15 @@
+import os
 import re
 from datetime import datetime, date
 from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, UploadFile, File, Header
 from db import get_pool
 from auth import decode_token
+from permissions import require_ik_editor
 
 router = APIRouter(prefix="/pdks", tags=["pdks"])
 
-PDKS_API_KEY = "MuttasPDKS2026!"
+PDKS_API_KEY = os.environ.get("PDKS_API_KEY", "MuttasPDKS2026!")
 
 TR500_PATTERN = re.compile(
     r"(\d+),(\d+),(\d+)\s+(\d{4}/\d{2}/\d{2})\s+(\d{2}:\d{2}:\d{2})"
@@ -87,7 +89,7 @@ async def pdks_hareketler(
     personel_no: Optional[str] = None,
     cihaz_no: Optional[int] = None,
     limit: int = 200,
-    current_user=Depends(decode_token),
+    current_user=Depends(require_ik_editor),
 ):
     pool = await get_pool()
     kosullar = []

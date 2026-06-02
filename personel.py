@@ -12,7 +12,7 @@ from pydantic import BaseModel
 from jose import jwt, JWTError
 
 from db import get_pool
-from permissions import decode_token, require_ik_editor
+from permissions import decode_token, require_ik_editor, IK_EDITORS
 
 UPLOAD_DIR = Path("uploads/personel")
 UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
@@ -288,7 +288,7 @@ async def delete_personel(pid: int, token: dict = Depends(require_ik_editor)):
 # ── EVRAK ENDPOINTS ──────────────────────────────────────────
 
 @router.get("/{pid}/evraklar")
-async def list_evraklar(pid: int, token: dict = Depends(decode_token)):
+async def list_evraklar(pid: int, token: dict = Depends(require_ik_editor)):
     pool = await get_pool()
     async with pool.acquire() as conn:
         rows = await conn.fetch(
@@ -323,20 +323,35 @@ async def upload_evrak(
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
 
     MAX_EVRAK_BOYUT = 10 * 1024 * 1024  # 10 MB
+    EVRAK_UZANTILAR = {".pdf", ".jpg", ".jpeg", ".png", ".webp", ".doc", ".docx", ".xls", ".xlsx"}
+
+    ext = Path(dosya.filename).suffix.lower()
+    if ext not in EVRAK_UZANTILAR:
+        raise HTTPException(status_code=400, detail=f"Kabul edilen dosya türleri: {', '.join(sorted(EVRAK_UZANTILAR))}")
+
+    # Boyut kontrolü: önce Content-Length header'ından kontrol et
+    if dosya.size and dosya.size > MAX_EVRAK_BOYUT:
+        raise HTTPException(status_code=400, detail="Dosya boyutu 10 MB'ı geçemez.")
+
     dest_dir = UPLOAD_DIR / str(pid)
     dest_dir.mkdir(parents=True, exist_ok=True)
 
-    ext      = Path(dosya.filename).suffix
-    unique   = f"{uuid.uuid4().hex}{ext}"
-    dest     = dest_dir / unique
+    unique = f"{uuid.uuid4().hex}{ext}"
+    dest = dest_dir / unique
 
+    # Parça parça oku, boyut aşılırsa dosyayı sil
+    boyut = 0
     with dest.open("wb") as f:
-        shutil.copyfileobj(dosya.file, f)
-
-    boyut = dest.stat().st_size
-    if boyut > MAX_EVRAK_BOYUT:
-        dest.unlink(missing_ok=True)
-        raise HTTPException(status_code=400, detail="Dosya boyutu 10 MB'ı geçemez.")
+        while True:
+            chunk = await dosya.read(1024 * 64)
+            if not chunk:
+                break
+            boyut += len(chunk)
+            if boyut > MAX_EVRAK_BOYUT:
+                f.close()
+                dest.unlink(missing_ok=True)
+                raise HTTPException(status_code=400, detail="Dosya boyutu 10 MB'ı geçemez.")
+            f.write(chunk)
 
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
@@ -361,6 +376,8 @@ async def indir_evrak(eid: int, token: Optional[str] = Query(None),
         payload = jwt.decode(t, JWT_SECRET, algorithms=[JWT_ALGORITHM])
         if not payload.get("sub"):
             raise HTTPException(status_code=401, detail="Geçersiz token.")
+        if payload.get("rol") not in IK_EDITORS:
+            raise HTTPException(status_code=403, detail="Bu işlem için yetkiniz yok.")
     except JWTError:
         raise HTTPException(status_code=401, detail="Geçersiz token.")
 

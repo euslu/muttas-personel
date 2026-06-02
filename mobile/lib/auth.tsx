@@ -54,6 +54,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       password: sifre,
     }, false);
 
+    if (data.sifre_degistir_gerekli) {
+      throw new Error("Şifrenizi değiştirmeniz gerekmektedir. Lütfen web panelinden (ik.muttas.com.tr) giriş yaparak şifrenizi güncelleyin.");
+    }
+
     const authUser: AuthUser = {
       token: data.token,
       rol: data.kullanici.rol,

@@ -73,6 +73,7 @@ export const api = {
 
 export type LoginResponse = {
   token: string;
+  sifre_degistir_gerekli: boolean;
   kullanici: {
     id: number;
     ad: string;

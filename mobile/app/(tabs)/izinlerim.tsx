@@ -13,7 +13,8 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
-import { api, IzinItem, DURUM_ETIKET, DURUM_RENK, IZIN_TURU_ETIKET } from "@/lib/api";
+import { useAuth } from "@/lib/auth";
+import { api, IzinItem, PersonelBilgi, DURUM_ETIKET, DURUM_RENK, IZIN_TURU_ETIKET, isYonetici } from "@/lib/api";
 
 function formatTarih(tarih: string) {
   if (!tarih) return "";
@@ -36,16 +37,31 @@ const DURUM_FILTRE = [
 
 export default function Izinlerim() {
   const insets = useSafeAreaInsets();
+  const { user } = useAuth();
   const [secilenDurum, setSecilenDurum] = useState("");
   const [secilenIzin, setSecilenIzin] = useState<IzinItem | null>(null);
 
+  // Personel ID'yi bul (kendi izinlerini görmek için)
+  const { data: mePersonel } = useQuery<PersonelBilgi | null>({
+    queryKey: ["/personel/me/izinlerim", user?.tcKimlik],
+    queryFn: () =>
+      api.get<{ veri: PersonelBilgi[] }>("/personel", {
+        q: user?.tcKimlik,
+        per_page: 1,
+      }),
+    enabled: !!user?.tcKimlik,
+    select: (d: any) => d.veri?.[0] ?? null,
+  });
+
   const { data, isLoading, refetch } = useQuery({
-    queryKey: ["/izinler", secilenDurum],
+    queryKey: ["/izinler", secilenDurum, mePersonel?.id],
     queryFn: () =>
       api.get<{ veri: IzinItem[]; toplam: number }>("/izinler", {
         durum: secilenDurum || undefined,
+        personel_id: mePersonel?.id,
         per_page: 50,
       }),
+    enabled: !!mePersonel?.id,
     select: (d) => d.veri,
   });
 

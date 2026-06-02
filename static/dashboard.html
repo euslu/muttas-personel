@@ -3999,7 +3999,13 @@ function showToast(mesaj, tip = 'info', sure = 3500) {
 
   const el = document.createElement('div');
   el.className = `toast ${tip}`;
-  el.innerHTML = `<span class="toast-icon">${TOAST_ICONS[tip] || 'ℹ️'}</span><span>${mesaj}</span>`;
+  const iconSpan = document.createElement('span');
+  iconSpan.className = 'toast-icon';
+  iconSpan.textContent = TOAST_ICONS[tip] || 'ℹ️';
+  const msgSpan = document.createElement('span');
+  msgSpan.textContent = mesaj;
+  el.appendChild(iconSpan);
+  el.appendChild(msgSpan);
 
   container.appendChild(el);
 
@@ -6827,7 +6833,7 @@ function pdRenderPage() {
     ? '<span class="pd-badge pd-badge-aktif">Aktif</span>'
     : '<span class="pd-badge pd-badge-pasif">Pasif</span>';
   const photoContent = p.foto_url
-    ? '<img src="' + p.foto_url + '" alt="Profil">'
+    ? '<img src="' + escHtml(p.foto_url) + '" alt="Profil">'
     : pdGetInitials(p.ad_soyad);
 
   document.getElementById('pd-content').innerHTML = `
@@ -6840,16 +6846,16 @@ function pdRenderPage() {
         </label>
       </div>
       <div class="pd-info">
-        <div class="pd-name">${p.ad_soyad}</div>
-        <div class="pd-title">${[p.unvan, p.bolum].filter(Boolean).join(' — ') || 'Pozisyon belirtilmemiş'}</div>
+        <div class="pd-name">${escHtml(p.ad_soyad)}</div>
+        <div class="pd-title">${[p.unvan, p.bolum].filter(Boolean).map(s => escHtml(s)).join(' — ') || 'Pozisyon belirtilmemiş'}</div>
         <div class="pd-badges">
           ${aktifBadge}
-          ${p.cinsiyet ? '<span class="pd-badge pd-badge-info">' + p.cinsiyet + '</span>' : ''}
-          ${p.ogrenim ? '<span class="pd-badge pd-badge-info">' + p.ogrenim + '</span>' : ''}
+          ${p.cinsiyet ? '<span class="pd-badge pd-badge-info">' + escHtml(p.cinsiyet) + '</span>' : ''}
+          ${p.ogrenim ? '<span class="pd-badge pd-badge-info">' + escHtml(p.ogrenim) + '</span>' : ''}
         </div>
         <div class="pd-meta">
-          ${p.tc_kimlik ? '<span>TC: ' + p.tc_kimlik + '</span>' : ''}
-          ${p.telefon ? '<span>Tel: ' + p.telefon + '</span>' : ''}
+          ${p.tc_kimlik ? '<span>TC: ' + escHtml(p.tc_kimlik) + '</span>' : ''}
+          ${p.telefon ? '<span>Tel: ' + escHtml(p.telefon) + '</span>' : ''}
           ${p.ise_giris ? '<span>İşe Giriş: ' + pdFmt(p.ise_giris) + '</span>' : ''}
           ${p.ise_giris && pdKidem(p.ise_giris) ? '<span class="pd-badge pd-badge-info">Kıdem: ' + pdKidem(p.ise_giris) + '</span>' : ''}
         </div>

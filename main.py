@@ -281,6 +281,7 @@ ALTER TABLE izinler ADD COLUMN IF NOT EXISTS ik_imza TEXT;
 ALTER TABLE izinler ADD COLUMN IF NOT EXISTS mudur_imza TEXT;
 ALTER TABLE izinler ADD COLUMN IF NOT EXISTS yk_imza TEXT;
 ALTER TABLE izinler ADD COLUMN IF NOT EXISTS rapor_url TEXT;
+ALTER TABLE sms_kodlari ADD COLUMN IF NOT EXISTS verified_at TIMESTAMPTZ;
 
 CREATE TABLE IF NOT EXISTS satin_alma (
     id           SERIAL PRIMARY KEY,
@@ -378,7 +379,8 @@ CREATE TABLE IF NOT EXISTS sms_kodlari (
     attempts INT DEFAULT 0,
     verified BOOLEAN DEFAULT FALSE,
     sms_token VARCHAR(36),
-    created_at TIMESTAMPTZ DEFAULT NOW()
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    verified_at TIMESTAMPTZ
 );
 CREATE INDEX IF NOT EXISTS idx_sms_kodlari_tc ON sms_kodlari(tc_kimlik);
 

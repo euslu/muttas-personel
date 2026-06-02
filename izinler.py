@@ -304,6 +304,10 @@ async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(
 
 @router.put("/{iid}")
 async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_izin_editor)):
+    izin_turleri = await get_izin_turleri_db()
+    if body.izin_turu not in izin_turleri:
+        raise HTTPException(status_code=400, detail=f"Geçersiz izin türü. Kabul edilenler: {izin_turleri}")
+
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval(
@@ -371,62 +375,62 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
 
     pool = await get_pool()
     async with pool.acquire() as conn:
-        row = await conn.fetchrow("""
-            SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi,
-                   i.baslangic, i.bitis, i.gun_sayisi, i.izin_turu,
-                   p.ad_soyad, p.telefon
-            FROM izinler i JOIN personel p ON p.id = i.personel_id
-            WHERE i.id = $1
-        """, iid)
-        if not row:
-            raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
-
-        mevcut_durum = row["durum"]
-        gereken = ONAY_SIRASI.get(body.durum)
-        if gereken and mevcut_durum not in gereken:
-            sira_mesaj = {
-                "ik_onayladi":    "İK onayı yalnızca 'Beklemede' durumundaki izinlere verilebilir.",
-                "mudur_onayladi": "Genel Müdür onayı için önce İK onayı gereklidir.",
-                "onaylandi":      "YK onayı için önce Genel Müdür onayı gereklidir.",
-                "tamamlandi":     "Tamamlama için önce en az Genel Müdür onayı gereklidir.",
-                "reddedildi":     "Bu durumdaki izin reddedilemez.",
-            }
-            raise HTTPException(status_code=400, detail=sira_mesaj.get(body.durum, "Onay sırası uygun değil."))
-
-        # KS onayı zorunluluğu: ks_onaylayan atanmışsa İK imzalamadan önce KS onayı gerekli
-        if body.durum == "ik_onayladi" and row["ks_onaylayan"] and not row["ks_onay_tarihi"]:
-            raise HTTPException(status_code=400, detail="İK onayı için önce Koordinasyon Sorumlusu onayı gereklidir.")
-
-        # İK onayı zorunluluğu: Genel Müdür imzalamadan önce İK onayı gerekli
-        if body.durum == "mudur_onayladi" and not row["ik_onay_tarihi"]:
-            raise HTTPException(status_code=400, detail="Genel Müdür onayı için önce İK onayı gereklidir.")
-
-        today = date.today()
-        extra_sets = ""
-        extra_vals = []
-
-        now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-
-        ad_soyad = (token.get("ad", "") + " " + token.get("soyad", "")).strip() or body.onaylayan or ""
-        onaylayan_ad = ad_soyad + " (V)" if vekalet_rolleri & yetkili_roller and rol not in yetkili_roller else ad_soyad
-
-        if body.durum == "ik_onayladi":
-            extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"
-            extra_vals = [today, onaylayan_ad, body.imza or now_str]
-        elif body.durum == "mudur_onayladi":
-            extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5, mudur_onaylayan = $6"
-            extra_vals = [today, body.imza or now_str, onaylayan_ad]
-        elif body.durum == "onaylandi":
-            extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5, yk_onaylayan = $6"
-            extra_vals = [today, body.imza or now_str, onaylayan_ad]
-        elif body.durum == "tamamlandi":
-            extra_sets = ", gorev_baslama = $4"
-            extra_vals = [today]
-
-        base_params = [iid, body.durum, body.notlar]
-
-        # ── Transaction: durum + bakiye + log atomik ──────────────────────
+        # ── Transaction: SELECT FOR UPDATE + durum + bakiye + log atomik ──
         async with conn.transaction():
+            row = await conn.fetchrow("""
+                SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi,
+                       i.baslangic, i.bitis, i.gun_sayisi, i.izin_turu,
+                       p.ad_soyad, p.telefon
+                FROM izinler i JOIN personel p ON p.id = i.personel_id
+                WHERE i.id = $1
+                FOR UPDATE OF i
+            """, iid)
+            if not row:
+                raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
+
+            mevcut_durum = row["durum"]
+            gereken = ONAY_SIRASI.get(body.durum)
+            if gereken and mevcut_durum not in gereken:
+                sira_mesaj = {
+                    "ik_onayladi":    "İK onayı yalnızca 'Beklemede' durumundaki izinlere verilebilir.",
+                    "mudur_onayladi": "Genel Müdür onayı için önce İK onayı gereklidir.",
+                    "onaylandi":      "YK onayı için önce Genel Müdür onayı gereklidir.",
+                    "tamamlandi":     "Tamamlama için önce en az Genel Müdür onayı gereklidir.",
+                    "reddedildi":     "Bu durumdaki izin reddedilemez.",
+                }
+                raise HTTPException(status_code=400, detail=sira_mesaj.get(body.durum, "Onay sırası uygun değil."))
+
+            # KS onayı zorunluluğu: ks_onaylayan atanmışsa İK imzalamadan önce KS onayı gerekli
+            if body.durum == "ik_onayladi" and row["ks_onaylayan"] and not row["ks_onay_tarihi"]:
+                raise HTTPException(status_code=400, detail="İK onayı için önce Koordinasyon Sorumlusu onayı gereklidir.")
+
+            # İK onayı zorunluluğu: Genel Müdür imzalamadan önce İK onayı gerekli
+            if body.durum == "mudur_onayladi" and not row["ik_onay_tarihi"]:
+                raise HTTPException(status_code=400, detail="Genel Müdür onayı için önce İK onayı gereklidir.")
+
+            today = date.today()
+            extra_sets = ""
+            extra_vals = []
+
+            now_str = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+
+            ad_soyad = (token.get("ad", "") + " " + token.get("soyad", "")).strip() or body.onaylayan or ""
+            onaylayan_ad = ad_soyad + " (V)" if vekalet_rolleri & yetkili_roller and rol not in yetkili_roller else ad_soyad
+
+            if body.durum == "ik_onayladi":
+                extra_sets = ", ik_onay_tarihi = $4, ik_onaylayan = $5, ik_imza = $6"
+                extra_vals = [today, onaylayan_ad, body.imza or now_str]
+            elif body.durum == "mudur_onayladi":
+                extra_sets = ", mudur_onay_tarihi = $4, mudur_imza = $5, mudur_onaylayan = $6"
+                extra_vals = [today, body.imza or now_str, onaylayan_ad]
+            elif body.durum == "onaylandi":
+                extra_sets = ", yk_onay_tarihi = $4, yk_imza = $5, yk_onaylayan = $6"
+                extra_vals = [today, body.imza or now_str, onaylayan_ad]
+            elif body.durum == "tamamlandi":
+                extra_sets = ", gorev_baslama = $4"
+                extra_vals = [today]
+
+            base_params = [iid, body.durum, body.notlar]
             await conn.execute(
                 f"UPDATE izinler SET durum = $2, notlar = COALESCE($3, notlar){extra_sets} WHERE id = $1",
                 *base_params, *extra_vals,
@@ -448,7 +452,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
             personel_id = row["personel_id"]
             personel_ad = row["ad_soyad"]
             await izin_log_yaz(conn, iid, personel_id, personel_ad, mevcut_durum, body.durum, token, ip)
-        # ──────────────────────────────────────────────────────────────────
+        # ── Transaction end ──────────────────────────────────────────────
 
         # ── SMS Bildirimleri ────────────────────────────────────────────────
         telefon = row.get("telefon") or ""

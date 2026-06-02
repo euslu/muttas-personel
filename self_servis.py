@@ -238,14 +238,25 @@ async def public_belge_yukle(
             basvuru_id, dosya_tipi,
         )
 
-        icerik = await dosya.read()
-        if len(icerik) > MAX_BOYUT:
+        # Boyut kontrolü: Content-Length header ile ön kontrol
+        if dosya.size and dosya.size > MAX_BOYUT:
             raise HTTPException(status_code=400, detail="Dosya 10 MB'ı geçemez.")
 
         dosya_adi_guveli = _dosya_adi_guveli(basvuru_id, dosya_tipi, dosya.filename or "dosya")
         dosya_yolu = os.path.join(UPLOAD_DIR, dosya_adi_guveli)
+
+        boyut = 0
         with open(dosya_yolu, "wb") as f:
-            f.write(icerik)
+            while True:
+                chunk = await dosya.read(1024 * 64)
+                if not chunk:
+                    break
+                boyut += len(chunk)
+                if boyut > MAX_BOYUT:
+                    f.close()
+                    os.remove(dosya_yolu)
+                    raise HTTPException(status_code=400, detail="Dosya 10 MB'ı geçemez.")
+                f.write(chunk)
 
         belge = await conn.fetchrow(
             """INSERT INTO belgeler (basvuru_id, dosya_tipi, dosya_adi, dosya_yolu)
@@ -413,7 +424,7 @@ async def sms_kod_dogrula(data: SmsKodDogrula):
 
             sms_token = str(uuid.uuid4())
             await conn.execute(
-                "UPDATE sms_kodlari SET verified=TRUE, sms_token=$1 WHERE id=$2",
+                "UPDATE sms_kodlari SET verified=TRUE, sms_token=$1, verified_at=NOW() WHERE id=$2",
                 sms_token, entry["id"]
             )
             is_yonetici_row = await conn.fetchval(
@@ -564,7 +575,8 @@ async def public_izin_olustur(data: PublicIzinCreate):
         if not entry:
             raise HTTPException(status_code=403, detail="SMS doğrulaması yapılmamış veya geçersiz.")
 
-        elapsed = (datetime.now(entry["created_at"].tzinfo) - entry["created_at"]).total_seconds()
+        ref_time = entry.get("verified_at") or entry["created_at"]
+        elapsed = (datetime.now(ref_time.tzinfo) - ref_time).total_seconds()
         if elapsed > SMS_CODE_EXPIRY * 2:
             await conn.execute("DELETE FROM sms_kodlari WHERE tc_kimlik=$1", tc)
             raise HTTPException(status_code=403, detail="SMS doğrulama süresi doldu. Lütfen yeniden başvurun.")
@@ -585,6 +597,16 @@ async def public_izin_olustur(data: PublicIzinCreate):
         )
         if duplicate:
             raise HTTPException(status_code=409, detail="Bu tarih aralığında aynı türde izin talebi zaten mevcut.")
+
+        # Tarih çakışma kontrolü (reddedildi ve silindi hariç)
+        overlap = await conn.fetchval(
+            """SELECT id FROM izinler
+               WHERE personel_id=$1 AND durum NOT IN ('reddedildi')
+               AND baslangic <= $3 AND bitis >= $2""",
+            data.personel_id, data.baslangic, data.bitis
+        )
+        if overlap:
+            raise HTTPException(status_code=409, detail="Bu tarih aralığında zaten bir izin kaydı bulunmaktadır.")
 
         row = await conn.fetchrow("""
             INSERT INTO izinler

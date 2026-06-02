@@ -18,7 +18,7 @@ JWT_EXPIRE_MINUTES = 60 * 48
 
 IZIN_VERILEN_ROLLER = {"admin", "ik_admin", "ik_viewer", "liman_admin", "liman_viewer", "genel_mudur", "yk_uyesi", "yk_baskani", "mudur", "koordinasyon_sorumlusu"}
 
-SIFRE_SIFIRLAMA_ROLLER = {"koordinasyon_sorumlusu", "mudur", "genel_mudur"}
+SIFRE_SIFIRLAMA_ROLLER = {"koordinasyon_sorumlusu", "mudur", "genel_mudur", "ik_admin", "admin"}
 DEFAULT_SIFRE = "Muttas2026!"
 
 

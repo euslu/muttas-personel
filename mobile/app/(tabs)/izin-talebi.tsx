@@ -16,16 +16,6 @@ import { Ionicons } from "@expo/vector-icons";
 import { useAuth } from "@/lib/auth";
 import { api, IzinTuru, PersonelBilgi } from "@/lib/api";
 
-const IZIN_TURLERI_SABIT = [
-  { kod: "yillik", ad: "Yıllık İzin" },
-  { kod: "ucretsiz", ad: "Ücretsiz İzin" },
-  { kod: "hastalik", ad: "Hastalık İzni" },
-  { kod: "dogum", ad: "Doğum İzni" },
-  { kod: "evlilik", ad: "Evlilik İzni" },
-  { kod: "olum", ad: "Ölüm İzni" },
-  { kod: "babalik", ad: "Babalık İzni" },
-];
-
 function formatDateInput(val: string): string {
   const digits = val.replace(/\D/g, "").substring(0, 8);
   if (digits.length <= 2) return digits;
@@ -60,6 +50,12 @@ export default function IzinTalebi() {
   const [bitisStr, setBitisStr] = useState("");
   const [aciklama, setAciklama] = useState("");
   const [adim, setAdim] = useState<"tur" | "tarih" | "ozet">("tur");
+
+  const { data: izinTurleri } = useQuery<{ kod: string; ad: string }[]>({
+    queryKey: ["/ayarlar/izin-turleri"],
+    queryFn: () => api.get<{ kod: string; ad: string }[]>("/ayarlar/izin-turleri"),
+    staleTime: 1000 * 60 * 30,
+  });
 
   const { data: mePersonel } = useQuery<PersonelBilgi | null>({
     queryKey: ["/personel/me/talebi", user?.tcKimlik],
@@ -124,7 +120,7 @@ export default function IzinTalebi() {
   }
 
   const paddingTop = Platform.OS === "web" ? 67 : insets.top;
-  const selectedTurAd = IZIN_TURLERI_SABIT.find((t) => t.kod === seciliTur)?.ad ?? "";
+  const selectedTurAd = (izinTurleri ?? []).find((t) => t.kod === seciliTur)?.ad ?? "";
 
   return (
     <ScrollView
@@ -149,7 +145,7 @@ export default function IzinTalebi() {
       {adim === "tur" && (
         <View>
           <Text style={styles.sectionLabel}>İzin Türü Seçin</Text>
-          {IZIN_TURLERI_SABIT.map((tur) => (
+          {(izinTurleri ?? []).map((tur) => (
             <TouchableOpacity
               key={tur.kod}
               style={[styles.turItem, seciliTur === tur.kod && styles.turItemActive]}
