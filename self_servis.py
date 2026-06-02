@@ -461,11 +461,18 @@ async def public_personel_ara(tc: Optional[str] = None, sms_token: Optional[str]
     pool = await get_pool()
     async with pool.acquire() as conn:
         entry = await conn.fetchrow(
-            "SELECT personel_id FROM sms_kodlari WHERE tc_kimlik=$1 AND verified=TRUE AND sms_token=$2",
+            "SELECT personel_id, verified_at, created_at FROM sms_kodlari WHERE tc_kimlik=$1 AND verified=TRUE AND sms_token=$2 ORDER BY created_at DESC LIMIT 1",
             tc, sms_token
         )
         if not entry:
             raise HTTPException(status_code=403, detail="SMS doğrulaması gereklidir.")
+
+        # Token zaman aşımı kontrolü
+        ref_time = entry.get("verified_at") or entry["created_at"]
+        if ref_time:
+            elapsed = (datetime.now(ref_time.tzinfo) - ref_time).total_seconds()
+            if elapsed > SMS_CODE_EXPIRY * 2:
+                raise HTTPException(status_code=403, detail="SMS doğrulama süresi doldu. Lütfen yeniden doğrulayın.")
 
         row = await conn.fetchrow(
             "SELECT id, ad_soyad, bolum, unvan, ilce FROM personel WHERE tc_kimlik=$1 AND aktif=TRUE",

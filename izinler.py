@@ -9,7 +9,7 @@ from datetime import date, datetime
 
 import httpx
 from fastapi import APIRouter, HTTPException, Query, Depends, Request, UploadFile, File
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 RAPOR_DIR = Path("uploads/izin_rapor")
 RAPOR_DIR.mkdir(parents=True, exist_ok=True)
@@ -96,8 +96,8 @@ class IzinCreate(BaseModel):
     izin_turu:        str
     baslangic:        date
     bitis:            date
-    gun_sayisi:       int
-    saat_sayisi:      Optional[int] = None
+    gun_sayisi:       int = Field(..., ge=0, le=365)
+    saat_sayisi:      Optional[int] = Field(None, ge=0, le=24)
     kullanilabilir_gun: Optional[int] = None
     vekil_ad_soyad:   Optional[str] = None
     izin_adresi:      Optional[str] = None
@@ -380,6 +380,7 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
             row = await conn.fetchrow("""
                 SELECT i.durum, i.personel_id, i.ks_onaylayan, i.ks_onay_tarihi, i.ik_onay_tarihi,
                        i.baslangic, i.bitis, i.gun_sayisi, i.izin_turu,
+                       i.bakiye_dusuldu,
                        p.ad_soyad, p.telefon
                 FROM izinler i JOIN personel p ON p.id = i.personel_id
                 WHERE i.id = $1
@@ -437,15 +438,19 @@ async def onay_izin(iid: int, body: IzinOnay, request: Request, token: dict = De
             )
 
             bakiye_dusulecek = False
-            if body.durum == "onaylandi":
-                bakiye_dusulecek = True
-            elif body.durum == "tamamlandi" and mevcut_durum == "mudur_onayladi":
-                bakiye_dusulecek = True
+            if not row["bakiye_dusuldu"]:
+                if body.durum == "onaylandi":
+                    bakiye_dusulecek = True
+                elif body.durum == "tamamlandi" and mevcut_durum == "mudur_onayladi":
+                    bakiye_dusulecek = True
 
             if bakiye_dusulecek and row["gun_sayisi"] and row["izin_turu"] != "saatlik":
                 await conn.execute(
                     "UPDATE personel SET kalan_izin = COALESCE(kalan_izin, 0) - $1 WHERE id = $2",
                     row["gun_sayisi"], row["personel_id"]
+                )
+                await conn.execute(
+                    "UPDATE izinler SET bakiye_dusuldu = TRUE WHERE id = $1", iid
                 )
 
             ip = request.headers.get("x-forwarded-for", request.client.host if request.client else None)
@@ -593,7 +598,7 @@ async def delete_izin(iid: int, request: Request, token: dict = Depends(require_
     rol = token.get("rol", "")
     async with pool.acquire() as conn:
         row = await conn.fetchrow(
-            "SELECT id, durum, rapor_url, gun_sayisi, personel_id, izin_turu FROM izinler WHERE id = $1", iid
+            "SELECT id, durum, rapor_url, gun_sayisi, personel_id, izin_turu, bakiye_dusuldu FROM izinler WHERE id = $1", iid
         )
         if not row:
             raise HTTPException(status_code=404, detail="İzin kaydı bulunamadı.")
@@ -620,8 +625,8 @@ async def delete_izin(iid: int, request: Request, token: dict = Depends(require_
 
         # Transaction: bakiye + log + silme atomik
         async with conn.transaction():
-            # Onaylanmış/tamamlanmış izin siliniyorsa bakiye iade et (saatlik hariç)
-            if row["durum"] in ("onaylandi", "tamamlandi") and row["gun_sayisi"] and row["izin_turu"] != "saatlik":
+            # Bakiye düşülmüş izin siliniyorsa bakiye iade et (saatlik hariç)
+            if row["bakiye_dusuldu"] and row["gun_sayisi"] and row["izin_turu"] != "saatlik":
                 await conn.execute(
                     "UPDATE personel SET kalan_izin = COALESCE(kalan_izin, 0) + $1 WHERE id = $2",
                     row["gun_sayisi"], row["personel_id"]
