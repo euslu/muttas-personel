@@ -2052,8 +2052,8 @@ tbody tr:hover td { background: var(--bg-soft); }
 
           <!-- ── Satın Alma Grubu ── -->
 
-          <!-- İhtiyaç Talebi -->
-          <div class="widget dash-sa" data-widget-id="ihtiyac-talebi">
+          <!-- İhtiyaç Talebi (gizli) -->
+          <div class="widget dash-sa" data-widget-id="ihtiyac-talebi" style="display:none">
             <div class="widget-header">
               <div class="w-icon w-icon-purple"><span class="material-symbols-outlined" style="font-size:16px">assignment</span></div>
               <h3>İhtiyaç Talebi</h3>
@@ -2080,8 +2080,8 @@ tbody tr:hover td { background: var(--bg-soft); }
             <a href="#" class="w-link" onclick="navigate('ihtiyac_talebi',null);return false">Tümünü Gör &rsaquo;</a>
           </div>
 
-          <!-- Satın Alma -->
-          <div class="widget dash-sa" data-widget-id="satin-alma">
+          <!-- Satın Alma (gizli) -->
+          <div class="widget dash-sa" data-widget-id="satin-alma" style="display:none">
             <div class="widget-header">
               <div class="w-icon w-icon-orange"><span class="material-symbols-outlined" style="font-size:16px">shopping_cart</span></div>
               <h3>Satın Alma</h3>
@@ -4147,8 +4147,8 @@ const DASH_WIDGET_DEFS = [
   { id: 'izin-talep',     label: 'İzin Talepleri' },
   { id: 'personel-ozet',  label: 'Personel Özet' },
   { id: 'devam-kontrol',  label: 'Personel Devam Kontrol Durumu' },
-  { id: 'ihtiyac-talebi', label: 'İhtiyaç Talebi' },
-  { id: 'satin-alma',     label: 'Satın Alma' },
+  // { id: 'ihtiyac-talebi', label: 'İhtiyaç Talebi' },
+  // { id: 'satin-alma',     label: 'Satın Alma' },
 ];
 
 function dashWidgetGorSetting() {
