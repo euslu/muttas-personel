@@ -414,13 +414,27 @@ async def upload_foto(
         if not exists:
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
 
+    MAX_FOTO_BOYUT = 5 * 1024 * 1024  # 5 MB
+    if dosya.size and dosya.size > MAX_FOTO_BOYUT:
+        raise HTTPException(status_code=400, detail="Fotoğraf boyutu 5 MB'ı geçemez.")
+
     dest_dir = Path("uploads/foto")
     dest_dir.mkdir(parents=True, exist_ok=True)
     unique = f"{pid}_{uuid.uuid4().hex[:8]}{ext}"
     dest = dest_dir / unique
 
+    boyut = 0
     with dest.open("wb") as f:
-        shutil.copyfileobj(dosya.file, f)
+        while True:
+            chunk = await dosya.read(1024 * 64)
+            if not chunk:
+                break
+            boyut += len(chunk)
+            if boyut > MAX_FOTO_BOYUT:
+                f.close()
+                dest.unlink(missing_ok=True)
+                raise HTTPException(status_code=400, detail="Fotoğraf boyutu 5 MB'ı geçemez.")
+            f.write(chunk)
 
     foto_url = f"/uploads/foto/{unique}"
     async with pool.acquire() as conn:

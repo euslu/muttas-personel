@@ -41,14 +41,19 @@ class CSPMiddleware(BaseHTTPMiddleware):
 
 
 class RateLimitMiddleware(BaseHTTPMiddleware):
+    """Per-worker rate limit. Limitler worker sayısına bölünmüş halde (4 worker)."""
+    WORKER_COUNT = int(os.environ.get("WORKER_COUNT", "4"))
+
     def __init__(self, app):
         super().__init__(app)
         self.requests = defaultdict(list)
+        # Limitler worker başına bölünüyor: 10/4 ≈ 3, 120/4 = 30
+        pw = max(self.WORKER_COUNT, 1)
         self.public_limits = {
-            "/public/": {"max": 10, "window": 60},
-            "/auth/login": {"max": 10, "window": 60},
+            "/public/": {"max": max(10 // pw, 2), "window": 60},
+            "/auth/login": {"max": max(10 // pw, 2), "window": 60},
         }
-        self.global_limit = {"max": 120, "window": 60}
+        self.global_limit = {"max": max(120 // pw, 10), "window": 60}
 
     TRUSTED_PROXIES = {"127.0.0.1", "::1"}
 
@@ -92,7 +97,8 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
             )
         self.requests[global_key].append(now)
 
-        if len(self.requests) > 50000:
+        # Bellek temizliği — 5000 key üzerinde çalışır
+        if len(self.requests) > 5000:
             cutoff = now - 120
             self.requests = defaultdict(list, {
                 k: [t for t in v if t > cutoff]

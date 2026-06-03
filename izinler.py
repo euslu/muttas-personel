@@ -558,13 +558,26 @@ async def upload_izin_rapor(
                 detail="Rapor yalnızca İK imzası tamamlanmış izinlere yüklenebilir.",
             )
 
+        MAX_RAPOR_BOYUT = 10 * 1024 * 1024  # 10 MB
         ext = Path(dosya.filename).suffix.lower() or ".pdf"
         if ext not in {".pdf", ".jpg", ".jpeg", ".png"}:
             raise HTTPException(status_code=400, detail="Sadece PDF, JPG, PNG dosyaları kabul edilir.")
+        if dosya.size and dosya.size > MAX_RAPOR_BOYUT:
+            raise HTTPException(status_code=400, detail="Rapor dosyası 10 MB'ı geçemez.")
         unique_name = f"izin_{iid}_{uuid.uuid4().hex}{ext}"
         dest = RAPOR_DIR / unique_name
+        boyut = 0
         with dest.open("wb") as f:
-            shutil.copyfileobj(dosya.file, f)
+            while True:
+                chunk = await dosya.read(1024 * 64)
+                if not chunk:
+                    break
+                boyut += len(chunk)
+                if boyut > MAX_RAPOR_BOYUT:
+                    f.close()
+                    dest.unlink(missing_ok=True)
+                    raise HTTPException(status_code=400, detail="Rapor dosyası 10 MB'ı geçemez.")
+                f.write(chunk)
 
         if row["rapor_url"]:
             old = Path("." + row["rapor_url"])

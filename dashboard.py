@@ -1,25 +1,12 @@
-import os
 from datetime import date, datetime, timedelta
 from typing import Optional
 
 from fastapi import APIRouter, HTTPException, Query, Depends
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from jose import jwt, JWTError
 
 from db import get_pool
+from permissions import decode_token
 
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
-
-JWT_SECRET    = os.environ["JWT_SECRET"]
-JWT_ALGORITHM = "HS256"
-security      = HTTPBearer()
-
-
-def decode_token(credentials: HTTPAuthorizationCredentials = Depends(security)) -> dict:
-    try:
-        return jwt.decode(credentials.credentials, JWT_SECRET, algorithms=[JWT_ALGORITHM])
-    except JWTError:
-        raise HTTPException(status_code=401, detail="Geçersiz token.")
 
 
 def liman_where(liman_id: Optional[int], alias: str = "b") -> tuple[str, list]:
