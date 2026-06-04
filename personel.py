@@ -361,7 +361,7 @@ async def upload_evrak(
             """INSERT INTO personel_evraklari
                (personel_id, evrak_adi, dosya_adi, dosya_yolu, dosya_boyut, mime_type)
                VALUES ($1, $2, $3, $4, $5, $6) RETURNING id""",
-            pid, evrak_adi, dosya.filename, str(dest), boyut, dosya.content_type,
+            pid, evrak_adi, Path(dosya.filename).name if dosya.filename else "dosya", str(dest), boyut, dosya.content_type,
         )
     return {"id": row["id"]}
 

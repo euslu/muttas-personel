@@ -373,10 +373,13 @@ async def get_izin_turleri(token: dict = Depends(decode_token)):
 
 @router.post("/izin-turleri", status_code=201)
 async def ekle_izin_turu(body: IzinTuruBody, token: dict = Depends(require_ayar_editor)):
+    import re as _re
     kod = body.kod.strip().lower().replace(" ", "_")
     ad  = body.ad.strip()
     if not kod or not ad:
         raise HTTPException(status_code=400, detail="Kod ve ad boş olamaz.")
+    if not _re.match(r'^[a-z][a-z0-9_]*$', kod):
+        raise HTTPException(status_code=400, detail="Kod sadece küçük harf, rakam ve alt çizgi içerebilir, harfle başlamalıdır.")
     pool = await get_pool()
     async with pool.acquire() as conn:
         exists = await conn.fetchval("SELECT id FROM izin_turleri WHERE kod=$1", kod)

@@ -59,7 +59,7 @@ export default function Izinlerim() {
       api.get<{ veri: IzinItem[]; toplam: number }>("/izinler", {
         durum: secilenDurum || undefined,
         personel_id: mePersonel?.id,
-        per_page: 50,
+        per_page: 200,
       }),
     enabled: !!mePersonel?.id,
     select: (d) => d.veri,

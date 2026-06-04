@@ -380,7 +380,7 @@ async def sms_kod_gonder(data: SmsKodGonder):
             raise HTTPException(status_code=500, detail="SMS gönderilemedi. Lütfen daha sonra tekrar deneyin.")
 
         await conn.execute(
-            "DELETE FROM sms_kodlari WHERE created_at < NOW() - INTERVAL '10 minutes' AND tc_kimlik != $1", tc
+            "DELETE FROM sms_kodlari WHERE created_at < NOW() - INTERVAL '10 minutes'"
         )
 
     return {

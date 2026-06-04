@@ -34,7 +34,7 @@ export default function Onaylar() {
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["/izinler/onay"],
     queryFn: () =>
-      api.get<{ veri: IzinItem[] }>("/izinler", { durum: "beklemede", per_page: 50 }),
+      api.get<{ veri: IzinItem[] }>("/izinler", { durum: "beklemede", per_page: 200 }),
     select: (d) => d.veri,
   });
 

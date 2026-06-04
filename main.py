@@ -56,7 +56,7 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
         }
         self.global_limit = {"max": max(120 // pw, 10), "window": 60}
 
-    TRUSTED_PROXIES = {"127.0.0.1", "::1"}
+    TRUSTED_PROXIES = {"127.0.0.1", "::1"} | set(filter(None, os.environ.get("TRUSTED_PROXIES", "").split(",")))
 
     def _get_client_ip(self, request):
         client_ip = request.client.host if request.client else "unknown"
