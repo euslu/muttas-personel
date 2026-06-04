@@ -185,7 +185,7 @@ async def list_personel(
                     "telefon":              r["telefon"],
                     "cinsiyet":             r["cinsiyet"],
                     "aktif":                r["aktif"],
-                    "brut_ucret":           float(r["brut_ucret"]) if r["brut_ucret"] else None,
+                    "brut_ucret":           (float(r["brut_ucret"]) if r["brut_ucret"] else None) if token.get("rol") in IK_EDITORS else None,
                     "guvenlik_belge_tarih": fmt(r["guvenlik_belge_tarih"]),
                     "medeni_hal":           r["medeni_hal"],
                     "cocuk_sayisi":         r["cocuk_sayisi"],
@@ -224,7 +224,10 @@ async def get_personel(pid: int, token: dict = Depends(decode_token)):
         def fmt(d):
             return d.isoformat() if d else None
 
-        return {k: (fmt(v) if isinstance(v, date) else v) for k, v in dict(r).items()}
+        result = {k: (fmt(v) if isinstance(v, date) else v) for k, v in dict(r).items()}
+        if token.get("rol") not in IK_EDITORS:
+            result["brut_ucret"] = None
+        return result
 
 
 @router.post("", status_code=201)

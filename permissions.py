@@ -71,7 +71,7 @@ def require_liman_editor(token: dict = Depends(decode_token)) -> dict:
     return token
 
 
-ADMIN_ROLLER = {"admin", "genel_mudur"}
+ADMIN_ROLLER = {"admin"}
 
 
 def require_admin(token: dict = Depends(decode_token)) -> dict:

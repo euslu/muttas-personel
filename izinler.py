@@ -59,7 +59,7 @@ async def get_izin_turleri_db() -> list:
         rows = await conn.fetch("SELECT kod FROM izin_turleri WHERE aktif = TRUE ORDER BY sira, ad")
         return [r["kod"] for r in rows]
 
-DURUMLAR = ["beklemede", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
+DURUMLAR = ["beklemede", "ks_onayladi", "ik_onayladi", "mudur_onayladi", "onaylandi", "reddedildi", "tamamlandi"]
 
 DURUM_ACIKLAMA = {
     "beklemede":        "İzin talebi oluşturuldu",
@@ -283,6 +283,16 @@ async def create_izin(body: IzinCreate, request: Request, token: dict = Depends(
         if not prs:
             raise HTTPException(status_code=404, detail="Personel bulunamadı.")
 
+        # Tarih çakışma kontrolü (reddedildi hariç)
+        overlap = await conn.fetchval(
+            """SELECT id FROM izinler
+               WHERE personel_id=$1 AND durum NOT IN ('reddedildi')
+               AND baslangic <= $3 AND bitis >= $2""",
+            body.personel_id, body.baslangic, body.bitis
+        )
+        if overlap:
+            raise HTTPException(status_code=409, detail="Bu tarih aralığında zaten bir izin kaydı bulunmaktadır.")
+
         talep = body.talep_tarihi or date.today()
         row = await conn.fetchrow("""
             INSERT INTO izinler (
@@ -310,11 +320,21 @@ async def update_izin(iid: int, body: IzinCreate, token: dict = Depends(require_
 
     pool = await get_pool()
     async with pool.acquire() as conn:
-        exists = await conn.fetchval(
-            "SELECT id FROM izinler WHERE id = $1 AND durum = 'beklemede'", iid
+        exists = await conn.fetchrow(
+            "SELECT id, personel_id FROM izinler WHERE id = $1 AND durum = 'beklemede'", iid
         )
         if not exists:
             raise HTTPException(status_code=400, detail="Sadece beklemede olan izinler düzenlenebilir.")
+
+        # Tarih çakışma kontrolü (kendi kaydı hariç, reddedildi hariç)
+        overlap = await conn.fetchval(
+            """SELECT id FROM izinler
+               WHERE personel_id=$1 AND id != $2 AND durum NOT IN ('reddedildi')
+               AND baslangic <= $4 AND bitis >= $3""",
+            exists["personel_id"], iid, body.baslangic, body.bitis
+        )
+        if overlap:
+            raise HTTPException(status_code=409, detail="Bu tarih aralığında zaten bir izin kaydı bulunmaktadır.")
 
         await conn.execute("""
             UPDATE izinler SET

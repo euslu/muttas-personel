@@ -38,7 +38,8 @@ async def get_ozet(
 
         # Import günü (2026-02-21) hariç, sadece onaylanmamış başvurular
         BEKLEYEN = "('beklemede','islem_bekliyor','odeme_islemde','manuel_odeme','dosya_yuklenenler')"
-        IMPORT_CUTOFF = "'2026-02-21'"
+        import os as _os
+        IMPORT_CUTOFF = "'" + _os.environ.get("LIMAN_IMPORT_CUTOFF", "2026-02-21") + "'"
 
         basvuru_bugun = await conn.fetchval(f"""
             SELECT COUNT(*) FROM baglamalar b

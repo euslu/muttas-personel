@@ -47,11 +47,11 @@ export default function Onaylar() {
       case "genel_mudur": return "mudur_onayladi";
       case "yk_uyesi":
       case "yk_baskani": return "onaylandi";
-      default: return "ik_onayladi";
+      default: return "";
     }
   }
 
-  const canApproveViaOnay = ["admin", "ik_admin", "genel_mudur", "yk_uyesi", "yk_baskani"].includes(user?.rol ?? "");
+  const canApproveViaOnay = ["admin", "ik_admin", "genel_mudur", "yk_uyesi", "yk_baskani"].includes(user?.rol ?? "") && !!onayDurumu();
 
   const { mutate: onayla, isPending: onayPending } = useMutation({
     mutationFn: (id: number) =>

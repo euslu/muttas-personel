@@ -80,8 +80,8 @@ async def create_vekalet(body: VekaletCreate, token: dict = Depends(require_veka
     if body.bitis < body.baslangic:
         raise HTTPException(status_code=400, detail="Bitiş tarihi başlangıçtan önce olamaz.")
 
-    if rol == "koordinasyon_sorumlusu" and body.veren_kullanici_id != kullanici_id:
-        raise HTTPException(status_code=403, detail="Koordinasyon sorumlusu yalnızca kendi adına vekalet verebilir.")
+    if rol in ("koordinasyon_sorumlusu", "ik_admin") and body.veren_kullanici_id != kullanici_id:
+        raise HTTPException(status_code=403, detail="Yalnızca kendi adınıza vekalet verebilirsiniz.")
 
     pool = await get_pool()
     async with pool.acquire() as conn:

@@ -4288,7 +4288,7 @@ async function loadIKDashboard() {
         dogumEl.innerHTML = items.map((p,i) => `
           <div class="widget-row">
             ${avatarHTML(p.ad_soyad, p.foto_url, i)}
-            <span class="w-name">${p.ad_soyad}</span>
+            <span class="w-name">${escHtml(p.ad_soyad)}</span>
             <span class="w-days">${p.kalan_gun}g</span>
             <span class="w-date w-date-green">${fmtDateShort(p.tarih)}</span>
           </div>
@@ -4307,7 +4307,7 @@ async function loadIKDashboard() {
         yiEl.innerHTML = items.map((p,i) => `
           <div class="widget-row">
             ${avatarHTML(p.ad_soyad, p.foto_url, i+3)}
-            <span class="w-name">${p.ad_soyad}</span>
+            <span class="w-name">${escHtml(p.ad_soyad)}</span>
             <span class="w-days">${p.gun_sayisi}g</span>
             <span class="w-date w-date-blue">${fmtDateShort(p.baslangic)}</span>
           </div>
@@ -4326,7 +4326,7 @@ async function loadIKDashboard() {
         itEl.innerHTML = items.map((p,i) => `
           <div class="widget-row">
             ${avatarHTML(p.ad_soyad, p.foto_url, i+5)}
-            <span class="w-name">${p.ad_soyad}</span>
+            <span class="w-name">${escHtml(p.ad_soyad)}</span>
             <span class="w-days">${p.gun_sayisi}g</span>
             <span class="w-date w-date-orange">${fmtDateShort(p.baslangic)}</span>
           </div>
@@ -7798,7 +7798,7 @@ function prsMsg(mesaj, tip) {
     info:    'background:#eff6ff;color:#1e40af;border:1px solid #bfdbfe',
   };
   el.setAttribute('style', `display:block;margin:0 20px 8px;padding:10px 14px;border-radius:8px;font-size:13px;font-weight:500;${styles[tip] || ''}`);
-  el.innerHTML = (tip === 'error' ? '⚠️ ' : tip === 'success' ? '✅ ' : '') + mesaj;
+  el.textContent = (tip === 'error' ? '⚠️ ' : tip === 'success' ? '✅ ' : '') + mesaj;
   el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -10207,8 +10207,8 @@ async function sifreDegistir() {
     hataEl.style.display = '';
     return;
   }
-  if (yeni.length < 6) {
-    hataEl.textContent = 'Yeni şifre en az 6 karakter olmalıdır.';
+  if (yeni.length < 8) {
+    hataEl.textContent = 'Yeni şifre en az 8 karakter olmalıdır.';
     hataEl.style.display = '';
     return;
   }

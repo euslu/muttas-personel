@@ -32,12 +32,22 @@ function parseDate(val: string): string | null {
   return `${y}-${m.padStart(2, "0")}-${d.padStart(2, "0")}`;
 }
 
-function calcGunSayisi(baslangic: string, bitis: string): number {
+function calcGunSayisi(baslangic: string, bitis: string, calismaGunu: number = 6): number {
   const b = new Date(baslangic);
   const e = new Date(bitis);
   if (isNaN(b.getTime()) || isNaN(e.getTime()) || e < b) return 0;
-  const diff = Math.ceil((e.getTime() - b.getTime()) / 86400000) + 1;
-  return diff;
+  let gun = 0;
+  const cur = new Date(b);
+  while (cur <= e) {
+    const dow = cur.getDay(); // 0=Pazar, 6=Cumartesi
+    if (calismaGunu === 6) {
+      if (dow !== 0) gun++; // Pazar hariç
+    } else {
+      if (dow !== 0 && dow !== 6) gun++; // Pazar ve Cumartesi hariç
+    }
+    cur.setDate(cur.getDate() + 1);
+  }
+  return gun || 1;
 }
 
 export default function IzinTalebi() {
@@ -65,12 +75,22 @@ export default function IzinTalebi() {
         per_page: 1,
       }),
     enabled: !!user?.tcKimlik,
-    select: (d) => d.veri?.[0] ?? null,
+    select: (d: any) => d.veri?.[0] ?? null,
   });
+
+  const { data: calismaGunleri } = useQuery<Record<string, number>>({
+    queryKey: ["/public/calisma-gunleri"],
+    queryFn: () => api.get<Record<string, number>>("/public/calisma-gunleri", {}, false),
+    staleTime: 1000 * 60 * 60,
+  });
+
+  const personelCalismaGunu = calismaGunleri && mePersonel?.unvan
+    ? (calismaGunleri[(mePersonel.unvan || "").toUpperCase()] ?? 6)
+    : 6;
 
   const baslangicISO = parseDate(baslangicStr);
   const bitisISO = parseDate(bitisStr);
-  const gunSayisi = baslangicISO && bitisISO ? calcGunSayisi(baslangicISO, bitisISO) : 0;
+  const gunSayisi = baslangicISO && bitisISO ? calcGunSayisi(baslangicISO, bitisISO, personelCalismaGunu) : 0;
 
   const { mutate: izinGonder, isPending } = useMutation({
     mutationFn: () =>

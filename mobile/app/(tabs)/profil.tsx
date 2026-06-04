@@ -56,8 +56,8 @@ export default function Profil() {
     if (yeniSifre !== yeniSifreTekrar) {
       Alert.alert("Hata", "Yeni şifreler eşleşmiyor."); return;
     }
-    if (yeniSifre.length < 6) {
-      Alert.alert("Hata", "Şifre en az 6 karakter olmalı."); return;
+    if (yeniSifre.length < 8) {
+      Alert.alert("Hata", "Şifre en az 8 karakter olmalı."); return;
     }
     sifreDegistir();
   }
